@@ -7,7 +7,7 @@
 // said everybody using raw pointers
 namespace phy
 {
-    class phy::SphereCollider : public Collider
+    class SphereCollider : public Collider
     {
     public:
         Vector2 Center;
@@ -16,7 +16,7 @@ namespace phy
         SphereCollider() : 
         Center(Vector2(0.0f, 0.0f)), Radius(0.0f) {};
     
-        SphereCollider(Vector2 Center, float radius) :
+        SphereCollider(const Vector2 &Center, float radius) :
             Center(Center), Radius(radius) {};
 
         SphereCollider(const SphereCollider &other) :

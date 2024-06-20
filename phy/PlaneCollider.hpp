@@ -5,7 +5,7 @@
 
 namespace phy
 {
-    class phy::PlaneCollider : public Collider
+    class PlaneCollider : public Collider
     {
     public:
         Vector2 Plane;
@@ -14,7 +14,7 @@ namespace phy
         PlaneCollider() : 
             Plane(Vector2(0.0f, 0.0f)), Distance(0.0f) {};
 
-        PlaneCollider(Vector2 plane, float distance) :
+        PlaneCollider(const Vector2 &plane, float distance) :
             Plane(plane), Distance(distance) {};
 
         PlaneCollider(const PlaneCollider &other) :

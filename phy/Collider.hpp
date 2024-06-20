@@ -7,12 +7,13 @@
 
 namespace phy
 {
-    class PlaneCollider {};
-    class SphereCollider {};
+    class PlaneCollider;
+    class SphereCollider;
     
     class Collider
     {
     public:
+    Collider() = default;
         virtual CollisionPoints TestCollision(
             const Transform *transform,
             const Collider *collider,

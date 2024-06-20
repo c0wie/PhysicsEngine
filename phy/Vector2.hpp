@@ -1,5 +1,18 @@
 #pragma once
+#include <iostream>
 
+#define DEBUG 
+
+#ifdef DEBUG
+    #define LogCall(x) printLog(x, __FILE__, __LINE__)
+#else
+    #define LogCall(x) 
+#endif
+
+void printLog(const std::string &message, const char *file, int line)
+{
+    std::cout << file << " " << line << ": " << message << std::endl;
+}
 namespace phy
 {
     class Vector2
@@ -15,8 +28,7 @@ namespace phy
             x(x), y(y) {};
 
         Vector2(const Vector2 &other) :
-            x(other.x), y(other.y)
-            {};
+            x(other.x), y(other.y) {};
 
         Vector2(Vector2 &&other) noexcept :
             x(other.x), y(other.y) {};
@@ -49,7 +61,6 @@ namespace phy
         {
            return Vector2{ x + other.x, y + other.y};
         }
-
 
         Vector2& operator+=(const Vector2 &other) 
         {
