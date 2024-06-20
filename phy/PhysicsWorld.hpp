@@ -76,15 +76,13 @@ namespace phy
                     {
                         continue;
                     }
-                    //auto sphereCollider = std::make_shared<SphereCollider>();
-                    //m_Objects[i]->Collider = std::static_pointer_cast<Collider>(sphereCollider);
-                    //CollisionPoints points = m_Objects[i]->Collider->TestCollision(m_Objects[i]->Transform, m_Objects[j]->Collider, m_Objects[j]->Transform);
+                    CollisionPoints points = m_Objects[i]->Collider->TestCollision(m_Objects[i]->Transform.get(), m_Objects[j]->Collider.get(), m_Objects[j]->Transform.get());
                 
                     //reconsider if HasCollision == false is not cause to skip whole iteration cuz it means that this object just won't do anything
-                    /*if(points.HasCollision)
+                    if(points.HasCollision)
                     {
                         collisions.emplace_back(m_Objects[i], m_Objects[j], points);
-                    }*/
+                    }
                 }
             }
         }

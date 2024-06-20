@@ -5,7 +5,7 @@
 
 namespace phy
 {
-    class PlaneCollider : public Collider
+    class PlaneCollider : public Collider, std::enable_shared_from_this<PlaneCollider>
     {
     public:
         Vector2 Plane;

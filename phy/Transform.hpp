@@ -1,4 +1,3 @@
-// might be colliding with SFML's version of Transform.hpp
 #pragma once
 
 #include "Vector2.hpp"

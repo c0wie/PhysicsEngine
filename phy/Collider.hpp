@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "Vector2.hpp"
 #include "CollisionPoints.hpp"
 #include "Transform.hpp"
@@ -10,7 +11,7 @@ namespace phy
     class PlaneCollider;
     class SphereCollider;
     
-    class Collider
+    class Collider 
     {
     public:
     Collider() = default;

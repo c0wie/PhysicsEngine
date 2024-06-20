@@ -7,7 +7,7 @@
 // said everybody using raw pointers
 namespace phy
 {
-    class SphereCollider : public Collider
+    class SphereCollider : public Collider, std::enable_shared_from_this<SphereCollider>
     {
     public:
         Vector2 Center;
