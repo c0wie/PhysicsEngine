@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 
-#define DEBUG 
+//#define DEBUG 
 
 #ifdef DEBUG
     #define LogCall(x) printLog(x, __FILE__, __LINE__)

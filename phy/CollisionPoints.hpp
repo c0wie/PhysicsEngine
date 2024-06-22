@@ -22,7 +22,7 @@ namespace phy
         CollisionPoints(const CollisionPoints &other) :
             A(other.A), B(other.B), Normal(other.Normal), Depth(other.Depth), HasCollision(other.HasCollision) {};
 
-        CollisionPoints(CollisionPoints &&other) :
+        CollisionPoints(CollisionPoints &&other) noexcept :
             A(other.A), B(other.B), Normal(other.Normal), Depth(other.Depth), HasCollision(other.HasCollision) 
         {
             other.A = Vector2{0.0f, 0.0f};
@@ -46,7 +46,7 @@ namespace phy
             return *this;
         }
 
-        CollisionPoints& operator=(CollisionPoints &&other)
+        CollisionPoints& operator=(CollisionPoints &&other) noexcept
         {
             if(this == &other)
             {

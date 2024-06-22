@@ -18,7 +18,7 @@ namespace phy
         Transform(const Transform &other) :
             Position(other.Position), Scale(other.Scale) {};
 
-        Transform(Transform &&other) :
+        Transform(Transform &&other) noexcept :
             Position(other.Position), Scale(other.Scale)
         {
             other.Position = Vector2(0.0f, 0.0f);
@@ -36,7 +36,7 @@ namespace phy
             return *this;
         }
 
-        Transform& operator=(Transform &&other)
+        Transform& operator=(Transform &&other) noexcept
         {
             if(this == &other)
             {

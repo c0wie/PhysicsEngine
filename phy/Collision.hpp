@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Object.hpp"
-#include "CollisionPoints.hpp"
 
 namespace phy
 {
@@ -21,7 +20,7 @@ namespace phy
         Collision(const Collision &other) :
             ObjectA(other.ObjectA), ObjectB(other.ObjectB), Points(other.Points) {};
 
-        Collision(Collision &&other) :
+        Collision(Collision &&other) noexcept:
             ObjectA(other.ObjectA), ObjectB(other.ObjectB), Points(other.Points) 
         {
             other.ObjectA = nullptr;
@@ -41,7 +40,7 @@ namespace phy
             return *this;
         }
 
-        Collision& operator=(Collision &&other) 
+        Collision& operator=(Collision &&other) noexcept
         {
             if(this == &other)
             {

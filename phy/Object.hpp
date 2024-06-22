@@ -1,11 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "Vector2.hpp"
-#include "CollisionPoints.hpp"
-#include "Transform.hpp"
-#include "SphereCollider.hpp"
-#include "PlaneCollider.hpp"
+#include "CircleCollider.hpp"
+#include "SquareCollider.hpp"
 
 namespace phy
 {
@@ -15,7 +12,7 @@ namespace phy
         float Mass;
         Vector2 Velocity;
         Vector2 Force;
-        std::shared_ptr<SphereCollider> Collider;
+        std::shared_ptr<CircleCollider> Collider;
         std::shared_ptr<Transform> Transform;
     public:
         Object() :
@@ -25,7 +22,7 @@ namespace phy
         };
 
         Object(float mass, const Vector2 &velocity, const Vector2 &force, 
-            const std::shared_ptr<phy::SphereCollider> &collider, const std::shared_ptr<phy::Transform> &transform) :
+            const std::shared_ptr<phy::CircleCollider> &collider, const std::shared_ptr<phy::Transform> &transform) :
             Mass(mass), Velocity(velocity), Force(force), Collider(collider), Transform(transform) 
         {
             LogCall("Params Object Constructor called");
@@ -37,7 +34,7 @@ namespace phy
             LogCall("Object Copy Constructor called");
         };
 
-        Object (Object &&other) :
+        Object (Object &&other) noexcept :
             Mass(other.Mass), Velocity(other.Velocity), Force(other.Force), Collider(other.Collider), Transform(other.Transform)
         {
             other.Mass = 0.0f;
@@ -63,7 +60,7 @@ namespace phy
             return *this;
         }
 
-        Object& operator=(Object &&other)
+        Object& operator=(Object &&other) noexcept
         {
             if(this == &other)
             {

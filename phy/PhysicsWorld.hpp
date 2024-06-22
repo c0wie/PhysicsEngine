@@ -8,9 +8,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Object.hpp"
 #include "Collision.hpp"
-#include "PhysicsWorld.hpp"
 
 namespace phy
 {
@@ -20,7 +18,6 @@ namespace phy
         std::vector< std::shared_ptr<Object> > m_Objects;
         static inline constexpr float m_Gravity = 0.981f;
     public:
-        // you can delete this lines but I'm not sure if you want to copy your PhysicsWorld
         PhysicsWorld() = default;
         ~PhysicsWorld() = default;
         PhysicsWorld(const PhysicsWorld &other) = delete;
@@ -38,11 +35,12 @@ namespace phy
         void RemoveObject(std::shared_ptr<Object> object)
         {
             m_Objects.erase( std::remove(m_Objects.begin(), m_Objects.end(), object) );
-            std::cout << "Object had been removed\n";
+            LogCall("Object has been romoved");
         }
 
         void Step(float deltaTime)
         {
+            ResolveCollision(deltaTime);
             for(int i = 0; i < m_Objects.size(); i++)
             {
                 if(m_Objects[i]->Transform->Position.y > 500.f)
@@ -51,12 +49,12 @@ namespace phy
                     continue;
                 }
                 // example of force
-                m_Objects[i]->Force.y += m_Objects[i]->Mass * m_Gravity;
+                /*m_Objects[i]->Force.y += m_Objects[i]->Mass * m_Gravity;
 
                 m_Objects[i]->Velocity += m_Objects[i]->Force / m_Objects[i]->Mass * deltaTime;
                 m_Objects[i]->Transform->Position += m_Objects[i]->Velocity * deltaTime;
 
-                m_Objects[i]->Force = Vector2(0.0f, 0.0f);
+                m_Objects[i]->Force = Vector2(0.0f, 0.0f);*/
             }
         }
 
@@ -98,4 +96,5 @@ namespace phy
             }
         }
     }; 
+
 }

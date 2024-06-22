@@ -3,34 +3,32 @@
 #include "Collider.hpp"
 #include "Algo.hpp"
 
-// I should maybe reconsider using raw pointers for that cuz it is all const so what bad could happend...
-// said everybody using raw pointers
 namespace phy
 {
-    class SphereCollider : public Collider, std::enable_shared_from_this<SphereCollider>
+    class CircleCollider : public Collider
     {
     public:
         Vector2 Center;
         float Radius;
     public:
-        SphereCollider() : 
+        CircleCollider() : 
         Center(Vector2(0.0f, 0.0f)), Radius(0.0f) {};
     
-        SphereCollider(const Vector2 &Center, float radius) :
-            Center(Center), Radius(radius) {};
+        CircleCollider(const Vector2 &center, float radius) :
+            Center(center), Radius(radius) {};
 
-        SphereCollider(const SphereCollider &other) :
+        CircleCollider(const CircleCollider &other) :
             Center(other.Center), Radius(other.Radius)
         {}
 
-        SphereCollider(SphereCollider &&other)noexcept :
+        CircleCollider(CircleCollider &&other) noexcept :
             Center(other.Center), Radius(other.Radius)
         {
             other.Center = Vector2(0.0f, 0.0f);
             other.Radius = 0.0f;
         }
 
-        SphereCollider& operator=(const SphereCollider &other)
+        CircleCollider& operator=(const CircleCollider &other)
         {
             if(this == &other)
             {
@@ -41,7 +39,7 @@ namespace phy
             return *this;
         }
 
-        SphereCollider& operator=(SphereCollider &&other)noexcept
+        CircleCollider& operator=(CircleCollider &&other) noexcept
         {
             if(this == &other)
             {
@@ -64,18 +62,18 @@ namespace phy
         
         CollisionPoints TestCollision(
             const Transform *transform,
-            const SphereCollider *sphere,
-            const Transform *sphereTransform) const override
+            const CircleCollider *circle,
+            const Transform *circleTransform) const override
         {
-            return algo::FindSphereSphereCollision(this, transform, sphere, sphereTransform);
+            return algo::FindCircleCircleCollision(this, transform, circle, circleTransform);
         }
 
         CollisionPoints TestCollision(
             const Transform *transform,
-            const PlaneCollider *plane,
-            const Transform *planeTransform) const override
+            const SquareCollider *square,
+            const Transform *squareTransform) const override
         {
-            return algo::FindSpherePlaneCollision(this, transform, plane, planeTransform);
+            return algo::FindCircleSquareCollision(this, transform, square, squareTransform);
         }
     };
 }
