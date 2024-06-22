@@ -13,8 +13,17 @@ FETCHCONTENT_MAKEAVAILABLE(SFML)
 
 add_executable(physicsEngine 
     Demo.cpp
+    phy/src/Algo.cpp
+    phy/src/CircleCollider.cpp
+    phy/src/Collision.cpp
+    phy/src/CollisionPoints.cpp
+    phy/src/Object.cpp
+    phy/src/PhysicsWorld.cpp
+    phy/src/SquareCollider.cpp
+    phy/src/Transform.cpp
+    phy/src/Vector2.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR} /phy)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR} /phy/headers)
 
 target_link_libraries(${PROJECT_NAME} sfml-graphics)

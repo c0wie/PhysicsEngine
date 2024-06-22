@@ -1,8 +1,7 @@
-#pragma once
+#include "../headers/Algo.hpp"
 
-#include <memory>
-#include "CircleCollider.hpp"
-#include "SquareCollider.hpp"
+#include "../headers/CircleCollider.hpp"
+#include "../headers/SquareCollider.hpp"
 
 namespace phy
 {
@@ -13,7 +12,7 @@ namespace phy
             const CircleCollider *B, const Transform *transformB)
         {
             return CollisionPoints();
-        }      
+        }
     
         CollisionPoints FindCircleSquareCollision(
             const CircleCollider *A, const Transform *transformA,
@@ -27,11 +26,11 @@ namespace phy
             const CircleCollider *B, const Transform *transformB)
         {
             return CollisionPoints();
-        }        
+        }
 
         CollisionPoints FindSquareSquareCollision(
             const SquareCollider *A, const Transform *transformA,
-            const SquareCollider *B, const Transform *transformB   )
+            const SquareCollider *B, const Transform *transformB)
         {
             return CollisionPoints();
         }
