@@ -8,11 +8,10 @@ namespace phy
     class CircleCollider : public Collider
     {
     public:
-        Vector2 Center;
         float Radius;
     public:
         CircleCollider();
-        CircleCollider(const Vector2 &center, float radius);
+        CircleCollider(float radius);
         CircleCollider(const CircleCollider &other);
         CircleCollider(CircleCollider &&other) noexcept;
         CircleCollider& operator=(const CircleCollider &other);
@@ -32,5 +31,7 @@ namespace phy
             const Transform *transform,
             const SquareCollider *square,
             const Transform *squareTransform) const override;
+        
+        void Draw(sf::RenderWindow &window, const Transform *transform) const override;
     };
 }

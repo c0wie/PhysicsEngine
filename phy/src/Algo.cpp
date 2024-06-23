@@ -1,3 +1,4 @@
+#include <cmath>
 #include "../headers/Algo.hpp"
 #include "../headers/CircleCollider.hpp"
 #include "../headers/SquareCollider.hpp"
@@ -87,7 +88,20 @@ namespace phy
         const CircleCollider *A, const Transform *transformA,
         const CircleCollider *B, const Transform *transformB)
     {
-        return CollisionPoints();
+        const Vector2 cA = transformA->Position;
+        const Vector2 cB = transformB->Position;
+        const Vector2 v = cB - cA;
+        
+        const float magnitude = sqrt(pow(v.x, 2) + pow(v.y, 2));
+        if(magnitude >= A->Radius + B->Radius)
+        {
+            return CollisionPoints();
+        }
+        const Vector2 normal = v / magnitude;
+        const Vector2 pointA = transformA->Position - normal * A->Radius;
+        const Vector2 pointB = transformB->Position + normal * B->Radius;
+        
+        return CollisionPoints{pointA, pointB, normal, magnitude, true};
     }
 
     CollisionPoints Algo::FindCircleSquareCollision(

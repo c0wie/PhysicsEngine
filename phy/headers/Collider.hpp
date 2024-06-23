@@ -3,6 +3,7 @@
 #include <memory>
 #include "CollisionPoints.hpp"
 #include "Transform.hpp"
+#include <SFML/Graphics.hpp>
 
 
 namespace phy
@@ -28,5 +29,7 @@ namespace phy
             const Transform *transform,
             const SquareCollider *square,
             const Transform *squareTransform) const = 0;
+        
+        virtual void Draw(sf::RenderWindow &window, const Transform *transform)const = 0;
     };
 }

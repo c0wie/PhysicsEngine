@@ -66,13 +66,9 @@ namespace phy
 
     void PhysicsWorld::Draw(sf::RenderWindow &window)
     {
-        for(const auto obj : m_Objects)
+        for(auto obj : m_Objects)
         {
-            sf::RectangleShape body( sf::Vector2f{40.f, 40.f});
-            body.setPosition(obj->Transform->Position.x, obj->Transform->Position.y);
-            body.setFillColor(sf::Color::Red);
-            body.setOrigin( body.getSize().x / 2.f , body.getSize().y / 2.f );
-            window.draw(body);
+            obj->Collider->Draw(window, obj->Transform.get());
         }
     }
 }

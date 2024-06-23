@@ -30,5 +30,7 @@ namespace phy
             const Transform *transform,
             const SquareCollider *square,
             const Transform *squareTransform) const override;
+
+        void Draw(sf::RenderWindow &window, const Transform *transform) const override;
     };
 }

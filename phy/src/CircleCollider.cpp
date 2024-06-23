@@ -1,22 +1,21 @@
 #include "../headers/CircleCollider.hpp"
 #include "../headers/Algo.hpp"
-
+#include <SFML/Graphics.hpp>
 namespace phy
 {
     CircleCollider::CircleCollider() : 
-    Center(Vector2(0.0f, 0.0f)), Radius(0.0f) {};
+        Radius(0.0f) {};
 
-    CircleCollider::CircleCollider(const Vector2 &center, float radius) :
-        Center(center), Radius(radius) {};
+    CircleCollider::CircleCollider(float radius) :
+        Radius(radius) {};
 
     CircleCollider::CircleCollider(const CircleCollider &other) :
-        Center(other.Center), Radius(other.Radius)
+        Radius(other.Radius)
     {}
 
     CircleCollider::CircleCollider(CircleCollider &&other) noexcept :
-        Center(other.Center), Radius(other.Radius)
+        Radius(other.Radius)
     {
-        other.Center = Vector2(0.0f, 0.0f);
         other.Radius = 0.0f;
     }
 
@@ -26,7 +25,6 @@ namespace phy
         {
             return *this;
         }
-        Center = other.Center;
         Radius = other.Radius;
         return *this;
     }
@@ -37,9 +35,7 @@ namespace phy
         {
             return *this;
         }
-        Center = other.Center;
         Radius = other.Radius;
-        other.Center = Vector2(0.0f, 0.0f);
         other.Radius = 0.0f;
         return *this;
     }
@@ -66,5 +62,14 @@ namespace phy
         const Transform *squareTransform) const 
     {
         return Algo::FindCircleSquareCollision(this, transform, square, squareTransform);
+    }
+
+    void CircleCollider::Draw(sf::RenderWindow &window, const Transform *transform) const
+    {
+        sf::CircleShape circle(Radius);
+        circle.setOrigin(circle.getRadius() / 2.0f, circle.getRadius() / 2.0f);
+        circle.setFillColor(sf::Color::Blue);
+        circle.setPosition(transform->Position.x, transform->Position.y);
+        window.draw(circle);
     }
 }

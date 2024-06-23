@@ -1,6 +1,6 @@
 #include "../headers/SquareCollider.hpp"
 #include "../headers/Algo.hpp"
-
+#include <SFML/Graphics.hpp>
 namespace phy
 {
     SquareCollider::SquareCollider() : 
@@ -62,5 +62,14 @@ namespace phy
         const Transform *squareTransform) const 
     {
         return Algo::FindSquareSquareCollision(this, transform, square, squareTransform);
+    }
+
+    void SquareCollider::Draw(sf::RenderWindow &window, const Transform *transform) const
+    {
+        sf::RectangleShape square(sf::Vector2f(SideLength, SideLength));
+        square.setOrigin(square.getSize() / 2.0f);
+        square.setFillColor(sf::Color::Red);
+        square.setPosition(transform->Position.x, transform->Position.y);
+        window.draw(square);
     }
 }
