@@ -5,7 +5,7 @@ namespace phy
     CollisionPoints::CollisionPoints() :
         A(Vector2{0.0f, 0.0f}),  B(Vector2{0.0f, 0.0f}),  Normal(Vector2{0.0f, 0.0f}), Depth(0.0f), HasCollision(false) {};
     
-    CollisionPoints::CollisionPoints(Vector2 a, Vector2 b, Vector2 normal, float depth, bool hasCollision) :
+    CollisionPoints::CollisionPoints(const Vector2 &a, const Vector2 &b, const Vector2 &normal, float depth, bool hasCollision) :
         A(a), B(b), Normal(normal), Depth(depth), HasCollision(hasCollision) {};
 
     CollisionPoints::CollisionPoints(const CollisionPoints &other) :

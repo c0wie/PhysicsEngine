@@ -9,7 +9,7 @@ namespace phy
     };
 
     Object::Object(float mass, const Vector2 &velocity, const Vector2 &force, 
-        const std::shared_ptr<phy::CircleCollider> &collider, const std::shared_ptr<phy::Transform> &transform) :
+        const std::shared_ptr<phy::SquareCollider> &collider, const std::shared_ptr<phy::Transform> &transform) :
         Mass(mass), Velocity(velocity), Force(force), Collider(collider), Transform(transform) 
     {
         LogCall("Params Object Constructor called");

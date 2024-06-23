@@ -14,7 +14,7 @@ namespace phy
         bool HasCollision;
     public:
         CollisionPoints();
-        CollisionPoints(Vector2 a, Vector2 b, Vector2 normal, float depth, bool hasCollision);
+        CollisionPoints(const Vector2 &a, const Vector2 &b, const Vector2 &normal, float depth, bool hasCollision);
         CollisionPoints(const CollisionPoints &other);
         CollisionPoints(CollisionPoints &&other) noexcept;
         CollisionPoints& operator=(const CollisionPoints &other);

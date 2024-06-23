@@ -57,7 +57,7 @@ namespace phy
         const CircleCollider *circle,
         const Transform *circleTransform) const 
     {
-        return algo::FindCircleCircleCollision(this, transform, circle, circleTransform);
+        return Algo::FindCircleCircleCollision(this, transform, circle, circleTransform);
     }
 
     CollisionPoints CircleCollider::TestCollision(
@@ -65,6 +65,6 @@ namespace phy
         const SquareCollider *square,
         const Transform *squareTransform) const 
     {
-        return algo::FindCircleSquareCollision(this, transform, square, squareTransform);
+        return Algo::FindCircleSquareCollision(this, transform, square, squareTransform);
     }
 }

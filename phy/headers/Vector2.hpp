@@ -1,8 +1,14 @@
 #pragma once
 #include <iostream>
 
-//#define DEBUG 
-#define LogCall(x) 
+// #define DEBUG
+
+#ifdef DEBUG
+    #define LogCall(x) std::cout << x << std::endl;
+#else
+    #define LogCall(x) 
+#endif
+
 
 namespace phy
 {
@@ -20,9 +26,18 @@ namespace phy
         Vector2& operator=(Vector2 &&other)noexcept;
 
         Vector2 operator+(const Vector2 &other) const;
+        Vector2 operator-(const Vector2 &other) const;
         Vector2& operator+=(const Vector2 &other) ;
         Vector2& operator+=(float number);
         Vector2 operator*(float multiplier) const;
         Vector2 operator/(float divider) const;
+
+        // returns perpendicular vector 
+        Vector2 perp() const;
+        // returns normalized vector
+        Vector2 normalized() const;
+        // returns dot product of two vectors;
+        float dot(const Vector2 &other) const;
+
     };
 }

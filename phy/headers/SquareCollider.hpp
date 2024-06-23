@@ -7,11 +7,10 @@ namespace phy
     class SquareCollider : public Collider
     {
     public:
-        Vector2 Square;
-        float Distance;
+        float SideLength;
     public:
         SquareCollider();
-        SquareCollider(const Vector2 &square, float distance);
+        SquareCollider(float sideLength);
         SquareCollider(const SquareCollider &other);
         SquareCollider(SquareCollider &&other) noexcept;
         SquareCollider& operator=(const SquareCollider &other);

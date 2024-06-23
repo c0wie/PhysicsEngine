@@ -19,18 +19,18 @@ namespace phy
         ResolveCollision(deltaTime);
         for(int i = 0; i < m_Objects.size(); i++)
         {
-            if(m_Objects[i]->Transform->Position.y > 500.f)
+            if(m_Objects[i]->Transform->Position.y > 1000.f)
             {
                 RemoveObject(m_Objects[i]);
                 continue;
             }
             // example of force
-            /*m_Objects[i]->Force.y += m_Objects[i]->Mass * m_Gravity;
+            m_Objects[i]->Force.y += m_Objects[i]->Mass * m_Gravity;
 
             m_Objects[i]->Velocity += m_Objects[i]->Force / m_Objects[i]->Mass * deltaTime;
             m_Objects[i]->Transform->Position += m_Objects[i]->Velocity * deltaTime;
 
-            m_Objects[i]->Force = Vector2(0.0f, 0.0f);*/
+            m_Objects[i]->Force = Vector2(0.0f, 0.0f);
         }
     }
 
@@ -52,10 +52,13 @@ namespace phy
                 }
                 CollisionPoints points = m_Objects[i]->Collider->TestCollision(m_Objects[i]->Transform.get(), m_Objects[j]->Collider.get(), m_Objects[j]->Transform.get());
             
-                //reconsider if HasCollision == false is not cause to skip whole iteration cuz it means that this object just won't do anything
                 if(points.HasCollision)
                 {
                     collisions.emplace_back(m_Objects[i], m_Objects[j], points);
+                    if(sf::Mouse::isButtonPressed(sf::Mouse::Middle))
+                    {
+                       std::cout << points.Depth << '\n';
+                    }
                 }
             }
         }
@@ -65,7 +68,7 @@ namespace phy
     {
         for(const auto obj : m_Objects)
         {
-            sf::RectangleShape body( sf::Vector2f{100.f, 40.f});
+            sf::RectangleShape body( sf::Vector2f{40.f, 40.f});
             body.setPosition(obj->Transform->Position.x, obj->Transform->Position.y);
             body.setFillColor(sf::Color::Red);
             body.setOrigin( body.getSize().x / 2.f , body.getSize().y / 2.f );

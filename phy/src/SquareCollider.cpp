@@ -4,20 +4,19 @@
 namespace phy
 {
     SquareCollider::SquareCollider() : 
-        Square(Vector2(0.0f, 0.0f)), Distance(0.0f) {};
+        SideLength(0.0f) {};
 
-    SquareCollider::SquareCollider(const Vector2 &square, float distance) :
-        Square(Square), Distance(distance) {};
+    SquareCollider::SquareCollider(float sideLength) :
+        SideLength(sideLength) {};
 
     SquareCollider::SquareCollider(const SquareCollider &other) :
-        Square(other.Square), Distance(other.Distance)
+        SideLength(other.SideLength)
     {}
 
     SquareCollider::SquareCollider(SquareCollider &&other) noexcept :
-        Square(other.Square), Distance(other.Distance)
+       SideLength(other.SideLength)
     {
-        other.Square = Vector2(0.0f, 0.0f);
-        other.Distance = 0.0f;
+        other.SideLength = 0.0f;
     }
 
     SquareCollider& SquareCollider::operator=(const SquareCollider &other)
@@ -26,8 +25,7 @@ namespace phy
         {
             return *this;
         }
-        Square = other.Square;
-        Distance = other.Distance;
+        SideLength = other.SideLength;
         return *this;
     }
 
@@ -37,10 +35,8 @@ namespace phy
         {
             return *this;
         }
-        Square = other.Square;
-        Distance = other.Distance;
-        other.Square = Vector2(0.0f, 0.0f);
-        other.Distance = 0.0f;
+        SideLength = other.SideLength;
+        other.SideLength = 0.0f;
         return *this;
     }
 
@@ -57,7 +53,7 @@ namespace phy
         const CircleCollider *circle,
         const Transform *circleTransform) const 
     {
-        return algo::FindSquareCircleCollision(this, transform, circle, circleTransform);
+        return Algo::FindSquareCircleCollision(this, transform, circle, circleTransform);
     }
 
     CollisionPoints SquareCollider::TestCollision(
@@ -65,6 +61,6 @@ namespace phy
         const SquareCollider *square,
         const Transform *squareTransform) const 
     {
-        return algo::FindSquareSquareCollision(this, transform, square, squareTransform);
+        return Algo::FindSquareSquareCollision(this, transform, square, squareTransform);
     }
 }

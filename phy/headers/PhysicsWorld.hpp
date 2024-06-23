@@ -15,7 +15,7 @@ namespace phy
     {
     public:
         std::vector< std::shared_ptr<Object> > m_Objects;
-        static inline constexpr float m_Gravity = 0.981f;
+        static inline constexpr float m_Gravity = 0.00981f;
     public:
         PhysicsWorld() = default;
         ~PhysicsWorld() = default;
