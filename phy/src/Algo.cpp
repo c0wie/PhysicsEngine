@@ -163,6 +163,7 @@ namespace phy
                 smallesAxis = &axesB[i];
             }
         }
+        
         const Vector2 furthestPointA = FindFurthestPoint(verteciesA, *smallesAxis);
         const Vector2 furthestPointB = FindFurthestPoint(verteciesB, *smallesAxis);
 

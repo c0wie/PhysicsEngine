@@ -5,7 +5,7 @@ namespace phy
     Collision::Collision() :
         ObjectA(nullptr), ObjectB(nullptr), Points() {};
     
-    Collision::Collision(std::shared_ptr<Object> a, std::shared_ptr<Object> b, CollisionPoints points) :
+    Collision::Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points) :
         ObjectA(a), ObjectB(b), Points(points) {};
 
     Collision::Collision(const Collision &other) :

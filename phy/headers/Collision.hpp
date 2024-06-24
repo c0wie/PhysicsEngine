@@ -1,19 +1,19 @@
 #pragma once
 
 
-#include "Object.hpp"
+#include "CollisionObject.hpp"
 
 namespace phy
 {
     class Collision
     {
     public: 
-        std::shared_ptr<Object> ObjectA;
-        std::shared_ptr<Object> ObjectB;
+        std::shared_ptr<CollisionObject> ObjectA;
+        std::shared_ptr<CollisionObject> ObjectB;
         CollisionPoints Points;
     public:
         Collision();
-        Collision(std::shared_ptr<Object> a, std::shared_ptr<Object> b, CollisionPoints points);
+        Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points);
         Collision(const Collision &other);
         Collision(Collision &&other) noexcept;
         Collision& operator=(const Collision &other) ;
