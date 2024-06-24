@@ -4,19 +4,19 @@
 namespace phy
 {
     SquareCollider::SquareCollider() : 
-        SideLength(0.0f) {};
+        m_SideLength(0.0f) {};
 
     SquareCollider::SquareCollider(float sideLength) :
-        SideLength(sideLength) {};
+        m_SideLength(sideLength) {};
 
     SquareCollider::SquareCollider(const SquareCollider &other) :
-        SideLength(other.SideLength)
+        m_SideLength(other.m_SideLength)
     {}
 
     SquareCollider::SquareCollider(SquareCollider &&other) noexcept :
-       SideLength(other.SideLength)
+       m_SideLength(other.m_SideLength)
     {
-        other.SideLength = 0.0f;
+        other.m_SideLength = 0.0f;
     }
 
     SquareCollider& SquareCollider::operator=(const SquareCollider &other)
@@ -25,7 +25,7 @@ namespace phy
         {
             return *this;
         }
-        SideLength = other.SideLength;
+        m_SideLength = other.m_SideLength;
         return *this;
     }
 
@@ -35,8 +35,8 @@ namespace phy
         {
             return *this;
         }
-        SideLength = other.SideLength;
-        other.SideLength = 0.0f;
+        m_SideLength = other.m_SideLength;
+        other.m_SideLength = 0.0f;
         return *this;
     }
 
@@ -64,9 +64,22 @@ namespace phy
         return Algo::FindSquareSquareCollision(this, transform, square, squareTransform);
     }
 
+    float SquareCollider::GetSideLength() const
+    {
+        return m_SideLength;
+    }
+
+    void SquareCollider::SetSideLength(float sideLength)
+    {
+        if(sideLength <= 0.0f)
+        {
+            //ASSERT;
+        }
+        m_SideLength = sideLength;
+    }
     void SquareCollider::Draw(sf::RenderWindow &window, const Transform *transform) const
     {
-        sf::RectangleShape square(sf::Vector2f(SideLength, SideLength));
+        sf::RectangleShape square(sf::Vector2f(m_SideLength, m_SideLength));
         square.setOrigin(square.getSize() / 2.0f);
         square.setFillColor(sf::Color::Red);
         square.setPosition(transform->GetPosition().x, transform->GetPosition().y);

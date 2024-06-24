@@ -6,8 +6,8 @@ namespace phy
 {
     class SquareCollider : public Collider
     {
-    public:
-        float SideLength;
+    private:
+        float m_SideLength;
     public:
         SquareCollider();
         SquareCollider(float sideLength);
@@ -31,6 +31,9 @@ namespace phy
             const SquareCollider *square,
             const Transform *squareTransform) const override;
 
+        float GetSideLength() const;
+        void SetSideLength(float sideLength);
+    
         void Draw(sf::RenderWindow &window, const Transform *transform) const override;
     };
 }
