@@ -7,8 +7,8 @@ namespace phy
 {
     class CircleCollider : public Collider
     {
-    public:
-        float Radius;
+    private:
+        float m_Radius;
     public:
         CircleCollider();
         CircleCollider(float radius);
@@ -32,6 +32,8 @@ namespace phy
             const SquareCollider *square,
             const Transform *squareTransform) const override;
         
+        float GetRadius() const;
+        void SetRadius(float radius);
         void Draw(sf::RenderWindow &window, const Transform *transform) const override;
     };
 }

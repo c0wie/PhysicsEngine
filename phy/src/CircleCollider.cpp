@@ -4,19 +4,19 @@
 namespace phy
 {
     CircleCollider::CircleCollider() : 
-        Radius(0.0f) {};
+        m_Radius(0.0f) {};
 
     CircleCollider::CircleCollider(float radius) :
-        Radius(radius) {};
+        m_Radius(radius) {};
 
     CircleCollider::CircleCollider(const CircleCollider &other) :
-        Radius(other.Radius)
+        m_Radius(other.m_Radius)
     {}
 
     CircleCollider::CircleCollider(CircleCollider &&other) noexcept :
-        Radius(other.Radius)
+        m_Radius(other.m_Radius)
     {
-        other.Radius = 0.0f;
+        other.m_Radius = 0.0f;
     }
 
     CircleCollider& CircleCollider::operator=(const CircleCollider &other)
@@ -25,7 +25,7 @@ namespace phy
         {
             return *this;
         }
-        Radius = other.Radius;
+        m_Radius = other.m_Radius;
         return *this;
     }
 
@@ -35,8 +35,8 @@ namespace phy
         {
             return *this;
         }
-        Radius = other.Radius;
-        other.Radius = 0.0f;
+        m_Radius = other.m_Radius;
+        other.m_Radius = 0.0f;
         return *this;
     }
 
@@ -64,9 +64,18 @@ namespace phy
         return Algo::FindCircleSquareCollision(this, transform, square, squareTransform);
     }
 
+    float CircleCollider::GetRadius() const
+    {
+        return m_Radius;
+    }
+
+    void  CircleCollider::SetRadius(float radius)
+    {
+        m_Radius = radius;
+    }
     void CircleCollider::Draw(sf::RenderWindow &window, const Transform *transform) const
     {
-        sf::CircleShape circle(Radius);
+        sf::CircleShape circle(GetRadius());
         circle.setOrigin(circle.getRadius() / 2.0f, circle.getRadius() / 2.0f);
         circle.setFillColor(sf::Color::Blue);
         circle.setPosition(transform->GetPosition().x, transform->GetPosition().y);

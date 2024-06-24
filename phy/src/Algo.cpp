@@ -93,13 +93,13 @@ namespace phy
         const Vector2 v = cB - cA;
         
         const float magnitude = sqrt(pow(v.x, 2) + pow(v.y, 2));
-        if(magnitude >= A->Radius + B->Radius)
+        if(magnitude >= A->GetRadius() + B->GetRadius())
         {
             return CollisionPoints();
         }
         const Vector2 normal = v / magnitude;
-        const Vector2 pointA = transformA->GetPosition() - normal * A->Radius;
-        const Vector2 pointB = transformB->GetPosition() + normal * B->Radius;
+        const Vector2 pointA = transformA->GetPosition() - normal * A->GetRadius();
+        const Vector2 pointB = transformB->GetPosition() + normal * B->GetRadius();
         
         return CollisionPoints{pointA, pointB, normal, magnitude, true};
     }

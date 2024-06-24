@@ -3,20 +3,20 @@
 namespace phy
 {
     Collision::Collision() :
-        ObjectA(nullptr), ObjectB(nullptr), Points() {};
+        m_ObjectA(nullptr), m_ObjectB(nullptr), m_Points() {};
     
     Collision::Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points) :
-        ObjectA(a), ObjectB(b), Points(points) {};
+        m_ObjectA(a), m_ObjectB(b), m_Points(points) {};
 
     Collision::Collision(const Collision &other) :
-        ObjectA(other.ObjectA), ObjectB(other.ObjectB), Points(other.Points) {};
+        m_ObjectA(other.m_ObjectA), m_ObjectB(other.m_ObjectB), m_Points(other.m_Points) {};
 
     Collision::Collision(Collision &&other) noexcept:
-        ObjectA(other.ObjectA), ObjectB(other.ObjectB), Points(other.Points) 
+        m_ObjectA(other.m_ObjectA), m_ObjectB(other.m_ObjectB), m_Points(other.m_Points) 
     {
-        other.ObjectA = nullptr;
-        other.ObjectB = nullptr;
-        other.Points = CollisionPoints();
+        other.m_ObjectA = nullptr;
+        other.m_ObjectB = nullptr;
+        other.m_Points = CollisionPoints();
     };
 
     Collision& Collision::operator=(const Collision &other) 
@@ -25,9 +25,9 @@ namespace phy
         {
             return *this;
         }
-        ObjectA = other.ObjectA;
-        ObjectB = other.ObjectB;
-        Points = other.Points;
+        m_ObjectA = other.m_ObjectA;
+        m_ObjectB = other.m_ObjectB;
+        m_Points = other.m_Points;
         return *this;
     }
 
@@ -37,12 +37,50 @@ namespace phy
         {
             return *this;
         }
-        ObjectA = other.ObjectA;
-        ObjectB = other.ObjectB;
-        Points = other.Points;
-        other.ObjectA = nullptr;
-        other.ObjectB = nullptr;
-        other.Points = CollisionPoints();
+        m_ObjectA = other.m_ObjectA;
+        m_ObjectB = other.m_ObjectB;
+        m_Points = other.m_Points;
+        other.m_ObjectA = nullptr;
+        other.m_ObjectB = nullptr;
+        other.m_Points = CollisionPoints();
         return *this;
+    }
+
+    const std::shared_ptr<const CollisionObject> Collision::GetCollisionObjectA() const
+    {
+        return m_ObjectA;
+    }
+
+    const std::shared_ptr<const CollisionObject> Collision::GetCollisionObjectB() const
+    {
+        return m_ObjectB;
+    }
+
+    const CollisionPoints& Collision::GetPoints() const
+    {
+        return m_Points;
+    }
+
+    void Collision::SetCollisionObjectA(const std::shared_ptr<CollisionObject> a)
+    {
+        if(a == nullptr)
+        {
+            // Assert
+        }
+        m_ObjectA = a;
+    }
+
+    void Collision::SetCollisionObjectB(const std::shared_ptr<CollisionObject> b)
+    {
+        if(b == nullptr)
+        {
+            // Assert
+        }
+        m_ObjectB = b;
+    }
+
+    void Collision::SetPoints(const CollisionPoints &points)
+    {
+        m_Points = points;
     }
 }
