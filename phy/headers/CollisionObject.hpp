@@ -3,10 +3,10 @@
 #include <memory>
 #include <functional>
 
-#include "Collision.hpp"
 #include "CircleCollider.hpp"
 #include "SquareCollider.hpp"
 
+class Collision;
 namespace phy
 {
     struct CollisionObject
@@ -19,11 +19,12 @@ namespace phy
     public:
         CollisionObject();
         // I might have to create seperate constructors for circle and square
-        CollisionObject(const std::shared_ptr<Collider> collider, const std::shared_ptr<Transform> transform, bool trigger);
+        CollisionObject(const std::shared_ptr<CircleCollider> collider, const std::shared_ptr<Transform> transform, bool trigger);
+        CollisionObject(const std::shared_ptr<SquareCollider> collider, const std::shared_ptr<Transform> transform, bool trigger);
         CollisionObject(const CollisionObject &other);
         CollisionObject(CollisionObject &&other) noexcept;
         CollisionObject& operator=(const CollisionObject &other);
-        CollisionObject& operator=(CollisionObject &&other);
+        CollisionObject& operator=(CollisionObject &&other) noexcept;
 
         const std::shared_ptr<Collider> GetCollider() const;
         const std::shared_ptr<Transform> GetTransform() const;

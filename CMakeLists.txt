@@ -17,7 +17,8 @@ add_executable(physicsEngine
     phy/src/CircleCollider.cpp
     phy/src/Collision.cpp
     phy/src/CollisionPoints.cpp
-    phy/src/Object.cpp
+    phy/src/CollisionObject.cpp
+    phy/src/RigidObject.cpp
     phy/src/PhysicsWorld.cpp
     phy/src/SquareCollider.cpp
     phy/src/Transform.cpp

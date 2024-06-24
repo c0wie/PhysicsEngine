@@ -1,4 +1,4 @@
-#include <CollisionObject.hpp>
+#include "CollisionObject.hpp"
 
 namespace phy
 {
@@ -15,7 +15,10 @@ namespace phy
         float m_Restitution;        // Elasticy of collision
     public:
         RigidObject();
-        RigidObject(std::shared_ptr<Collider> collider, std::shared_ptr<Transform> transform, float trigger, 
+        RigidObject(std::shared_ptr<CircleCollider> collider, std::shared_ptr<Transform> transform, float trigger, 
+            float mass, const Vector2 &velocity, const Vector2 &force, const Vector2 &gravity,
+            bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
+        RigidObject(std::shared_ptr<SquareCollider> collider, std::shared_ptr<Transform> transform, float trigger, 
             float mass, const Vector2 &velocity, const Vector2 &force, const Vector2 &gravity,
             bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
         RigidObject(const RigidObject &other);

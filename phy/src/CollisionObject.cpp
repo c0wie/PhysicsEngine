@@ -5,7 +5,10 @@ namespace phy
     CollisionObject::CollisionObject() :
         m_Collider(nullptr), m_Transform(nullptr), m_IsTrigger(false) {}
 
-    CollisionObject::CollisionObject( const std::shared_ptr<Collider> collider, const std::shared_ptr<phy::Transform> transform, bool trigger) :
+    CollisionObject::CollisionObject( const std::shared_ptr<CircleCollider> collider, const std::shared_ptr<phy::Transform> transform, bool trigger) :
+        m_Collider(collider), m_Transform(transform), m_IsTrigger(trigger) {}
+
+    CollisionObject::CollisionObject( const std::shared_ptr<SquareCollider> collider, const std::shared_ptr<phy::Transform> transform, bool trigger) :
         m_Collider(collider), m_Transform(transform), m_IsTrigger(trigger) {}
 
     CollisionObject::CollisionObject(const CollisionObject &other) :
