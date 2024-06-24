@@ -69,7 +69,7 @@ namespace phy
         sf::CircleShape circle(Radius);
         circle.setOrigin(circle.getRadius() / 2.0f, circle.getRadius() / 2.0f);
         circle.setFillColor(sf::Color::Blue);
-        circle.setPosition(transform->Position.x, transform->Position.y);
+        circle.setPosition(transform->GetPosition().x, transform->GetPosition().y);
         window.draw(circle);
     }
 }

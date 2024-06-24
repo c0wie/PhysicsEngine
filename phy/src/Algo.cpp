@@ -88,8 +88,8 @@ namespace phy
         const CircleCollider *A, const Transform *transformA,
         const CircleCollider *B, const Transform *transformB)
     {
-        const Vector2 cA = transformA->Position;
-        const Vector2 cB = transformB->Position;
+        const Vector2 cA = transformA->GetPosition();
+        const Vector2 cB = transformB->GetPosition();
         const Vector2 v = cB - cA;
         
         const float magnitude = sqrt(pow(v.x, 2) + pow(v.y, 2));
@@ -98,8 +98,8 @@ namespace phy
             return CollisionPoints();
         }
         const Vector2 normal = v / magnitude;
-        const Vector2 pointA = transformA->Position - normal * A->Radius;
-        const Vector2 pointB = transformB->Position + normal * B->Radius;
+        const Vector2 pointA = transformA->GetPosition() - normal * A->Radius;
+        const Vector2 pointB = transformB->GetPosition() + normal * B->Radius;
         
         return CollisionPoints{pointA, pointB, normal, magnitude, true};
     }
@@ -122,8 +122,8 @@ namespace phy
         const SquareCollider *A, const Transform *transformA,
         const SquareCollider *B, const Transform *transformB)
     {
-        const  std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->Position, A->SideLength);
-        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->Position, B->SideLength);
+        const  std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->GetPosition(), A->SideLength);
+        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->GetPosition(), B->SideLength);
         float overlap = (float)INT_MAX;
         const Vector2 *smallesAxis = nullptr;
         // size = 4 cuz there are only squares for now

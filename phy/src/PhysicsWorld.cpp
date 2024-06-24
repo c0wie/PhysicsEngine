@@ -28,7 +28,7 @@ namespace phy
         ResolveCollision(deltaTime);
         for(int i = 0; i < m_Objects.size(); i++)
         {
-            if(m_Objects[i]->GetTransform()->Position.y > 1000.f)
+            if(m_Objects[i]->GetTransform()->GetPosition().y > 1000.f)
             {
                 RemoveObject(m_Objects[i]);
                 continue;
