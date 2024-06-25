@@ -3,30 +3,15 @@
 #include <SFML/Graphics.hpp>
 namespace phy
 {
-    SquareCollider::SquareCollider() : 
-        m_SideLength(0.0f) {};
-
-    SquareCollider::SquareCollider(float sideLength) :
-        m_SideLength(sideLength) {};
-
-    SquareCollider::SquareCollider(const SquareCollider &other) :
-        m_SideLength(other.m_SideLength)
-    {}
+    SquareCollider::SquareCollider(float sideLength)
+    {
+        SetSideLength(sideLength);
+    }
 
     SquareCollider::SquareCollider(SquareCollider &&other) noexcept :
        m_SideLength(other.m_SideLength)
     {
         other.m_SideLength = 0.0f;
-    }
-
-    SquareCollider& SquareCollider::operator=(const SquareCollider &other)
-    {
-        if(this == &other)
-        {
-            return *this;
-        }
-        m_SideLength = other.m_SideLength;
-        return *this;
     }
 
     SquareCollider& SquareCollider::operator=(SquareCollider &&other) noexcept
@@ -73,10 +58,11 @@ namespace phy
     {
         if(sideLength <= 0.0f)
         {
-            //ASSERT;
+            ASSERT("SideLenth must be grater than 0");
         }
         m_SideLength = sideLength;
     }
+    
     void SquareCollider::Draw(sf::RenderWindow &window, const Transform *transform) const
     {
         sf::RectangleShape square(sf::Vector2f(m_SideLength, m_SideLength));

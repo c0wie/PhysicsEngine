@@ -122,8 +122,8 @@ namespace phy
         const SquareCollider *A, const Transform *transformA,
         const SquareCollider *B, const Transform *transformB)
     {
-        const  std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->GetPosition(), A->SideLength);
-        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->GetPosition(), B->SideLength);
+        const std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->GetPosition(), A->GetSideLength());
+        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->GetPosition(), B->GetSideLength());
         float overlap = (float)INT_MAX;
         const Vector2 *smallesAxis = nullptr;
         // size = 4 cuz there are only squares for now

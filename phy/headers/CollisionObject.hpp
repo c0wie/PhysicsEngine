@@ -9,7 +9,7 @@
 class Collision;
 namespace phy
 {
-    struct CollisionObject
+    class CollisionObject
     {
     protected:
         std::shared_ptr<Collider> m_Collider;

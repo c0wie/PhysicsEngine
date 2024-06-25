@@ -2,9 +2,6 @@
 
 namespace phy
 {
-    Collision::Collision() :
-        m_ObjectA(nullptr), m_ObjectB(nullptr), m_Points() {};
-    
     Collision::Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points) :
         m_ObjectA(a), m_ObjectB(b), m_Points(points) {};
 

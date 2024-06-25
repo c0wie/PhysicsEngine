@@ -2,7 +2,7 @@
 
 namespace phy
 {
-    struct RigidObject : public CollisionObject
+    class RigidObject : public CollisionObject
     {
     private:
         float m_Mass;

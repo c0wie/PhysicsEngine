@@ -5,6 +5,7 @@ namespace phy
     void PhysicsWorld::AddObject(const std::shared_ptr<CollisionObject>& obj)
     {
         m_Objects.push_back(obj);
+        LogCall("Object has been added");
     }
 
     void PhysicsWorld::RemoveObject(std::shared_ptr<CollisionObject> object)

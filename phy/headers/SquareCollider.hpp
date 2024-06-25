@@ -9,31 +9,31 @@ namespace phy
     private:
         float m_SideLength;
     public:
-        SquareCollider();
+        SquareCollider() = delete;
         SquareCollider(float sideLength);
-        SquareCollider(const SquareCollider &other);
+        SquareCollider(const SquareCollider &other) = default;
         SquareCollider(SquareCollider &&other) noexcept;
-        SquareCollider& operator=(const SquareCollider &other);
+        SquareCollider& operator=(const SquareCollider &other) = default;
         SquareCollider& operator=(SquareCollider &&other) noexcept;
 
         CollisionPoints TestCollision(
             const Transform *transform,
             const Collider *collider,
-            const Transform *colliderTransform) const override;
+            const Transform *colliderTransform) const override final;
 
         CollisionPoints TestCollision(
             const Transform *transform,
             const CircleCollider *circle,
-            const Transform *circleTransform) const override;
+            const Transform *circleTransform) const override final;
 
         CollisionPoints TestCollision(
             const Transform *transform,
             const SquareCollider *square,
-            const Transform *squareTransform) const override;
+            const Transform *squareTransform) const override final;
 
         float GetSideLength() const;
         void SetSideLength(float sideLength);
     
-        void Draw(sf::RenderWindow &window, const Transform *transform) const override;
+        void Draw(sf::RenderWindow &window, const Transform *transform) const override final;
     };
 }

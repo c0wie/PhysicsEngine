@@ -3,30 +3,19 @@
 #include <SFML/Graphics.hpp>
 namespace phy
 {
-    CircleCollider::CircleCollider() : 
-        m_Radius(0.0f) {};
-
     CircleCollider::CircleCollider(float radius) :
-        m_Radius(radius) {};
-
-    CircleCollider::CircleCollider(const CircleCollider &other) :
-        m_Radius(other.m_Radius)
-    {}
+        m_Radius(radius) 
+    {   
+        if(radius <= 0.0f)
+        {
+            ASSERT("Radius must be grater than 0");
+        }
+    };
 
     CircleCollider::CircleCollider(CircleCollider &&other) noexcept :
         m_Radius(other.m_Radius)
     {
         other.m_Radius = 0.0f;
-    }
-
-    CircleCollider& CircleCollider::operator=(const CircleCollider &other)
-    {
-        if(this == &other)
-        {
-            return *this;
-        }
-        m_Radius = other.m_Radius;
-        return *this;
     }
 
     CircleCollider& CircleCollider::operator=(CircleCollider &&other) noexcept
@@ -71,6 +60,10 @@ namespace phy
 
     void  CircleCollider::SetRadius(float radius)
     {
+        if(radius <= 0.0f)
+        {
+            ASSERT("Radius must be grater than 0");
+        }
         m_Radius = radius;
     }
     void CircleCollider::Draw(sf::RenderWindow &window, const Transform *transform) const

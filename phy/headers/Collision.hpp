@@ -12,7 +12,8 @@ namespace phy
         std::shared_ptr<CollisionObject> m_ObjectB;
         CollisionPoints m_Points;
     public:
-        Collision();
+        constexpr Collision() :
+            m_ObjectA(nullptr), m_ObjectB(nullptr), m_Points() {};
         Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points);
         Collision(const Collision &other);
         Collision(Collision &&other) noexcept;
