@@ -14,7 +14,8 @@ namespace phy
 {
     class CollisionWorld
     {
-    protected:
+    // TODO: when I finish debugging I heve to make it protected
+    public:
         std::vector< std::shared_ptr<CollisionObject> > m_Objects;
         std::vector< std::shared_ptr<Solver> > m_Solvers;
     public:

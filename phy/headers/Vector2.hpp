@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include "Assert.hpp"
+#include <SFML/Graphics.hpp>
 
 namespace phy
 {
@@ -91,9 +92,10 @@ namespace phy
         {
             return sqrt(pow(x, 2) + pow(y, 2));
         }
-        constexpr Vector2 abs() const
+        //return positvie value of vector
+        constexpr static Vector2 abs(const Vector2 vec)
         {
-            return Vector2{x < 0 ? -x : x, y < 0 ? -y : y,};
+            return Vector2{vec.x < 0 ? -vec.x : vec.x, vec.y < 0 ? -vec.y : vec.y};
         }
         constexpr static Vector2 lerp(const Vector2 &x, const Vector2 &y, float t)
         {
@@ -102,4 +104,16 @@ namespace phy
         }
 
     };
+}
+inline phy::Vector2 MousePos(const sf::RenderWindow& window = *(sf::RenderWindow*)nullptr) 
+{
+    if(&window == nullptr)
+    {
+        return phy::Vector2{(float)sf::Mouse::getPosition().x, (float)sf::Mouse::getPosition().y};
+    }
+    else
+    {
+        sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        return phy::Vector2{pos.x, pos.y};
+    }
 }
