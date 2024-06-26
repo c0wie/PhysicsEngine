@@ -3,16 +3,14 @@
 namespace phy
 {   
 #pragma region COLLISION_WORLD 
-    void CollisionWorld::AddObject(std::shared_ptr<CollisionObject> obj)
+    void CollisionWorld::AddCollisionObject(std::shared_ptr<CollisionObject> obj)
     {
         m_Objects.push_back(obj);
-        LogCall("Object has been added");
     }
 
     void CollisionWorld::RemoveObject(std::shared_ptr<CollisionObject> object)
     {
         m_Objects.erase( std::remove(m_Objects.begin(), m_Objects.end(), object) );
-        LogCall("Object has been romoved");
     }
 
     void CollisionWorld::AddSolver(std::shared_ptr<Solver> &solver)
@@ -79,12 +77,21 @@ namespace phy
         for(int i = 0; i < m_Objects.size(); i++)
         {
             // example of force
-           /* m_Objects[i]->Force.y += m_Objects[i]->Mass * m_Gravity;
+            std::shared_ptr<RigidObject> object;
+            object = std::dynamic_pointer_cast<RigidObject>(m_Objects[i]);
+            if(object == nullptr)
+            {
+                continue;
+            }
 
-            m_Objects[i]->Velocity += m_Objects[i]->Force / m_Objects[i]->Mass * deltaTime;
-            m_Objects[i]->Transform->Position += m_Objects[i]->Velocity * deltaTime;
-
-            m_Objects[i]->Force = Vector2(0.0f, 0.0f); */
+            object->SetForce(Vector2{object->GetForce().x, object->GetMass() * m_Gravity});
+            LogCall(object->GetForce().x, " ", object->GetForce().y, "\n");
+            object->SetVelocity(object->GetForce() / (object->GetMass() * deltaTime) );
+            LogCall(object->GetVelocity().x, " ", object->GetVelocity().y, "\n");
+            object->GetTransform()->SetPosition(object->GetVelocity() * deltaTime);
+            LogCall(object->GetTransform()->GetPosition().x, " ", object->GetTransform()->GetPosition().x, "\n");
+            object->SetForce(Vector2{});
+            
         }
     }
 #pragma endregion

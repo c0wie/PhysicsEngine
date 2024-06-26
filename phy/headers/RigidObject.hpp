@@ -25,6 +25,7 @@ namespace phy
         RigidObject(RigidObject &&other);
         RigidObject& operator=(const RigidObject &other);
         RigidObject& operator=(RigidObject &&other);
+        virtual ~RigidObject() = default;
 
         float GetMass() const;
         Vector2 GetVelocity() const;

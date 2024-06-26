@@ -7,6 +7,7 @@ namespace phy
     struct CollisionPoints
     {
     public:
+        // PROBABLY DELETE this two points A andB cuz there are useles to me
         Vector2 A; // Furthest point of A into B
         Vector2 B; //Furthest point of B into A
         Vector2 Normal; //B-A Normalized

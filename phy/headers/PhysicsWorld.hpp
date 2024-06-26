@@ -26,7 +26,7 @@ namespace phy
         CollisionWorld operator = (CollisionWorld &&other) = delete;
         virtual ~CollisionWorld() = default;
 
-        void AddObject(std::shared_ptr<CollisionObject> obj);
+        void AddCollisionObject(std::shared_ptr<CollisionObject> obj);
         void RemoveObject(std::shared_ptr<CollisionObject> object);
         void AddSolver(std::shared_ptr<Solver> &solver);
         void RemoveSolver(std::shared_ptr<Solver> &solver);

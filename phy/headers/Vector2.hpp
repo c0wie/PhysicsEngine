@@ -2,8 +2,8 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
-#include "Assert.hpp"
 #include <SFML/Graphics.hpp>
+#include "Assert.hpp"
 
 namespace phy
 {
@@ -62,7 +62,7 @@ namespace phy
         {
             return Vector2{ x * multiplier, y * multiplier};
         }
-        constexpr Vector2& operator *=(float multiplier)
+        constexpr Vector2& operator*=(float multiplier)
         {
             x *= multiplier;
             y *= multiplier;
@@ -88,6 +88,7 @@ namespace phy
         {
             return x * other.x + y * other.y;
         }
+        //returns length of vector
         constexpr float magnitude() const
         {
             //std::hypot == sqrt(pow(x, 2) + pow(y, 2));
@@ -103,7 +104,6 @@ namespace phy
             t = std::clamp(t, 0.0f, 1.0f);
             return Vector2{x * (1.0f - t) + y * t};
         }
-
     };
 }
 inline phy::Vector2 MousePos(const sf::RenderWindow& window = *(sf::RenderWindow*)nullptr) 

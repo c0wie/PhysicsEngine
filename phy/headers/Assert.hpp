@@ -1,9 +1,14 @@
 #pragma once
 
-#include <cassert>
 #define DEBUG
+
 #ifdef DEBUG
-    #define LogCall(x) std::cout << x << std::endl;
+    template<typename ...T>
+    void Print(T&&... args) 
+    {
+	    (std::cout << ... << args);
+    }
+    #define LogCall(...) Print(__VA_ARGS__)
 #else
     #define LogCall(x) 
 #endif

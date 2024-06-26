@@ -8,9 +8,9 @@
 
 namespace phy
 {
-    constexpr float INF = std::numeric_limits<float>::infinity();
     class CircleCollider;
     class SquareCollider;
+    constexpr float INF = std::numeric_limits<float>::infinity();
 
     class Algo
     {
@@ -19,7 +19,9 @@ namespace phy
         static float GetOverlap(const Vector2 &A, const Vector2 &B);
         static std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertecies);
         static Vector2 Project(const Vector2 &axis, const std::vector<Vector2> &vertecies);
+        static Vector2 ProjectCircle(const Vector2 &axis, const Vector2 &circleCenter, float radius);
         static std::vector<Vector2> GetSquareVertecies(const Vector2 &center, float sideLength);
+        static Vector2 GetCircleAxis(const std::vector<Vector2> vertecies, const Vector2 & circleCenter);
         static Vector2 FindFurthestPoint(const std::vector<Vector2> &vertecies, const Vector2 &direction);
     public:
         static CollisionPoints FindCircleCircleCollision(

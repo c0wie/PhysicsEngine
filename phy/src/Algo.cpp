@@ -55,6 +55,23 @@ namespace phy
         return Vector2{min, max};
     }    
     
+    Vector2 Algo::ProjectCircle(const Vector2 &axis, const Vector2 &circleCenter, float radius)
+    {
+        const Vector2 dir = axis * radius;
+
+        const Vector2 p1 = circleCenter + dir;
+        const Vector2 p2 = circleCenter - dir;
+
+        float min = p1.dot(axis);
+        float max = p2.dot(axis);
+
+        if(min > max)
+        {
+            std::swap(min, max);
+        } 
+        return Vector2{min, max};
+    }
+
     std::vector<Vector2> Algo::GetSquareVertecies(const Vector2 &center, float sideLength)
     {
         const std::vector<Vector2> vertecies = 
@@ -65,6 +82,23 @@ namespace phy
             Vector2{center.x - sideLength / 2.0f, center.y - sideLength / 2.0f}
         };
         return vertecies;
+    }
+
+    Vector2 Algo::GetCircleAxis(const std::vector<Vector2> vertecies, const Vector2 &circleCenter)
+    {
+        float dist = INF;
+        Vector2 smallestAxis = Vector2{};
+        for(int i = 0; i < vertecies.size(); i++)
+        {
+            Vector2 edge = vertecies[i] - circleCenter;
+            float d = edge.magnitude();
+            if(d < dist)
+            {
+                dist = d;
+                smallestAxis = edge;
+            }
+        }
+        return smallestAxis.normalized();
     }
 
     Vector2 Algo::FindFurthestPoint(const std::vector<Vector2> &vertecies, const Vector2 &direction)
@@ -98,7 +132,7 @@ namespace phy
         }
 
         sum -= length;
-        const Vector2 normal = diff.normalized();
+        const Vector2 &normal = diff.normalized();
         
         return CollisionPoints{Vector2{}, Vector2{}, normal, sum, true};
     }
@@ -107,23 +141,47 @@ namespace phy
         const CircleCollider *A, const Transform *transformA,
         const SquareCollider *B, const Transform *transformB)
     {
-        return CollisionPoints();
+        float overlap = INF;
+        Vector2 center = transformA->GetPosition();
+        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->GetPosition(), B->GetSideLength());
+        std::vector<Vector2> axesB = GetAxes(verteciesB);
+        Vector2 *smallesAxis = nullptr;
+        axesB.push_back(GetCircleAxis(verteciesB, center));
+
+
+        for(int i = 0; i < axesB.size(); i++)
+        {
+            Vector2 p1 = ProjectCircle(axesB[i], center, A->GetRadius());
+            Vector2 p2 = Project(axesB[i], verteciesB);
+
+            if(!Overlap(p1, p2))
+            {
+                return CollisionPoints();
+            }
+            float o = GetOverlap(p1, p2);
+            if(o < overlap)
+            {
+                overlap = o;
+                smallesAxis = &axesB[i];
+            }
+        }
+        return CollisionPoints{Vector2{}, Vector2{}, *smallesAxis, overlap, true};
     }
 
     CollisionPoints Algo::FindSquareCircleCollision(
         const SquareCollider *A, const Transform *transformA,
         const CircleCollider *B, const Transform *transformB)
     {
-        return CollisionPoints();
+        return FindCircleSquareCollision(B, transformB, A, transformA);
     }
 
     CollisionPoints Algo::FindSquareSquareCollision(
         const SquareCollider *A, const Transform *transformA,
         const SquareCollider *B, const Transform *transformB)
     {
+        float overlap = INF;
         const std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->GetPosition(), A->GetSideLength());
         const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->GetPosition(), B->GetSideLength());
-        float overlap = INF;
         const Vector2 *smallesAxis = nullptr;
         const std::vector<Vector2> axesA = GetAxes(verteciesA);
         const std::vector<Vector2> axesB = GetAxes(verteciesB);
