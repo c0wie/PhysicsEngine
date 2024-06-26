@@ -3,10 +3,13 @@
 namespace phy
 {
     Collision::Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points) :
-        m_ObjectA(a), m_ObjectB(b), m_Points(points) {};
+        m_ObjectA(a), m_ObjectB(b), m_Points(points) {}
+
+    Collision::Collision(std::shared_ptr<RigidObject> a, std::shared_ptr<RigidObject> b, CollisionPoints points) :
+        m_ObjectA(a), m_ObjectB(b), m_Points(points) {}
 
     Collision::Collision(const Collision &other) :
-        m_ObjectA(other.m_ObjectA), m_ObjectB(other.m_ObjectB), m_Points(other.m_Points) {};
+        m_ObjectA(other.m_ObjectA), m_ObjectB(other.m_ObjectB), m_Points(other.m_Points) {}
 
     Collision::Collision(Collision &&other) noexcept:
         m_ObjectA(other.m_ObjectA), m_ObjectB(other.m_ObjectB), m_Points(other.m_Points) 
@@ -43,12 +46,12 @@ namespace phy
         return *this;
     }
 
-    const std::shared_ptr<const CollisionObject> Collision::GetCollisionObjectA() const
+    const std::shared_ptr<CollisionObject> Collision::GetCollisionObjectA() const
     {
         return m_ObjectA;
     }
 
-    const std::shared_ptr<const CollisionObject> Collision::GetCollisionObjectB() const
+    const std::shared_ptr<CollisionObject> Collision::GetCollisionObjectB() const
     {
         return m_ObjectB;
     }

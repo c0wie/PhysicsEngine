@@ -41,6 +41,7 @@ namespace phy
         Vector2& operator+=(const Vector2 &other) ;
         Vector2& operator+=(float number);
         Vector2 operator*(float multiplier) const;
+        Vector2& operator *=(float multiplier);
         Vector2 operator/(float divider) const;
 
         // returns perpendicular vector 
@@ -49,6 +50,10 @@ namespace phy
         Vector2 normalized() const;
         // returns dot product of two vectors;
         float dot(const Vector2 &other) const;
+
+        float magnitude() const;
+        static Vector2 lerp(const Vector2 &x, const Vector2 &y, float t);
+        Vector2 abs() const;
 
     };
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cassert>
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
     #define LogCall(x) std::cout << x << std::endl;
 #else

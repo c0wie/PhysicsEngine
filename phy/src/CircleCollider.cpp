@@ -1,4 +1,4 @@
-#include "../headers/CircleCollider.hpp"
+#include "../headers/Collider.hpp"
 #include "../headers/Algo.hpp"
 #include <SFML/Graphics.hpp>
 namespace phy

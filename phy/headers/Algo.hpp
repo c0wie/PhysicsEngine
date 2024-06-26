@@ -2,11 +2,13 @@
 
 #include <vector>
 #include <memory>
+#include <limits>
 #include "CollisionPoints.hpp"
 #include "Transform.hpp"
 
 namespace phy
 {
+    constexpr float INF = std::numeric_limits<float>::infinity();
     class CircleCollider;
     class SquareCollider;
 

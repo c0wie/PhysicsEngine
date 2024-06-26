@@ -75,4 +75,9 @@ namespace phy
     {
         m_Rotation = m_rotation;
     }
+
+    void Transform::Move(const Vector2 &offset)
+    {
+        m_Position = Vector2{m_Position.x + offset.x, m_Position.y + offset.y};
+    }
 }

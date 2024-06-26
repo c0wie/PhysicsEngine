@@ -13,6 +13,7 @@ FETCHCONTENT_MAKEAVAILABLE(SFML)
 
 add_executable(physicsEngine 
     Demo.cpp
+    phy/src/Solver.cpp
     phy/src/Algo.cpp
     phy/src/CircleCollider.cpp
     phy/src/Collision.cpp

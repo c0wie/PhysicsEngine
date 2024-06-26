@@ -1,7 +1,6 @@
 #include <cmath>
 #include "../headers/Algo.hpp"
-#include "../headers/CircleCollider.hpp"
-#include "../headers/SquareCollider.hpp"
+#include "../headers/Collider.hpp"
 
 namespace phy
 {
@@ -38,10 +37,10 @@ namespace phy
 
     Vector2 Algo::Project(const Vector2 &axis, const std::vector<Vector2> &vertecies)
     {
-        float min = axis.dot(vertecies[0]);
-        float max = min;
+        float min = INF;
+        float max = -INF;
 
-        for(int i = 1; i < vertecies.size(); i++)
+        for(int i = 0; i < vertecies.size(); i++)
         {
             float p = axis.dot(vertecies[i]);
             if(p < min)
@@ -70,7 +69,7 @@ namespace phy
 
     Vector2 Algo::FindFurthestPoint(const std::vector<Vector2> &vertecies, const Vector2 &direction)
     {
-        float maxProjection = (float) INT_MIN;
+        float maxProjection = -INF;
         const Vector2 *furthestPoint = nullptr;
         for(int i = 0; i < 4; i++)
         {
@@ -92,7 +91,7 @@ namespace phy
         const Vector2 cB = transformB->GetPosition();
         const Vector2 v = cB - cA;
         
-        const float magnitude = sqrt(pow(v.x, 2) + pow(v.y, 2));
+        const float &magnitude = v.magnitude();
         if(magnitude >= A->GetRadius() + B->GetRadius())
         {
             return CollisionPoints();
@@ -124,12 +123,10 @@ namespace phy
     {
         const std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->GetPosition(), A->GetSideLength());
         const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->GetPosition(), B->GetSideLength());
-        float overlap = (float)INT_MAX;
+        float overlap = INF;
         const Vector2 *smallesAxis = nullptr;
-        // size = 4 cuz there are only squares for now
         const std::vector<Vector2> axesA = GetAxes(verteciesA);
         const std::vector<Vector2> axesB = GetAxes(verteciesB);
-
         for(int i = 0; i < axesA.size(); i++)
         {
             Vector2 p1 = Project(axesA[i], verteciesA);

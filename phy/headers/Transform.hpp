@@ -24,5 +24,7 @@ namespace phy
         void SetPosition(const Vector2 &position);
         void SetScale(const Vector2 &scale);
         void SetRotation(const Vector2 &rotation);
+
+        void Move(const Vector2 &offset);
     };
 }

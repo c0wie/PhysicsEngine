@@ -2,6 +2,7 @@
 
 
 #include "CollisionObject.hpp"
+#include "RigidObject.hpp"
 
 namespace phy
 {
@@ -15,13 +16,14 @@ namespace phy
         constexpr Collision() :
             m_ObjectA(nullptr), m_ObjectB(nullptr), m_Points() {};
         Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points);
+        Collision(std::shared_ptr<RigidObject> a, std::shared_ptr<RigidObject> b, CollisionPoints points);
         Collision(const Collision &other);
         Collision(Collision &&other) noexcept;
         Collision& operator=(const Collision &other) ;
         Collision& operator=(Collision &&other) noexcept;
 
-        const std::shared_ptr<const CollisionObject> GetCollisionObjectA() const;
-        const std::shared_ptr<const CollisionObject> GetCollisionObjectB() const;
+        const std::shared_ptr<CollisionObject> GetCollisionObjectA() const;
+        const std::shared_ptr<CollisionObject> GetCollisionObjectB() const;
         const CollisionPoints& GetPoints() const;
         void SetCollisionObjectA(const std::shared_ptr<CollisionObject> a);
         void SetCollisionObjectB(const std::shared_ptr<CollisionObject> b);
