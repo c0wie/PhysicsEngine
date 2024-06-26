@@ -87,20 +87,20 @@ namespace phy
         const CircleCollider *A, const Transform *transformA,
         const CircleCollider *B, const Transform *transformB)
     {
-        const Vector2 cA = transformA->GetPosition();
-        const Vector2 cB = transformB->GetPosition();
-        const Vector2 v = cB - cA;
+        Vector2 diff = transformA->GetPosition() - transformB->GetPosition();
         
-        const float &magnitude = v.magnitude();
-        if(magnitude >= A->GetRadius() + B->GetRadius())
+        const float &length = diff.magnitude();
+        float sum = A->GetRadius() + B->GetRadius();
+
+        if(length >= sum)
         {
             return CollisionPoints();
         }
-        const Vector2 normal = v / magnitude;
-        const Vector2 pointA = transformA->GetPosition() - normal * A->GetRadius();
-        const Vector2 pointB = transformB->GetPosition() + normal * B->GetRadius();
+
+        sum -= length;
+        const Vector2 normal = diff.normalized();
         
-        return CollisionPoints{pointA, pointB, normal, magnitude, true};
+        return CollisionPoints{Vector2{}, Vector2{}, normal, sum, true};
     }
 
     CollisionPoints Algo::FindCircleSquareCollision(

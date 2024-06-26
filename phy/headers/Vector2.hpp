@@ -90,7 +90,8 @@ namespace phy
         }
         constexpr float magnitude() const
         {
-            return sqrt(pow(x, 2) + pow(y, 2));
+            //std::hypot == sqrt(pow(x, 2) + pow(y, 2));
+            return std::hypot(x, y);
         }
         //return positvie value of vector
         constexpr static Vector2 abs(const Vector2 vec)
