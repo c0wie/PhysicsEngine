@@ -14,4 +14,9 @@ namespace phy
     {
         void Solve(std::vector<Collision> &collisions, float deltaTime) override final;
     };
+
+    class ImpulseSolver : public Solver
+    {
+        void Solve(std::vector<Collision> &collisions, float deltaTime) override final;
+    };
 }

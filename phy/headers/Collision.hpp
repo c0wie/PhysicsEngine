@@ -14,7 +14,7 @@ namespace phy
         CollisionPoints m_Points;
     public:
         constexpr Collision() :
-            m_ObjectA(nullptr), m_ObjectB(nullptr), m_Points() {};
+            m_ObjectA(nullptr), m_ObjectB(nullptr), m_Points() {}
         Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points);
         Collision(std::shared_ptr<RigidObject> a, std::shared_ptr<RigidObject> b, CollisionPoints points);
         Collision(const Collision &other);

@@ -172,7 +172,9 @@ namespace phy
         const SquareCollider *A, const Transform *transformA,
         const CircleCollider *B, const Transform *transformB)
     {
-        return FindCircleSquareCollision(B, transformB, A, transformA);
+        CollisionPoints p = FindCircleSquareCollision(B, transformB, A, transformA);
+        p.Normal *= -1.0f;
+        return p;
     }
 
     CollisionPoints Algo::FindSquareSquareCollision(
@@ -219,9 +221,6 @@ namespace phy
             }
         }
         
-        const Vector2 furthestPointA = FindFurthestPoint(verteciesA, *smallesAxis);
-        const Vector2 furthestPointB = FindFurthestPoint(verteciesB, *smallesAxis);
-
-        return CollisionPoints{furthestPointA, furthestPointB, *smallesAxis, overlap, true};
+        return CollisionPoints{Vector2{}, Vector2{}, *smallesAxis, overlap, true};
     }
 }

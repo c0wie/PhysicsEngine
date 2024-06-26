@@ -17,6 +17,16 @@ namespace phy
     {
         m_Solvers.push_back(solver);
     }
+    
+    void CollisionWorld::AddSolver(std::shared_ptr<PositionSolver> &solver)
+    {
+        m_Solvers.push_back(solver);
+    }
+
+    void CollisionWorld::AddSolver(std::shared_ptr<ImpulseSolver> &solver)
+    {
+        m_Solvers.push_back(solver);
+    }
 
     void CollisionWorld::RemoveSolver(std::shared_ptr<Solver> &solver)
     {
@@ -31,17 +41,19 @@ namespace phy
         {
             for(int j = 0; j < m_Objects.size(); j++)
             {
-                if(m_Objects[i] == m_Objects[j])
-                {
-                    break;
-                }
-                
                 if(m_Objects[i]->GetCollider() == nullptr || m_Objects[j]->GetCollider() == nullptr)
                 {
                     continue;
                 }
+
+                if(m_Objects[i] == m_Objects[j])
+                {
+                    continue;
+                }
+
                 CollisionPoints points = m_Objects[i]->GetCollider()->TestCollision
                     (m_Objects[i]->GetTransform().get(), m_Objects[j]->GetCollider().get(), m_Objects[j]->GetTransform().get());
+
                 if(points.HasCollision)
                 {
                     collisions.emplace_back(m_Objects[i], m_Objects[j], points);

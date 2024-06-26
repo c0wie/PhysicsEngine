@@ -29,6 +29,8 @@ namespace phy
         void AddCollisionObject(std::shared_ptr<CollisionObject> obj);
         void RemoveObject(std::shared_ptr<CollisionObject> object);
         void AddSolver(std::shared_ptr<Solver> &solver);
+        void AddSolver(std::shared_ptr<PositionSolver> &solver);
+        void AddSolver(std::shared_ptr<ImpulseSolver> &solver);
         void RemoveSolver(std::shared_ptr<Solver> &solver);
         void ResolveCollision(float delatTime);
         void Draw(sf::RenderWindow &window);

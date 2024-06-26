@@ -19,4 +19,12 @@ namespace phy
             collision.GetCollisionObjectA()->GetTransform()->Move(MTV);
         }
     }
+
+    void ImpulseSolver::Solve(std::vector<Collision> &collisions, float deltaTime)
+    {
+        for(int i = 0; i < collisions.size(); i++)
+        {
+            
+        }
+    }
 }
