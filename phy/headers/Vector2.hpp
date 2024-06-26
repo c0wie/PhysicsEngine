@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 #include "Assert.hpp"
 
 namespace phy
@@ -36,24 +37,69 @@ namespace phy
             return *this;
         }
 
-        Vector2 operator+(const Vector2 &other) const;
-        Vector2 operator-(const Vector2 &other) const;
-        Vector2& operator+=(const Vector2 &other) ;
-        Vector2& operator+=(float number);
-        Vector2 operator*(float multiplier) const;
-        Vector2& operator *=(float multiplier);
-        Vector2 operator/(float divider) const;
-
+        constexpr Vector2 operator+(const Vector2 &other) const
+        {
+            return Vector2{ x + other.x, y + other.y};
+        }
+        constexpr Vector2 operator-(const Vector2 &other) const
+        {
+            return Vector2{x - other.x, y - other.y};
+        }      
+        constexpr Vector2& operator+=(const Vector2 &other)
+        {
+            x += other.x;
+            y += other.y;
+            return *this;
+        }
+        constexpr Vector2& operator+=(float number)
+        {
+            x += number;
+            y += number;
+            return *this;
+        }
+        constexpr Vector2 operator*(float multiplier) const
+        {
+            return Vector2{ x * multiplier, y * multiplier};
+        }
+        constexpr Vector2& operator *=(float multiplier)
+        {
+            x *= multiplier;
+            y *= multiplier;
+            return *this;
+        }
+        constexpr Vector2 operator/(float divider) const
+        {
+             return Vector2{ x / divider, y / divider};
+        }
         // returns perpendicular vector 
-        Vector2 perp() const;
+        constexpr Vector2 perp() const
+        {
+            return Vector2{-y, x};
+        }
         // returns normalized vector
-        Vector2 normalized() const;
+        constexpr Vector2 normalized() const
+        {
+            float length = sqrt(pow(x, 2) + pow(y, 2));
+            return Vector2 {x / length, y / length};
+        }
         // returns dot product of two vectors;
-        float dot(const Vector2 &other) const;
-
-        float magnitude() const;
-        static Vector2 lerp(const Vector2 &x, const Vector2 &y, float t);
-        Vector2 abs() const;
+        constexpr float dot(const Vector2 &other) const
+        {
+            return x * other.x + y * other.y;
+        }
+        constexpr float magnitude() const
+        {
+            return sqrt(pow(x, 2) + pow(y, 2));
+        }
+        constexpr Vector2 abs() const
+        {
+            return Vector2{x < 0 ? -x : x, y < 0 ? -y : y,};
+        }
+        constexpr static Vector2 lerp(const Vector2 &x, const Vector2 &y, float t)
+        {
+            t = std::clamp(t, 0.0f, 1.0f);
+            return Vector2{x * (1.0f - t) + y * t};
+        }
 
     };
 }
