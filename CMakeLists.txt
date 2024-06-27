@@ -21,7 +21,6 @@ add_executable(physicsEngine
     phy/src/RigidObject.cpp
     phy/src/PhysicsWorld.cpp
     phy/src/SquareCollider.cpp
-    phy/src/Transform.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR} /phy/headers)

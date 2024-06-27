@@ -8,8 +8,8 @@ namespace phy
         for(int i = 0; i < collisions.size(); i++)
         {
             Collision &collision = collisions[i];
-            const Vector2 &positionA = collision.GetCollisionObjectA()->GetTransform()->GetPosition();
-            const Vector2 &positionB = collision.GetCollisionObjectB()->GetTransform()->GetPosition();
+            const Vector2 &positionA = collision.GetCollisionObjectA()->GetTransform()->position;
+            const Vector2 &positionB = collision.GetCollisionObjectB()->GetTransform()->position;
             Vector2 MTV = collision.GetPoints().Normal * std::max(collision.GetPoints().Depth - slop, 0.0f);
 
             if(MTV.dot(positionA - positionB) < 0.0f)

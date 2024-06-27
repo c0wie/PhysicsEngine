@@ -10,10 +10,11 @@ namespace phy
 {
     class CircleCollider;
     class SquareCollider;
-    constexpr float INF = std::numeric_limits<float>::infinity();
 
     class Algo
     {
+    public:
+        static constexpr float INF = std::numeric_limits<float>::infinity();
     private:
         static bool Overlap(const Vector2 &A, const Vector2 &B);
         static float GetOverlap(const Vector2 &A, const Vector2 &B);

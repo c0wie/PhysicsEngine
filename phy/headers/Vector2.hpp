@@ -106,6 +106,7 @@ namespace phy
         }
     };
 }
+// probably will delete that function
 inline phy::Vector2 MousePos(const sf::RenderWindow& window = *(sf::RenderWindow*)nullptr) 
 {
     if(&window == nullptr)

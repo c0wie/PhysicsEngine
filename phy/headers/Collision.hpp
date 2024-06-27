@@ -6,7 +6,7 @@
 
 namespace phy
 {
-    struct Collision
+    class Collision
     {
     private: 
         std::shared_ptr<CollisionObject> m_ObjectA;

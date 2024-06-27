@@ -121,7 +121,7 @@ namespace phy
         const CircleCollider *A, const Transform *transformA,
         const CircleCollider *B, const Transform *transformB)
     {
-        Vector2 diff = transformA->GetPosition() - transformB->GetPosition();
+        Vector2 diff = transformA->position - transformB->position;
         
         const float &length = diff.magnitude();
         float sum = A->GetRadius() + B->GetRadius();
@@ -142,8 +142,8 @@ namespace phy
         const SquareCollider *B, const Transform *transformB)
     {
         float overlap = INF;
-        Vector2 center = transformA->GetPosition();
-        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->GetPosition(), B->GetSideLength());
+        Vector2 center = transformA->position;
+        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->position, B->GetSideLength());
         std::vector<Vector2> axesB = GetAxes(verteciesB);
         Vector2 *smallesAxis = nullptr;
         axesB.push_back(GetCircleAxis(verteciesB, center));
@@ -182,8 +182,8 @@ namespace phy
         const SquareCollider *B, const Transform *transformB)
     {
         float overlap = INF;
-        const std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->GetPosition(), A->GetSideLength());
-        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->GetPosition(), B->GetSideLength());
+        const std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->position, A->GetSideLength());
+        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->position, B->GetSideLength());
         const Vector2 *smallesAxis = nullptr;
         const std::vector<Vector2> axesA = GetAxes(verteciesA);
         const std::vector<Vector2> axesB = GetAxes(verteciesB);

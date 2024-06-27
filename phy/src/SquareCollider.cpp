@@ -68,7 +68,7 @@ namespace phy
         sf::RectangleShape square(sf::Vector2f(m_SideLength, m_SideLength));
         square.setOrigin(square.getSize() / 2.0f);
         square.setFillColor(sf::Color::Red);
-        square.setPosition(transform->GetPosition().x, transform->GetPosition().y);
+        square.setPosition(transform->position.x, transform->position.y);
         window.draw(square);
     }
 }

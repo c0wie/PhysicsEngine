@@ -6,22 +6,22 @@ namespace phy
 {
     struct Transform
     {
-    private:
-        Vector2 m_Position;
-        Vector2 m_Scale;
-        Vector2 m_Rotation;
+    public:
+        Vector2 position;
+        Vector2 scale;
+        Vector2 rotation;
     public:
         constexpr Transform() :
-            m_Position(Vector2{0.0f, 0.0f}), m_Scale(Vector2{0.0f, 0.0f}), m_Rotation(Vector2{0.0f, 0.0f}) {}
+            position(Vector2{0.0f, 0.0f}), scale(Vector2{0.0f, 0.0f}), rotation(Vector2{0.0f, 0.0f}) {}
         constexpr Transform(const Vector2 &position, const Vector2 &scale, const Vector2 &rotation) :
-            m_Position(position), m_Scale(scale), m_Rotation(rotation) {}
+            position(position), scale(scale), rotation(rotation) {}
         constexpr Transform(const Transform &other) = default;
         constexpr Transform(Transform &&other) noexcept :
-            m_Position(other.m_Position), m_Scale(other.m_Scale), m_Rotation(other.m_Rotation)
+            position(other.position), scale(other.scale), rotation(other.rotation)
         {
-            other.m_Position = Vector2{};
-            other.m_Scale = Vector2{};
-            other.m_Rotation = Vector2{};
+            other.position = Vector2{};
+            other.scale = Vector2{};
+            other.rotation = Vector2{};
         }
         constexpr Transform& operator=(const Transform &other) = default;
         constexpr Transform& operator=(Transform &&other) noexcept
@@ -30,22 +30,24 @@ namespace phy
             {
                 return *this;
             }
-            m_Position = other.m_Position;
-            m_Scale = other.m_Scale;
-            m_Rotation = other.m_Rotation;
-            other.m_Position = Vector2{};
-            other.m_Scale = Vector2{};
-            other.m_Rotation = Vector2{};
+            position = other.position;
+            scale = other.scale;
+            rotation = other.rotation;
+            other.position = Vector2{};
+            other.scale = Vector2{};
+            other.rotation = Vector2{};
             return *this;
         }
 
-        Vector2 GetPosition() const;
-        Vector2 GetScale() const;
-        Vector2 GetRotation() const;
-        void SetPosition(const Vector2 &position);
-        void SetScale(const Vector2 &scale);
-        void SetRotation(const Vector2 &rotation);
-
-        void Move(const Vector2 &offset);
+        constexpr void Move(const Vector2 &offset)
+        {
+            position.x += offset.x;
+            position.y += offset.y;
+        }
+        //not implemented yet
+        constexpr void Rotate(float angle)
+        {
+            
+        }
     };
 }

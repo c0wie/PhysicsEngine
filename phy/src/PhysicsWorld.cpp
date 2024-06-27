@@ -100,8 +100,8 @@ namespace phy
             LogCall(object->GetForce().x, " ", object->GetForce().y, "\n");
             object->SetVelocity(object->GetForce() / (object->GetMass() * deltaTime) );
             LogCall(object->GetVelocity().x, " ", object->GetVelocity().y, "\n");
-            object->GetTransform()->SetPosition(object->GetVelocity() * deltaTime);
-            LogCall(object->GetTransform()->GetPosition().x, " ", object->GetTransform()->GetPosition().x, "\n");
+            object->GetTransform()->position = object->GetVelocity() * deltaTime;
+            LogCall(object->GetTransform()->position.x, " ", object->GetTransform()->position.y, "\n");
             object->SetForce(Vector2{});
             
         }
