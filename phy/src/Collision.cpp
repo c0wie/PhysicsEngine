@@ -46,12 +46,12 @@ namespace phy
         return *this;
     }
 
-    const std::shared_ptr<CollisionObject> Collision::GetCollisionObjectA() const
+    std::shared_ptr<CollisionObject> Collision::GetCollisionObjectA() const
     {
         return m_ObjectA;
     }
 
-    const std::shared_ptr<CollisionObject> Collision::GetCollisionObjectB() const
+    std::shared_ptr<CollisionObject> Collision::GetCollisionObjectB() const
     {
         return m_ObjectB;
     }

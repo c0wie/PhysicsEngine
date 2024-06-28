@@ -58,6 +58,10 @@ namespace phy
             y += number;
             return *this;
         }
+        constexpr Vector2 operator*(const Vector2 &other) const
+        {
+            return Vector2{x * other.x, y * other.y};
+        }
         constexpr Vector2 operator*(float multiplier) const
         {
             return Vector2{ x * multiplier, y * multiplier};

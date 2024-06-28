@@ -65,7 +65,7 @@ namespace phy
     
     void SquareCollider::Draw(sf::RenderWindow &window, const Transform *transform) const
     {
-        sf::RectangleShape square(sf::Vector2f(m_SideLength, m_SideLength));
+        sf::RectangleShape square(sf::Vector2f(m_SideLength * transform->scale.x, m_SideLength * transform->scale.y));
         square.setOrigin(square.getSize() / 2.0f);
         square.setFillColor(sf::Color::Red);
         square.setPosition(transform->position.x, transform->position.y);

@@ -18,6 +18,9 @@ namespace phy
     public:
         std::vector< std::shared_ptr<CollisionObject> > m_Objects;
         std::vector< std::shared_ptr<Solver> > m_Solvers;
+    private:
+        void SolveCollisions(std::vector<Collision> &collisions, float deltaTime);
+        void SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime);
     public:
         CollisionWorld() = default;
         CollisionWorld(const CollisionWorld &other) = delete;
@@ -28,17 +31,22 @@ namespace phy
 
         void AddCollisionObject(std::shared_ptr<CollisionObject> obj);
         void RemoveObject(std::shared_ptr<CollisionObject> object);
+
         void AddSolver(std::shared_ptr<Solver> &solver);
         void AddSolver(std::shared_ptr<PositionSolver> &solver);
         void AddSolver(std::shared_ptr<ImpulseSolver> &solver);
         void RemoveSolver(std::shared_ptr<Solver> &solver);
-        void ResolveCollision(float delatTime);
+        
+        void ResolveCollisions(float deltaTime);
         void Draw(sf::RenderWindow &window);
     }; 
     class DynamicsWorld : public CollisionWorld
     {
     private:
-        static constexpr float m_Gravity = 0.00981f;
+        static constexpr float m_Gravity = 98.1f;
+    private:
+        void ApplyGravity();
+        void MoveObjects(float deltaTime);
     public:
         DynamicsWorld() = default;
         DynamicsWorld(const CollisionWorld &other) = delete;

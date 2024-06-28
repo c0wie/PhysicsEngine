@@ -21,7 +21,7 @@ namespace phy
         static std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertecies);
         static Vector2 Project(const Vector2 &axis, const std::vector<Vector2> &vertecies);
         static Vector2 ProjectCircle(const Vector2 &axis, const Vector2 &circleCenter, float radius);
-        static std::vector<Vector2> GetSquareVertecies(const Vector2 &center, float sideLength);
+        static std::vector<Vector2> GetSquareVertecies(const Vector2 &center, float sideLength, const Vector2 &scale);
         static Vector2 GetCircleAxis(const std::vector<Vector2> vertecies, const Vector2 & circleCenter);
         static Vector2 FindFurthestPoint(const std::vector<Vector2> &vertecies, const Vector2 &direction);
     public:

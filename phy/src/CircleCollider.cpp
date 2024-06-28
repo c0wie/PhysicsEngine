@@ -68,7 +68,8 @@ namespace phy
     }
     void CircleCollider::Draw(sf::RenderWindow &window, const Transform *transform) const
     {
-        sf::CircleShape circle(GetRadius());
+        const float radius = GetRadius() * transform->scale.x;
+        sf::CircleShape circle(radius);
         circle.setOrigin(circle.getRadius(), circle.getRadius());
         circle.setFillColor(sf::Color::Blue);
         circle.setPosition(transform->position.x, transform->position.y);

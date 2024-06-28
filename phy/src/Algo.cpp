@@ -72,14 +72,14 @@ namespace phy
         return Vector2{min, max};
     }
 
-    std::vector<Vector2> Algo::GetSquareVertecies(const Vector2 &center, float sideLength)
+    std::vector<Vector2> Algo::GetSquareVertecies(const Vector2 &center, float sideLength, const Vector2 &scale)
     {
         const std::vector<Vector2> vertecies = 
         {
-            Vector2{center.x - sideLength / 2.0f, center.y + sideLength / 2.0f},
-            Vector2{center.x + sideLength / 2.0f, center.y + sideLength / 2.0f},
-            Vector2{center.x + sideLength / 2.0f, center.y - sideLength / 2.0f},
-            Vector2{center.x - sideLength / 2.0f, center.y - sideLength / 2.0f}
+            Vector2{ center.x - sideLength / 2.0f * scale.x, center.y + sideLength / 2.0f * scale.y },
+            Vector2{ center.x + sideLength / 2.0f * scale.x, center.y + sideLength / 2.0f * scale.y },
+            Vector2{ center.x + sideLength / 2.0f * scale.x, center.y - sideLength / 2.0f * scale.y },
+            Vector2{ center.x - sideLength / 2.0f * scale.x, center.y - sideLength / 2.0f * scale.y }
         };
         return vertecies;
     }
@@ -124,7 +124,9 @@ namespace phy
         Vector2 diff = transformA->position - transformB->position;
         
         const float &length = diff.magnitude();
-        float sum = A->GetRadius() + B->GetRadius();
+        // I make assumption that it would be safest option in this situation but I don't know if any good solution is there
+        // cuz I can only imagine how hard the math could be with calculating not circle sphere collision
+        float sum = A->GetRadius() * transformA->scale.x + B->GetRadius() * transformA->scale.x;
 
         if(length >= sum)
         {
@@ -134,7 +136,7 @@ namespace phy
         sum -= length;
         const Vector2 &normal = diff.normalized();
         
-        return CollisionPoints{Vector2{}, Vector2{}, normal, sum, true};
+        return CollisionPoints{normal, sum, true};
     }
 
     CollisionPoints Algo::FindCircleSquareCollision(
@@ -142,8 +144,8 @@ namespace phy
         const SquareCollider *B, const Transform *transformB)
     {
         float overlap = INF;
-        Vector2 center = transformA->position;
-        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->position, B->GetSideLength());
+        const Vector2 &center = transformA->position;
+        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->position, B->GetSideLength(), transformA->scale);
         std::vector<Vector2> axesB = GetAxes(verteciesB);
         Vector2 *smallesAxis = nullptr;
         axesB.push_back(GetCircleAxis(verteciesB, center));
@@ -151,7 +153,7 @@ namespace phy
 
         for(int i = 0; i < axesB.size(); i++)
         {
-            Vector2 p1 = ProjectCircle(axesB[i], center, A->GetRadius());
+            Vector2 p1 = ProjectCircle(axesB[i], center, A->GetRadius() * transformA->scale.x);
             Vector2 p2 = Project(axesB[i], verteciesB);
 
             if(!Overlap(p1, p2))
@@ -165,7 +167,8 @@ namespace phy
                 smallesAxis = &axesB[i];
             }
         }
-        return CollisionPoints{Vector2{}, Vector2{}, *smallesAxis, overlap, true};
+        LogCall("Circle - Square collision\n");
+        return CollisionPoints{*smallesAxis, overlap, true};
     }
 
     CollisionPoints Algo::FindSquareCircleCollision(
@@ -182,8 +185,8 @@ namespace phy
         const SquareCollider *B, const Transform *transformB)
     {
         float overlap = INF;
-        const std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->position, A->GetSideLength());
-        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->position, B->GetSideLength());
+        const std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->position, A->GetSideLength(), transformA->scale);
+        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->position, B->GetSideLength(), transformB->scale);
         const Vector2 *smallesAxis = nullptr;
         const std::vector<Vector2> axesA = GetAxes(verteciesA);
         const std::vector<Vector2> axesB = GetAxes(verteciesB);
@@ -221,6 +224,6 @@ namespace phy
             }
         }
         
-        return CollisionPoints{Vector2{}, Vector2{}, *smallesAxis, overlap, true};
+        return CollisionPoints{*smallesAxis, overlap, true};
     }
 }

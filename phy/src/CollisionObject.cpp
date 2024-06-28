@@ -61,9 +61,19 @@ namespace phy
         return m_Transform;
     }
 
-    bool CollisionObject::GetTrigger() const
+    bool CollisionObject::IsTrigger() const
     {
         return m_IsTrigger;
+    }
+
+    std::function<void(const Collision&, float)> CollisionObject::OnCollision() const
+    {
+        return m_OnCollision;
+    }
+
+    void CollisionObject::SetPosition(const Vector2 &pos)
+    {
+        GetTransform()->position = pos;
     }
 
     void CollisionObject::SetCollider(const std::shared_ptr<Collider> collider)

@@ -22,8 +22,8 @@ namespace phy
         Collision& operator=(const Collision &other) ;
         Collision& operator=(Collision &&other) noexcept;
 
-        const std::shared_ptr<CollisionObject> GetCollisionObjectA() const;
-        const std::shared_ptr<CollisionObject> GetCollisionObjectB() const;
+        std::shared_ptr<CollisionObject> GetCollisionObjectA() const;
+        std::shared_ptr<CollisionObject> GetCollisionObjectB() const;
         const CollisionPoints& GetPoints() const;
         void SetCollisionObjectA(const std::shared_ptr<CollisionObject> a);
         void SetCollisionObjectB(const std::shared_ptr<CollisionObject> b);
