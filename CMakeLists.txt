@@ -13,7 +13,8 @@ FETCHCONTENT_MAKEAVAILABLE(SFML)
 
 add_subdirectory(pe2d)
 add_subdirectory(ImGui-SFML)
+add_subdirectory(tests)
 
 add_executable(${PROJECT_NAME} Demo.cpp)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics pe2d ImGui-SFML)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics pe2d ImGui-SFML tests)

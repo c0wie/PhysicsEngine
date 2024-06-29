@@ -7,10 +7,6 @@ namespace phy
     struct Transform
     {
     public:
-        Vector2 position;
-        Vector2 scale;
-        float rotation;
-    public:
         constexpr Transform() :
             position(Vector2{0.0f, 0.0f}), scale(Vector2{0.0f, 0.0f}), rotation(0.0f) {}
         constexpr Transform(const Vector2 &position, const Vector2 &scale, float rotation) :
@@ -38,15 +34,20 @@ namespace phy
             other.rotation = 0.0f;
             return *this;
         }
-
+    public:
         constexpr void Move(const Vector2 &offset)
         {
             position.x += offset.x;
             position.y += offset.y;
+        
         }
         constexpr void Rotate(float angle)
         {
             rotation += angle;
         }
+    public:
+        Vector2 position;
+        Vector2 scale;
+        float rotation;
     };
 }

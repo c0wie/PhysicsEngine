@@ -4,15 +4,6 @@ namespace phy
 {
     class RigidObject : public CollisionObject
     {
-    private:
-        float m_Mass;
-        Vector2 m_Velocity;
-        Vector2 m_Force;
-        Vector2 m_Gravity;          // Gravitional acceleration
-        bool m_TakesGravity;        // If the rigidobject will take gravity from the world
-        float m_StaticFriction;     // Static friction coefficient
-        float m_DynamicFriction;    // Dynamic friction coefficient
-        float m_Restitution;        // Elasticy of collision
     public:
         RigidObject();
         RigidObject(std::shared_ptr<CircleCollider> collider, std::shared_ptr<Transform> transform, float trigger, 
@@ -26,7 +17,7 @@ namespace phy
         RigidObject& operator=(const RigidObject &other);
         RigidObject& operator=(RigidObject &&other);
         virtual ~RigidObject() = default;
-
+    public:
         float GetMass() const;
         Vector2 GetVelocity() const;
         Vector2 GetForce() const;
@@ -40,6 +31,14 @@ namespace phy
         void SetStaticFriction(float staticFriction);
         void SetDynamicFriction(float dynamicDriction);
         void SetRestitution(float restitution);
-
+    private:
+        float m_Mass;
+        Vector2 m_Velocity;
+        Vector2 m_Force;
+        Vector2 m_Gravity;          // Gravitional acceleration
+        bool m_TakesGravity;        // If the rigidobject will take gravity from the world
+        float m_StaticFriction;     // Static friction coefficient
+        float m_DynamicFriction;    // Dynamic friction coefficient
+        float m_Restitution;        // Elasticy of collision
     };
 }

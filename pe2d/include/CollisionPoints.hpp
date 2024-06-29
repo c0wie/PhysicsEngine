@@ -7,10 +7,6 @@ namespace phy
     struct CollisionPoints
     {
     public:
-        Vector2 Normal; // normalized length of vector
-        float Depth; // length of two objects overlap
-        bool HasCollision;
-    public:
         constexpr CollisionPoints() :
             Normal(Vector2{}), Depth(0.0f), HasCollision(false) {}
         constexpr CollisionPoints(const Vector2 &normal, float depth, bool hasCollision) :
@@ -38,5 +34,9 @@ namespace phy
             other.HasCollision = false;
             return *this;
         }
+    public:
+        Vector2 Normal; // normalized length of vector
+        float Depth; // length of two objects overlap
+        bool HasCollision;
     };
 }

@@ -12,13 +12,6 @@ namespace phy
 {
     class CollisionWorld
     {
-    // TODO: when I finish debugging I heve to make it protected
-    public:
-        std::vector< std::shared_ptr<CollisionObject> > m_Objects;
-        std::vector< std::shared_ptr<Solver> > m_Solvers;
-    private:
-        void SolveCollisions(std::vector<Collision> &collisions, float deltaTime);
-        void SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime);
     public:
         CollisionWorld() = default;
         CollisionWorld(const CollisionWorld &other) = delete;
@@ -26,7 +19,7 @@ namespace phy
         CollisionWorld operator = (const CollisionWorld &other) = delete;
         CollisionWorld operator = (CollisionWorld &&other) = delete;
         virtual ~CollisionWorld() = default;
-
+    public:
         void AddCollisionObject(std::shared_ptr<CollisionObject> obj);
         void RemoveObject(std::shared_ptr<CollisionObject> object);
 
@@ -36,14 +29,16 @@ namespace phy
         void RemoveSolver(std::shared_ptr<Solver> &solver);
         
         void ResolveCollisions(float deltaTime);
+    private:
+        void SolveCollisions(std::vector<Collision> &collisions, float deltaTime);
+        void SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime);
+    protected:
+        std::vector< std::shared_ptr<CollisionObject> > m_Objects;
+        std::vector< std::shared_ptr<Solver> > m_Solvers;
     }; 
+    
     class DynamicsWorld : public CollisionWorld
     {
-    private:
-        static constexpr float m_Gravity = 98.1f;
-    private:
-        void ApplyGravity();
-        void MoveObjects(float deltaTime);
     public:
         DynamicsWorld() = default;
         DynamicsWorld(const CollisionWorld &other) = delete;
@@ -51,8 +46,13 @@ namespace phy
         DynamicsWorld operator=(const CollisionWorld &other) = delete;
         DynamicsWorld operator=(CollisionWorld &&other) = delete;
         ~DynamicsWorld() = default;
-
+    public:
         void AddRigidObject(std::shared_ptr<RigidObject> object);
         void Step(float deltaTime);
+    private:
+        void ApplyGravity();
+        void MoveObjects(float deltaTime);
+    private:
+        static constexpr float m_Gravity = 98.1f;
     };
 }

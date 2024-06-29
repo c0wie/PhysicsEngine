@@ -10,11 +10,6 @@ namespace phy
 {
     class CollisionObject
     {
-    protected:
-        std::shared_ptr<Collider> m_Collider;
-        std::shared_ptr<Transform> m_Transform;
-        bool m_IsTrigger;
-        std::function<void(const Collision&, float)> m_OnCollision = nullptr;
     public:
         CollisionObject();
         CollisionObject(const std::shared_ptr<CircleCollider> collider, const std::shared_ptr<Transform> transform, bool trigger);
@@ -24,7 +19,7 @@ namespace phy
         CollisionObject& operator=(const CollisionObject &other);
         CollisionObject& operator=(CollisionObject &&other) noexcept;
         virtual ~CollisionObject() = default;
-
+    public:
         const std::shared_ptr<Collider> GetCollider() const;
         const std::shared_ptr<Transform> GetTransform() const;
         bool IsTrigger() const;
@@ -34,5 +29,11 @@ namespace phy
         void SetCollider(const std::shared_ptr<Collider> collider);
         void SetTransform(const std::shared_ptr<Transform> transform);
         void SetTrigger(bool isTrigger);
+    protected:
+        std::shared_ptr<Collider> m_Collider;
+        std::shared_ptr<Transform> m_Transform;
+        bool m_IsTrigger;
+        //must implement functionality
+        std::function<void(const Collision&, float)> m_OnCollision;
     };
 }

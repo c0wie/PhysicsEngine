@@ -3,18 +3,6 @@
 namespace phy
 {   
 #pragma region COLLISION_WORLD 
-    void CollisionWorld::SolveCollisions(std::vector<Collision> &collisions, float deltaTime)
-    {
-        for(int i = 0; i < m_Solvers.size(); i++)
-        {
-            m_Solvers[i]->Solve(collisions, deltaTime);
-        }
-    }
-
-    void CollisionWorld::SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime)
-    {
-    }
-
     void CollisionWorld::AddCollisionObject(std::shared_ptr<CollisionObject> obj)
     {
         m_Objects.push_back(obj);
@@ -87,15 +75,31 @@ namespace phy
         SendCollisionCallbacks(collisions, deltaTime);
         SendCollisionCallbacks(triggers, deltaTime);
     }
+    void CollisionWorld::SolveCollisions(std::vector<Collision> &collisions, float deltaTime)
+    {
+        for(int i = 0; i < m_Solvers.size(); i++)
+        {
+            m_Solvers[i]->Solve(collisions, deltaTime);
+        }
+    }
+
+    void CollisionWorld::SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime)
+    {
+    }
 #pragma endregion
 
 #pragma region DYNAMICS_WORLD 
-
     void DynamicsWorld::AddRigidObject(std::shared_ptr<RigidObject> object)
     {
         m_Objects.push_back(object);
     }
     
+    void DynamicsWorld::Step(float deltaTime)
+    {
+        ApplyGravity();
+        ResolveCollisions(deltaTime);
+        MoveObjects(deltaTime);
+    }
     void DynamicsWorld::ApplyGravity()
     {   
         for(int i = 0; i < m_Objects.size(); i++)
@@ -131,13 +135,6 @@ namespace phy
             object->SetForce(Vector2{});
         }
         LogCall("------------------\n");
-    }
-
-    void DynamicsWorld::Step(float deltaTime)
-    {
-        ApplyGravity();
-        ResolveCollisions(deltaTime);
-        MoveObjects(deltaTime);
     }
 #pragma endregion
 }

@@ -9,9 +9,6 @@ namespace phy
     struct Vector2
     {
     public:
-        float x;
-        float y;
-    public:
         constexpr Vector2() :
             x(0.0f), y(0.0f) {}
         constexpr Vector2(float x, float y) :
@@ -36,7 +33,7 @@ namespace phy
             other.y = 0.0f;
             return *this;
         }
-
+    public:
         constexpr Vector2 operator+(const Vector2 &other) const
         {
             return Vector2{ x + other.x, y + other.y};
@@ -107,5 +104,8 @@ namespace phy
             t = std::clamp(t, 0.0f, 1.0f);
             return Vector2{x * (1.0f - t) + y * t};
         }
+    public:
+        float x;
+        float y;
     };
 }

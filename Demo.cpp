@@ -81,28 +81,13 @@ int main()
             {
                 window.close();
             }
-            if(event.type == sf::Event::KeyReleased)
-            {
-                if(event.key.code == sf::Keyboard::A)
-                {
-
-                }
-                else if(event.key.code == sf::Keyboard::D)
-                {
-
-                }
-            }
         }
         ImGui::SFML::Update(window, DT_Clock.restart());
-        ImGui::ShowDemoWindow();
-        
-       /* const phy::Vector2 s = physicsWorld.m_Objects[1]->GetTransform()->position;
-        const phy::Vector2 end = MousePos(window);
-        const phy::Vector2 position = phy::Vector2::lerp(s, end, 16.0f * deltaTime);
-        physicsWorld.m_Objects[1]->GetTransform()->position = position; */
         
         window.clear();
+        ImGui::SFML::Render(window);
         physicsWorld.Step(deltaTime);
         window.display();
     }
+    ImGui::SFML::Shutdown();
 }
