@@ -1,4 +1,4 @@
-#include "../headers/PhysicsWorld.hpp"
+#include "PhysicsWorld.hpp"
 
 namespace phy
 {   
@@ -86,14 +86,6 @@ namespace phy
         SolveCollisions(collisions, deltaTime);
         SendCollisionCallbacks(collisions, deltaTime);
         SendCollisionCallbacks(triggers, deltaTime);
-    }
-
-    void CollisionWorld::Draw(sf::RenderWindow &window)
-    {
-        for(auto obj : m_Objects)
-        {
-            obj->GetCollider()->Draw(window, obj->GetTransform().get());
-        }
     }
 #pragma endregion
 

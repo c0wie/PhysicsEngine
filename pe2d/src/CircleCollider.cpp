@@ -1,6 +1,5 @@
-#include "../headers/Collider.hpp"
-#include "../headers/Algo.hpp"
-#include <SFML/Graphics.hpp>
+#include "Collider.hpp"
+#include "Algo.hpp"
 namespace phy
 {
     CircleCollider::CircleCollider(float radius) :
@@ -65,14 +64,5 @@ namespace phy
             ASSERT("Radius must be grater than 0");
         }
         m_Radius = radius;
-    }
-    void CircleCollider::Draw(sf::RenderWindow &window, const Transform *transform) const
-    {
-        const float radius = GetRadius() * transform->scale.x;
-        sf::CircleShape circle(radius);
-        circle.setOrigin(circle.getRadius(), circle.getRadius());
-        circle.setFillColor(sf::Color::Blue);
-        circle.setPosition(transform->position.x, transform->position.y);
-        window.draw(circle);
     }
 }

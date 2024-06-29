@@ -1,4 +1,4 @@
-#include "../headers/Solver.hpp"
+#include "Solver.hpp"
 
 namespace phy
 {
@@ -20,6 +20,8 @@ namespace phy
             }
             collision.GetCollisionObjectA()->GetTransform()->Move(MTV);
 
+            // this is only blueprint for more complicated logic
+            // maybe I shuld use there dnamic friction 
             std::shared_ptr<RigidObject> rigidObject = std::dynamic_pointer_cast<RigidObject>(objectA); 
             if(rigidObject != nullptr)
             {

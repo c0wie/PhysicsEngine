@@ -1,4 +1,4 @@
-#include "../headers/RigidObject.hpp"
+#include "RigidObject.hpp"
 
 namespace phy
 {

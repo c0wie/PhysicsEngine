@@ -1,4 +1,4 @@
-#include "../headers/CollisionObject.hpp"
+#include "CollisionObject.hpp"
 
 namespace phy
 {

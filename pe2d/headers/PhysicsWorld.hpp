@@ -5,8 +5,6 @@
 #include <memory>
 #include <algorithm>
 
-#include <SFML/Graphics.hpp>
-
 #include "Collision.hpp"
 #include "Solver.hpp"
 
@@ -38,7 +36,6 @@ namespace phy
         void RemoveSolver(std::shared_ptr<Solver> &solver);
         
         void ResolveCollisions(float deltaTime);
-        void Draw(sf::RenderWindow &window);
     }; 
     class DynamicsWorld : public CollisionWorld
     {

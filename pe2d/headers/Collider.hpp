@@ -3,7 +3,6 @@
 #include <memory>
 #include "CollisionPoints.hpp"
 #include "Transform.hpp"
-#include <SFML/Graphics.hpp>
 
 
 namespace phy
@@ -29,7 +28,6 @@ namespace phy
             const SquareCollider *square,
             const Transform *squareTransform) const = 0;
         
-        virtual void Draw(sf::RenderWindow &window, const Transform *transform)const = 0;
     };
     class CircleCollider : public Collider
     {
@@ -60,7 +58,6 @@ namespace phy
         
         float GetRadius() const;
         void SetRadius(float radius);
-        void Draw(sf::RenderWindow &window, const Transform *transform) const override final;
     };
     class SquareCollider : public Collider
     {
@@ -91,7 +88,5 @@ namespace phy
 
         float GetSideLength() const;
         void SetSideLength(float sideLength);
-    
-        void Draw(sf::RenderWindow &window, const Transform *transform) const override final;
     };
 }

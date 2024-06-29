@@ -1,7 +1,5 @@
 /.vscode
 /build
-/thirdparty
-/out
 Demo.cpp
 SAT.hpp
 TODO.txt

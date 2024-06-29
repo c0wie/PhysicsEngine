@@ -7,8 +7,8 @@ namespace phy
     struct CollisionPoints
     {
     public:
-        Vector2 Normal; //B-A Normalized
-        float Depth; //Lenght of B-A
+        Vector2 Normal; // normalized length of vector
+        float Depth; // length of two objects overlap
         bool HasCollision;
     public:
         constexpr CollisionPoints() :

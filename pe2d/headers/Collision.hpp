@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "CollisionObject.hpp"
 #include "RigidObject.hpp"
 

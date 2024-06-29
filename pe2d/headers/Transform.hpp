@@ -9,11 +9,11 @@ namespace phy
     public:
         Vector2 position;
         Vector2 scale;
-        Vector2 rotation;
+        float rotation;
     public:
         constexpr Transform() :
-            position(Vector2{0.0f, 0.0f}), scale(Vector2{0.0f, 0.0f}), rotation(Vector2{0.0f, 0.0f}) {}
-        constexpr Transform(const Vector2 &position, const Vector2 &scale, const Vector2 &rotation) :
+            position(Vector2{0.0f, 0.0f}), scale(Vector2{0.0f, 0.0f}), rotation(0.0f) {}
+        constexpr Transform(const Vector2 &position, const Vector2 &scale, float rotation) :
             position(position), scale(scale), rotation(rotation) {}
         constexpr Transform(const Transform &other) = default;
         constexpr Transform(Transform &&other) noexcept :
@@ -21,7 +21,7 @@ namespace phy
         {
             other.position = Vector2{};
             other.scale = Vector2{};
-            other.rotation = Vector2{};
+            other.rotation = 0.0f;
         }
         constexpr Transform& operator=(const Transform &other) = default;
         constexpr Transform& operator=(Transform &&other) noexcept
@@ -35,7 +35,7 @@ namespace phy
             rotation = other.rotation;
             other.position = Vector2{};
             other.scale = Vector2{};
-            other.rotation = Vector2{};
+            other.rotation = 0.0f;
             return *this;
         }
 
@@ -44,10 +44,9 @@ namespace phy
             position.x += offset.x;
             position.y += offset.y;
         }
-        //not implemented yet
         constexpr void Rotate(float angle)
         {
-            
+            rotation += angle;
         }
     };
 }

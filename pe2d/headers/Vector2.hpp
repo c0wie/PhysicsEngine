@@ -2,7 +2,6 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
-#include <SFML/Graphics.hpp>
 #include "Assert.hpp"
 
 namespace phy
@@ -109,17 +108,4 @@ namespace phy
             return Vector2{x * (1.0f - t) + y * t};
         }
     };
-}
-// probably will delete that function
-inline phy::Vector2 MousePos(const sf::RenderWindow& window = *(sf::RenderWindow*)nullptr) 
-{
-    if(&window == nullptr)
-    {
-        return phy::Vector2{(float)sf::Mouse::getPosition().x, (float)sf::Mouse::getPosition().y};
-    }
-    else
-    {
-        sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-        return phy::Vector2{pos.x, pos.y};
-    }
 }

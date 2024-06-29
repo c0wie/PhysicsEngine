@@ -1,6 +1,5 @@
-#include "../headers/Collider.hpp"
-#include "../headers/Algo.hpp"
-#include <SFML/Graphics.hpp>
+#include "Collider.hpp"
+#include "Algo.hpp"
 namespace phy
 {
     SquareCollider::SquareCollider(float sideLength)
@@ -61,14 +60,5 @@ namespace phy
             ASSERT("SideLenth must be grater than 0");
         }
         m_SideLength = sideLength;
-    }
-    
-    void SquareCollider::Draw(sf::RenderWindow &window, const Transform *transform) const
-    {
-        sf::RectangleShape square(sf::Vector2f(m_SideLength * transform->scale.x, m_SideLength * transform->scale.y));
-        square.setOrigin(square.getSize() / 2.0f);
-        square.setFillColor(sf::Color::Red);
-        square.setPosition(transform->position.x, transform->position.y);
-        window.draw(square);
     }
 }

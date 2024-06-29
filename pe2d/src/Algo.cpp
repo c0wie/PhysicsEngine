@@ -1,6 +1,6 @@
 #include <cmath>
-#include "../headers/Algo.hpp"
-#include "../headers/Collider.hpp"
+#include "Algo.hpp"
+#include "Collider.hpp"
 
 namespace phy
 {
@@ -126,17 +126,17 @@ namespace phy
         const float &length = diff.magnitude();
         // I make assumption that it would be safest option in this situation but I don't know if any good solution is there
         // cuz I can only imagine how hard the math could be with calculating not circle sphere collision
-        float sum = A->GetRadius() * transformA->scale.x + B->GetRadius() * transformA->scale.x;
+        float sum = A->GetRadius() * transformA->scale.x + B->GetRadius() * transformB->scale.x;
 
         if(length >= sum)
         {
             return CollisionPoints();
         }
 
-        sum -= length;
+        const float depth = sum - length;
         const Vector2 &normal = diff.normalized();
         
-        return CollisionPoints{normal, sum, true};
+        return CollisionPoints{normal, depth, true};
     }
 
     CollisionPoints Algo::FindCircleSquareCollision(
@@ -145,7 +145,7 @@ namespace phy
     {
         float overlap = INF;
         const Vector2 &center = transformA->position;
-        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->position, B->GetSideLength(), transformA->scale);
+        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->position, B->GetSideLength(), transformB->scale);
         std::vector<Vector2> axesB = GetAxes(verteciesB);
         Vector2 *smallesAxis = nullptr;
         axesB.push_back(GetCircleAxis(verteciesB, center));
