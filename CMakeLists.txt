@@ -13,8 +13,11 @@ FETCHCONTENT_MAKEAVAILABLE(SFML)
 
 add_subdirectory(pe2d)
 add_subdirectory(ImGui-SFML)
-add_subdirectory(tests)
 
-add_executable(${PROJECT_NAME} Demo.cpp)
+add_executable(${PROJECT_NAME} 
+    Demo.cpp
+    tests/src/TestCollision.cpp
+)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics pe2d ImGui-SFML tests)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics pe2d ImGui-SFML)
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/tests/include")

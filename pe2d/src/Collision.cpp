@@ -1,6 +1,6 @@
 #include "Collision.hpp"
 
-namespace phy
+namespace pe2d
 {
     Collision::Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points) :
         m_ObjectA(a), m_ObjectB(b), m_Points(points) {}

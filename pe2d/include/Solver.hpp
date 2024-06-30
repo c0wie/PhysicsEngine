@@ -3,7 +3,7 @@
 #include <vector>
 #include "Collision.hpp"
 
-namespace phy
+namespace pe2d
 {
     class Solver
     {

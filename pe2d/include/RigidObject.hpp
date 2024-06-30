@@ -1,11 +1,12 @@
+#pragma once
+
 #include "CollisionObject.hpp"
 
-namespace phy
+namespace pe2d
 {
     class RigidObject : public CollisionObject
     {
     public:
-        RigidObject();
         RigidObject(std::shared_ptr<CircleCollider> collider, std::shared_ptr<Transform> transform, float trigger, 
             float mass, const Vector2 &velocity, const Vector2 &force, const Vector2 &gravity,
             bool takesGravity, float staticFriction, float dynamicFriction, float restitution);

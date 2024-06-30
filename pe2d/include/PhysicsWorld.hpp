@@ -8,7 +8,7 @@
 #include "Collision.hpp"
 #include "Solver.hpp"
 
-namespace phy
+namespace pe2d
 {
     class CollisionWorld
     {
@@ -29,6 +29,7 @@ namespace phy
         void RemoveSolver(std::shared_ptr<Solver> &solver);
         
         void ResolveCollisions(float deltaTime);
+        inline const std::vector< std::shared_ptr<CollisionObject> >GetObjects() const { return m_Objects; }
     private:
         void SolveCollisions(std::vector<Collision> &collisions, float deltaTime);
         void SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime);

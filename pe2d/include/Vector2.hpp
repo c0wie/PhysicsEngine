@@ -4,7 +4,7 @@
 #include <cmath>
 #include "Assert.hpp"
 
-namespace phy
+namespace pe2d
 {
     struct Vector2
     {

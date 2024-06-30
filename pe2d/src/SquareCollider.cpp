@@ -1,6 +1,6 @@
 #include "Collider.hpp"
 #include "Algo.hpp"
-namespace phy
+namespace pe2d
 {
     SquareCollider::SquareCollider(float sideLength)
     {

@@ -1,6 +1,6 @@
 #include "PhysicsWorld.hpp"
 
-namespace phy
+namespace pe2d
 {   
 #pragma region COLLISION_WORLD 
     void CollisionWorld::AddCollisionObject(std::shared_ptr<CollisionObject> obj)
@@ -111,7 +111,6 @@ namespace phy
                 continue;
             }
             object->SetForce( object->GetGravity() * object->GetMass() );
-            //LogCall(object->GetForce().x, " ", object->GetForce().y, "\n");
         }
     }
 
@@ -128,13 +127,12 @@ namespace phy
             const Vector2 &vel = object->GetVelocity() + object->GetForce() * deltaTime;
             LogCall(vel.x, " ", vel.y, "\n");
             const Vector2 &pos = object->GetTransform()->position + object->GetVelocity() * deltaTime;
-            //LogCall(pos.x, " ", pos.y, "\n");
 
             object->SetVelocity(vel);
             object->SetPosition(pos);
             object->SetForce(Vector2{});
         }
-        LogCall("------------------\n");
+        LogCall("Move objects\n");
     }
 #pragma endregion
 }

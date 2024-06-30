@@ -6,12 +6,11 @@
 #include "Collider.hpp"
 
 class Collision;
-namespace phy
+namespace pe2d
 {
     class CollisionObject
     {
     public:
-        CollisionObject();
         CollisionObject(const std::shared_ptr<CircleCollider> collider, const std::shared_ptr<Transform> transform, bool trigger);
         CollisionObject(const std::shared_ptr<SquareCollider> collider, const std::shared_ptr<Transform> transform, bool trigger);
         CollisionObject(const CollisionObject &other);
@@ -24,9 +23,9 @@ namespace phy
         const std::shared_ptr<Transform> GetTransform() const;
         bool IsTrigger() const;
         std::function<void(const Collision&, float)> OnCollision() const;
-        // consider checking if collider isn't pure virtual class
         void SetPosition(const Vector2 &pos);
-        void SetCollider(const std::shared_ptr<Collider> collider);
+        void SetCollider(const std::shared_ptr<SquareCollider> collider);
+        void SetCollider(const std::shared_ptr<CircleCollider> collider);
         void SetTransform(const std::shared_ptr<Transform> transform);
         void SetTrigger(bool isTrigger);
     protected:

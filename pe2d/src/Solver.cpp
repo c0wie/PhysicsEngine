@@ -1,6 +1,6 @@
 #include "Solver.hpp"
 
-namespace phy
+namespace pe2d
 {
     void PositionSolver::Solve(std::vector<Collision> &collisions, float deltaTime)
     {

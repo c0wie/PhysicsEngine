@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
     template<typename ...T>
@@ -12,7 +12,7 @@
     }
     #define LogCall(...) Print(__VA_ARGS__)
 #else
-    #define LogCall(x) 
+    #define LogCall(...) 
 #endif
 
 #define ASSERT(x) errorMessage(__FILE__, __LINE__, x);\

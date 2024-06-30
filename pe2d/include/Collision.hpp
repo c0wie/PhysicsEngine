@@ -3,7 +3,7 @@
 #include "CollisionObject.hpp"
 #include "RigidObject.hpp"
 
-namespace phy
+namespace pe2d
 {
     class Collision
     {

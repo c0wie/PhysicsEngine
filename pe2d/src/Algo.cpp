@@ -2,7 +2,7 @@
 #include "Algo.hpp"
 #include "Collider.hpp"
 
-namespace phy
+namespace pe2d
 {
     CollisionPoints Algo::FindCircleCircleCollision(
         const CircleCollider *A, const Transform *transformA,

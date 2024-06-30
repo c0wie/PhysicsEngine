@@ -5,7 +5,7 @@
 #include "Transform.hpp"
 
 
-namespace phy
+namespace pe2d
 {
     class SquareCollider;
     class CircleCollider;

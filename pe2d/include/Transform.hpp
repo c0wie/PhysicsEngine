@@ -2,7 +2,7 @@
 
 #include "Vector2.hpp"
 
-namespace phy
+namespace pe2d
 {
     struct Transform
     {

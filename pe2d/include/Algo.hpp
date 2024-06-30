@@ -6,7 +6,7 @@
 #include "CollisionPoints.hpp"
 #include "Transform.hpp"
 
-namespace phy
+namespace pe2d
 {
     class CircleCollider;
     class SquareCollider;
