@@ -2,7 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
-#include "Assert.hpp"
+#include "Utilities.hpp"
 
 namespace pe2d
 {

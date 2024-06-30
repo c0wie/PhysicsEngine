@@ -11,7 +11,7 @@ namespace test
     public:
         virtual void OnUpdate(float deltaTime) = 0;
         virtual void OnRender(sf::RenderWindow &window) = 0;
-        virtual void OnImGuiRender(sf::RenderWindow &window, const sf::Vector2i &mousePosition) = 0;
+        virtual void OnImGuiRender(sf::RenderWindow &window) = 0;
     protected:
         virtual std::shared_ptr<pe2d::CollisionObject> CreateCollisionObject(const std::string &type, float size, const pe2d::Vector2 &position,
             const pe2d::Vector2 &scale, float rotation, bool trigger) = 0;

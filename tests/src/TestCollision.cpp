@@ -3,8 +3,7 @@
 namespace test
 {
     TestCollision::TestCollision() :
-        world(),
-        showObjectEditor(false)
+        world()
     {
         world.AddCollisionObject(CreateCollisionObject("Circle", 40.0f, pe2d::Vector2{400.0f, 200.0f}));
     }
@@ -22,17 +21,100 @@ namespace test
         }
     }
 
-    void TestCollision::OnImGuiRender(sf::RenderWindow &window, const sf::Vector2i &mousePosition)
+    void TestCollision::OnImGuiRender(sf::RenderWindow &window)
     {
+        static bool showObjectEditor;
+        static bool isRigidObject;
+        static std::string name = "";
+        static float size;
+        static pe2d::Vector2 position;
+        static pe2d::Vector2 scale;
+        static float rotation;
+        static float mass;
+        static pe2d::Vector2 velocity;
+        static pe2d::Vector2 force;
+        static bool takesGravity;
+        static pe2d::Vector2 gravity;
+        static float staticFriction;
+        static float dynamicFriction;
+        static float restitution;
+
         if(ImGui::Button("Add Object"))
         {
             showObjectEditor = true;
+            isRigidObject = false;
+            name = "Square";
+            position = pe2d::Vector2{};
+            size = 0.0f;
+            scale = pe2d::Vector2{1.0f, 1.0f};
+            rotation =0.0f;
+            mass = 0.0f;
+            velocity = pe2d::Vector2{};
+            force = pe2d::Vector2{};
+            takesGravity = false;
+            gravity = pe2d::Vector2{};
+            staticFriction = 0.0f;
+            dynamicFriction = 0.0f;
+            restitution = 0.0f;
         }
         if(showObjectEditor)
         {
             ImGui::Begin("Object Editor");
-            if(ImGui::Button("Go Back"))
+            if(name == "Square")
             {
+                if( ImGui::Button("Make Circle") )
+                {
+                    name = "Circle";
+                }
+            }
+            else
+            {
+                if( ImGui::Button("Make Square") )
+                {
+                  name = "Square";
+                }
+            }
+            ImGui::InputFloat2("Position", &position.x);
+            ImGui::InputFloat("Size", &size);
+            ImGui::InputFloat2("Scale", &scale.x);
+            ImGui::InputFloat("Rotation", &rotation);
+            if( ImGui::Button("CollisionObject") )
+            {
+                isRigidObject = false;
+            }
+            ImGui::SameLine();
+            if( ImGui::Button("RigidObject") )
+            {
+                isRigidObject = true;
+            }
+            if(isRigidObject)
+            {
+                ImGui::InputFloat("Mass", &mass);
+                ImGui::InputFloat2("Velocity", &velocity.x);
+                ImGui::InputFloat2("Force", &force.x);
+                if( ImGui::Button("Takes gravity from environment"))
+                {
+                    takesGravity = !takesGravity;
+                }
+                if(!takesGravity)
+                {
+                    ImGui::InputFloat2("Gravity", &gravity.x);
+                }
+                ImGui::InputFloat("Static Friction", &staticFriction);
+                ImGui::InputFloat("Dynamic Friction", &dynamicFriction);
+                ImGui::InputFloat("Restitution", &restitution);
+            }
+            if(ImGui::Button("Create"))
+            {
+                if(isRigidObject)
+                {
+                    world.AddRigidObject(CreateRigidObject(name, size, mass, position, velocity, scale, rotation, false, gravity,
+                    takesGravity, staticFriction, dynamicFriction, restitution));
+                }
+                else
+                {
+                    world.AddCollisionObject(CreateCollisionObject(name, size, position, scale, rotation, false));
+                }
                 showObjectEditor = false;
             }
             ImGui::End();
@@ -69,12 +151,14 @@ namespace test
             auto collider = std::make_shared<pe2d::CircleCollider>(size);
             auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
                 gravity, takesGravity, staticFriction, dynamicFriction, restitution);
+            return object;
         }
         else if(type == "Square")
         {
             auto collider = std::make_shared<pe2d::SquareCollider>(size);
             auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
                 gravity, takesGravity, staticFriction, dynamicFriction, restitution);
+            return object;
         }
         ASSERT("NOT VALID TYPE OF OBJECT");
     }

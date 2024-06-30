@@ -11,7 +11,7 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1000.f, 1000.f), "DEMO");
+    sf::RenderWindow window(sf::VideoMode(1000.f, 1000.f), "DEMO", sf::Style::Titlebar | sf::Style::Close);
     ImGui::SFML::Init(window);
 
     test::TestCollision test;
@@ -44,7 +44,7 @@ int main()
 
         window.clear();
         test.OnRender(window);
-        test.OnImGuiRender(window, sf::Mouse::getPosition(window));
+        test.OnImGuiRender(window);
         ImGui::SFML::Render(window);
         
         window.display();
