@@ -11,8 +11,8 @@ namespace pe2d
     class CollisionObject
     {
     public:
-        CollisionObject(const std::shared_ptr<CircleCollider> collider, const std::shared_ptr<Transform> transform, bool trigger);
-        CollisionObject(const std::shared_ptr<SquareCollider> collider, const std::shared_ptr<Transform> transform, bool trigger);
+        CollisionObject(const std::shared_ptr<CircleCollider> collider, const Transform &transform, bool trigger);
+        CollisionObject(const std::shared_ptr<SquareCollider> collider, const Transform &transform, bool trigger);
         CollisionObject(const CollisionObject &other);
         CollisionObject(CollisionObject &&other) noexcept;
         CollisionObject& operator=(const CollisionObject &other);
@@ -20,17 +20,17 @@ namespace pe2d
         virtual ~CollisionObject() = default;
     public:
         const std::shared_ptr<Collider> GetCollider() const;
-        const std::shared_ptr<Transform> GetTransform() const;
+        Transform GetTransform() const;
         bool IsTrigger() const;
         std::function<void(const Collision&, float)> OnCollision() const;
         void SetPosition(const Vector2 &pos);
         void SetCollider(const std::shared_ptr<SquareCollider> collider);
         void SetCollider(const std::shared_ptr<CircleCollider> collider);
-        void SetTransform(const std::shared_ptr<Transform> transform);
+        void SetTransform(const Transform &transform);
         void SetTrigger(bool isTrigger);
     protected:
         std::shared_ptr<Collider> m_Collider;
-        std::shared_ptr<Transform> m_Transform;
+        Transform m_Transform;
         bool m_IsTrigger;
         //must implement functionality
         std::function<void(const Collision&, float)> m_OnCollision;

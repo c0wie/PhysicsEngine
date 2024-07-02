@@ -8,7 +8,7 @@ namespace pe2d
     {
     public:
         constexpr Transform() :
-            position(Vector2{0.0f, 0.0f}), scale(Vector2{0.0f, 0.0f}), rotation(0.0f) {}
+            position(Vector2{}), scale(Vector2{}), rotation(0.0f) {}
         constexpr Transform(const Vector2 &position, const Vector2 &scale, float rotation) :
             position(position), scale(scale), rotation(rotation) {}
         constexpr Transform(const Transform &other) = default;
@@ -45,9 +45,15 @@ namespace pe2d
         {
             rotation += angle;
         }
+        // returns rotaion in radians
+        constexpr float GetRadians() const
+        {
+            return rotation * (PI / 180.f);
+        }
     public:
         Vector2 position;
         Vector2 scale;
+        // in deegres
         float rotation;
     };
 }

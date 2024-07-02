@@ -14,19 +14,19 @@ namespace pe2d
     {
     public:
         virtual CollisionPoints TestCollision(
-            const Transform *transform,
+            const Transform &transform,
             const Collider *collider,
-            const Transform *colliderTransform) const = 0;
+            const Transform &colliderTransform) const = 0;
         
         virtual CollisionPoints TestCollision(
-            const Transform *transform,
+            const Transform &transform,
             const CircleCollider *circle,
-            const Transform *circleTransform) const = 0;
+            const Transform &circleTransform) const = 0;
         
         virtual CollisionPoints TestCollision(
-            const Transform *transform,
+            const Transform &transform,
             const SquareCollider *square,
-            const Transform *squareTransform) const = 0;
+            const Transform &squareTransform) const = 0;
         
     };
     
@@ -41,19 +41,19 @@ namespace pe2d
         CircleCollider& operator=(CircleCollider &&other) noexcept;
     public:
         CollisionPoints TestCollision(
-            const Transform *transform,
+            const Transform &transform,
             const Collider *collider,
-            const Transform *colliderTransform) const override final;
+            const Transform &colliderTransform) const override final;
         
         CollisionPoints TestCollision(
-            const Transform *transform,
+            const Transform &transform,
             const CircleCollider *circle,
-            const Transform *circleTransform) const override final;
+            const Transform &circleTransform) const override final;
 
         CollisionPoints TestCollision(
-            const Transform *transform,
+            const Transform &transform,
             const SquareCollider *square,
-            const Transform *squareTransform) const override final;
+            const Transform &squareTransform) const override final;
         
         float GetRadius() const;
         void SetRadius(float radius);
@@ -72,19 +72,19 @@ namespace pe2d
         SquareCollider& operator=(SquareCollider &&other) noexcept;
     public:
         CollisionPoints TestCollision(
-            const Transform *transform,
+            const Transform &transform,
             const Collider *collider,
-            const Transform *colliderTransform) const override final;
+            const Transform &colliderTransform) const override final;
 
         CollisionPoints TestCollision(
-            const Transform *transform,
+            const Transform &transform,
             const CircleCollider *circle,
-            const Transform *circleTransform) const override final;
+            const Transform &circleTransform) const override final;
 
         CollisionPoints TestCollision(
-            const Transform *transform,
+            const Transform &transform,
             const SquareCollider *square,
-            const Transform *squareTransform) const override final;
+            const Transform &squareTransform) const override final;
 
         float GetSideLength() const;
         void SetSideLength(float sideLength);

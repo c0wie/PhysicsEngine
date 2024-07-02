@@ -24,10 +24,6 @@ int main()
     {
         deltaTime = DT_Clock.restart().asSeconds();
 
-        if (deltaTime <= 0.0f) 
-        {
-            deltaTime = 1.0f / 60.0f; // Fallback to a default frame rate
-        }   
         sf::Event event;
         while(window.pollEvent(event))
         {

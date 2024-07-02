@@ -27,6 +27,7 @@ namespace test
             float rotation = 0.0f, bool trigger = false, const pe2d::Vector2 &gravity = pe2d::Vector2{0.0f, 9.81f},
             bool takesGravity = false, float staticFriction = 0.0f, float dynamicFriction = 0.0f, float restitution = 0.0f) override final;
 
+            void ClearObjects();
             void Draw(sf::RenderWindow &window, const std::shared_ptr<pe2d::CollisionObject> obj) const override final;
         public:
             pe2d::DynamicsWorld world;

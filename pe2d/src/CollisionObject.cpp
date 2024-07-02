@@ -2,10 +2,10 @@
 
 namespace pe2d
 {
-    CollisionObject::CollisionObject( const std::shared_ptr<CircleCollider> collider, const std::shared_ptr<Transform> transform, bool trigger) :
+    CollisionObject::CollisionObject( const std::shared_ptr<CircleCollider> collider, const Transform &transform, bool trigger) :
         m_Collider(collider), m_Transform(transform), m_IsTrigger(trigger) {}
 
-    CollisionObject::CollisionObject( const std::shared_ptr<SquareCollider> collider, const std::shared_ptr<Transform> transform, bool trigger) :
+    CollisionObject::CollisionObject( const std::shared_ptr<SquareCollider> collider, const Transform &transform, bool trigger) :
         m_Collider(collider), m_Transform(transform), m_IsTrigger(trigger) {}
 
     CollisionObject::CollisionObject(const CollisionObject &other) :
@@ -15,7 +15,7 @@ namespace pe2d
         m_Collider(other.m_Collider), m_Transform(other.m_Transform), m_IsTrigger(other.m_IsTrigger)
     {
         m_Collider = nullptr;
-        m_Transform = nullptr;
+        m_Transform = Transform{};
         m_IsTrigger = false;
     };
 
@@ -43,7 +43,7 @@ namespace pe2d
         m_IsTrigger = other.m_IsTrigger;
 
         m_Collider = nullptr;
-        m_Transform = nullptr;
+        m_Transform = Transform{};
         m_IsTrigger = false;
         return *this;
     }
@@ -53,7 +53,7 @@ namespace pe2d
         return m_Collider;
     }
 
-    const std::shared_ptr<Transform> CollisionObject::GetTransform() const
+    Transform CollisionObject::GetTransform() const
     {
         return m_Transform;
     }
@@ -70,7 +70,7 @@ namespace pe2d
 
     void CollisionObject::SetPosition(const Vector2 &pos)
     {
-        GetTransform()->position = pos;
+        GetTransform().position = pos;
     }
 
     void CollisionObject::SetCollider(const std::shared_ptr<SquareCollider> collider)
@@ -87,12 +87,9 @@ namespace pe2d
             m_Collider = collider;
         }
     }
-    void CollisionObject::SetTransform(const std::shared_ptr<Transform> transform)
+    void CollisionObject::SetTransform(const Transform &transform)
     {
-        if(transform != nullptr)
-        {
-            m_Transform = transform;
-        }
+        m_Transform = transform;
     }
 
     void CollisionObject::SetTrigger(bool trigger)

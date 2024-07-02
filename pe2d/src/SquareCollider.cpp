@@ -25,25 +25,25 @@ namespace pe2d
     }
 
     CollisionPoints SquareCollider::TestCollision(
-        const Transform *transform,
+        const Transform &transform,
         const Collider *collider,
-        const Transform *colliderTransform) const 
+        const Transform &colliderTransform) const 
     {
         return collider->TestCollision(colliderTransform, this, transform);
     }
 
     CollisionPoints SquareCollider::TestCollision(
-        const Transform *transform,
+        const Transform &transform,
         const CircleCollider *circle,
-        const Transform *circleTransform) const 
+        const Transform &circleTransform) const 
     {
         return Algo::FindSquareCircleCollision(this, transform, circle, circleTransform);
     }
 
     CollisionPoints SquareCollider::TestCollision(
-        const Transform *transform,
+        const Transform &transform,
         const SquareCollider *square,
-        const Transform *squareTransform) const 
+        const Transform &squareTransform) const 
     {
         return Algo::FindSquareSquareCollision(this, transform, square, squareTransform);
     }

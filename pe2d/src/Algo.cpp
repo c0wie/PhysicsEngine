@@ -5,15 +5,15 @@
 namespace pe2d
 {
     CollisionPoints Algo::FindCircleCircleCollision(
-        const CircleCollider *A, const Transform *transformA,
-        const CircleCollider *B, const Transform *transformB)
+        const CircleCollider *A, const Transform &transformA,
+        const CircleCollider *B, const Transform &transformB)
     {
-        Vector2 diff = transformA->position - transformB->position;
+        Vector2 diff = transformA.position - transformB.position;
         
         const float &length = diff.magnitude();
         // I make assumption that it would be safest option in this situation but I don't know if any good solution is there
         // cuz I can only imagine how hard the math could be with calculating not circle sphere collision
-        float sum = A->GetRadius() * transformA->scale.x + B->GetRadius() * transformB->scale.x;
+        float sum = A->GetRadius() * transformA.scale.x + B->GetRadius() * transformB.scale.x;
 
         if(length >= sum)
         {
@@ -27,12 +27,12 @@ namespace pe2d
     }
 
     CollisionPoints Algo::FindCircleSquareCollision(
-        const CircleCollider *A, const Transform *transformA,
-        const SquareCollider *B, const Transform *transformB)
+        const CircleCollider *A, const Transform &transformA,
+        const SquareCollider *B, const Transform &transformB)
     {
         float overlap = INF;
-        const Vector2 &center = transformA->position;
-        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->position, B->GetSideLength(), transformB->scale);
+        const Vector2 &center = transformA.position;
+        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB.position, B->GetSideLength(), transformB.scale, transformB.rotation);
         std::vector<Vector2> axesB = GetAxes(verteciesB);
         Vector2 *smallesAxis = nullptr;
         axesB.push_back(GetCircleAxis(verteciesB, center));
@@ -40,7 +40,7 @@ namespace pe2d
 
         for(int i = 0; i < axesB.size(); i++)
         {
-            Vector2 p1 = ProjectCircle(axesB[i], center, A->GetRadius() * transformA->scale.x);
+            Vector2 p1 = ProjectCircle(axesB[i], center, A->GetRadius() * transformA.scale.x);
             Vector2 p2 = Project(axesB[i], verteciesB);
 
             if(!Overlap(p1, p2))
@@ -54,13 +54,12 @@ namespace pe2d
                 smallesAxis = &axesB[i];
             }
         }
-        LogCall("Circle - Square collision\n");
         return CollisionPoints{*smallesAxis, overlap, true};
     }
 
     CollisionPoints Algo::FindSquareCircleCollision(
-        const SquareCollider *A, const Transform *transformA,
-        const CircleCollider *B, const Transform *transformB)
+        const SquareCollider *A, const Transform &transformA,
+        const CircleCollider *B, const Transform &transformB)
     {
         CollisionPoints p = FindCircleSquareCollision(B, transformB, A, transformA);
         p.Normal *= -1.0f;
@@ -68,12 +67,14 @@ namespace pe2d
     }
 
     CollisionPoints Algo::FindSquareSquareCollision(
-        const SquareCollider *A, const Transform *transformA,
-        const SquareCollider *B, const Transform *transformB)
+        const SquareCollider *A, const Transform &transformA,
+        const SquareCollider *B, const Transform &transformB)
     {
+        const float rotationA = transformA.GetRadians();
+        const float rotationB = transformB.GetRadians();
         float overlap = INF;
-        const std::vector<Vector2> verteciesA = GetSquareVertecies(transformA->position, A->GetSideLength(), transformA->scale);
-        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB->position, B->GetSideLength(), transformB->scale);
+        const std::vector<Vector2> verteciesA = GetSquareVertecies(transformA.position, A->GetSideLength(), transformA.scale, rotationA);
+        const std::vector<Vector2> verteciesB = GetSquareVertecies(transformB.position, B->GetSideLength(), transformB.scale, rotationB);
         const Vector2 *smallesAxis = nullptr;
         const std::vector<Vector2> axesA = GetAxes(verteciesA);
         const std::vector<Vector2> axesB = GetAxes(verteciesB);
@@ -182,15 +183,28 @@ namespace pe2d
         return Vector2{min, max};
     }
 
-    std::vector<Vector2> Algo::GetSquareVertecies(const Vector2 &center, float sideLength, const Vector2 &scale)
+    std::vector<Vector2> Algo::GetSquareVertecies(const Vector2 &center, float sideLength, const Vector2 &scale, float angle)
     {
-        const std::vector<Vector2> vertecies = 
+        const float cos_theta = cos(angle);
+        const float sin_theta = sin(angle);
+        std::vector<Vector2> vertecies = 
         {
             Vector2{ center.x - sideLength / 2.0f * scale.x, center.y + sideLength / 2.0f * scale.y },
             Vector2{ center.x + sideLength / 2.0f * scale.x, center.y + sideLength / 2.0f * scale.y },
             Vector2{ center.x + sideLength / 2.0f * scale.x, center.y - sideLength / 2.0f * scale.y },
             Vector2{ center.x - sideLength / 2.0f * scale.x, center.y - sideLength / 2.0f * scale.y }
         };
+
+        for(int i  = 0; i < vertecies.size(); i++)
+        {
+            Vector2 &vertex = vertecies[i];
+            float translatedX = vertex.x - center.x;
+            float translatedY = vertex.y - center.y;
+
+            float rotatedX = translatedX * cos_theta - translatedY * sin_theta;
+            float rotatedY = translatedX * sin_theta + translatedY *cos_theta;
+            vertex = Vector2{rotatedX + center.x, rotatedY + center.y};
+        }
         return vertecies;
     }
 

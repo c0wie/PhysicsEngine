@@ -24,8 +24,6 @@ namespace pe2d
         void RemoveObject(std::shared_ptr<CollisionObject> object);
 
         void AddSolver(std::shared_ptr<Solver> &solver);
-        void AddSolver(std::shared_ptr<PositionSolver> &solver);
-        void AddSolver(std::shared_ptr<ImpulseSolver> &solver);
         void RemoveSolver(std::shared_ptr<Solver> &solver);
         
         void ResolveCollisions(float deltaTime);
@@ -54,6 +52,7 @@ namespace pe2d
         void ApplyGravity();
         void MoveObjects(float deltaTime);
     private:
-        static constexpr float m_Gravity = 98.1f;
+        static constexpr float m_GRAVITY = 98.1f;
+        static constexpr float m_MAX_VELOCITY = 1500.0f;
     };
 }

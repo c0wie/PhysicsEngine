@@ -2,13 +2,13 @@
 
 namespace pe2d
 {
-    RigidObject::RigidObject(std::shared_ptr<CircleCollider> collider, std::shared_ptr<Transform> transform, float trigger, 
+    RigidObject::RigidObject(std::shared_ptr<CircleCollider> collider, const Transform &transform, float trigger, 
             float mass, const Vector2 &velocity, const Vector2 &force, const Vector2 &gravity,
             bool takesGravity, float staticFriction, float dynamicFriction, float restitution) :
         CollisionObject(collider, transform, trigger), m_Mass(mass), m_Velocity(velocity), m_Force(force), m_Gravity(gravity),
         m_TakesGravity(takesGravity), m_StaticFriction(staticFriction), m_DynamicFriction(dynamicFriction), m_Restitution(restitution) {}
     
-    RigidObject::RigidObject(std::shared_ptr<SquareCollider> collider, std::shared_ptr<Transform> transform, float trigger, 
+    RigidObject::RigidObject(std::shared_ptr<SquareCollider> collider, const Transform &transform, float trigger, 
             float mass, const Vector2 &velocity, const Vector2 &force, const Vector2 &gravity,
             bool takesGravity, float staticFriction, float dynamicFriction, float restitution) :
         CollisionObject(collider, transform, trigger), m_Mass(mass), m_Velocity(velocity), m_Force(force), m_Gravity(gravity),
@@ -25,7 +25,7 @@ namespace pe2d
         m_DynamicFriction(other.m_DynamicFriction), m_Restitution(other.m_Restitution) 
     {
         other.m_Collider = nullptr;
-        other.m_Transform = nullptr;
+        other.m_Transform = Transform{};
         other.m_IsTrigger = false;
         other.m_Mass = 0.0f;
         other.m_Velocity = Vector2{};
@@ -76,7 +76,7 @@ namespace pe2d
         m_Restitution = other.m_Restitution;
 
         other.m_Collider = nullptr;
-        other.m_Transform = nullptr;
+        other.m_Transform = Transform{};
         other.m_IsTrigger = false;
         other.m_Mass = 0.0f;
         other.m_Velocity = Vector2{};

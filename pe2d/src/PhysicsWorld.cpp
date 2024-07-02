@@ -5,7 +5,10 @@ namespace pe2d
 #pragma region COLLISION_WORLD 
     void CollisionWorld::AddCollisionObject(std::shared_ptr<CollisionObject> obj)
     {
-        m_Objects.push_back(obj);
+        if(obj != nullptr)
+        {
+            m_Objects.push_back(obj);
+        }
     }
 
     void CollisionWorld::RemoveObject(std::shared_ptr<CollisionObject> object)
@@ -15,17 +18,10 @@ namespace pe2d
 
     void CollisionWorld::AddSolver(std::shared_ptr<Solver> &solver)
     {
-        m_Solvers.push_back(solver);
-    }
-    
-    void CollisionWorld::AddSolver(std::shared_ptr<PositionSolver> &solver)
-    {
-        m_Solvers.push_back(solver);
-    }
-
-    void CollisionWorld::AddSolver(std::shared_ptr<ImpulseSolver> &solver)
-    {
-        m_Solvers.push_back(solver);
+        if(solver != nullptr)
+        {
+            m_Solvers.push_back(solver);
+        }
     }
 
     void CollisionWorld::RemoveSolver(std::shared_ptr<Solver> &solver)
@@ -54,7 +50,7 @@ namespace pe2d
 
 
                 CollisionPoints points = m_Objects[i]->GetCollider()->TestCollision
-                    (m_Objects[i]->GetTransform().get(), m_Objects[j]->GetCollider().get(), m_Objects[j]->GetTransform().get());
+                    (m_Objects[i]->GetTransform(), m_Objects[j]->GetCollider().get(), m_Objects[j]->GetTransform());
 
                 if(points.HasCollision)
                 {
@@ -124,15 +120,23 @@ namespace pe2d
             {
                 continue;
             }
-            const Vector2 &vel = object->GetVelocity() + object->GetForce() * deltaTime;
+            
+            Vector2 vel = object->GetVelocity() + object->GetForce() * deltaTime;
             LogCall(vel.x, " ", vel.y, "\n");
-            const Vector2 &pos = object->GetTransform()->position + object->GetVelocity() * deltaTime;
+            if(vel.x >= m_MAX_VELOCITY)
+            {
+                vel.x = m_MAX_VELOCITY;
+            }
+            if(vel.y >= m_MAX_VELOCITY)
+            {
+                vel.y = m_MAX_VELOCITY;
+            }
+            const Vector2 &pos = object->GetTransform().position + object->GetVelocity() * deltaTime;
 
             object->SetVelocity(vel);
             object->SetPosition(pos);
             object->SetForce(Vector2{});
         }
-        LogCall("Move objects\n");
     }
 #pragma endregion
 }

@@ -35,7 +35,7 @@ namespace pe2d
             return *this;
         }
     public:
-        Vector2 Normal; // normalized length of vector
+        Vector2 Normal; // normalized length of vector B-A
         float Depth; // length of two objects overlap
         bool HasCollision;
     };

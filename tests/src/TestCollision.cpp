@@ -5,7 +5,10 @@ namespace test
     TestCollision::TestCollision() :
         world()
     {
-        world.AddCollisionObject(CreateCollisionObject("Circle", 40.0f, pe2d::Vector2{400.0f, 200.0f}));
+        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
+        world.AddSolver(solver);
+        auto object = CreateCollisionObject("Square", 100.0f, pe2d::Vector2{500.0f, 900.0f}, pe2d::Vector2{10.0f, 1.0f});
+        world.AddCollisionObject(object);
     }
 
     void TestCollision::OnUpdate(float deltaTime)
@@ -25,10 +28,10 @@ namespace test
     {
         static bool showObjectEditor;
         static bool isRigidObject;
-        static std::string name = "";
+        static std::string name = "Square";
         static float size;
         static pe2d::Vector2 position;
-        static pe2d::Vector2 scale;
+        static pe2d::Vector2 scale = pe2d::Vector2{1.0f, 1.0f};
         static float rotation;
         static float mass;
         static pe2d::Vector2 velocity;
@@ -39,23 +42,13 @@ namespace test
         static float dynamicFriction;
         static float restitution;
 
-        if(ImGui::Button("Add Object"))
+        if( ImGui::Button("Add Object") )
         {
             showObjectEditor = true;
-            isRigidObject = false;
-            name = "Square";
-            position = pe2d::Vector2{};
-            size = 0.0f;
-            scale = pe2d::Vector2{1.0f, 1.0f};
-            rotation =0.0f;
-            mass = 0.0f;
-            velocity = pe2d::Vector2{};
-            force = pe2d::Vector2{};
-            takesGravity = false;
-            gravity = pe2d::Vector2{};
-            staticFriction = 0.0f;
-            dynamicFriction = 0.0f;
-            restitution = 0.0f;
+        }
+        if( ImGui::Button("Clear Objects") )
+        {
+            ClearObjects();
         }
         if(showObjectEditor)
         {
@@ -104,7 +97,24 @@ namespace test
                 ImGui::InputFloat("Dynamic Friction", &dynamicFriction);
                 ImGui::InputFloat("Restitution", &restitution);
             }
-            if(ImGui::Button("Create"))
+            if( ImGui::Button("Reset Variables") )
+            {
+                isRigidObject = false;
+                name = "Square";
+                position = pe2d::Vector2{};
+                size = 0.0f;
+                scale = pe2d::Vector2{1.0f, 1.0f};
+                rotation = 0.0f;
+                mass = 0.0f;
+                velocity = pe2d::Vector2{};
+                force = pe2d::Vector2{};
+                takesGravity = false;
+                gravity = pe2d::Vector2{};
+                staticFriction = 0.0f;
+                dynamicFriction = 0.0f;
+                restitution = 0.0f;
+            }
+            if( ImGui::Button("Create") )
             {
                 if(isRigidObject)
                 {
@@ -124,7 +134,7 @@ namespace test
     std::shared_ptr<pe2d::CollisionObject> TestCollision::CreateCollisionObject(const std::string &type, float size, const pe2d::Vector2 &position,
             const pe2d::Vector2 &scale, float rotation, bool trigger)
     {
-        std::shared_ptr<pe2d::Transform> transform = std::make_shared<pe2d::Transform>(position, scale, rotation);
+        const pe2d::Transform transform = pe2d::Transform{position, scale, rotation};
         
         if(type == "Circle")
         {
@@ -145,7 +155,7 @@ namespace test
             const pe2d::Vector2 &velocity, const pe2d::Vector2 &scale, float rotation, bool trigger, const pe2d::Vector2 &gravity,
             bool takesGravity, float staticFriction, float dynamicFriction, float restitution)
     {
-        std::shared_ptr<pe2d::Transform> transform = std::make_shared<pe2d::Transform>(position, scale, rotation);
+        const pe2d::Transform transform = pe2d::Transform{position, scale, rotation};
         if(type == "Circle")
         {
             auto collider = std::make_shared<pe2d::CircleCollider>(size);
@@ -163,13 +173,23 @@ namespace test
         ASSERT("NOT VALID TYPE OF OBJECT");
     }
 
+    void TestCollision::ClearObjects()
+    {
+        auto objects = world.GetObjects();
+        for(int i = 1; i < objects.size(); i++)
+        {
+            world.RemoveObject(objects[i]);
+        }
+    }
+
     void TestCollision::Draw(sf::RenderWindow &window, const std::shared_ptr<pe2d::CollisionObject> obj) const
     {
-        const sf::Vector2f position = sf::Vector2f{obj->GetTransform()->position.x, obj->GetTransform()->position.y};
+        const sf::Vector2f position = sf::Vector2f{obj->GetTransform().position.x, obj->GetTransform().position.y};
         std::shared_ptr<pe2d::CircleCollider> circleCollider = std::dynamic_pointer_cast<pe2d::CircleCollider>(obj->GetCollider());
 
         if(circleCollider != nullptr)
         {
+            float radius = circleCollider->GetRadius() * obj->GetTransform().scale.x;
             sf::CircleShape circle(circleCollider->GetRadius());
             circle.setOrigin(circle.getRadius(), circle.getRadius());
             circle.setPosition(position);
@@ -179,10 +199,12 @@ namespace test
         else
         {
             std::shared_ptr<pe2d::SquareCollider> squareCollider = std::dynamic_pointer_cast<pe2d::SquareCollider>(obj->GetCollider());
-            const sf::Vector2f size{squareCollider->GetSideLength(), squareCollider->GetSideLength()};
+            const sf::Vector2f size{ squareCollider->GetSideLength() * obj->GetTransform().scale.x,
+                                     squareCollider->GetSideLength() * obj->GetTransform().scale.y };
             sf::RectangleShape square(size);
             square.setOrigin(square.getSize() / 2.0f);
             square.setPosition(position);
+            square.setRotation(obj->GetTransform().rotation);
             square.setFillColor(sf::Color::Red);
             window.draw(square);
         }
