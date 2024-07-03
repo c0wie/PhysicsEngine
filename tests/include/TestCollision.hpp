@@ -15,7 +15,7 @@ namespace test
         public:
             TestCollision();
         public:
-            void OnUpdate(float deltaTime) override final;
+            void OnUpdate(float deltaTime, const sf::Vector2i &mousePos) override final;
             void OnRender(sf::RenderWindow &window) override final;
             void OnImGuiRender(sf::RenderWindow &window) override final;
         private:

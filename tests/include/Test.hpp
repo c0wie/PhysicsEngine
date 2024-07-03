@@ -9,7 +9,7 @@ namespace test
     public:
         Test() = default;
     public:
-        virtual void OnUpdate(float deltaTime) = 0;
+        virtual void OnUpdate(float deltaTime, const sf::Vector2i &mousePos) = 0;
         virtual void OnRender(sf::RenderWindow &window) = 0;
         virtual void OnImGuiRender(sf::RenderWindow &window) = 0;
     protected:

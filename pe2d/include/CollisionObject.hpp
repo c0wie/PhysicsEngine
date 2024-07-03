@@ -20,14 +20,17 @@ namespace pe2d
         virtual ~CollisionObject() = default;
     public:
         const std::shared_ptr<Collider> GetCollider() const;
-        Transform GetTransform() const;
-        bool IsTrigger() const;
+        constexpr Transform GetTransform() const { return m_Transform;}
+        constexpr bool IsTrigger() const { return m_IsTrigger; }
         std::function<void(const Collision&, float)> OnCollision() const;
-        void SetPosition(const Vector2 &pos);
+        constexpr void SetPosition(const Vector2 &pos) { m_Transform.position = pos; }
         void SetCollider(const std::shared_ptr<SquareCollider> collider);
         void SetCollider(const std::shared_ptr<CircleCollider> collider);
-        void SetTransform(const Transform &transform);
-        void SetTrigger(bool isTrigger);
+        constexpr void SetTransform(const Transform &transform) { m_Transform = transform; }
+        constexpr void SetTrigger(bool isTrigger) { m_IsTrigger = isTrigger; }
+
+        constexpr void Move(const Vector2 &offset) { m_Transform.Move(offset); }
+        constexpr void Rotate(float angle) { m_Transform.Rotate(angle); }
     protected:
         std::shared_ptr<Collider> m_Collider;
         Transform m_Transform;

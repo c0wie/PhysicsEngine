@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
     template<typename ...T>

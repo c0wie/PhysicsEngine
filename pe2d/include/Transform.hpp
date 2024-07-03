@@ -39,7 +39,6 @@ namespace pe2d
         {
             position.x += offset.x;
             position.y += offset.y;
-        
         }
         constexpr void Rotate(float angle)
         {

@@ -9,11 +9,18 @@ namespace test
         world.AddSolver(solver);
         auto object = CreateCollisionObject("Square", 100.0f, pe2d::Vector2{500.0f, 900.0f}, pe2d::Vector2{10.0f, 1.0f});
         world.AddCollisionObject(object);
+        auto sqr = CreateCollisionObject("Square", 100.0f, pe2d::Vector2{});
+        world.AddCollisionObject(sqr);
     }
 
-    void TestCollision::OnUpdate(float deltaTime)
+    void TestCollision::OnUpdate(float deltaTime, const sf::Vector2i &mousePos)
     {
         world.Step(deltaTime);
+        auto &object = world.GetObjects()[1];
+        const pe2d::Vector2 s = object->GetTransform().position;
+        const pe2d::Vector2 end = pe2d::Vector2{mousePos.x, mousePos.y};
+        const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 16.0f * deltaTime);
+        object->SetPosition(position);
     }
 
     void TestCollision::OnRender(sf::RenderWindow &window)
@@ -50,6 +57,7 @@ namespace test
         {
             ClearObjects();
         }
+        ImGui::Text("Number of objects: %i", world.GetObjects().size());
         if(showObjectEditor)
         {
             ImGui::Begin("Object Editor");
@@ -176,7 +184,7 @@ namespace test
     void TestCollision::ClearObjects()
     {
         auto objects = world.GetObjects();
-        for(int i = 1; i < objects.size(); i++)
+        for(int i = 2; i < objects.size(); i++)
         {
             world.RemoveObject(objects[i]);
         }

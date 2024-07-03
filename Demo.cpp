@@ -36,7 +36,7 @@ int main()
 
         sf::Time clock = sf::seconds(deltaTime);
         ImGui::SFML::Update(window, clock);
-        test.OnUpdate(deltaTime);
+        test.OnUpdate(deltaTime, sf::Mouse::getPosition(window));
 
         window.clear();
         test.OnRender(window);
