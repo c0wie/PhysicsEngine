@@ -79,8 +79,21 @@ namespace pe2d
         }
     }
 
-    void CollisionWorld::SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime)
+    void CollisionWorld::SendCollisionCallbacks(const std::vector<Collision> &collisions, float deltaTime)
     {
+        for(int i = 0; i < collisions.size(); i++)
+        {
+            auto callbackA = collisions[i].GetObjectA()->OnCollision();
+            auto callbackB = collisions[i].GetObjectB()->OnCollision();
+            if(callbackA)
+            {
+                callbackA( collisions[i], deltaTime );
+            }
+            if(callbackB)
+            {
+                callbackB( collisions[i], deltaTime );
+            }
+        }
     }
 #pragma endregion
 
@@ -96,6 +109,7 @@ namespace pe2d
         ResolveCollisions(deltaTime);
         MoveObjects(deltaTime);
     }
+    
     void DynamicsWorld::ApplyGravity()
     {   
         for(int i = 0; i < m_Objects.size(); i++)
@@ -122,16 +136,9 @@ namespace pe2d
             }
             
             Vector2 vel = object->GetVelocity() + object->GetForce() * deltaTime;
-            LogCall(vel.x, " ", vel.y, "\n");
-            if(vel.x >= m_MAX_VELOCITY)
-            {
-                vel.x = m_MAX_VELOCITY;
-            }
-            if(vel.y >= m_MAX_VELOCITY)
-            {
-                vel.y = m_MAX_VELOCITY;
-            }
-            const Vector2 &pos = object->GetTransform().position + object->GetVelocity() * deltaTime;
+            vel.x = vel.x < m_MAX_VELOCITY? vel.x : m_MAX_VELOCITY;
+            vel.y = vel.y < m_MAX_VELOCITY? vel.y : m_MAX_VELOCITY;
+            const Vector2 &pos = object->GetPosition() + object->GetVelocity() * deltaTime;
 
             object->SetVelocity(vel);
             object->SetPosition(pos);

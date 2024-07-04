@@ -17,8 +17,8 @@ namespace pe2d
         Collision& operator=(const Collision &other) ;
         Collision& operator=(Collision &&other) noexcept;
     public:
-        std::shared_ptr<CollisionObject> GetCollisionObjectA() const;
-        std::shared_ptr<CollisionObject> GetCollisionObjectB() const;
+        std::shared_ptr<CollisionObject> GetObjectA() const;
+        std::shared_ptr<CollisionObject> GetObjectB() const;
         const CollisionPoints& GetPoints() const;
         void SetCollisionObjectA(const std::shared_ptr<CollisionObject> a);
         void SetCollisionObjectB(const std::shared_ptr<CollisionObject> b);

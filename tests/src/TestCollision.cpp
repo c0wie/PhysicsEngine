@@ -147,13 +147,13 @@ namespace test
         if(type == "Circle")
         {
             auto collider = std::make_shared<pe2d::CircleCollider>(size);
-            std::shared_ptr<pe2d::CollisionObject> object = std::make_shared<pe2d::CollisionObject>(collider, transform, trigger);
+            std::shared_ptr<pe2d::CollisionObject> object = std::make_shared<pe2d::CollisionObject>(collider, transform, trigger, nullptr);
             return object;
         }
         else if(type == "Square")
         {
             auto collider = std::make_shared<pe2d::SquareCollider>(size);
-            std::shared_ptr<pe2d::CollisionObject> object = std::make_shared<pe2d::CollisionObject>(collider, transform, trigger);
+            std::shared_ptr<pe2d::CollisionObject> object = std::make_shared<pe2d::CollisionObject>(collider, transform, trigger, nullptr);
             return object;
         }
         ASSERT("NOT VALID TYPE OF OBJECT");
@@ -164,17 +164,20 @@ namespace test
             bool takesGravity, float staticFriction, float dynamicFriction, float restitution)
     {
         const pe2d::Transform transform = pe2d::Transform{position, scale, rotation};
+        auto myLambda = [](const pe2d::Collision& collision, float deltaTime) {
+            std::cout << "callback\n";
+        };
         if(type == "Circle")
         {
             auto collider = std::make_shared<pe2d::CircleCollider>(size);
-            auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
+            auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, myLambda, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
                 gravity, takesGravity, staticFriction, dynamicFriction, restitution);
             return object;
         }
         else if(type == "Square")
         {
             auto collider = std::make_shared<pe2d::SquareCollider>(size);
-            auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
+            auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, myLambda, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
                 gravity, takesGravity, staticFriction, dynamicFriction, restitution);
             return object;
         }

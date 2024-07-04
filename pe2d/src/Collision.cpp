@@ -46,12 +46,12 @@ namespace pe2d
         return *this;
     }
 
-    std::shared_ptr<CollisionObject> Collision::GetCollisionObjectA() const
+    std::shared_ptr<CollisionObject> Collision::GetObjectA() const
     {
         return m_ObjectA;
     }
 
-    std::shared_ptr<CollisionObject> Collision::GetCollisionObjectB() const
+    std::shared_ptr<CollisionObject> Collision::GetObjectB() const
     {
         return m_ObjectB;
     }

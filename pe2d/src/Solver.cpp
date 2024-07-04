@@ -12,12 +12,12 @@ namespace pe2d
                 continue;
             }
 
-            auto objA = std::dynamic_pointer_cast<RigidObject>( collision.GetCollisionObjectA() );
-            auto objB = std::dynamic_pointer_cast<RigidObject>( collision.GetCollisionObjectB() );
+            auto objA = std::dynamic_pointer_cast<RigidObject>( collision.GetObjectA() );
+            auto objB = std::dynamic_pointer_cast<RigidObject>( collision.GetObjectB() );
             const float massA = objA? objA->GetMass() : 0.0f;
             const float massB = objB? objB->GetMass() : 0.0f;
-            const Vector2 &positionA = collision.GetCollisionObjectA()->GetTransform().position;
-            const Vector2 &positionB = collision.GetCollisionObjectB()->GetTransform().position;
+            const Vector2 &positionA = collision.GetObjectA()->GetPosition();
+            const Vector2 &positionB = collision.GetObjectB()->GetPosition();
             const Vector2 &normal = points.Normal;
             
             Vector2 MTV = normal * points.Depth;
@@ -45,12 +45,12 @@ namespace pe2d
                     MTVA = MTV * (massB / totalMass);
                     MTVB = MTV * (massA / totalMass);
                 }
-                collision.GetCollisionObjectA()->Move(MTVA);
-                collision.GetCollisionObjectB()->Move(MTVB * -1);
+                collision.GetObjectA()->Move(MTVA);
+                collision.GetObjectB()->Move(MTVB * -1);
             }
             else
             {
-                collision.GetCollisionObjectA()->Move(MTV);
+                collision.GetObjectA()->Move(MTV);
             }
         }
     }

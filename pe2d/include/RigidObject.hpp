@@ -8,11 +8,11 @@ namespace pe2d
     {
     public:
         RigidObject(std::shared_ptr<CircleCollider> collider, const Transform &transform, float trigger, 
-            float mass, const Vector2 &velocity, const Vector2 &force, const Vector2 &gravity,
-            bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
+            std::function<void(Collision, float)> collisionCallback, float mass, const Vector2 &velocity, const Vector2 &force,
+            const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
         RigidObject(std::shared_ptr<SquareCollider> collider, const Transform &transform, float trigger, 
-            float mass, const Vector2 &velocity, const Vector2 &force, const Vector2 &gravity,
-            bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
+            std::function<void(Collision, float)> collisionCallback, float mass, const Vector2 &velocity, const Vector2 &force,
+            const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
         RigidObject(const RigidObject &other);
         RigidObject(RigidObject &&other);
         RigidObject& operator=(const RigidObject &other);
