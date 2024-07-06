@@ -80,7 +80,7 @@ namespace pe2d
         // returns normalized vector
         constexpr Vector2 normalized() const
         {
-            float length = sqrt(pow(x, 2) + pow(y, 2));
+            float length = magnitude();
             return Vector2 {x / length, y / length};
         }
         // returns dot product of two vectors;

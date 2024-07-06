@@ -44,6 +44,7 @@ namespace pe2d
         // returns rotaion in radians
         constexpr float GetRadians() const { return rotation * (PI / 180.0f); }
     public:
+        //center of object
         Vector2 position;
         Vector2 scale;
         // in deegres

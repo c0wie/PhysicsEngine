@@ -9,18 +9,17 @@ namespace test
         world.AddSolver(solver);
         auto object = CreateCollisionObject("Square", 100.0f, pe2d::Vector2{500.0f, 900.0f}, pe2d::Vector2{10.0f, 1.0f});
         world.AddCollisionObject(object);
-        auto sqr = CreateCollisionObject("Square", 100.0f, pe2d::Vector2{});
+        auto sqr = CreateCollisionObject("Square", 100.0f, pe2d::Vector2{500.0f, 500.0f}, pe2d::Vector2{1.0f, 1.0f}, 15.0f);
         world.AddCollisionObject(sqr);
     }
 
     void TestCollision::OnUpdate(float deltaTime, const sf::Vector2i &mousePos)
     {
-        world.Step(deltaTime);
-        auto &object = world.GetObjects()[1];
-        const pe2d::Vector2 s = object->GetTransform().position;
-        const pe2d::Vector2 end = pe2d::Vector2{mousePos.x, mousePos.y};
+        const pe2d::Vector2 s = world.GetObjects()[1]->GetPosition();
+        const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
         const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 16.0f * deltaTime);
-        object->SetPosition(position);
+        world.GetObjects()[1]->SetPosition(position);
+        world.Step(deltaTime);
     }
 
     void TestCollision::OnRender(sf::RenderWindow &window)
@@ -122,16 +121,17 @@ namespace test
                 dynamicFriction = 0.0f;
                 restitution = 0.0f;
             }
+            
             if( ImGui::Button("Create") )
             {
                 if(isRigidObject)
                 {
-                    world.AddRigidObject(CreateRigidObject(name, size, mass, position, velocity, scale, rotation, false, gravity,
-                    takesGravity, staticFriction, dynamicFriction, restitution));
+                    world.AddRigidObject( CreateRigidObject(name, size, mass, position, velocity, scale, rotation, false, gravity,
+                    takesGravity, staticFriction, dynamicFriction, restitution) );
                 }
                 else
                 {
-                    world.AddCollisionObject(CreateCollisionObject(name, size, position, scale, rotation, false));
+                    world.AddCollisionObject( CreateCollisionObject(name, size, position, scale, rotation, false) );
                 }
                 showObjectEditor = false;
             }
@@ -142,8 +142,7 @@ namespace test
     std::shared_ptr<pe2d::CollisionObject> TestCollision::CreateCollisionObject(const std::string &type, float size, const pe2d::Vector2 &position,
             const pe2d::Vector2 &scale, float rotation, bool trigger)
     {
-        const pe2d::Transform transform = pe2d::Transform{position, scale, rotation};
-        
+        const pe2d::Transform transform = pe2d::Transform{ position, scale, rotation };
         if(type == "Circle")
         {
             auto collider = std::make_shared<pe2d::CircleCollider>(size);
@@ -164,20 +163,17 @@ namespace test
             bool takesGravity, float staticFriction, float dynamicFriction, float restitution)
     {
         const pe2d::Transform transform = pe2d::Transform{position, scale, rotation};
-        auto myLambda = [](const pe2d::Collision& collision, float deltaTime) {
-            std::cout << "callback\n";
-        };
         if(type == "Circle")
         {
             auto collider = std::make_shared<pe2d::CircleCollider>(size);
-            auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, myLambda, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
+            auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, nullptr, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
                 gravity, takesGravity, staticFriction, dynamicFriction, restitution);
             return object;
         }
         else if(type == "Square")
         {
             auto collider = std::make_shared<pe2d::SquareCollider>(size);
-            auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, myLambda, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
+            auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, nullptr, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
                 gravity, takesGravity, staticFriction, dynamicFriction, restitution);
             return object;
         }

@@ -35,7 +35,7 @@ namespace pe2d
         static std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertecies);
         static Vector2 Project(const Vector2 &axis, const std::vector<Vector2> &vertecies);
         static Vector2 ProjectCircle(const Vector2 &axis, const Vector2 &circleCenter, float radius);
-        //angle have to be in radians
+        static void RotateVertecies(std::vector<Vector2> &vertecies, const Vector2 &center, float angle);
         static std::vector<Vector2> GetSquareVertecies(const Vector2 &center, float sideLength, const Vector2 &scale, float angle);
         static Vector2 GetCircleAxis(const std::vector<Vector2> vertecies, const Vector2 & circleCenter);
     public:

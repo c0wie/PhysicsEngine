@@ -27,16 +27,34 @@ namespace pe2d
         constexpr float GetRotation() const { return m_Transform.rotation; }
         constexpr Transform GetTransform() const { return m_Transform; }
         constexpr bool IsTrigger() const { return m_IsTrigger; }
-        std::function<void(Collision, float)> OnCollision() const;
+        std::function<void(Collision, float)> OnCollision() const { return m_OnCollision; }
         
         constexpr void SetPosition(const Vector2 &pos) { m_Transform.position = pos; }
-        constexpr void SetScale(const Vector2 &scale) { m_Transform.scale = scale; } 
-        constexpr void SetRotation(float rotation) { m_Transform.rotation = rotation; }
-        void SetCollider(const std::shared_ptr<SquareCollider> collider);
-        void SetCollider(const std::shared_ptr<CircleCollider> collider);
+        constexpr void SetScale(const Vector2 &scale) 
+        { 
+            if(scale.x > 0.0f && scale.y > 0.0f)
+            {
+                m_Transform.scale = scale; 
+            }
+        } 
+        constexpr void SetRotation(float angle) { m_Transform.rotation = angle; }
+        void SetCollider(const std::shared_ptr<SquareCollider> collider)
+        {
+            if(collider)
+            {
+                m_Collider = collider;
+            }
+        }
+        void SetCollider(const std::shared_ptr<CircleCollider> collider)
+        {
+            if(collider)
+            {
+                m_Collider = collider;
+            }
+        }
         constexpr void SetTransform(const Transform &transform) { m_Transform = transform; }
         constexpr void SetTrigger(bool isTrigger) { m_IsTrigger = isTrigger; }
-        inline void SetCollisionCallback(std::function<void(Collision, float)> collisionCallback) { m_OnCollision = collisionCallback; }
+        void SetCollisionCallback(std::function<void(Collision, float)> collisionCallback) { m_OnCollision = collisionCallback; }
 
         constexpr void Move(const Vector2 &offset) { m_Transform.Move(offset); }
         constexpr void Rotate(float angle) { m_Transform.Rotate(angle); }

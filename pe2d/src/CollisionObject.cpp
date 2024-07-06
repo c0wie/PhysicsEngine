@@ -53,25 +53,4 @@ namespace pe2d
         m_OnCollision = nullptr;
         return *this;
     }
-
-    void CollisionObject::SetCollider(const std::shared_ptr<SquareCollider> collider)
-    {
-        if(collider != nullptr)
-        {
-            m_Collider = collider;
-        }
-    }
-
-    void CollisionObject::SetCollider(const std::shared_ptr<CircleCollider> collider)
-    {
-        if(collider != nullptr)
-        {
-            m_Collider = collider;
-        }
-    }
-
-    std::function<void(Collision, float)> CollisionObject::OnCollision() const 
-    {
-        return m_OnCollision;
-    }
 }

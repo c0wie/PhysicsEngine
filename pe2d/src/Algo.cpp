@@ -15,7 +15,7 @@ namespace pe2d
         // cuz I can only imagine how hard the math could be with calculating not circle sphere collision
         float sum = A->GetRadius() * transformA.scale.x + B->GetRadius() * transformB.scale.x;
 
-        if(length >= sum)
+        if(length > sum)
         {
             return CollisionPoints();
         }
@@ -78,10 +78,10 @@ namespace pe2d
         const Vector2 *smallesAxis = nullptr;
         const std::vector<Vector2> axesA = GetAxes(verteciesA);
         const std::vector<Vector2> axesB = GetAxes(verteciesB);
-        for(int i = 0; i < axesA.size(); i++)
+        for(const Vector2 &axis : axesA)
         {
-            Vector2 p1 = Project(axesA[i], verteciesA);
-            Vector2 p2 = Project(axesA[i], verteciesB);
+            Vector2 p1 = Project(axis, verteciesA);
+            Vector2 p2 = Project(axis, verteciesB);
 
             if(!Overlap(p1, p2))
             {
@@ -91,14 +91,14 @@ namespace pe2d
             if(o < overlap)
             {
                 overlap = o;
-                smallesAxis = &axesA[i];
+                smallesAxis = &axis;
             }
         }
 
-        for(int i = 0; i < axesB.size(); i++)
+        for(const Vector2 &axis : axesB)
         {
-            Vector2 p1 = Project(axesB[i], verteciesA);
-            Vector2 p2 = Project(axesB[i], verteciesB);
+            Vector2 p1 = Project(axis, verteciesA);
+            Vector2 p2 = Project(axis, verteciesB);
 
             if(!Overlap(p1, p2))
             {
@@ -108,10 +108,9 @@ namespace pe2d
             if(o < overlap)
             {
                 overlap = o;
-                smallesAxis = &axesB[i];
+                smallesAxis = &axis;
             }
         }
-        
         return CollisionPoints{*smallesAxis, overlap, true};
     }
 
@@ -183,10 +182,23 @@ namespace pe2d
         return Vector2{min, max};
     }
 
+    void Algo::RotateVertecies(std::vector<Vector2> &vertecies, const Vector2 &center, float angle)
+    {
+        const float cosAngle = cos(angle);
+        const float sinAngle = sin(angle);
+        for(Vector2 &vertex : vertecies)
+        {
+            const float translatedX = vertex.x - center.x;
+            const float translatedY = vertex.y - center.y;
+
+            const float rotatedX = translatedX * cosAngle - translatedY * sinAngle;
+            const float rotatedY = translatedX * sinAngle + translatedY * cosAngle;
+            vertex = Vector2{rotatedX + center.x, rotatedY + center.y};
+        }
+    }
+
     std::vector<Vector2> Algo::GetSquareVertecies(const Vector2 &center, float sideLength, const Vector2 &scale, float angle)
     {
-        const float cos_theta = cos(angle);
-        const float sin_theta = sin(angle);
         std::vector<Vector2> vertecies = 
         {
             Vector2{ center.x - sideLength / 2.0f * scale.x, center.y + sideLength / 2.0f * scale.y },
@@ -194,17 +206,7 @@ namespace pe2d
             Vector2{ center.x + sideLength / 2.0f * scale.x, center.y - sideLength / 2.0f * scale.y },
             Vector2{ center.x - sideLength / 2.0f * scale.x, center.y - sideLength / 2.0f * scale.y }
         };
-
-        for(int i  = 0; i < vertecies.size(); i++)
-        {
-            Vector2 &vertex = vertecies[i];
-            float translatedX = vertex.x - center.x;
-            float translatedY = vertex.y - center.y;
-
-            float rotatedX = translatedX * cos_theta - translatedY * sin_theta;
-            float rotatedY = translatedX * sin_theta + translatedY *cos_theta;
-            vertex = Vector2{rotatedX + center.x, rotatedY + center.y};
-        }
+        RotateVertecies(vertecies, center, angle);
         return vertecies;
     }
 

@@ -34,11 +34,31 @@ namespace pe2d
     {
     public:
         CircleCollider() = delete;
-        CircleCollider(float radius);
+        constexpr CircleCollider(float radius) :
+            m_Radius(radius)
+        {
+            if(radius <= 0.0f)
+            {
+                ASSERT("Radius must be grater than 0");
+            }
+        }
         CircleCollider(const CircleCollider &other) = default;
-        CircleCollider(CircleCollider &&other) noexcept;
+        constexpr CircleCollider(CircleCollider &&other) noexcept :
+            m_Radius( other.m_Radius )
+        {
+            other.m_Radius = 0.0f;
+        }
         CircleCollider& operator=(const CircleCollider &other) = default;
-        CircleCollider& operator=(CircleCollider &&other) noexcept;
+        constexpr CircleCollider& operator=(CircleCollider &&other) noexcept
+        {
+            if(this == &other)
+            {
+                return *this;
+            }
+            m_Radius = other.m_Radius;
+            other.m_Radius = 0.0f;
+            return *this;
+        }
     public:
         CollisionPoints TestCollision(
             const Transform &transform,
@@ -55,8 +75,15 @@ namespace pe2d
             const SquareCollider *square,
             const Transform &squareTransform) const override final;
         
-        float GetRadius() const;
-        void SetRadius(float radius);
+        constexpr float GetRadius() const { return m_Radius; }
+        constexpr void SetRadius(float radius)
+        {
+            if(radius <= 0.0f)
+            {
+                ASSERT("Radius must be grater than 0");
+            }
+            m_Radius = radius;
+        }
     private:
         float m_Radius;
     };
@@ -65,11 +92,43 @@ namespace pe2d
     {
     public:
         SquareCollider() = delete;
-        SquareCollider(float sideLength);
+        constexpr SquareCollider(unsigned int verteciesCount, float sideLength) :
+            m_SideLength(sideLength),
+            m_VerteciesCount(verteciesCount)
+        {
+            if(m_SideLength <= 0.0f)
+            {
+                ASSERT("SideLenth must be grater than 0");
+            }
+        }
+        // constructs a square
+        constexpr SquareCollider(float sideLength) :
+            m_SideLength(sideLength),
+            m_VerteciesCount(4)
+        {
+            if(m_SideLength <= 0.0f)
+            {
+                ASSERT("SideLenth must be grater than 0");
+            }
+        }
         SquareCollider(const SquareCollider &other) = default;
-        SquareCollider(SquareCollider &&other) noexcept;
+        constexpr SquareCollider(SquareCollider &&other) noexcept :
+            m_SideLength( other.m_SideLength ),
+            m_VerteciesCount( other.m_VerteciesCount )
+        {
+            other.m_SideLength = 0.0f;
+        }
         SquareCollider& operator=(const SquareCollider &other) = default;
-        SquareCollider& operator=(SquareCollider &&other) noexcept;
+        constexpr SquareCollider& operator=(SquareCollider &&other) noexcept
+        {
+            if(this == &other)
+            {
+                return *this;
+            }
+            m_SideLength = other.m_SideLength;
+            other.m_SideLength = 0.0f;
+            return *this;
+        }
     public:
         CollisionPoints TestCollision(
             const Transform &transform,
@@ -86,9 +145,19 @@ namespace pe2d
             const SquareCollider *square,
             const Transform &squareTransform) const override final;
 
-        float GetSideLength() const;
-        void SetSideLength(float sideLength);
+        constexpr float GetSideLength() const { return m_SideLength; }
+        constexpr unsigned int GetVerteciesCount() const { return m_VerteciesCount; }
+        constexpr void SetSideLength(float sideLength)
+        {
+            if(sideLength <= 0.0f)
+            {
+                ASSERT("SideLenth must be grater than 0");
+            }
+            m_SideLength = sideLength;
+        }
+        constexpr void SetVerteciesCount(unsigned int verteciesCount) { m_VerteciesCount = verteciesCount; }
     private:
         float m_SideLength;
+        unsigned int m_VerteciesCount;
     };
 }

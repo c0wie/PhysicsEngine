@@ -18,7 +18,7 @@
 #define ASSERT(x) errorMessage(__FILE__, __LINE__, x);\
     std::exit(1)
 
-constexpr float PI = 3.1415f;
+constexpr float PI = 3.14159f;
 inline void errorMessage(const char *file, int line, const char *msg)
 {
     std::cout << "In file " << file << " at line " << line << "\nERROR: " <<  msg << std::endl;

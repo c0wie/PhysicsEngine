@@ -2,31 +2,7 @@
 #include "Algo.hpp"
 namespace pe2d
 {
-    CircleCollider::CircleCollider(float radius) :
-        m_Radius(radius) 
-    {   
-        if(radius <= 0.0f)
-        {
-            ASSERT("Radius must be grater than 0");
-        }
-    };
-
-    CircleCollider::CircleCollider(CircleCollider &&other) noexcept :
-        m_Radius(other.m_Radius)
-    {
-        other.m_Radius = 0.0f;
-    }
-
-    CircleCollider& CircleCollider::operator=(CircleCollider &&other) noexcept
-    {
-        if(this == &other)
-        {
-            return *this;
-        }
-        m_Radius = other.m_Radius;
-        other.m_Radius = 0.0f;
-        return *this;
-    }
+#pragma region Circle Collider
 
     CollisionPoints CircleCollider::TestCollision(
         const Transform &transform,
@@ -52,17 +28,33 @@ namespace pe2d
         return Algo::FindCircleSquareCollision(this, transform, square, squareTransform);
     }
 
-    float CircleCollider::GetRadius() const
+#pragma endregion
+
+#pragma region Polygon Collider
+
+    CollisionPoints SquareCollider::TestCollision(
+        const Transform &transform,
+        const Collider *collider,
+        const Transform &colliderTransform) const 
     {
-        return m_Radius;
+        return collider->TestCollision(colliderTransform, this, transform);
     }
 
-    void  CircleCollider::SetRadius(float radius)
+    CollisionPoints SquareCollider::TestCollision(
+        const Transform &transform,
+        const CircleCollider *circle,
+        const Transform &circleTransform) const 
     {
-        if(radius <= 0.0f)
-        {
-            ASSERT("Radius must be grater than 0");
-        }
-        m_Radius = radius;
+        return Algo::FindSquareCircleCollision(this, transform, circle, circleTransform);
     }
+
+    CollisionPoints SquareCollider::TestCollision(
+        const Transform &transform,
+        const SquareCollider *square,
+        const Transform &squareTransform) const 
+    {
+        return Algo::FindSquareSquareCollision(this, transform, square, squareTransform);
+    }
+
+#pragma endregion
 }
