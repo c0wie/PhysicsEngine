@@ -13,7 +13,7 @@ namespace pe2d
     public:
         CollisionObject(const std::shared_ptr<CircleCollider> collider, const Transform &transform,
             bool trigger, std::function<void(Collision, float)> collisionCallback);
-        CollisionObject(const std::shared_ptr<SquareCollider> collider, const Transform &transform,
+        CollisionObject(const std::shared_ptr<PolygonCollider> collider, const Transform &transform,
             bool trigger, std::function<void(Collision, float)> collisionCallback);
         CollisionObject(const CollisionObject &other);
         CollisionObject(CollisionObject &&other);
@@ -38,7 +38,7 @@ namespace pe2d
             }
         } 
         constexpr void SetRotation(float angle) { m_Transform.rotation = angle; }
-        void SetCollider(const std::shared_ptr<SquareCollider> collider)
+        void SetCollider(const std::shared_ptr<PolygonCollider> collider)
         {
             if(collider)
             {

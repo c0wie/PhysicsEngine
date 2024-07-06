@@ -22,17 +22,17 @@ namespace pe2d
 
     CollisionPoints CircleCollider::TestCollision(
         const Transform &transform,
-        const SquareCollider *square,
-        const Transform &squareTransform) const 
+        const PolygonCollider *polygon,
+        const Transform &polygonTransform) const 
     {
-        return Algo::FindCircleSquareCollision(this, transform, square, squareTransform);
+        return Algo::FindCirclePolygonCollision(this, transform, polygon, polygonTransform);
     }
 
 #pragma endregion
 
 #pragma region Polygon Collider
 
-    CollisionPoints SquareCollider::TestCollision(
+    CollisionPoints PolygonCollider::TestCollision(
         const Transform &transform,
         const Collider *collider,
         const Transform &colliderTransform) const 
@@ -40,21 +40,20 @@ namespace pe2d
         return collider->TestCollision(colliderTransform, this, transform);
     }
 
-    CollisionPoints SquareCollider::TestCollision(
+    CollisionPoints PolygonCollider::TestCollision(
         const Transform &transform,
         const CircleCollider *circle,
         const Transform &circleTransform) const 
     {
-        return Algo::FindSquareCircleCollision(this, transform, circle, circleTransform);
+        return Algo::FindPolygonCircleCollision(this, transform, circle, circleTransform);
     }
 
-    CollisionPoints SquareCollider::TestCollision(
+    CollisionPoints PolygonCollider::TestCollision(
         const Transform &transform,
-        const SquareCollider *square,
-        const Transform &squareTransform) const 
+        const PolygonCollider *polygon,
+        const Transform &polygonTransform) const 
     {
-        return Algo::FindSquareSquareCollision(this, transform, square, squareTransform);
+        return Algo::FindPolygonPolygonCollision(this, transform, polygon, polygonTransform);
     }
-
 #pragma endregion
 }

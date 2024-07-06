@@ -8,7 +8,7 @@ namespace pe2d
         CollisionObject(collider, transform, trigger, collisionCallback), m_Mass(mass), m_Velocity(velocity), m_Force(force), m_Gravity(gravity),
         m_TakesGravity(takesGravity), m_StaticFriction(staticFriction), m_DynamicFriction(dynamicFriction), m_Restitution(restitution) {}
     
-    RigidObject::RigidObject(std::shared_ptr<SquareCollider> collider, const Transform &transform, float trigger, 
+    RigidObject::RigidObject(std::shared_ptr<PolygonCollider> collider, const Transform &transform, float trigger, 
         std::function<void(Collision, float)> collisionCallback, float mass, const Vector2 &velocity, const Vector2 &force,
         const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution) :
         CollisionObject(collider, transform, trigger, collisionCallback), m_Mass(mass), m_Velocity(velocity), m_Force(force), m_Gravity(gravity),

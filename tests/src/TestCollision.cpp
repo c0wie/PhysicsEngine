@@ -151,7 +151,7 @@ namespace test
         }
         else if(type == "Square")
         {
-            auto collider = std::make_shared<pe2d::SquareCollider>(size);
+            auto collider = std::make_shared<pe2d::PolygonCollider>(size);
             std::shared_ptr<pe2d::CollisionObject> object = std::make_shared<pe2d::CollisionObject>(collider, transform, trigger, nullptr);
             return object;
         }
@@ -172,7 +172,7 @@ namespace test
         }
         else if(type == "Square")
         {
-            auto collider = std::make_shared<pe2d::SquareCollider>(size);
+            auto collider = std::make_shared<pe2d::PolygonCollider>(size);
             auto object = std::make_shared<pe2d::RigidObject>(collider, transform, trigger, nullptr, mass, velocity, pe2d::Vector2{0.0f, 0.0f},
                 gravity, takesGravity, staticFriction, dynamicFriction, restitution);
             return object;
@@ -205,9 +205,9 @@ namespace test
         }
         else
         {
-            std::shared_ptr<pe2d::SquareCollider> squareCollider = std::dynamic_pointer_cast<pe2d::SquareCollider>(obj->GetCollider());
-            const sf::Vector2f size{ squareCollider->GetSideLength() * obj->GetTransform().scale.x,
-                                     squareCollider->GetSideLength() * obj->GetTransform().scale.y };
+            std::shared_ptr<pe2d::PolygonCollider> PolygonCollider = std::dynamic_pointer_cast<pe2d::PolygonCollider>(obj->GetCollider());
+            const sf::Vector2f size{ PolygonCollider->GetSideLength() * obj->GetTransform().scale.x,
+                                     PolygonCollider->GetSideLength() * obj->GetTransform().scale.y };
             sf::RectangleShape square(size);
             square.setOrigin(square.getSize() / 2.0f);
             square.setPosition(position);

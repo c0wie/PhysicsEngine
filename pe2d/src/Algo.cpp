@@ -26,15 +26,15 @@ namespace pe2d
         return CollisionPoints{normal, depth, true};
     }
 
-    CollisionPoints Algo::FindCircleSquareCollision(
+    CollisionPoints Algo::FindCirclePolygonCollision(
         const CircleCollider *A, const Transform &transformA,
-        const SquareCollider *B, const Transform &transformB)
+        const PolygonCollider *B, const Transform &transformB)
     {
         const unsigned int verteciesCountB = B->GetVerteciesCount();
         float overlap = INF;
         const Vector2 &center = transformA.position;
         Vector2 verteciesB[verteciesCountB];
-        GetSquareVertecies(verteciesB, verteciesCountB, transformB.position, B->GetSideLength(), transformB.scale, transformB.rotation);
+        GetPolygonVertecies(verteciesB, verteciesCountB, transformB.position, B->GetSideLength(), transformB.scale, transformB.rotation);
         Vector2 axesB[verteciesCountB + 1];
         GetAxes(axesB, verteciesB, verteciesCountB);
         Vector2 *smallesAxis = nullptr;
@@ -60,18 +60,18 @@ namespace pe2d
         return CollisionPoints{*smallesAxis, overlap, true};
     }
 
-    CollisionPoints Algo::FindSquareCircleCollision(
-        const SquareCollider *A, const Transform &transformA,
+    CollisionPoints Algo::FindPolygonCircleCollision(
+        const PolygonCollider *A, const Transform &transformA,
         const CircleCollider *B, const Transform &transformB)
     {
-        CollisionPoints p = FindCircleSquareCollision(B, transformB, A, transformA);
+        CollisionPoints p = FindCirclePolygonCollision(B, transformB, A, transformA);
         p.Normal *= -1.0f;
         return p;
     }
 
-    CollisionPoints Algo::FindSquareSquareCollision(
-        const SquareCollider *A, const Transform &transformA,
-        const SquareCollider *B, const Transform &transformB)
+    CollisionPoints Algo::FindPolygonPolygonCollision(
+        const PolygonCollider *A, const Transform &transformA,
+        const PolygonCollider *B, const Transform &transformB)
     {
         const unsigned int verteciesCountA = A->GetVerteciesCount();
         const unsigned int verteciesCountB = B->GetVerteciesCount();
@@ -80,8 +80,8 @@ namespace pe2d
         float overlap = INF;
         Vector2 verteciesA[verteciesCountA];
         Vector2 verteciesB[verteciesCountB];
-        GetSquareVertecies( verteciesA, verteciesCountA, transformA.position, A->GetSideLength(), transformA.scale, rotationA );
-        GetSquareVertecies( verteciesB, verteciesCountB, transformB.position, B->GetSideLength(), transformB.scale, rotationB );
+        GetPolygonVertecies( verteciesA, verteciesCountA, transformA.position, A->GetSideLength(), transformA.scale, rotationA );
+        GetPolygonVertecies( verteciesB, verteciesCountB, transformB.position, B->GetSideLength(), transformB.scale, rotationB );
         const Vector2 *smallesAxis = nullptr;
         Vector2 axesA[verteciesCountA];
         Vector2 axesB[verteciesCountB];
@@ -206,7 +206,7 @@ namespace pe2d
     }
 
     // only works for squares for now
-    void Algo::GetSquareVertecies(Vector2 *vertecies, unsigned int size, const Vector2 &center, float sideLength, const Vector2 &scale, float angle)
+    void Algo::GetPolygonVertecies(Vector2 *vertecies, unsigned int size, const Vector2 &center, float sideLength, const Vector2 &scale, float angle)
     {
         vertecies[0] = Vector2{ center.x - sideLength / 2.0f * scale.x, center.y + sideLength / 2.0f * scale.y };
         vertecies[1] = Vector2{ center.x + sideLength / 2.0f * scale.x, center.y + sideLength / 2.0f * scale.y };

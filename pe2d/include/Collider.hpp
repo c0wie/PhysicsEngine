@@ -7,7 +7,7 @@
 
 namespace pe2d
 {
-    class SquareCollider;
+    class PolygonCollider;
     class CircleCollider;
     
     class Collider 
@@ -25,7 +25,7 @@ namespace pe2d
         
         virtual CollisionPoints TestCollision(
             const Transform &transform,
-            const SquareCollider *square,
+            const PolygonCollider *square,
             const Transform &squareTransform) const = 0;
         
     };
@@ -72,8 +72,8 @@ namespace pe2d
 
         CollisionPoints TestCollision(
             const Transform &transform,
-            const SquareCollider *square,
-            const Transform &squareTransform) const override final;
+            const PolygonCollider *polygon,
+            const Transform &polygonTransform) const override final;
         
         constexpr float GetRadius() const { return m_Radius; }
         constexpr void SetRadius(float radius)
@@ -88,11 +88,11 @@ namespace pe2d
         float m_Radius;
     };
 
-    class SquareCollider : public Collider
+    class PolygonCollider : public Collider
     {
     public:
-        SquareCollider() = delete;
-        constexpr SquareCollider(unsigned int verteciesCount, float sideLength) :
+        PolygonCollider() = delete;
+        constexpr PolygonCollider(unsigned int verteciesCount, float sideLength) :
             m_SideLength(sideLength),
             m_VerteciesCount(verteciesCount)
         {
@@ -102,7 +102,7 @@ namespace pe2d
             }
         }
         // constructs a square
-        constexpr SquareCollider(float sideLength) :
+        constexpr PolygonCollider(float sideLength) :
             m_SideLength(sideLength),
             m_VerteciesCount(4)
         {
@@ -111,15 +111,15 @@ namespace pe2d
                 ASSERT("SideLenth must be grater than 0");
             }
         }
-        SquareCollider(const SquareCollider &other) = default;
-        constexpr SquareCollider(SquareCollider &&other) noexcept :
+        PolygonCollider(const PolygonCollider &other) = default;
+        constexpr PolygonCollider(PolygonCollider &&other) noexcept :
             m_SideLength( other.m_SideLength ),
             m_VerteciesCount( other.m_VerteciesCount )
         {
             other.m_SideLength = 0.0f;
         }
-        SquareCollider& operator=(const SquareCollider &other) = default;
-        constexpr SquareCollider& operator=(SquareCollider &&other) noexcept
+        PolygonCollider& operator=(const PolygonCollider &other) = default;
+        constexpr PolygonCollider& operator=(PolygonCollider &&other) noexcept
         {
             if(this == &other)
             {
@@ -142,7 +142,7 @@ namespace pe2d
 
         CollisionPoints TestCollision(
             const Transform &transform,
-            const SquareCollider *square,
+            const PolygonCollider *square,
             const Transform &squareTransform) const override final;
 
         constexpr float GetSideLength() const { return m_SideLength; }
