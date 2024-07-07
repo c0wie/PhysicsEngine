@@ -4,56 +4,72 @@ namespace pe2d
 {
 #pragma region Circle Collider
 
-    CollisionPoints CircleCollider::TestCollision(
-        const Transform &transform,
-        const Collider *collider,
-        const Transform &colliderTransform) const 
+    CollisionPoints CircleCollider::TestCollision(const Transform &transform, const Collider *collider, const Transform &colliderTransform) const 
     {
         return collider->TestCollision(colliderTransform, this, transform);
     }
     
-    CollisionPoints CircleCollider::TestCollision(
-        const Transform &transform,
-        const CircleCollider *circle,
-        const Transform &circleTransform) const 
+    CollisionPoints CircleCollider::TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const 
     {
         return Algo::FindCircleCircleCollision(this, transform, circle, circleTransform);
     }
 
-    CollisionPoints CircleCollider::TestCollision(
-        const Transform &transform,
-        const PolygonCollider *polygon,
-        const Transform &polygonTransform) const 
+    CollisionPoints CircleCollider::TestCollision(const Transform &transform, const CustomCollider *custom, const Transform &customTransform) const 
     {
-        return Algo::FindCirclePolygonCollision(this, transform, polygon, polygonTransform);
+        return Algo::FindCircleCustomCollision(this, transform, custom, customTransform);
+    }
+
+    CollisionPoints CircleCollider::TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const
+    {
+        return Algo::FindCircleBoxCollision(this, transform, box, boxTransform);
+    }
+
+#pragma endregion
+
+#pragma region Box Collider
+
+    CollisionPoints BoxCollider::TestCollision(const Transform &transform, const Collider *collider, const Transform &colliderTransform) const
+    {
+        return collider->TestCollision(colliderTransform, this, transform);
+    }
+
+    CollisionPoints BoxCollider::TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const
+    {
+        return Algo::FindBoxCircleCollision(this, transform, circle, circleTransform);
+    }
+
+    CollisionPoints BoxCollider::TestCollision(const Transform &transform, const CustomCollider *custom, const Transform &customTransform) const
+    {
+        return Algo::FindBoxCustomCollision(this, transform, custom, customTransform);
+    }
+
+    CollisionPoints BoxCollider::TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const
+    {
+        return Algo::FindBoxBoxCollision(this, transform, box, boxTransform);
     }
 
 #pragma endregion
 
 #pragma region Polygon Collider
 
-    CollisionPoints PolygonCollider::TestCollision(
-        const Transform &transform,
-        const Collider *collider,
-        const Transform &colliderTransform) const 
+    CollisionPoints CustomCollider::TestCollision( const Transform &transform, const Collider *collider, const Transform &colliderTransform) const 
     {
         return collider->TestCollision(colliderTransform, this, transform);
     }
 
-    CollisionPoints PolygonCollider::TestCollision(
-        const Transform &transform,
-        const CircleCollider *circle,
-        const Transform &circleTransform) const 
+    CollisionPoints CustomCollider::TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const 
     {
-        return Algo::FindPolygonCircleCollision(this, transform, circle, circleTransform);
+        return Algo::FindCustomCircleCollision(this, transform, circle, circleTransform);
     }
 
-    CollisionPoints PolygonCollider::TestCollision(
-        const Transform &transform,
-        const PolygonCollider *polygon,
-        const Transform &polygonTransform) const 
+    CollisionPoints CustomCollider::TestCollision(const Transform &transform, const CustomCollider *custom, const Transform &customTransform) const 
     {
-        return Algo::FindPolygonPolygonCollision(this, transform, polygon, polygonTransform);
+        return Algo::FindCustomCustomCollision(this, transform, custom, customTransform);
+    }
+
+    CollisionPoints CustomCollider::TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const
+    {
+        return Algo::FindCustomBoxCollision(this, transform, box, boxTransform);
     }
 #pragma endregion
 }
