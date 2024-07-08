@@ -7,7 +7,7 @@
 
 namespace pe2d
 {
-    class CustomCollider;
+    class ConvexShapeCollider;
     class CircleCollider;
     class BoxCollider;
     
@@ -16,7 +16,7 @@ namespace pe2d
     public:
         virtual CollisionPoints TestCollision(const Transform &transform, const Collider *collider, const Transform &colliderTransform) const = 0;
         virtual CollisionPoints TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const = 0;
-        virtual CollisionPoints TestCollision(const Transform &transform, const CustomCollider *custom, const Transform &customTransform) const = 0;
+        virtual CollisionPoints TestCollision(const Transform &transform, const ConvexShapeCollider *convexShape, const Transform &convexShapeTransform) const = 0;
         virtual CollisionPoints TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const = 0;
     };
     
@@ -52,7 +52,7 @@ namespace pe2d
     public:
         CollisionPoints TestCollision(const Transform &transform, const Collider *collider, const Transform &colliderTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const override final;
-        CollisionPoints TestCollision(const Transform &transform, const CustomCollider *custom, const Transform &customTransform) const override final;
+        CollisionPoints TestCollision(const Transform &transform, const ConvexShapeCollider *convexShape, const Transform &convexShapeTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const override final;
         
         constexpr float GetRadius() const { return m_Radius; }
@@ -100,7 +100,7 @@ namespace pe2d
     public:
         CollisionPoints TestCollision(const Transform &transform, const Collider *collider, const Transform &colliderTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const override final;
-        CollisionPoints TestCollision(const Transform &transform, const CustomCollider *custom, const Transform &customTransform) const override final;
+        CollisionPoints TestCollision(const Transform &transform, const ConvexShapeCollider *convexShape, const Transform &convexShapeTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const override final;
         
         constexpr Vector2 GetSize() const { return m_Size; }
@@ -114,23 +114,27 @@ namespace pe2d
     private:
         Vector2 m_Size;
     };
-    class CustomCollider final : public Collider
+    class ConvexShapeCollider final : public Collider
     {
     public:
-        CustomCollider() = delete;
-        constexpr CustomCollider(unsigned int verteciesCount, float sideLength) :
+        ConvexShapeCollider() = delete;
+        constexpr ConvexShapeCollider(unsigned int verteciesCount, float sideLength) :
             m_SideLength(sideLength),
             m_VerteciesCount(verteciesCount),
             m_Vertecies(nullptr)
         {
-            m_Vertecies = new Vector2[verteciesCount];
             if(m_SideLength <= 0.0f)
             {
                 ASSERT("SideLenth must be grater than 0");
             }
+            if(m_VerteciesCount < 3)
+            {
+                ASSERT("POLYGON MUST HAVE AT LEAST 3 VERTECIES");
+            }
+            m_Vertecies = new Vector2[verteciesCount];
         }
-        CustomCollider(const CustomCollider &other) = default;
-        constexpr CustomCollider(CustomCollider &&other) noexcept :
+        ConvexShapeCollider(const ConvexShapeCollider &other) = default;
+        constexpr ConvexShapeCollider(ConvexShapeCollider &&other) noexcept :
             m_SideLength( other.m_SideLength ),
             m_VerteciesCount( other.m_VerteciesCount ),
             m_Vertecies(other.m_Vertecies)
@@ -138,14 +142,14 @@ namespace pe2d
         {
             if(m_VerteciesCount != other.m_VerteciesCount)
             {
-                ASSERT("CAN'T CONSTRUCT CUSTOM SHAPE FROM OTHER CUSTOM SHAPE WITH DIFFRENT NUMBER OF VERTECIES");
+                ASSERT("CAN'T CONSTRUCT ConvexShape SHAPE FROM OTHER ConvexShape SHAPE WITH DIFFRENT NUMBER OF VERTECIES");
             }
             other.m_SideLength = 0.0f;
             m_VerteciesCount = 0.0f;
             m_Vertecies = nullptr;
         }
-        CustomCollider& operator=(const CustomCollider &other) = default;
-        constexpr CustomCollider& operator=(CustomCollider &&other) noexcept
+        ConvexShapeCollider& operator=(const ConvexShapeCollider &other) = default;
+        constexpr ConvexShapeCollider& operator=(ConvexShapeCollider &&other) noexcept
         
         {
             if(this == &other)
@@ -156,11 +160,11 @@ namespace pe2d
             other.m_SideLength = 0.0f;
             return *this;
         }
-        ~CustomCollider() { delete[] m_Vertecies; }
+        ~ConvexShapeCollider() { delete[] m_Vertecies; }
     public:
         CollisionPoints TestCollision(const Transform &transform, const Collider *collider, const Transform &colliderTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const override final;
-        CollisionPoints TestCollision(const Transform &transform, const CustomCollider *custom, const Transform &customTransform) const override final;
+        CollisionPoints TestCollision(const Transform &transform, const ConvexShapeCollider *convexShape, const Transform &convexShapeTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const override final;
 
         constexpr float GetSideLength() const { return m_SideLength; }
@@ -180,6 +184,46 @@ namespace pe2d
             if(index < m_VerteciesCount)
             {
                 m_Vertecies[index] = vertex - center; 
+                if(!IsConvex())
+                {
+                    ASSERT("SHAPE ISN'T CONVEX NOW");
+                }
+            }
+        }
+    private:
+        bool IsConvex() const
+        {
+            bool isConvex = true;
+            bool gotPositive = false;
+            bool gotNegative = false;
+
+            for(unsigned int i = 0; i < m_VerteciesCount; i++)
+            {
+                const Vector2 *const p0 = &m_Vertecies[i];
+                const Vector2 *const p1 = &m_Vertecies[(i + 1) % m_VerteciesCount];
+                const Vector2 *const p2 = &m_Vertecies[(i + 2) % m_VerteciesCount];
+                if(!p0 || !p1 || !p2)
+                {
+                    return true;
+                }
+                const Vector2 d1 = *p1 - *p0;
+                const Vector2 d2 = *p2 - *p1;
+
+                const float cross = d1.x * d2.y - d1.y * d2.x;
+                if(cross < 0.0f)
+                {
+                    gotNegative= true;
+                }
+                else if(cross > 0.0f)
+                {
+                    gotPositive = true;
+                }
+                if(gotNegative && gotPositive)
+                {
+                    isConvex = false;
+                    break;
+                }
+                return isConvex;
             }
         }
     private:

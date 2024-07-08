@@ -69,25 +69,25 @@ namespace pe2d
         return p;
     }
     
-    CollisionPoints Algo::FindCircleCustomCollision(
+    CollisionPoints Algo::FindCircleConvexShapeCollision(
         const CircleCollider *circle, const Transform &transformCircle,
-        const CustomCollider *custom, const Transform &transformCustom)
+        const ConvexShapeCollider *convexShape, const Transform &transformConvexShape)
     {
-        const unsigned int CustomVerteciesCount = custom->GetVerteciesCount();
+        const unsigned int convexShapeVerteciesCount = convexShape->GetVerteciesCount();
         float overlap = INF;
         const Vector2 &center = transformCircle.position;
         Vector2 *smallesAxis = nullptr;
 
-        Vector2 *verteciesB = custom->GetVertecies();
-        Vector2 axesB[CustomVerteciesCount + 1];
-        GetAxes(axesB, verteciesB, CustomVerteciesCount);
-        axesB[CustomVerteciesCount - 1] = GetCircleAxis(verteciesB, CustomVerteciesCount, center);
+        Vector2 *verteciesB = convexShape->GetVertecies();
+        Vector2 axesB[convexShapeVerteciesCount + 1];
+        GetAxes(axesB, verteciesB, convexShapeVerteciesCount);
+        axesB[convexShapeVerteciesCount - 1] = GetCircleAxis(verteciesB, convexShapeVerteciesCount, center);
 
 
-        for(int i = 0; i < CustomVerteciesCount; i++)
+        for(int i = 0; i < convexShapeVerteciesCount; i++)
         {
             Vector2 p1 = ProjectCircle(axesB[i], center, circle->GetRadius() * transformCircle.scale.x);
-            Vector2 p2 = Project(verteciesB, CustomVerteciesCount, axesB[i]);
+            Vector2 p2 = Project(verteciesB, convexShapeVerteciesCount, axesB[i]);
 
             if(!Overlap(p1, p2))
             {
@@ -103,28 +103,28 @@ namespace pe2d
         return CollisionPoints{*smallesAxis, overlap, true};
     }
 
-    CollisionPoints Algo::FindCustomCircleCollision(
-        const CustomCollider *custom, const Transform &transformCustom,
+    CollisionPoints Algo::FindConvexShapeCircleCollision(
+        const ConvexShapeCollider *convexShape, const Transform &transformConvexShape,
         const CircleCollider *circle, const Transform &transformCircle)
     {
-        CollisionPoints p = FindCircleCustomCollision(circle, transformCircle, custom, transformCustom);
+        CollisionPoints p = FindCircleConvexShapeCollision(circle, transformCircle, convexShape, transformConvexShape);
         p.Normal *= -1.0f;
         return p;
     }
 
-    CollisionPoints Algo::FindCustomCustomCollision(
-        const CustomCollider *customA, const Transform &transformCustomA,
-        const CustomCollider *customB, const Transform &transformCustomB)
+    CollisionPoints Algo::FindConvexShapeConvexShapeCollision(
+        const ConvexShapeCollider *convexShapeA, const Transform &transformConvexShapeA,
+        const ConvexShapeCollider *convexShapeB, const Transform &transformConvexShapeB)
     {
-        const unsigned int verteciesCountA = customA->GetVerteciesCount();
-        const unsigned int verteciesCountB = customB->GetVerteciesCount();
-        const float rotationA = transformCustomA.GetRadians();
-        const float rotationB = transformCustomB.GetRadians();
+        const unsigned int verteciesCountA = convexShapeA->GetVerteciesCount();
+        const unsigned int verteciesCountB = convexShapeB->GetVerteciesCount();
+        const float rotationA = transformConvexShapeA.GetRadians();
+        const float rotationB = transformConvexShapeB.GetRadians();
         const Vector2 *smallesAxis = nullptr;
         float overlap = INF;
 
-        Vector2 *verteciesA = customA->GetVertecies();
-        Vector2 *verteciesB = customB->GetVertecies();
+        Vector2 *verteciesA = convexShapeA->GetVertecies();
+        Vector2 *verteciesB = convexShapeB->GetVertecies();
         Vector2 axesA[verteciesCountA];
         Vector2 axesB[verteciesCountB];
         GetAxes(axesA, verteciesA, verteciesCountA);
@@ -166,29 +166,29 @@ namespace pe2d
         return CollisionPoints{*smallesAxis, overlap, true};
     }
 
-    CollisionPoints Algo::FindCustomBoxCollision(
-        const CustomCollider *custom, const Transform &transformCustom,
+    CollisionPoints Algo::FindConvexShapeBoxCollision(
+        const ConvexShapeCollider *convexShape, const Transform &transformConvexShape,
         const BoxCollider *box, const Transform &transformBox)
     {
-        const unsigned int customVerteciesCount = custom->GetVerteciesCount();
+        const unsigned int convexShapeVerteciesCount = convexShape->GetVerteciesCount();
         const unsigned int boxVerteciesCount = 4;
-        const float customRotation = transformCustom.GetRadians();
+        const float ConvexShapeRotation = transformConvexShape.GetRadians();
         const float boxRotation = transformBox.GetRadians();
         const Vector2 *smallesAxis = nullptr;
         float overlap = INF;
 
-        Vector2 *customVertecies = custom->GetVertecies();
+        Vector2 *ConvexShapeVertecies = convexShape->GetVertecies();
         Vector2 boxVerecies[boxVerteciesCount];
         GetBoxVertecies(boxVerecies, boxVerteciesCount, transformBox.position, box->GetSize(), transformBox.scale, boxRotation);
 
-        Vector2 customAxes[customVerteciesCount];
+        Vector2 ConvexShapeAxes[convexShapeVerteciesCount];
         Vector2 boxAxes[boxVerteciesCount];
-        GetAxes(customAxes, customVertecies, customVerteciesCount);
+        GetAxes(ConvexShapeAxes, ConvexShapeVertecies, convexShapeVerteciesCount);
         GetAxes(boxAxes, boxVerecies, boxVerteciesCount);
 
-        for(const Vector2 &axis : customAxes)
+        for(const Vector2 &axis : ConvexShapeAxes)
         {
-            Vector2 p1 = Project(customVertecies, customVerteciesCount, axis);
+            Vector2 p1 = Project(ConvexShapeVertecies, convexShapeVerteciesCount, axis);
             Vector2 p2 = Project(boxVerecies, boxVerteciesCount, axis);
 
             if(!Overlap(p1, p2))
@@ -205,7 +205,7 @@ namespace pe2d
 
         for(const Vector2 &axis : boxAxes)
         {
-            Vector2 p1 = Project(customVertecies, customVerteciesCount, axis);
+            Vector2 p1 = Project(ConvexShapeVertecies, convexShapeVerteciesCount, axis);
             Vector2 p2 = Project(boxVerecies, boxVerteciesCount, axis);
 
             if(!Overlap(p1, p2))
@@ -222,11 +222,11 @@ namespace pe2d
         return CollisionPoints{*smallesAxis, overlap, true};
     }
 
-    CollisionPoints Algo::FindBoxCustomCollision(
+    CollisionPoints Algo::FindBoxConvexShapeCollision(
         const BoxCollider *box, const Transform &transformBox, 
-        const CustomCollider *custom, const Transform &transformCustom)
+        const ConvexShapeCollider *convexShape, const Transform &transformConvexShape)
     {
-        CollisionPoints p = FindCustomBoxCollision(custom, transformCustom, box, transformBox);
+        CollisionPoints p = FindConvexShapeBoxCollision(convexShape, transformConvexShape, box, transformBox);
         p.Normal *= -1.0f;
         return p;
     }
@@ -370,7 +370,7 @@ namespace pe2d
         RotateVertecies(vertecies, count, center, angle);
     }
 
-    void Algo::GetCustomVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 *offsets, const Vector2 &center)
+    void Algo::GetConvexShapeVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 *offsets, const Vector2 &center)
     {
         for(int i = 0; i < count; i++)
         {

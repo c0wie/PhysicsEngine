@@ -14,9 +14,9 @@ namespace pe2d
         return Algo::FindCircleCircleCollision(this, transform, circle, circleTransform);
     }
 
-    CollisionPoints CircleCollider::TestCollision(const Transform &transform, const CustomCollider *custom, const Transform &customTransform) const 
+    CollisionPoints CircleCollider::TestCollision(const Transform &transform, const ConvexShapeCollider *convexShape, const Transform &convexShapeTransform) const 
     {
-        return Algo::FindCircleCustomCollision(this, transform, custom, customTransform);
+        return Algo::FindCircleConvexShapeCollision(this, transform, convexShape, convexShapeTransform);
     }
 
     CollisionPoints CircleCollider::TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const
@@ -38,9 +38,9 @@ namespace pe2d
         return Algo::FindBoxCircleCollision(this, transform, circle, circleTransform);
     }
 
-    CollisionPoints BoxCollider::TestCollision(const Transform &transform, const CustomCollider *custom, const Transform &customTransform) const
+    CollisionPoints BoxCollider::TestCollision(const Transform &transform, const ConvexShapeCollider *convexShape, const Transform &convexShapeTransform) const
     {
-        return Algo::FindBoxCustomCollision(this, transform, custom, customTransform);
+        return Algo::FindBoxConvexShapeCollision(this, transform, convexShape, convexShapeTransform);
     }
 
     CollisionPoints BoxCollider::TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const
@@ -52,24 +52,24 @@ namespace pe2d
 
 #pragma region Polygon Collider
 
-    CollisionPoints CustomCollider::TestCollision( const Transform &transform, const Collider *collider, const Transform &colliderTransform) const 
+    CollisionPoints ConvexShapeCollider::TestCollision(const Transform &transform, const Collider *collider, const Transform &colliderTransform) const 
     {
         return collider->TestCollision(colliderTransform, this, transform);
     }
 
-    CollisionPoints CustomCollider::TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const 
+    CollisionPoints ConvexShapeCollider::TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const 
     {
-        return Algo::FindCustomCircleCollision(this, transform, circle, circleTransform);
+        return Algo::FindConvexShapeCircleCollision(this, transform, circle, circleTransform);
     }
 
-    CollisionPoints CustomCollider::TestCollision(const Transform &transform, const CustomCollider *custom, const Transform &customTransform) const 
+    CollisionPoints ConvexShapeCollider::TestCollision(const Transform &transform, const ConvexShapeCollider *convexShape, const Transform &convexShapeTransform) const 
     {
-        return Algo::FindCustomCustomCollision(this, transform, custom, customTransform);
+        return Algo::FindConvexShapeConvexShapeCollision(this, transform, convexShape, convexShapeTransform);
     }
 
-    CollisionPoints CustomCollider::TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const
+    CollisionPoints ConvexShapeCollider::TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const
     {
-        return Algo::FindCustomBoxCollision(this, transform, box, boxTransform);
+        return Algo::FindConvexShapeBoxCollision(this, transform, box, boxTransform);
     }
 #pragma endregion
 }

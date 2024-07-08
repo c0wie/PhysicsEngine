@@ -6,7 +6,7 @@ namespace pe2d
             bool trigger, std::function<void(Collision, float)> collisionCallback) :
         m_Collider(collider), m_Transform(transform), m_IsTrigger(trigger), m_OnCollision(collisionCallback) {}
 
-    CollisionObject::CollisionObject( const std::shared_ptr<PolygonCollider> collider, const Transform &transform,
+    CollisionObject::CollisionObject( const std::shared_ptr<BoxCollider> collider, const Transform &transform,
         bool trigger, std::function<void(Collision, float)> collisionCallback) :
         m_Collider(collider), m_Transform(transform), m_IsTrigger(trigger), m_OnCollision(collisionCallback) {}
 

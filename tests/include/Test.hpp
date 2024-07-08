@@ -1,25 +1,37 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include "../../pe2d/include/RigidObject.hpp"
+#include "Shape.hpp"
+#include "../../pe2d/include/PhysicsWorld.hpp"
+
+
 namespace test
 {
     class Test
     {
     public:
         Test() = default;
+        ~Test() = default;
     public:
         virtual void OnUpdate(float deltaTime, const sf::Vector2i &mousePos) = 0;
         virtual void OnRender(sf::RenderWindow &window) = 0;
         virtual void OnImGuiRender(sf::RenderWindow &window) = 0;
     protected:
-        virtual std::shared_ptr<pe2d::CollisionObject> CreateCollisionObject(const std::string &type, float size, const pe2d::Vector2 &position,
-            const pe2d::Vector2 &scale, float rotation, bool trigger) = 0;
-
-        virtual std::shared_ptr<pe2d::RigidObject> CreateRigidObject(const std::string &type, float size, float mass, const pe2d::Vector2 &position,
-            const pe2d::Vector2 &velocity, const pe2d::Vector2 &scale, float rotation, bool trigger, const pe2d::Vector2 &gravity, bool takesGravity,
-            float staticFriction, float dynamicFriction, float restitution) = 0;
-
-        virtual void Draw(sf::RenderWindow &window, const std::shared_ptr<pe2d::CollisionObject> obj) const  = 0;
+        void AddCircle(const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger);
+        void AddCircle(const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity);
+        void AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger);
+        void AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity);
+       //Shape CreateConvexShape(const sf::Color &color, unsigned int verteciesCount, const pe2d::Vector2 *vertecies, const pe2d::Transform &transform, bool isTrigger);
+        //Shape CreateConvexShape(const sf::Color &color, unsigned int verteciesCount, const pe2d::Vector2 *vertecies, const pe2d::Transform &transform,
+            //bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity);
+        
+        void Draw(sf::RenderWindow &window) const;
+        virtual void ClearObjects(); 
+    private:
+        static void DrawCircle(sf::RenderWindow &window, const Shape &shape);
+        static void DrawBox(sf::RenderWindow &window, const Shape &shape);
+        //static void DrawConvexShape(sf::RenderWindow &window, const Shape &shape);
+    protected:
+        std::vector<Shape> m_Shapes;
+        pe2d::DynamicsWorld world;
     };
 }
