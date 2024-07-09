@@ -7,10 +7,7 @@ namespace pe2d
     class RigidObject : public CollisionObject
     {
     public:
-        RigidObject(std::shared_ptr<CircleCollider> collider, const Transform &transform, float trigger, 
-            std::function<void(Collision, float)> collisionCallback, float mass, const Vector2 &velocity, const Vector2 &force,
-            const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
-        RigidObject(std::shared_ptr<BoxCollider> collider, const Transform &transform, float trigger, 
+        RigidObject(std::shared_ptr<Collider> collider, const Transform &transform, float trigger, 
             std::function<void(Collision, float)> collisionCallback, float mass, const Vector2 &velocity, const Vector2 &force,
             const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
         RigidObject(const RigidObject &other);

@@ -2,13 +2,9 @@
 
 namespace pe2d
 {
-    CollisionObject::CollisionObject( const std::shared_ptr<CircleCollider> collider, const Transform &transform,
-            bool trigger, std::function<void(Collision, float)> collisionCallback) :
-        m_Collider(collider), m_Transform(transform), m_IsTrigger(trigger), m_OnCollision(collisionCallback) {}
-
-    CollisionObject::CollisionObject( const std::shared_ptr<BoxCollider> collider, const Transform &transform,
-        bool trigger, std::function<void(Collision, float)> collisionCallback) :
-        m_Collider(collider), m_Transform(transform), m_IsTrigger(trigger), m_OnCollision(collisionCallback) {}
+    CollisionObject::CollisionObject(const std::shared_ptr<Collider> collider, const Transform &transform, bool isTrigger,
+        std::function<void(Collision, float)> collisionCallback) :
+        m_Collider(collider), m_Transform(transform), m_IsTrigger(isTrigger), m_OnCollision(collisionCallback) {}
 
     CollisionObject::CollisionObject(const CollisionObject &other) :
         m_Collider(other.m_Collider), m_Transform(other.m_Transform), m_IsTrigger(other.m_IsTrigger), m_OnCollision(other.m_OnCollision) {} 

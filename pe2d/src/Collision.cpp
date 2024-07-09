@@ -5,9 +5,6 @@ namespace pe2d
     Collision::Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points) :
         m_ObjectA(a), m_ObjectB(b), m_Points(points) {}
 
-    Collision::Collision(std::shared_ptr<RigidObject> a, std::shared_ptr<RigidObject> b, CollisionPoints points) :
-        m_ObjectA(a), m_ObjectB(b), m_Points(points) {}
-
     Collision::Collision(const Collision &other) :
         m_ObjectA(other.m_ObjectA), m_ObjectB(other.m_ObjectB), m_Points(other.m_Points) {}
 

@@ -20,16 +20,16 @@ namespace test
         void AddCircle(const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity);
         void AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger);
         void AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity);
-       //Shape CreateConvexShape(const sf::Color &color, unsigned int verteciesCount, const pe2d::Vector2 *vertecies, const pe2d::Transform &transform, bool isTrigger);
-        //Shape CreateConvexShape(const sf::Color &color, unsigned int verteciesCount, const pe2d::Vector2 *vertecies, const pe2d::Transform &transform,
-            //bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity);
+        void AddConvexShape(const sf::Color &color, unsigned int verteciesCount, pe2d::Vector2 *vertecies, const pe2d::Transform &transform, bool isTrigger);
+        void AddConvexShape(const sf::Color &color, unsigned int verteciesCount, pe2d::Vector2 *vertecies, const pe2d::Transform &transform,
+            bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity);
         
         void Draw(sf::RenderWindow &window) const;
         virtual void ClearObjects(); 
     private:
         static void DrawCircle(sf::RenderWindow &window, const Shape &shape);
         static void DrawBox(sf::RenderWindow &window, const Shape &shape);
-        //static void DrawConvexShape(sf::RenderWindow &window, const Shape &shape);
+        static void DrawConvexShape(sf::RenderWindow &window, const Shape &shape);
     protected:
         std::vector<Shape> m_Shapes;
         pe2d::DynamicsWorld world;

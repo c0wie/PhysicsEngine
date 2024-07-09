@@ -11,7 +11,6 @@ namespace pe2d
         constexpr Collision() : 
             m_ObjectA(nullptr), m_ObjectB(nullptr), m_Points() {}
         Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points);
-        Collision(std::shared_ptr<RigidObject> a, std::shared_ptr<RigidObject> b, CollisionPoints points);
         Collision(const Collision &other);
         Collision(Collision &&other) noexcept;
         Collision& operator=(const Collision &other) ;

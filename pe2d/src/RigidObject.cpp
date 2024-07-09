@@ -2,18 +2,12 @@
 
 namespace pe2d
 {
-    RigidObject::RigidObject(std::shared_ptr<CircleCollider> collider, const Transform &transform, float trigger,
+    RigidObject::RigidObject(std::shared_ptr<Collider> collider, const Transform &transform, float trigger,
         std::function<void(Collision, float)> collisionCallback, float mass, const Vector2 &velocity, const Vector2 &force,
         const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution) :
         CollisionObject(collider, transform, trigger, collisionCallback), m_Mass(mass), m_Velocity(velocity), m_Force(force), m_Gravity(gravity),
         m_TakesGravity(takesGravity), m_StaticFriction(staticFriction), m_DynamicFriction(dynamicFriction), m_Restitution(restitution) {}
     
-    RigidObject::RigidObject(std::shared_ptr<BoxCollider> collider, const Transform &transform, float trigger, 
-        std::function<void(Collision, float)> collisionCallback, float mass, const Vector2 &velocity, const Vector2 &force,
-        const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution) :
-        CollisionObject(collider, transform, trigger, collisionCallback), m_Mass(mass), m_Velocity(velocity), m_Force(force), m_Gravity(gravity),
-        m_TakesGravity(takesGravity), m_StaticFriction(staticFriction), m_DynamicFriction(dynamicFriction), m_Restitution(restitution) {}
-
     RigidObject::RigidObject(const RigidObject &other):
         CollisionObject(other), m_Mass(other.m_Mass), m_Velocity(other.m_Velocity), m_Force(other.m_Force), m_Gravity(other.m_Gravity),
         m_TakesGravity(other.m_TakesGravity), m_StaticFriction(other.m_StaticFriction), m_DynamicFriction(other.m_DynamicFriction),

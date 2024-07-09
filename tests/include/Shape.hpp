@@ -31,7 +31,7 @@ namespace test
         m_Body( std::make_shared<pe2d::RigidObject>(collider, transform, isTrigger, nullptr, mass, velocity, force, gravity, takesGravity, 0.0f, 0.0f, 0.0f) ),
         m_Draw(drawFunction)
     {}
-        /* Shape(const sf::Color &color, const std::shared_ptr<pe2d::ConvexShapeCollider> collider, const pe2d::Transform &transform, bool isTrigger,  void (*drawFunction)(sf::RenderWindow &window, const Shape &shape)) : 
+        Shape(const sf::Color &color, const std::shared_ptr<pe2d::ConvexShapeCollider> collider, const pe2d::Transform &transform, bool isTrigger,  void (*drawFunction)(sf::RenderWindow &window, const Shape &shape)) : 
         m_Color(color),
         m_Body( std::make_shared<pe2d::CollisionObject>(collider, transform, isTrigger, nullptr) ),
         m_Draw(drawFunction)
@@ -41,7 +41,7 @@ namespace test
         m_Color(color),
         m_Body( std::make_shared<pe2d::RigidObject>(collider, transform, isTrigger, nullptr, mass, velocity, force, gravity, takesGravity, 0.0f, 0.0f, 0.0f) ),
         m_Draw(drawFunction)
-    {}*/
+    {}
     public:
         sf::Color GetColor() const { return m_Color; }
         std::shared_ptr<pe2d::CollisionObject> GetBody() const { return m_Body; }

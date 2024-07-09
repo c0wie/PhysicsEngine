@@ -11,10 +11,8 @@ namespace pe2d
     class CollisionObject
     {
     public:
-        CollisionObject(const std::shared_ptr<CircleCollider> collider, const Transform &transform,
-            bool trigger, std::function<void(Collision, float)> collisionCallback);
-        CollisionObject(const std::shared_ptr<BoxCollider> collider, const Transform &transform,
-            bool trigger, std::function<void(Collision, float)> collisionCallback);
+        CollisionObject(const std::shared_ptr<Collider> collider, const Transform &transform, bool isTrigger,
+            std::function<void(Collision, float)> collisionCallback);
         CollisionObject(const CollisionObject &other);
         CollisionObject(CollisionObject &&other);
         CollisionObject& operator=(const CollisionObject &other);

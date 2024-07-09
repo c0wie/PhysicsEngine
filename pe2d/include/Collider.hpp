@@ -118,34 +118,23 @@ namespace pe2d
     {
     public:
         ConvexShapeCollider() = delete;
-        constexpr ConvexShapeCollider(unsigned int verteciesCount, float sideLength) :
-            m_SideLength(sideLength),
-            m_VerteciesCount(verteciesCount),
-            m_Vertecies(nullptr)
+        constexpr ConvexShapeCollider(Vector2 *vertecies, unsigned int verteciesCount, const Vector2 &center) :
+            m_Vertecies(nullptr),
+            m_VerteciesCount(verteciesCount)
         {
-            if(m_SideLength <= 0.0f)
+            m_Vertecies = new Vector2[m_VerteciesCount];
+            for(unsigned int i = 0; i < m_VerteciesCount; i++)
             {
-                ASSERT("SideLenth must be grater than 0");
+                m_Vertecies[i] = vertecies[i] - center;
             }
-            if(m_VerteciesCount < 3)
-            {
-                ASSERT("POLYGON MUST HAVE AT LEAST 3 VERTECIES");
-            }
-            m_Vertecies = new Vector2[verteciesCount];
         }
         ConvexShapeCollider(const ConvexShapeCollider &other) = default;
         constexpr ConvexShapeCollider(ConvexShapeCollider &&other) noexcept :
-            m_SideLength( other.m_SideLength ),
             m_VerteciesCount( other.m_VerteciesCount ),
             m_Vertecies(other.m_Vertecies)
 
         {
-            if(m_VerteciesCount != other.m_VerteciesCount)
-            {
-                ASSERT("CAN'T CONSTRUCT ConvexShape SHAPE FROM OTHER ConvexShape SHAPE WITH DIFFRENT NUMBER OF VERTECIES");
-            }
-            other.m_SideLength = 0.0f;
-            m_VerteciesCount = 0.0f;
+            m_VerteciesCount = 0;
             m_Vertecies = nullptr;
         }
         ConvexShapeCollider& operator=(const ConvexShapeCollider &other) = default;
@@ -156,8 +145,8 @@ namespace pe2d
             {
                 return *this;
             }
-            m_SideLength = other.m_SideLength;
-            other.m_SideLength = 0.0f;
+            m_VerteciesCount = 0;
+            m_Vertecies = nullptr;
             return *this;
         }
         ~ConvexShapeCollider() { delete[] m_Vertecies; }
@@ -167,18 +156,8 @@ namespace pe2d
         CollisionPoints TestCollision(const Transform &transform, const ConvexShapeCollider *convexShape, const Transform &convexShapeTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const override final;
 
-        constexpr float GetSideLength() const { return m_SideLength; }
         constexpr unsigned int GetVerteciesCount() const { return m_VerteciesCount; }
-        constexpr Vector2* GetVertecies() const {return m_Vertecies; }
-        constexpr void SetSideLength(float sideLength)
-        {
-            if(sideLength <= 0.0f)
-            {
-                ASSERT("SideLenth must be grater than 0");
-            }
-            m_SideLength = sideLength;
-        }
-        constexpr void SetVerteciesCount(unsigned int verteciesCount) { m_VerteciesCount = verteciesCount; }
+        constexpr Vector2*  GetVertecies() const { return m_Vertecies; }
         constexpr void SetVertex(unsigned int index, const Vector2 &vertex, const Vector2 &center)
         {
             if(index < m_VerteciesCount)
@@ -204,7 +183,7 @@ namespace pe2d
                 const Vector2 *const p2 = &m_Vertecies[(i + 2) % m_VerteciesCount];
                 if(!p0 || !p1 || !p2)
                 {
-                    return true;
+                    return false;
                 }
                 const Vector2 d1 = *p1 - *p0;
                 const Vector2 d2 = *p2 - *p1;
@@ -227,7 +206,6 @@ namespace pe2d
             }
         }
     private:
-        float m_SideLength;
         unsigned int m_VerteciesCount;
         Vector2 *m_Vertecies;
     };
