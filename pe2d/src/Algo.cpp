@@ -79,6 +79,7 @@ namespace pe2d
         Vector2 *smallesAxis = nullptr;
 
         Vector2 *verteciesB = convexShape->GetVertecies();
+        for(int i = 0; i < convexShapeVerteciesCount; i ++) { verteciesB[i] += transformConvexShape.position; }
         Vector2 axesB[convexShapeVerteciesCount + 1];
         GetAxes(axesB, verteciesB, convexShapeVerteciesCount);
         axesB[convexShapeVerteciesCount - 1] = GetCircleAxis(verteciesB, convexShapeVerteciesCount, center);

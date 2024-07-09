@@ -71,6 +71,7 @@ namespace pe2d
         SendCollisionCallbacks(collisions, deltaTime);
         SendCollisionCallbacks(triggers, deltaTime);
     }
+    
     void CollisionWorld::SolveCollisions(std::vector<Collision> &collisions, float deltaTime)
     {
         for(int i = 0; i < m_Solvers.size(); i++)

@@ -127,6 +127,7 @@ namespace pe2d
             {
                 m_Vertecies[i] = vertecies[i] - center;
             }
+            IsConvex(center);
         }
         ConvexShapeCollider(const ConvexShapeCollider &other) = default;
         constexpr ConvexShapeCollider(ConvexShapeCollider &&other) noexcept :
@@ -163,14 +164,15 @@ namespace pe2d
             if(index < m_VerteciesCount)
             {
                 m_Vertecies[index] = vertex - center; 
-                if(!IsConvex())
+                if(!IsConvex(center))
                 {
                     ASSERT("SHAPE ISN'T CONVEX NOW");
                 }
             }
         }
     private:
-        bool IsConvex() const
+        // this shit doesn't work at all
+        bool IsConvex(const Vector2 &center) const
         {
             bool isConvex = true;
             bool gotPositive = false;
@@ -178,15 +180,11 @@ namespace pe2d
 
             for(unsigned int i = 0; i < m_VerteciesCount; i++)
             {
-                const Vector2 *const p0 = &m_Vertecies[i];
-                const Vector2 *const p1 = &m_Vertecies[(i + 1) % m_VerteciesCount];
-                const Vector2 *const p2 = &m_Vertecies[(i + 2) % m_VerteciesCount];
-                if(!p0 || !p1 || !p2)
-                {
-                    return false;
-                }
-                const Vector2 d1 = *p1 - *p0;
-                const Vector2 d2 = *p2 - *p1;
+                const Vector2 p0 = (m_Vertecies[i] + center);
+                const Vector2 p1 = (m_Vertecies[(i + 1) % m_VerteciesCount] + center);
+                const Vector2 p2 = (m_Vertecies[(i + 2) % m_VerteciesCount] + center);
+                const Vector2 d1 = p1 - p0;
+                const Vector2 d2 = p2 - p1;
 
                 const float cross = d1.x * d2.y - d1.y * d2.x;
                 if(cross < 0.0f)
@@ -202,8 +200,8 @@ namespace pe2d
                     isConvex = false;
                     break;
                 }
-                return isConvex;
             }
+            return isConvex;
         }
     private:
         unsigned int m_VerteciesCount;

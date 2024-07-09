@@ -12,8 +12,9 @@ namespace test
     {
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         world.AddSolver(solver);
+        m_Vertecies = new pe2d::Vector2[3];
     }
-    
+
     void TestCollision::OnUpdate(float deltaTime, const sf::Vector2i &mousePos)
     {
         world.Step(deltaTime);
@@ -30,6 +31,7 @@ namespace test
         static bool isRigidObject;
         static std::string name = "Square";
         static float radius = 10.0f;
+        static int verteciesCount = 3;
         static pe2d::Vector2 size = pe2d::Vector2{10.0f, 10.0f};
         static pe2d::Vector2 position;
         static pe2d::Vector2 scale = pe2d::Vector2{1.0f, 1.0f};
@@ -57,7 +59,25 @@ namespace test
                 {
                     name = "Circle";
                 }
+                ImGui::SameLine();
+                if( ImGui::Button("Make Convex Shape") )
+                {
+                    name = "Convex Shape";
+                }
                 ImGui::InputFloat2("Size", &size.x);
+            }
+            else if(name == "Circle")
+            {
+                if( ImGui::Button("Make Square") )
+                {
+                  name = "Square";
+                }
+                ImGui::SameLine();
+                if( ImGui::Button("Make Convex Shape") )
+                {
+                    name = "Convex Shape";
+                }
+                ImGui::InputFloat("Radius", &radius);
             }
             else
             {
@@ -65,9 +85,36 @@ namespace test
                 {
                   name = "Square";
                 }
-                ImGui::InputFloat("Radius", &radius);
+                ImGui::SameLine();
+                if( ImGui::Button("Make Circle") )
+                {
+                    name = "Circle";
+                }
+                if( ImGui::InputInt("Vertecies count", &verteciesCount) )
+                {
+                    if(verteciesCount < 3)
+                    {
+                        verteciesCount = 3;
+                    }
+                    else if(verteciesCount > 10)
+                    {
+                        verteciesCount = 10;
+                    }
+                    else
+                    {
+                        m_Vertecies = new pe2d::Vector2[verteciesCount];
+                    }
+                }
+                for(int i = 0; i< verteciesCount; i++)
+                {
+                    std::string label = "Vertex" + std::to_string(i);
+                    ImGui::InputFloat2(label.c_str(), &m_Vertecies[i].x);
+                }
             }
-            ImGui::InputFloat2("Position", &position.x);
+            if(name != "Convex Shape")
+            {
+                ImGui::InputFloat2("Position", &position.x);
+            }
             ImGui::InputFloat2("Scale", &scale.x);
             ImGui::InputFloat("Rotation", &rotation);
             ImGui::InputInt3("Color", &color.red);
@@ -90,6 +137,8 @@ namespace test
             {
                 isRigidObject = false;
                 name = "Square";
+                verteciesCount = 3;
+                m_Vertecies = new pe2d::Vector2[verteciesCount];;
                 size = pe2d::Vector2{};
                 radius = 0.0f;
                 position = pe2d::Vector2{};
@@ -105,21 +154,38 @@ namespace test
             {
                 const sf::Color Color = sf::Color{(sf::Uint8)color.red, (sf::Uint8)color.green, (sf::Uint8)color.blue};
                 const pe2d::Transform transform = pe2d::Transform{ position, scale, rotation};
-                if(name == "Square" && isRigidObject)
+                if(name == "Square")
                 {
-                    AddBox(Color, size, transform, false, mass, velocity, gravity);
+                    if(isRigidObject)
+                    {
+                        AddBox(Color, size, transform, false, mass, velocity, gravity);
+                    }
+                    else
+                    {
+                        AddBox(Color, size, transform, false);
+                    }
                 }
-                else if(name == "Square" && !isRigidObject)
+                else if(name == "Circle" )
                 {
-                    AddBox(Color, size, transform, false);
+                    if(isRigidObject)
+                    {
+                        AddCircle(Color, radius, transform, false, mass, velocity, gravity);
+                    }
+                    else
+                    {
+                        AddCircle(Color, radius, transform, false);
+                    }
                 }
-                else if(name == "Circle" && isRigidObject)
+                else if(name == "Convex Shape")
                 {
-                    AddCircle(Color, radius, transform, false, mass, velocity, gravity);
-                }
-                else if(name == "Circle" && !isRigidObject)
-                {
-                    AddCircle(Color, radius, transform, false);
+                    if(isRigidObject)
+                    {
+                        AddConvexShape(Color, verteciesCount, m_Vertecies, transform, false);
+                    }
+                    else
+                    {
+                        AddConvexShape(Color, verteciesCount, m_Vertecies, transform, false, mass, velocity, gravity);
+                    }
                 }
                 showObjectEditor = false;
             }
