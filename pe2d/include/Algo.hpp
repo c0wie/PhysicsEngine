@@ -58,7 +58,7 @@ namespace pe2d
         static Vector2 ProjectCircle(const Vector2 &axis, const Vector2 &circleCenter, float radius);
         static void RotateVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 &center, float angle);
         static void GetBoxVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 &center, const Vector2 &boxSize, const Vector2 &scale, float angle);
-        static void GetConvexShapeVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 *offsets, const Vector2 &center);
+        static void GetConvexShapeVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 *offsets, const Vector2 &center, float angle);
         static Vector2 GetCircleAxis(const Vector2 *const vertecies, unsigned int count, const Vector2 &circleCenter);
     private:
         static constexpr float INF = std::numeric_limits<float>::infinity();

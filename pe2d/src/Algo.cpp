@@ -73,22 +73,24 @@ namespace pe2d
         const CircleCollider *circle, const Transform &transformCircle,
         const ConvexShapeCollider *convexShape, const Transform &transformConvexShape)
     {
-        const unsigned int convexShapeVerteciesCount = convexShape->GetVerteciesCount();
+        const unsigned int verteciesCount = convexShape->GetVerteciesCount();
+        const unsigned int axesCount = verteciesCount + 1;
+        const Vector2 *const offsets = convexShape->GetDistancesToVertecies();
+        const float convexShapeRotation = transformConvexShape.GetRadians();
         float overlap = INF;
         const Vector2 &center = transformCircle.position;
         Vector2 *smallesAxis = nullptr;
 
-        Vector2 *verteciesB = convexShape->GetVertecies();
-        for(int i = 0; i < convexShapeVerteciesCount; i ++) { verteciesB[i] += transformConvexShape.position; }
-        Vector2 axesB[convexShapeVerteciesCount + 1];
-        GetAxes(axesB, verteciesB, convexShapeVerteciesCount);
-        axesB[convexShapeVerteciesCount - 1] = GetCircleAxis(verteciesB, convexShapeVerteciesCount, center);
+        Vector2 *verteciesB, *axesB;
+        GetConvexShapeVertecies(verteciesB, verteciesCount, offsets, transformConvexShape.position, convexShapeRotation);
+        GetAxes(axesB, verteciesB, axesCount);
+        axesB[axesCount - 1] = GetCircleAxis(verteciesB, verteciesCount, center);
 
 
-        for(int i = 0; i < convexShapeVerteciesCount; i++)
+        for(int i = 0; i < axesCount; i++)
         {
             Vector2 p1 = ProjectCircle(axesB[i], center, circle->GetRadius() * transformCircle.scale.x);
-            Vector2 p2 = Project(verteciesB, convexShapeVerteciesCount, axesB[i]);
+            Vector2 p2 = Project(verteciesB, axesCount, axesB[i]);
 
             if(!Overlap(p1, p2))
             {
@@ -119,22 +121,26 @@ namespace pe2d
     {
         const unsigned int verteciesCountA = convexShapeA->GetVerteciesCount();
         const unsigned int verteciesCountB = convexShapeB->GetVerteciesCount();
+        const Vector2 &positionA = transformConvexShapeA.position;
+        const Vector2 &positionB = transformConvexShapeB.position;
+        const Vector2 *const offsetsA = convexShapeA->GetDistancesToVertecies();
+        const Vector2 *const offsetsB = convexShapeB->GetDistancesToVertecies();
         const float rotationA = transformConvexShapeA.GetRadians();
         const float rotationB = transformConvexShapeB.GetRadians();
         const Vector2 *smallesAxis = nullptr;
         float overlap = INF;
+        Vector2 *verteciesA, *verteciesB;
+        Vector2 *axesA, *axesB;
 
-        Vector2 *verteciesA = convexShapeA->GetVertecies();
-        Vector2 *verteciesB = convexShapeB->GetVertecies();
-        Vector2 axesA[verteciesCountA];
-        Vector2 axesB[verteciesCountB];
+        GetConvexShapeVertecies(verteciesA, verteciesCountA, offsetsA, positionA, rotationA);
+        GetConvexShapeVertecies(verteciesB, verteciesCountB, offsetsB, positionB, rotationB);
         GetAxes(axesA, verteciesA, verteciesCountA);
         GetAxes(axesB, verteciesB, verteciesCountB);
 
-        for(const Vector2 &axis : axesA)
+        for(unsigned int i = 0; i < verteciesCountA; i++)
         {
-            Vector2 p1 = Project(verteciesA, verteciesCountA, axis);
-            Vector2 p2 = Project(verteciesB, verteciesCountB, axis);
+            Vector2 p1 = Project(verteciesA, verteciesCountA, axesA[i]);
+            Vector2 p2 = Project(verteciesB, verteciesCountB, axesA[i]);
 
             if(!Overlap(p1, p2))
             {
@@ -144,14 +150,14 @@ namespace pe2d
             if(o < overlap)
             {
                 overlap = o;
-                smallesAxis = &axis;
+                smallesAxis = &axesA[i];
             }
         }
 
-        for(const Vector2 &axis : axesB)
+        for(unsigned int i = 0; i < verteciesCountB; i++)
         {
-            Vector2 p1 = Project(verteciesA, verteciesCountA, axis);
-            Vector2 p2 = Project(verteciesB, verteciesCountB, axis);
+            Vector2 p1 = Project(verteciesA, verteciesCountA, axesB[i]);
+            Vector2 p2 = Project(verteciesB, verteciesCountB, axesB[i]);
 
             if(!Overlap(p1, p2))
             {
@@ -161,7 +167,7 @@ namespace pe2d
             if(o < overlap)
             {
                 overlap = o;
-                smallesAxis = &axis;
+                smallesAxis = &axesB[i];
             }
         }
         return CollisionPoints{*smallesAxis, overlap, true};
@@ -173,24 +179,23 @@ namespace pe2d
     {
         const unsigned int convexShapeVerteciesCount = convexShape->GetVerteciesCount();
         const unsigned int boxVerteciesCount = 4;
-        const float ConvexShapeRotation = transformConvexShape.GetRadians();
+        const Vector2 *const offsets = convexShape->GetDistancesToVertecies();
+        const float convexShapeRotation = transformConvexShape.GetRadians();
         const float boxRotation = transformBox.GetRadians();
         const Vector2 *smallesAxis = nullptr;
         float overlap = INF;
+        Vector2 *convexShapeVertecies, *boxVertecies;
+        Vector2 *convexShapeAxes, *boxAxes;
 
-        Vector2 *ConvexShapeVertecies = convexShape->GetVertecies();
-        Vector2 boxVerecies[boxVerteciesCount];
-        GetBoxVertecies(boxVerecies, boxVerteciesCount, transformBox.position, box->GetSize(), transformBox.scale, boxRotation);
+        GetBoxVertecies(boxVertecies, boxVerteciesCount, transformBox.position, box->GetSize(), transformBox.scale, boxRotation);
+        GetConvexShapeVertecies(convexShapeVertecies, convexShapeVerteciesCount, offsets, transformConvexShape.position, convexShapeRotation);
+        GetAxes(convexShapeAxes, convexShapeVertecies, convexShapeVerteciesCount);
+        GetAxes(boxAxes, boxVertecies, boxVerteciesCount);
 
-        Vector2 ConvexShapeAxes[convexShapeVerteciesCount];
-        Vector2 boxAxes[boxVerteciesCount];
-        GetAxes(ConvexShapeAxes, ConvexShapeVertecies, convexShapeVerteciesCount);
-        GetAxes(boxAxes, boxVerecies, boxVerteciesCount);
-
-        for(const Vector2 &axis : ConvexShapeAxes)
+        for(int i = 0; i < convexShapeVerteciesCount; i++)
         {
-            Vector2 p1 = Project(ConvexShapeVertecies, convexShapeVerteciesCount, axis);
-            Vector2 p2 = Project(boxVerecies, boxVerteciesCount, axis);
+            Vector2 p1 = Project(convexShapeVertecies, convexShapeVerteciesCount, convexShapeAxes[i]);
+            Vector2 p2 = Project(boxVertecies, boxVerteciesCount, convexShapeAxes[i]);
 
             if(!Overlap(p1, p2))
             {
@@ -200,14 +205,14 @@ namespace pe2d
             if(o < overlap)
             {
                 overlap = o;
-                smallesAxis = &axis;
+                smallesAxis = &convexShapeAxes[i];
             }
         }
 
-        for(const Vector2 &axis : boxAxes)
+        for(int i = 0; i < boxVerteciesCount; i++)
         {
-            Vector2 p1 = Project(ConvexShapeVertecies, convexShapeVerteciesCount, axis);
-            Vector2 p2 = Project(boxVerecies, boxVerteciesCount, axis);
+            Vector2 p1 = Project(convexShapeVertecies, convexShapeVerteciesCount, boxAxes[i]);
+            Vector2 p2 = Project(boxVertecies, boxVerteciesCount, boxAxes[i]);
 
             if(!Overlap(p1, p2))
             {
@@ -217,7 +222,7 @@ namespace pe2d
             if(o < overlap)
             {
                 overlap = o;
-                smallesAxis = &axis;
+                smallesAxis = &boxAxes[i];
             }
         }
         return CollisionPoints{*smallesAxis, overlap, true};
@@ -237,28 +242,25 @@ namespace pe2d
         const BoxCollider *boxB, const Transform &transformBoxB)
     {
         constexpr unsigned int verteciesCount = 4;
-        const float boxARotation = transformBoxA.GetRadians();
-        const float boxBRotation = transformBoxB.GetRadians();
+        const float RotationA = transformBoxA.GetRadians();
+        const float RotationB = transformBoxB.GetRadians();
         const Vector2 *smallesAxis = nullptr;
         float overlap = INF;
+        Vector2 *verteciesA, *verteciesB;
+        Vector2 *axesA, *axesB;
 
-        Vector2 boxAVertecies[verteciesCount];
-        Vector2 boxBVertecies[verteciesCount];
-        GetBoxVertecies(boxAVertecies, verteciesCount, transformBoxA.position, boxA->GetSize(), transformBoxA.scale, boxARotation);
-        GetBoxVertecies(boxBVertecies, verteciesCount, transformBoxB.position, boxB->GetSize(), transformBoxB.scale, boxBRotation);
-
-        Vector2 boxAAxes[verteciesCount];
-        Vector2 boxBAxes[verteciesCount];
-        GetAxes(boxAAxes, boxAVertecies, verteciesCount);
-        GetAxes(boxBAxes, boxBVertecies, verteciesCount);
+        GetBoxVertecies(verteciesA, verteciesCount, transformBoxA.position, boxA->GetSize(), transformBoxA.scale, RotationA);
+        GetBoxVertecies(verteciesB, verteciesCount, transformBoxB.position, boxB->GetSize(), transformBoxB.scale, RotationB);
+        GetAxes(axesA, verteciesA, verteciesCount);
+        GetAxes(axesB, verteciesB, verteciesCount);
 
         for(int i = 0; i < verteciesCount; i++)
         {
-            const Vector2 pA1 = Project(boxAVertecies, verteciesCount, boxAAxes[i]);
-            const Vector2 pA2 = Project(boxBVertecies, verteciesCount, boxAAxes[i]);  
+            const Vector2 pA1 = Project(verteciesA, verteciesCount, axesA[i]);
+            const Vector2 pA2 = Project(verteciesB, verteciesCount, axesA[i]);  
 
-            const Vector2 pB1 = Project(boxAVertecies, verteciesCount, boxBAxes[i]);
-            const Vector2 pB2 = Project(boxBVertecies, verteciesCount, boxBAxes[i]);
+            const Vector2 pB1 = Project(verteciesA, verteciesCount, axesB[i]);
+            const Vector2 pB2 = Project(verteciesB, verteciesCount, axesB[i]);
 
             if(!Overlap(pA1, pA2) || !Overlap(pB1, pB2))
             {
@@ -269,12 +271,12 @@ namespace pe2d
             if(overlapA < overlap)
             {
                 overlap = overlapA;
-                smallesAxis = &boxAAxes[i];
+                smallesAxis = &axesA[i];
             }
             else if(overlapB < overlap)
             {
                 overlap = overlapB;
-                smallesAxis = &boxBAxes[i];
+                smallesAxis = &axesB[i];
             }
         }
         return CollisionPoints{*smallesAxis, overlap, true};
@@ -371,12 +373,13 @@ namespace pe2d
         RotateVertecies(vertecies, count, center, angle);
     }
 
-    void Algo::GetConvexShapeVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 *offsets, const Vector2 &center)
+    void Algo::GetConvexShapeVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 *offsets, const Vector2 &center, float angle)
     {
         for(int i = 0; i < count; i++)
         {
             vertecies[i] = center + offsets[i];
         }
+        RotateVertecies(vertecies, count, center, angle);
     }
 
     Vector2 Algo::GetCircleAxis(const Vector2 *const vertecies, unsigned int count, const Vector2 &circleCenter)

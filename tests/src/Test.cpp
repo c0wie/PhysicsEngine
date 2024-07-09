@@ -45,13 +45,13 @@ namespace test
         const unsigned int verteciesCount = collider->GetVerteciesCount();
         const pe2d::Vector2 position = body->GetTransform().position;
         const pe2d::Vector2 scale = body->GetTransform().scale;
-        const pe2d::Vector2 *vertecies = collider->GetVertecies();
+        const pe2d::Vector2 *offsets = collider->GetDistancesToVertecies();
         const sf::Color color = shape.GetColor();
 
         sf::ConvexShape convexShape(verteciesCount);
         for(int i = 0; i < verteciesCount; i++)
         {
-            const pe2d::Vector2 vertex = vertecies[i] + position;
+            const pe2d::Vector2 vertex = position + offsets[i];
             convexShape.setPoint(i, sf::Vector2f{vertex.x, vertex.y });
         }
         convexShape.setOrigin(position.x, position.y);

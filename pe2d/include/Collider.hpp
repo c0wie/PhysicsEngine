@@ -119,24 +119,24 @@ namespace pe2d
     public:
         ConvexShapeCollider() = delete;
         constexpr ConvexShapeCollider(Vector2 *vertecies, unsigned int verteciesCount, const Vector2 &center) :
-            m_Vertecies(nullptr),
+            m_DistancesToVertecies(nullptr),
             m_VerteciesCount(verteciesCount)
         {
-            m_Vertecies = new Vector2[m_VerteciesCount];
+            m_DistancesToVertecies = new Vector2[m_VerteciesCount];
             for(unsigned int i = 0; i < m_VerteciesCount; i++)
             {
-                m_Vertecies[i] = vertecies[i] - center;
+                m_DistancesToVertecies[i] = vertecies[i] - center;
             }
             IsConvex(center);
         }
         ConvexShapeCollider(const ConvexShapeCollider &other) = default;
         constexpr ConvexShapeCollider(ConvexShapeCollider &&other) noexcept :
             m_VerteciesCount( other.m_VerteciesCount ),
-            m_Vertecies(other.m_Vertecies)
+            m_DistancesToVertecies(other.m_DistancesToVertecies)
 
         {
             m_VerteciesCount = 0;
-            m_Vertecies = nullptr;
+            m_DistancesToVertecies= nullptr;
         }
         ConvexShapeCollider& operator=(const ConvexShapeCollider &other) = default;
         constexpr ConvexShapeCollider& operator=(ConvexShapeCollider &&other) noexcept
@@ -147,10 +147,10 @@ namespace pe2d
                 return *this;
             }
             m_VerteciesCount = 0;
-            m_Vertecies = nullptr;
+            m_DistancesToVertecies= nullptr;
             return *this;
         }
-        ~ConvexShapeCollider() { delete[] m_Vertecies; }
+        ~ConvexShapeCollider() { delete[] m_DistancesToVertecies; }
     public:
         CollisionPoints TestCollision(const Transform &transform, const Collider *collider, const Transform &colliderTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const override final;
@@ -158,12 +158,12 @@ namespace pe2d
         CollisionPoints TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const override final;
 
         constexpr unsigned int GetVerteciesCount() const { return m_VerteciesCount; }
-        constexpr Vector2*  GetVertecies() const { return m_Vertecies; }
-        constexpr void SetVertex(unsigned int index, const Vector2 &vertex, const Vector2 &center)
+        constexpr Vector2* GetDistancesToVertecies() const { return m_DistancesToVertecies; }
+        constexpr void SetDistanceToVertex(unsigned int index, const Vector2 &vertex, const Vector2 &center)
         {
-            if(index < m_VerteciesCount)
+            if(index > 0 && index < m_VerteciesCount)
             {
-                m_Vertecies[index] = vertex - center; 
+                m_DistancesToVertecies[index] = vertex - center; 
                 if(!IsConvex(center))
                 {
                     ASSERT("SHAPE ISN'T CONVEX NOW");
@@ -171,7 +171,6 @@ namespace pe2d
             }
         }
     private:
-        // this shit doesn't work at all
         bool IsConvex(const Vector2 &center) const
         {
             bool isConvex = true;
@@ -180,9 +179,9 @@ namespace pe2d
 
             for(unsigned int i = 0; i < m_VerteciesCount; i++)
             {
-                const Vector2 p0 = (m_Vertecies[i] + center);
-                const Vector2 p1 = (m_Vertecies[(i + 1) % m_VerteciesCount] + center);
-                const Vector2 p2 = (m_Vertecies[(i + 2) % m_VerteciesCount] + center);
+                const Vector2 p0 = (m_DistancesToVertecies[i] + center);
+                const Vector2 p1 = (m_DistancesToVertecies[(i + 1) % m_VerteciesCount] + center);
+                const Vector2 p2 = (m_DistancesToVertecies[(i + 2) % m_VerteciesCount] + center);
                 const Vector2 d1 = p1 - p0;
                 const Vector2 d2 = p2 - p1;
 
@@ -205,6 +204,6 @@ namespace pe2d
         }
     private:
         unsigned int m_VerteciesCount;
-        Vector2 *m_Vertecies;
+        Vector2 *m_DistancesToVertecies;
     };
 }
