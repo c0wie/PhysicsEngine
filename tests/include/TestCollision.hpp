@@ -33,6 +33,7 @@ namespace test
         void RigidObjectInput();
         void ResetVariables();
         void CreateObject();
+        void ClearObjects() override final;
     private:
         bool showObjectEditor;
         bool isRigidObject;

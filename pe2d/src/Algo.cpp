@@ -30,18 +30,19 @@ namespace pe2d
         const CircleCollider *circle, const Transform &transformCircle,
         const BoxCollider *box, const Transform &transformBox)
     {
-        const unsigned int boxVerteciesCount = 4;
+        constexpr unsigned int boxVerteciesCount = 4;
+        constexpr unsigned int axesCount = boxVerteciesCount + 1;
         float overlap = INF;
         const Vector2 &center = transformCircle.position;
         Vector2 *smallesAxis = nullptr;
-
         Vector2 verteciesB[boxVerteciesCount];
-        GetBoxVertecies(verteciesB, boxVerteciesCount, transformBox.position, box->GetSize(), transformBox.scale, transformBox.rotation);
-        Vector2 axesB[boxVerteciesCount + 1];
-        GetAxes(axesB, verteciesB, boxVerteciesCount);
-        axesB[boxVerteciesCount - 1] = GetCircleAxis(verteciesB, boxVerteciesCount, center);
+        Vector2 axesB[axesCount];
 
-        for(int i = 0; i < boxVerteciesCount; i++)
+        GetBoxVertecies(verteciesB, boxVerteciesCount, transformBox.position, box->GetSize(), transformBox.scale, transformBox.rotation);
+        GetAxes(axesB, verteciesB, boxVerteciesCount);
+        axesB[axesCount - 1] = GetCircleAxis(verteciesB, boxVerteciesCount, center);
+
+        for(int i = 0; i < axesCount; i++)
         {
             Vector2 p1 = ProjectCircle(axesB[i], center, circle->GetRadius() * transformCircle.scale.x);
             Vector2 p2 = Project(verteciesB, boxVerteciesCount, axesB[i]);
@@ -81,16 +82,17 @@ namespace pe2d
         const Vector2 &center = transformCircle.position;
         Vector2 *smallesAxis = nullptr;
 
-        Vector2 *verteciesB, *axesB;
+        Vector2 verteciesB[verteciesCount];
+        Vector2 axes[axesCount];
         GetConvexShapeVertecies(verteciesB, verteciesCount, offsets, transformConvexShape.position, convexShapeRotation);
-        GetAxes(axesB, verteciesB, axesCount);
-        axesB[axesCount - 1] = GetCircleAxis(verteciesB, verteciesCount, center);
+        GetAxes(axes, verteciesB, verteciesCount);
+        axes[axesCount - 1] = GetCircleAxis(verteciesB, verteciesCount, center);
 
 
         for(int i = 0; i < axesCount; i++)
         {
-            Vector2 p1 = ProjectCircle(axesB[i], center, circle->GetRadius() * transformCircle.scale.x);
-            Vector2 p2 = Project(verteciesB, axesCount, axesB[i]);
+            Vector2 p1 = ProjectCircle(axes[i], center, circle->GetRadius() * transformCircle.scale.x);
+            Vector2 p2 = Project(verteciesB, axesCount, axes[i]);
 
             if(!Overlap(p1, p2))
             {
@@ -100,7 +102,7 @@ namespace pe2d
             if(o < overlap)
             {
                 overlap = o;
-                smallesAxis = &axesB[i];
+                smallesAxis = &axes[i];
             }
         }
         return CollisionPoints{*smallesAxis, overlap, true};
@@ -129,8 +131,10 @@ namespace pe2d
         const float rotationB = transformConvexShapeB.GetRadians();
         const Vector2 *smallesAxis = nullptr;
         float overlap = INF;
-        Vector2 *verteciesA, *verteciesB;
-        Vector2 *axesA, *axesB;
+        Vector2 verteciesA[verteciesCountA];
+        Vector2 verteciesB[verteciesCountB];
+        Vector2 axesA[verteciesCountA];
+        Vector2 axesB[verteciesCountB];
 
         GetConvexShapeVertecies(verteciesA, verteciesCountA, offsetsA, positionA, rotationA);
         GetConvexShapeVertecies(verteciesB, verteciesCountB, offsetsB, positionB, rotationB);
@@ -178,14 +182,16 @@ namespace pe2d
         const BoxCollider *box, const Transform &transformBox)
     {
         const unsigned int convexShapeVerteciesCount = convexShape->GetVerteciesCount();
-        const unsigned int boxVerteciesCount = 4;
+        constexpr unsigned int boxVerteciesCount = 4;
         const Vector2 *const offsets = convexShape->GetDistancesToVertecies();
         const float convexShapeRotation = transformConvexShape.GetRadians();
         const float boxRotation = transformBox.GetRadians();
         const Vector2 *smallesAxis = nullptr;
         float overlap = INF;
-        Vector2 *convexShapeVertecies, *boxVertecies;
-        Vector2 *convexShapeAxes, *boxAxes;
+        Vector2 convexShapeVertecies[convexShapeVerteciesCount];
+        Vector2 boxVertecies[boxVerteciesCount];
+        Vector2 convexShapeAxes[convexShapeVerteciesCount];
+        Vector2 boxAxes[boxVerteciesCount];
 
         GetBoxVertecies(boxVertecies, boxVerteciesCount, transformBox.position, box->GetSize(), transformBox.scale, boxRotation);
         GetConvexShapeVertecies(convexShapeVertecies, convexShapeVerteciesCount, offsets, transformConvexShape.position, convexShapeRotation);
@@ -246,8 +252,10 @@ namespace pe2d
         const float RotationB = transformBoxB.GetRadians();
         const Vector2 *smallesAxis = nullptr;
         float overlap = INF;
-        Vector2 *verteciesA, *verteciesB;
-        Vector2 *axesA, *axesB;
+        Vector2 verteciesA[verteciesCount];
+        Vector2 verteciesB[verteciesCount];
+        Vector2 axesA[verteciesCount];
+        Vector2 axesB[verteciesCount];
 
         GetBoxVertecies(verteciesA, verteciesCount, transformBoxA.position, boxA->GetSize(), transformBoxA.scale, RotationA);
         GetBoxVertecies(verteciesB, verteciesCount, transformBoxB.position, boxB->GetSize(), transformBoxB.scale, RotationB);
@@ -318,7 +326,7 @@ namespace pe2d
 
         for(int i = 0; i < count; i++)
         {
-            float p = axis.dot(vertecies[i]);
+            const float p = axis.dot(vertecies[i]);
             if(p < min)
             {
                 min = p;
@@ -363,8 +371,7 @@ namespace pe2d
         }
     }
     
-    void Algo::GetBoxVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 &center, const Vector2 &boxSize,
-                                const Vector2 &scale, float angle)
+    void Algo::GetBoxVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 &center, const Vector2 &boxSize, const Vector2 &scale, float angle)
     {
         vertecies[0] = Vector2{ center.x - boxSize.x / 2.0f * scale.x, center.y + boxSize.y / 2.0f * scale.y };
         vertecies[1] = Vector2{ center.x + boxSize.x / 2.0f * scale.x, center.y + boxSize.y / 2.0f * scale.y };

@@ -107,8 +107,8 @@ namespace pe2d
     void DynamicsWorld::Step(float deltaTime)
     {
         ApplyGravity();
-        ResolveCollisions(deltaTime);
         MoveObjects(deltaTime);
+        ResolveCollisions(deltaTime);
     }
     
     void DynamicsWorld::ApplyGravity()

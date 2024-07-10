@@ -5,6 +5,8 @@ namespace test
 
     TestCollision::TestCollision()
     {
+        pe2d::Transform transform = pe2d::Transform{ pe2d::Vector2{500.0f, 950.0f}, pe2d::Vector2{1.0f, 1.0f}, 0.0f };
+        AddBox(sf::Color::White, pe2d::Vector2{1000.0f, 50.0f}, transform, false);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         world.AddSolver(solver);
         showObjectEditor = false;
@@ -189,5 +191,17 @@ namespace test
             }
         }
         showObjectEditor = false;
+    }
+    void TestCollision::ClearObjects() 
+    {
+        while(m_Shapes.size() != 1)
+        {
+            m_Shapes.pop_back();
+        }
+        auto objects = world.GetObjects();
+        for(int i = 1; i < objects.size(); i++)
+        {
+            world.RemoveObject(objects[i]);
+        }
     }
 }   
