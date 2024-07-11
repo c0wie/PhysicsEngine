@@ -53,13 +53,13 @@ namespace pe2d
     private:
         static bool Overlap(const Vector2 &A, const Vector2 &B);
         static float GetOverlap(const Vector2 &A, const Vector2 &B);
-        static void GetAxes(Vector2 *const axes, const Vector2 *const vertecies, unsigned int count);
-        static Vector2 Project(const Vector2 *const vertecies, unsigned int count, const Vector2 &axis);
+        static void GetAxes(Vector2 *const axes, const Vector2 *const vertices, unsigned int count);
+        static Vector2 Project(const Vector2 *const vertices, unsigned int count, const Vector2 &axis);
         static Vector2 ProjectCircle(const Vector2 &axis, const Vector2 &circleCenter, float radius);
-        static void RotateVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 &center, float angle);
-        static void GetBoxVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 &center, const Vector2 &boxSize, const Vector2 &scale, float angle);
-        static void GetConvexShapeVertecies(Vector2 *const vertecies, unsigned int count, const Vector2 *offsets, const Vector2 &center, float angle);
-        static Vector2 GetCircleAxis(const Vector2 *const vertecies, unsigned int count, const Vector2 &circleCenter);
+        static void RotateVertices(Vector2 *const vertices, unsigned int count, const Vector2 &center, float angle);
+        static void GetBoxVertices(Vector2 *const vertices, unsigned int count, const Vector2 &center, const Vector2 &boxSize, const Vector2 &scale, float angle);
+        static void GetConvexShapeVertices(Vector2 *const vertices, unsigned int count, const Vector2 *offsets, const Vector2 &center, float angle);
+        static Vector2 GetCircleAxis(const Vector2 *const vertices, unsigned int count, const Vector2 &circleCenter);
     private:
         static constexpr float INF = std::numeric_limits<float>::infinity();
     };

@@ -62,6 +62,7 @@ namespace pe2d
                     else
                     {
                         collisions.emplace_back(m_Objects[i], m_Objects[j], points);
+                        LogCall("Collision detected\n");
                     }
                 }
             }

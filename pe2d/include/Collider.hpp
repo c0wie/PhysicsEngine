@@ -118,25 +118,25 @@ namespace pe2d
     {
     public:
         ConvexShapeCollider() = delete;
-        constexpr ConvexShapeCollider(Vector2 *vertecies, unsigned int verteciesCount, const Vector2 &center) :
-            m_DistancesToVertecies(nullptr),
-            m_VerteciesCount(verteciesCount)
+        constexpr ConvexShapeCollider(Vector2 *vertices, unsigned int verticesCount, const Vector2 &center) :
+            m_DistancesToVertices(nullptr),
+            m_VerticesCount(verticesCount)
         {
-            m_DistancesToVertecies = new Vector2[m_VerteciesCount];
-            for(unsigned int i = 0; i < m_VerteciesCount; i++)
+            m_DistancesToVertices = new Vector2[m_VerticesCount];
+            for(unsigned int i = 0; i < m_VerticesCount; i++)
             {
-                m_DistancesToVertecies[i] = vertecies[i] - center;
+                m_DistancesToVertices[i] = vertices[i] - center;
             }
             IsConvex(center);
         }
         ConvexShapeCollider(const ConvexShapeCollider &other) = default;
         constexpr ConvexShapeCollider(ConvexShapeCollider &&other) noexcept :
-            m_VerteciesCount( other.m_VerteciesCount ),
-            m_DistancesToVertecies(other.m_DistancesToVertecies)
+            m_VerticesCount( other.m_VerticesCount ),
+            m_DistancesToVertices(other.m_DistancesToVertices)
 
         {
-            m_VerteciesCount = 0;
-            m_DistancesToVertecies= nullptr;
+            m_VerticesCount = 0;
+            m_DistancesToVertices= nullptr;
         }
         ConvexShapeCollider& operator=(const ConvexShapeCollider &other) = default;
         constexpr ConvexShapeCollider& operator=(ConvexShapeCollider &&other) noexcept
@@ -146,24 +146,24 @@ namespace pe2d
             {
                 return *this;
             }
-            m_VerteciesCount = 0;
-            m_DistancesToVertecies= nullptr;
+            m_VerticesCount = 0;
+            m_DistancesToVertices = nullptr;
             return *this;
         }
-        ~ConvexShapeCollider() { delete[] m_DistancesToVertecies; }
+        ~ConvexShapeCollider() { delete[] m_DistancesToVertices; }
     public:
         CollisionPoints TestCollision(const Transform &transform, const Collider *collider, const Transform &colliderTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const ConvexShapeCollider *convexShape, const Transform &convexShapeTransform) const override final;
         CollisionPoints TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const override final;
 
-        constexpr unsigned int GetVerteciesCount() const { return m_VerteciesCount; }
-        constexpr Vector2* GetDistancesToVertecies() const { return m_DistancesToVertecies; }
+        constexpr unsigned int GetVerticesCount() const { return m_VerticesCount; }
+        constexpr Vector2* GetDistancesToVertices() const { return m_DistancesToVertices; }
         constexpr void SetDistanceToVertex(unsigned int index, const Vector2 &vertex, const Vector2 &center)
         {
-            if(index > 0 && index < m_VerteciesCount)
+            if(index > 0 && index < m_VerticesCount)
             {
-                m_DistancesToVertecies[index] = vertex - center; 
+                m_DistancesToVertices[index] = vertex - center; 
                 if(!IsConvex(center))
                 {
                     ASSERT("SHAPE ISN'T CONVEX NOW");
@@ -177,11 +177,11 @@ namespace pe2d
             bool gotPositive = false;
             bool gotNegative = false;
 
-            for(unsigned int i = 0; i < m_VerteciesCount; i++)
+            for(unsigned int i = 0; i < m_VerticesCount; i++)
             {
-                const Vector2 p0 = (m_DistancesToVertecies[i] + center);
-                const Vector2 p1 = (m_DistancesToVertecies[(i + 1) % m_VerteciesCount] + center);
-                const Vector2 p2 = (m_DistancesToVertecies[(i + 2) % m_VerteciesCount] + center);
+                const Vector2 p0 = (m_DistancesToVertices[i] + center);
+                const Vector2 p1 = (m_DistancesToVertices[(i + 1) % m_VerticesCount] + center);
+                const Vector2 p2 = (m_DistancesToVertices[(i + 2) % m_VerticesCount] + center);
                 const Vector2 d1 = p1 - p0;
                 const Vector2 d2 = p2 - p1;
 
@@ -203,7 +203,7 @@ namespace pe2d
             return isConvex;
         }
     private:
-        unsigned int m_VerteciesCount;
-        Vector2 *m_DistancesToVertecies;
+        unsigned int m_VerticesCount;
+        Vector2 *m_DistancesToVertices;
     };
 }

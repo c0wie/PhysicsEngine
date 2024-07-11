@@ -6,7 +6,10 @@ namespace test
     TestCollision::TestCollision()
     {
         pe2d::Transform transform = pe2d::Transform{ pe2d::Vector2{500.0f, 950.0f}, pe2d::Vector2{1.0f, 1.0f}, 0.0f };
+        pe2d::Transform tracerTansform = pe2d::Transform{ pe2d::Vector2{100.0f, 100.0f}, pe2d::Vector2{1.0f, 1.0f}, 0.0f };
         AddBox(sf::Color::White, pe2d::Vector2{1000.0f, 50.0f}, transform, false);
+        AddBox(sf::Color::Cyan, pe2d::Vector2{100.0f, 100.f}, tracerTansform, false);
+
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         world.AddSolver(solver);
         showObjectEditor = false;
@@ -15,6 +18,10 @@ namespace test
 
     void TestCollision::OnUpdate(float deltaTime, const sf::Vector2i &mousePos)
     {
+        const pe2d::Vector2 s = world.GetObjects()[1]->GetPosition();
+        const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
+        const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 16.0f * deltaTime);
+        world.GetObjects()[1]->SetPosition(position);
         world.Step(deltaTime);
     }
 
@@ -192,16 +199,14 @@ namespace test
         }
         showObjectEditor = false;
     }
+    
     void TestCollision::ClearObjects() 
     {
-        while(m_Shapes.size() != 1)
-        {
-            m_Shapes.pop_back();
-        }
         auto objects = world.GetObjects();
-        for(int i = 1; i < objects.size(); i++)
+        for(int i = 2; i < objects.size(); i++)
         {
             world.RemoveObject(objects[i]);
+            m_Shapes.pop_back();
         }
     }
 }   
