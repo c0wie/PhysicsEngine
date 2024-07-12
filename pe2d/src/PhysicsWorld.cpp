@@ -43,28 +43,12 @@ namespace pe2d
                     break;
                 }
 
-                if(m_Objects[i]->GetCollider() == nullptr || m_Objects[j]->GetCollider() == nullptr)
+                if(!m_Objects[i]->GetCollider()|| !m_Objects[j]->GetCollider())
                 {
                     continue;
                 }
-
-
-                CollisionPoints points = m_Objects[i]->GetCollider()->TestCollision
-                    (m_Objects[i]->GetTransform(), m_Objects[j]->GetCollider().get(), m_Objects[j]->GetTransform());
-
-                if(points.HasCollision)
-                {
-                    bool tigger = m_Objects[i]->IsTrigger() || m_Objects[j] -> IsTrigger();
-                    if(tigger)
-                    {
-                        triggers.emplace_back(m_Objects[i], m_Objects[j], points);
-                    }
-                    else
-                    {
-                        collisions.emplace_back(m_Objects[i], m_Objects[j], points);
-                        LogCall("Collision detected\n");
-                    }
-                }
+                
+                FindCollisions(m_Objects[i], m_Objects[j], collisions, triggers);
             }
         }
         
@@ -73,6 +57,27 @@ namespace pe2d
         SendCollisionCallbacks(triggers, deltaTime);
     }
     
+    void CollisionWorld::FindCollisions(std::shared_ptr<CollisionObject> objectA, std::shared_ptr<CollisionObject> objectB,
+        std::vector<Collision> &collisions, std::vector<Collision> &triggers)
+    {
+        const CollisionPoints points = objectA->GetCollider()->TestCollision
+            (objectA->GetTransform(), objectB->GetCollider().get(), objectB->GetTransform());
+
+        if(points.HasCollision)
+        {
+            bool tigger = objectA->IsTrigger() || objectB -> IsTrigger();
+            if(tigger)
+            {
+                triggers.emplace_back(objectA, objectB, points);
+            }
+            else
+            {
+                collisions.emplace_back(objectA, objectB, points);
+                LogCall("Collision detected: ", points.Depth, "\n");
+            }
+        }
+    }
+
     void CollisionWorld::SolveCollisions(std::vector<Collision> &collisions, float deltaTime)
     {
         for(int i = 0; i < m_Solvers.size(); i++)
@@ -81,20 +86,12 @@ namespace pe2d
         }
     }
 
-    void CollisionWorld::SendCollisionCallbacks(const std::vector<Collision> &collisions, float deltaTime)
+    void CollisionWorld::SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime)
     {
         for(int i = 0; i < collisions.size(); i++)
         {
-            auto callbackA = collisions[i].GetObjectA()->OnCollision();
-            auto callbackB = collisions[i].GetObjectB()->OnCollision();
-            if(callbackA)
-            {
-                callbackA( collisions[i], deltaTime );
-            }
-            if(callbackB)
-            {
-                callbackB( collisions[i], deltaTime );
-            }
+            collisions[i].GetObjectA()->OnCollision(collisions[i], deltaTime);
+            collisions[i].GetObjectB()->OnCollision(collisions[i], deltaTime);
         }
     }
 #pragma endregion

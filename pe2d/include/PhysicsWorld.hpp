@@ -27,9 +27,11 @@ namespace pe2d
         
         void ResolveCollisions(float deltaTime);
         inline const std::vector< std::shared_ptr<CollisionObject> >GetObjects() const { return m_Objects; }
-    private:
+    protected:
+        void FindCollisions(std::shared_ptr<CollisionObject> objectA, std::shared_ptr<CollisionObject> objectB,
+            std::vector<Collision> &collisions, std::vector<Collision> &triggers);
         void SolveCollisions(std::vector<Collision> &collisions, float deltaTime);
-        void SendCollisionCallbacks(const std::vector<Collision> &collisions, float deltaTime);
+        void SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime);
     protected:
         std::vector< std::shared_ptr<CollisionObject> > m_Objects;
         std::vector< std::shared_ptr<Solver> > m_Solvers;

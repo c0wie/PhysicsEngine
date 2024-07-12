@@ -25,7 +25,7 @@ namespace pe2d
         constexpr float GetRotation() const { return m_Transform.rotation; }
         constexpr Transform GetTransform() const { return m_Transform; }
         constexpr bool IsTrigger() const { return m_IsTrigger; }
-        std::function<void(Collision, float)> OnCollision() const { return m_OnCollision; }
+        void OnCollision(Collision &collision, float deltaTime) const;
         
         constexpr void SetPosition(const Vector2 &pos) { m_Transform.position = pos; }
         constexpr void SetScale(const Vector2 &scale) 

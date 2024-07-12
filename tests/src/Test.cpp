@@ -42,10 +42,10 @@ namespace test
     {
         const std::shared_ptr<pe2d::CollisionObject> body = shape.GetBody();
         const std::shared_ptr<pe2d::ConvexShapeCollider> collider = std::dynamic_pointer_cast<pe2d::ConvexShapeCollider>(body->GetCollider());
-        const unsigned int verteciesCount = collider->GetVerteciesCount();
+        const unsigned int verteciesCount = collider->GetVerticesCount();
         const pe2d::Vector2 position = body->GetTransform().position;
         const pe2d::Vector2 scale = body->GetTransform().scale;
-        const pe2d::Vector2 *offsets = collider->GetDistancesToVertecies();
+        const pe2d::Vector2 *offsets = collider->GetDistancesToVertices();
         const sf::Color color = shape.GetColor();
 
         sf::ConvexShape convexShape(verteciesCount);
@@ -77,7 +77,8 @@ namespace test
         world.AddCollisionObject(shape.GetBody());
     }
 
-    void Test::AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger)
+    void Test::AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform,
+    bool isTrigger)
     {
         const std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
         Shape shape = Shape(color, collider ,transform, isTrigger, DrawBox);
@@ -93,7 +94,8 @@ namespace test
         world.AddCollisionObject(shape.GetBody());
     }
 
-    void Test::AddConvexShape(const sf::Color &color, int verteciesCount, pe2d::Vector2 *vertecies, const pe2d::Transform &transform, bool isTrigger)
+    void Test::AddConvexShape(const sf::Color &color, int verteciesCount, pe2d::Vector2 *vertecies, const pe2d::Transform &transform,
+    bool isTrigger)
     {
         const std::shared_ptr<pe2d::ConvexShapeCollider> collider = std::make_shared<pe2d::ConvexShapeCollider>(vertecies, verteciesCount, transform.position);
         Shape shape = Shape(color, collider ,transform, isTrigger, DrawConvexShape);

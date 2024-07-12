@@ -267,21 +267,29 @@ namespace pe2d
             const Vector2 pA1 = Project(verticesA, verticesCount, axesA[i]);
             const Vector2 pA2 = Project(verticesB, verticesCount, axesA[i]);  
 
-            const Vector2 pB1 = Project(verticesA, verticesCount, axesB[i]);
-            const Vector2 pB2 = Project(verticesB, verticesCount, axesB[i]);
-
-            if(!Overlap(pA1, pA2) || !Overlap(pB1, pB2))
+            if(!Overlap(pA1, pA2))
             {
                 return CollisionPoints();
             }
             const float overlapA = GetOverlap(pA1, pA2);
-            const float overlapB = GetOverlap(pB1, pB2);
             if(overlapA < overlap)
             {
                 overlap = overlapA;
                 smallestAxis = &axesA[i];
             }
-            else if(overlapB < overlap)
+        }
+
+        for(int i = 0; i < verticesCount; i++)
+        {
+            const Vector2 pB1 = Project(verticesA, verticesCount, axesB[i]);
+            const Vector2 pB2 = Project(verticesB, verticesCount, axesB[i]);
+
+            if(!Overlap(pB1, pB2))
+            {
+                return CollisionPoints();
+            }
+            const float overlapB = GetOverlap(pB1, pB2);
+            if(overlapB < overlap)
             {
                 overlap = overlapB;
                 smallestAxis = &axesB[i];
@@ -362,25 +370,27 @@ namespace pe2d
         const float sinAngle = sin(angle);
         for(int i = 0; i < count; i++)
         {
-            const float translatedX = vertices[i].x - center.x;
-            const float translatedY = vertices[i].y - center.y;
+            const float relativeX = vertices[i].x - center.x;
+            const float relativeY = vertices[i].y - center.y;
 
-            const float rotatedX = translatedX * cosAngle - translatedY * sinAngle;
-            const float rotatedY = translatedX * sinAngle + translatedY * cosAngle;
-            vertices[i] = Vector2{rotatedX + center.x, rotatedY + center.y};
+            const float rotatedX = relativeX * cosAngle - relativeY * sinAngle;
+            const float rotatedY = relativeX * sinAngle + relativeY * cosAngle;
+            vertices[i] = Vector2{ rotatedX + center.x, rotatedY + center.y };
         }
     }
     
     void Algo::GetBoxVertices(Vector2 *const vertices, unsigned int count, const Vector2 &center, const Vector2 &boxSize, const Vector2 &scale, float angle)
     {
-        vertices[0] = Vector2{ center.x - boxSize.x / 2.0f * scale.x, center.y + boxSize.y / 2.0f * scale.y };
-        vertices[1] = Vector2{ center.x + boxSize.x / 2.0f * scale.x, center.y + boxSize.y / 2.0f * scale.y };
-        vertices[2] = Vector2{ center.x + boxSize.x / 2.0f * scale.x, center.y - boxSize.y / 2.0f * scale.y };
-        vertices[3] = Vector2{ center.x - boxSize.x / 2.0f * scale.x, center.y - boxSize.y / 2.0f * scale.y };
+        const float halfSizeX = boxSize.x / 2.0f;
+        const float halfSizeY = boxSize.y / 2.0f;
+        vertices[0] = Vector2{ center.x - halfSizeX * scale.x, center.y + halfSizeY * scale.y };
+        vertices[1] = Vector2{ center.x + halfSizeX * scale.x, center.y + halfSizeY * scale.y };
+        vertices[2] = Vector2{ center.x + halfSizeX * scale.x, center.y - halfSizeY * scale.y };
+        vertices[3] = Vector2{ center.x - halfSizeX * scale.x, center.y - halfSizeY * scale.y };
         RotateVertices(vertices, count, center, angle);
     }
 
-    void Algo::GetConvexShapeVertices(Vector2 *const vertices, unsigned int count, const Vector2 *offsets, const Vector2 &center, float angle)
+    void Algo::GetConvexShapeVertices(Vector2 *const vertices, unsigned int count, const Vector2 *const offsets, const Vector2 &center, float angle)
     {
         for(int i = 0; i < count; i++)
         {

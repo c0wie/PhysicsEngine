@@ -151,7 +151,7 @@ namespace test
         vertecies = new pe2d::Vector2[verteciesCount];
         size = pe2d::Vector2{};
         radius = 0.0f;
-        position = pe2d::Vector2{};
+        position = pe2d::Vector2{500.0f, 500.0f};
         scale = pe2d::Vector2{1.0f, 1.0f};
         rotation = 0.0f;
         color = {255, 255, 255};
