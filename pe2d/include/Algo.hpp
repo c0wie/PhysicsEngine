@@ -27,26 +27,6 @@ namespace pe2d
             const BoxCollider *box, const Transform &transformBox,
             const CircleCollider *circle, const Transform &transformCircle);
 
-        static CollisionPoints FindCircleConvexShapeCollision(
-            const CircleCollider *circle, const Transform &transformCircle,
-            const ConvexShapeCollider *convexShape, const Transform &transformConvexShape);
-        
-        static CollisionPoints FindConvexShapeCircleCollision(
-            const ConvexShapeCollider *convexShape, const Transform &transformConvexShape, 
-            const CircleCollider *circle, const Transform &transformCircle);
-
-        static CollisionPoints FindConvexShapeConvexShapeCollision(
-            const ConvexShapeCollider *convexShapeA, const Transform &transformConvexShapeA,
-            const ConvexShapeCollider *convexShapeB, const Transform &transformConvexShapeB);
-        
-        static CollisionPoints FindConvexShapeBoxCollision(
-            const ConvexShapeCollider *convexShape, const Transform &transformConvexShape,
-            const BoxCollider *box, const Transform &transformBox);
-
-        static CollisionPoints FindBoxConvexShapeCollision(
-            const BoxCollider *box, const Transform &transformBox, 
-            const ConvexShapeCollider *convexShape, const Transform &transformConvexShape);
-
         static CollisionPoints FindBoxBoxCollision(
             const BoxCollider *boxA, const Transform &transformBoxA,
             const BoxCollider *boxB, const Transform &transformBoxB);
@@ -58,7 +38,6 @@ namespace pe2d
         static Vector2 ProjectCircle(const Vector2 &axis, const Vector2 &circleCenter, float radius);
         static void RotateVertices(Vector2 *const vertices, unsigned int count, const Vector2 &center, float angle);
         static void GetBoxVertices(Vector2 *const vertices, unsigned int count, const Vector2 &center, const Vector2 &boxSize, const Vector2 &scale, float angle);
-        static void GetConvexShapeVertices(Vector2 *const vertices, unsigned int count, const Vector2 *const offsets, const Vector2 &center, float angle);
         static Vector2 GetCircleAxis(const Vector2 *const vertices, unsigned int count, const Vector2 &circleCenter);
     private:
         static constexpr float INF = std::numeric_limits<float>::infinity();

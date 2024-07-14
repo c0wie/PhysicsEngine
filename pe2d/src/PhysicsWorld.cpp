@@ -36,7 +36,7 @@ namespace pe2d
 
         for(int i = 0; i < m_Objects.size(); i++)
         {
-            for(int j = 0; j < m_Objects.size(); j++)
+            for(int j = i + 1 ; j < m_Objects.size(); j++)
             {
                 if(m_Objects[i] == m_Objects[j])
                 {
@@ -74,7 +74,6 @@ namespace pe2d
             else
             {
                 collisions.push_back(collision);
-                LogCall("Collision detected: ", points.Depth, "\n");
             }
         }
     }

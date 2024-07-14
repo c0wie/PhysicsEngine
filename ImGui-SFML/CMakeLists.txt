@@ -1,19 +1,13 @@
 cmake_minimum_required(VERSION 3.28)
 project(ImGui-SFML)
 
-find_package(imgui 2.6 QUIET)
-if(NOT imgui_FOUND)
     include(FetchContent)
     FetchContent_Declare( imgui
     GIT_REPOSITORY https://github.com/ocornut/imgui
     GIT_TAG 35b1148efb839381b84de9290d9caf0b66ad7d03
     )
     FetchContent_MakeAvailable(imgui)
-endif()
 
-find_package(imgui-sfml QUIET)
-if(NOT imgui-sfml_FOUND)
-    include(FetchContent)
     FetchContent_Declare( imgui-sfml
         GIT_REPOSITORY https://github.com/SFML/imgui-sfml
         GIT_TAG 82dc2033e51b8323857c3ae1cf1f458b3a933c35
@@ -23,5 +17,4 @@ if(NOT imgui-sfml_FOUND)
     set(IMGUI_SFML_IMGUI_DEMO ON)
     
     FetchContent_MakeAvailable(imgui-sfml)
-endif()
 

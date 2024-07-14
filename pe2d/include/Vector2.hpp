@@ -34,6 +34,14 @@ namespace pe2d
             return *this;
         }
     public:
+        constexpr bool operator==(const Vector2 &other) const
+        {
+            return x == other.x && y == other.y;
+        }
+        constexpr bool operator!=(const Vector2 &other) const
+        {
+            return x != other.x && y != other.y;
+        }
         constexpr Vector2 operator+(const Vector2 &other) const
         {
             return Vector2{ x + other.x, y + other.y};
@@ -95,10 +103,11 @@ namespace pe2d
             return std::hypot(x, y);
         }
         //return positvie value of vector
-        constexpr static Vector2 abs(const Vector2 vec)
+        constexpr  Vector2 abs() const
         {
-            return Vector2{vec.x < 0 ? -vec.x : vec.x, vec.y < 0 ? -vec.y : vec.y};
+            return Vector2{ std::abs(x), std::abs(y)};
         }
+
         constexpr static Vector2 lerp(const Vector2 &x, const Vector2 &y, float t)
         {
             t = std::clamp(t, 0.0f, 1.0f);

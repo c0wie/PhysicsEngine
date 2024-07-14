@@ -79,10 +79,6 @@ namespace test
                 ID = ID::CIRCLE;
             }
             ImGui::SameLine();
-            if( ImGui::Button("Make Convex Shape") )
-            {
-                ID = ID::CONVEXSHAPE;
-            }
             ImGui::InputFloat2("Size", &size.x);
         }
         else if(ID == ID::CIRCLE)
@@ -92,10 +88,6 @@ namespace test
                 ID = ID::BOX;
             }
             ImGui::SameLine();
-            if( ImGui::Button("Make Convex Shape") )
-            {
-                ID = ID::CONVEXSHAPE;
-            }
             ImGui::InputFloat("Radius", &radius);
         }
         else
@@ -108,26 +100,6 @@ namespace test
             if( ImGui::Button("Make Circle") )
             {
                 ID = ID::CIRCLE;
-            }
-            if( ImGui::InputInt("Vertecies count", &verteciesCount) )
-            {
-                if(verteciesCount < 3)
-                {
-                    verteciesCount = 3;
-                }
-                else if(verteciesCount > 10)
-                {
-                    verteciesCount = 10;
-                }
-                else
-                {
-                    vertecies = new pe2d::Vector2[verteciesCount];
-                }
-            }
-            for(int i = 0; i< verteciesCount; i++)
-            {
-                std::string label = "Vertex" + std::to_string(i);
-                ImGui::InputFloat2(label.c_str(), &vertecies[i].x);
             }
         }
         ImGui::InputFloat2("Position", &position.x);
@@ -147,8 +119,6 @@ namespace test
     {
         isRigidObject = false;
         ID = ID::BOX;
-        verteciesCount = 3;
-        vertecies = new pe2d::Vector2[verteciesCount];
         size = pe2d::Vector2{};
         radius = 0.0f;
         position = pe2d::Vector2{500.0f, 500.0f};
@@ -184,17 +154,6 @@ namespace test
             else
             {
                 AddCircle(Color, radius, transform, false);
-            }
-        }
-        else if(ID == ID::CONVEXSHAPE)
-        {
-            if(isRigidObject)
-            {
-                AddConvexShape(Color, verteciesCount, vertecies, transform, false);
-            }
-            else
-            {
-                AddConvexShape(Color, verteciesCount, vertecies, transform, false, mass, velocity, gravity);
             }
         }
         showObjectEditor = false;

@@ -17,13 +17,12 @@ namespace test
     {
         BOX, 
         CIRCLE,
-        CONVEXSHAPE
     };
     class TestCollision : public Test
     {
     public:
         TestCollision();
-        ~TestCollision() { delete[] vertecies; }
+        ~TestCollision() = default;
     public:
         void OnUpdate(float deltaTime, const sf::Vector2i &mousePos) override final;
         void OnRender(sf::RenderWindow &window) override final;
@@ -39,8 +38,6 @@ namespace test
         bool isRigidObject;
         ID ID;
         float radius;
-        int verteciesCount;
-        pe2d::Vector2 *vertecies;
         pe2d::Vector2 size;
         pe2d::Vector2 position;
         pe2d::Vector2 scale;
