@@ -43,7 +43,7 @@ namespace pe2d
                     break;
                 }
 
-                if(!m_Objects[i]->GetCollider()|| !m_Objects[j]->GetCollider())
+                if(!m_Objects[i]->GetCollider() || !m_Objects[j]->GetCollider())
                 {
                     continue;
                 }
@@ -62,17 +62,18 @@ namespace pe2d
     {
         const CollisionPoints points = objectA->GetCollider()->TestCollision
             (objectA->GetTransform(), objectB->GetCollider().get(), objectB->GetTransform());
+        Collision collision = Collision{objectA, objectB, points};
 
         if(points.HasCollision)
         {
             bool tigger = objectA->IsTrigger() || objectB -> IsTrigger();
             if(tigger)
             {
-                triggers.emplace_back(objectA, objectB, points);
+                triggers.push_back(collision);
             }
             else
             {
-                collisions.emplace_back(objectA, objectB, points);
+                collisions.push_back(collision);
                 LogCall("Collision detected: ", points.Depth, "\n");
             }
         }

@@ -104,6 +104,11 @@ namespace pe2d
             t = std::clamp(t, 0.0f, 1.0f);
             return Vector2{x * (1.0f - t) + y * t};
         }
+        std::string GetString()
+        {
+            std::string name = "Vector2: " + std::to_string(static_cast<int>(x)) + " " + std::to_string(static_cast<int>(y)) + '\n';
+            return name;
+        }
     public:
         float x;
         float y;

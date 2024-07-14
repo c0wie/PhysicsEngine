@@ -248,6 +248,8 @@ namespace pe2d
         const BoxCollider *boxB, const Transform &transformBoxB)
     {
         constexpr unsigned int verticesCount = 4;
+        // skip same axis with minus
+        constexpr unsigned int axesCount = 2;
         const float RotationA = transformBoxA.GetRadians();
         const float RotationB = transformBoxB.GetRadians();
         const Vector2 *smallestAxis = nullptr;
@@ -259,28 +261,19 @@ namespace pe2d
 
         GetBoxVertices(verticesA, verticesCount, transformBoxA.position, boxA->GetSize(), transformBoxA.scale, RotationA);
         GetBoxVertices(verticesB, verticesCount, transformBoxB.position, boxB->GetSize(), transformBoxB.scale, RotationB);
-        GetAxes(axesA, verticesA, verticesCount);
-        GetAxes(axesB, verticesB, verticesCount);
+        GetAxes(axesA, verticesA, axesCount);
+        GetAxes(axesB, verticesB, axesCount);
 
-        for(int i = 0; i < verticesCount; i++)
+        for(int i = 0; i < axesCount; i++)
         {
             const Vector2 pA1 = Project(verticesA, verticesCount, axesA[i]);
             const Vector2 pA2 = Project(verticesB, verticesCount, axesA[i]);  
-
+            
             if(!Overlap(pA1, pA2))
             {
                 return CollisionPoints();
             }
-            const float overlapA = GetOverlap(pA1, pA2);
-            if(overlapA < overlap)
-            {
-                overlap = overlapA;
-                smallestAxis = &axesA[i];
-            }
-        }
 
-        for(int i = 0; i < verticesCount; i++)
-        {
             const Vector2 pB1 = Project(verticesA, verticesCount, axesB[i]);
             const Vector2 pB2 = Project(verticesB, verticesCount, axesB[i]);
 
@@ -288,13 +281,22 @@ namespace pe2d
             {
                 return CollisionPoints();
             }
+
+            const float overlapA = GetOverlap(pA1, pA2);
             const float overlapB = GetOverlap(pB1, pB2);
+
+            if(overlapA < overlap)
+            {
+                overlap = overlapA;
+                smallestAxis = &axesA[i];
+            }
             if(overlapB < overlap)
             {
                 overlap = overlapB;
                 smallestAxis = &axesB[i];
             }
         }
+
         return CollisionPoints{*smallestAxis, overlap, true};
     }
 
@@ -370,23 +372,24 @@ namespace pe2d
         const float sinAngle = sin(angle);
         for(int i = 0; i < count; i++)
         {
-            const float relativeX = vertices[i].x - center.x;
-            const float relativeY = vertices[i].y - center.y;
+            Vector2 &vertex = vertices[i];
+            const float relativeX = vertex.x - center.x;
+            const float relativeY = vertex.y - center.y;
 
-            const float rotatedX = relativeX * cosAngle - relativeY * sinAngle;
-            const float rotatedY = relativeX * sinAngle + relativeY * cosAngle;
-            vertices[i] = Vector2{ rotatedX + center.x, rotatedY + center.y };
+            const float rotatedX = (relativeX * cosAngle) - (relativeY * sinAngle);
+            const float rotatedY = (relativeX * sinAngle) + (relativeY * cosAngle);
+            vertex = Vector2{ rotatedX + center.x, rotatedY + center.y };
         }
     }
     
     void Algo::GetBoxVertices(Vector2 *const vertices, unsigned int count, const Vector2 &center, const Vector2 &boxSize, const Vector2 &scale, float angle)
     {
-        const float halfSizeX = boxSize.x / 2.0f;
-        const float halfSizeY = boxSize.y / 2.0f;
-        vertices[0] = Vector2{ center.x - halfSizeX * scale.x, center.y + halfSizeY * scale.y };
-        vertices[1] = Vector2{ center.x + halfSizeX * scale.x, center.y + halfSizeY * scale.y };
-        vertices[2] = Vector2{ center.x + halfSizeX * scale.x, center.y - halfSizeY * scale.y };
-        vertices[3] = Vector2{ center.x - halfSizeX * scale.x, center.y - halfSizeY * scale.y };
+        const float scaledHalfSizeX = (boxSize.x * scale.x) / 2.0f;
+        const float scaledHalfSizeY = (boxSize.y * scale.y) / 2.0f ;
+        vertices[0] = Vector2{ center.x - scaledHalfSizeX, center.y + scaledHalfSizeY };
+        vertices[1] = Vector2{ center.x + scaledHalfSizeX, center.y + scaledHalfSizeY };
+        vertices[2] = Vector2{ center.x + scaledHalfSizeX, center.y - scaledHalfSizeY };
+        vertices[3] = Vector2{ center.x - scaledHalfSizeX, center.y - scaledHalfSizeY };
         RotateVertices(vertices, count, center, angle);
     }
 

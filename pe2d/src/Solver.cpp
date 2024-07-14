@@ -11,7 +11,7 @@ namespace pe2d
             {
                 continue;
             }
-
+            
             auto objA = std::dynamic_pointer_cast<RigidObject>( collision.GetObjectA() );
             auto objB = std::dynamic_pointer_cast<RigidObject>( collision.GetObjectB() );
             const float massA = objA? objA->GetMass() : 0.0f;
