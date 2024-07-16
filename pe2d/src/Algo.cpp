@@ -30,22 +30,18 @@ namespace pe2d
         const CircleCollider *circle, const Transform &transformCircle,
         const BoxCollider *box, const Transform &transformBox)
     {
-        constexpr unsigned int boxverticesCount = 4;
-        constexpr unsigned int axesCount = boxverticesCount + 1;
         float overlap = INF;
-        const Vector2 &center = transformCircle.position;
+        const Vector2 &circleCenter = transformCircle.position;
+        const float boxRotation = transformBox.GetRadians();
         Vector2 *smallesAxis = nullptr;
-        Vector2 verticesB[boxverticesCount];
-        Vector2 axesB[axesCount];
+        const std::vector<Vector2> boxVertices = GetBoxVertices(box->GetSize(), transformBox);
+        std::vector<Vector2> axes = GetAxes(boxVertices);
+        axes.push_back(GetCircleAxis(boxVertices, circleCenter)) ;
 
-        GetBoxVertices(verticesB, boxverticesCount, transformBox.position, box->GetSize(), transformBox.scale, transformBox.rotation);
-        GetAxes(axesB, verticesB, boxverticesCount);
-        axesB[axesCount - 1] = GetCircleAxis(verticesB, boxverticesCount, center);
-
-        for(int i = 0; i < axesCount; i++)
+        for(int i = 0; i < axes.size(); i++)
         {
-            Vector2 p1 = ProjectCircle(axesB[i], center, circle->GetRadius() * transformCircle.scale.x);
-            Vector2 p2 = Project(verticesB, boxverticesCount, axesB[i]);
+            Vector2 p1 = ProjectCircle(axes[i], circleCenter, circle->GetRadius() * transformCircle.scale.x);
+            Vector2 p2 = Project(boxVertices, axes[i]);
 
             if(!Overlap(p1, p2))
             {
@@ -55,7 +51,7 @@ namespace pe2d
             if(o < overlap)
             {
                 overlap = o;
-                smallesAxis = &axesB[i];
+                smallesAxis = &axes[i];
             }
         }
         return CollisionPoints{*smallesAxis, overlap, true};
@@ -74,35 +70,26 @@ namespace pe2d
         const BoxCollider *boxA, const Transform &transformBoxA,
         const BoxCollider *boxB, const Transform &transformBoxB)
     {
-        constexpr unsigned int verticesCount = 4;
-        // skip same axis with minus
-        constexpr unsigned int axesCount = verticesCount;
-        const float RotationA = transformBoxA.GetRadians();
-        const float RotationB = transformBoxB.GetRadians();
+        constexpr unsigned int axesCount = 4;
         const Vector2 *smallestAxis = nullptr;
         float overlap = INF;
-        Vector2 verticesA[verticesCount];
-        Vector2 verticesB[verticesCount];
-        Vector2 axesA[verticesCount];
-        Vector2 axesB[verticesCount];
-
-        GetBoxVertices(verticesA, verticesCount, transformBoxA.position, boxA->GetSize(), transformBoxA.scale, RotationA);
-        GetBoxVertices(verticesB, verticesCount, transformBoxB.position, boxB->GetSize(), transformBoxB.scale, RotationB);
-        GetAxes(axesA, verticesA, axesCount);
-        GetAxes(axesB, verticesB, axesCount);
+        const std::vector<Vector2> verticesA = GetBoxVertices(boxA->GetSize(), transformBoxA);
+        const std::vector<Vector2> verticesB = GetBoxVertices(boxB->GetSize(), transformBoxB);
+        const std::vector<Vector2> axesA = GetAxes(verticesA);
+        const std::vector<Vector2> axesB = GetAxes(verticesB);
 
         for(int i = 0; i < axesCount; i++)
         {
-            const Vector2 pA1 = Project(verticesA, verticesCount, axesA[i]);
-            const Vector2 pA2 = Project(verticesB, verticesCount, axesA[i]);  
+            const Vector2 pA1 = Project(verticesA, axesA[i]);
+            const Vector2 pA2 = Project(verticesB, axesA[i]);  
             
             if(!Overlap(pA1, pA2))
             {
                 return CollisionPoints();
             }
 
-            const Vector2 pB1 = Project(verticesA, verticesCount, axesB[i]);
-            const Vector2 pB2 = Project(verticesB, verticesCount, axesB[i]);
+            const Vector2 pB1 = Project(verticesA, axesB[i]);
+            const Vector2 pB2 = Project(verticesB, axesB[i]);
 
             if(!Overlap(pB1, pB2))
             {
@@ -123,7 +110,6 @@ namespace pe2d
                 smallestAxis = &axesB[i];
             }
         }
-
         return CollisionPoints{*smallestAxis, overlap, true};
     }
 
@@ -138,30 +124,32 @@ namespace pe2d
 
     float Algo::GetOverlap(const Vector2 &A, const Vector2 &B)
     {
-        float overlapStart = std::max(A.x, B.x);
-        float overlapEnd = std::min(A.y, B.y);
+        const float overlapStart = std::max(A.x, B.x);
+        const float overlapEnd = std::min(A.y, B.y);
 
         return overlapEnd - overlapStart;
     }
 
-    void Algo::GetAxes(Vector2 *const axes, const Vector2 *const vertices, unsigned int count)
+    std::vector<Vector2> Algo::GetAxes(const std::vector<Vector2>vertices)
     {
-        for(int i = 0; i < count; i++)
+        std::vector<Vector2> axes;
+        for(int i = 0; i < vertices.size(); i++)
         {
             const Vector2 p1 = vertices[i];
-            const Vector2 p2 = vertices[(i + 1) % count];
+            const Vector2 p2 = vertices[(i + 1) % vertices.size()];
             const Vector2 edge = p2 - p1;
             const Vector2 normal = edge.perp().normalized();
-            axes[i] = normal;            
+            axes.push_back(normal);
         }
+        return axes;
     }
 
-    Vector2 Algo::Project(const Vector2 *const vertices, unsigned int count, const Vector2 &axis)
+    Vector2 Algo::Project(const std::vector<Vector2> &vertices, const Vector2 &axis)
     {
         float min = INF;
         float max = -INF;
 
-        for(int i = 0; i < count; i++)
+        for(int i = 0; i < vertices.size(); i++)
         {
             const float p = axis.dot(vertices[i]);
             if(p < min)
@@ -193,38 +181,44 @@ namespace pe2d
         return Vector2{min, max};
     }
 
-    void Algo::RotateVertices(Vector2 *const vertices, unsigned int count, const Vector2 &center, float angle)
+    void Algo::RotateVertices(std::vector<Vector2> &vertices, const Vector2 &center, float angle)
     {
         const float cosAngle = cosf(angle);
         const float sinAngle = sinf(angle);
-        for(int i = 0; i < count; i++)
+        for(int i = 0; i < vertices.size(); i++)
         {
-            Vector2 &vertex = vertices[i];
-            const float relativeX = vertex.x - center.x;
-            const float relativeY = vertex.y - center.y;
+            const float relativeX = vertices[i].x - center.x;
+            const float relativeY = vertices[i].y - center.y;
 
             const float rotatedX = (relativeX * cosAngle) - (relativeY * sinAngle);
             const float rotatedY = (relativeX * sinAngle) + (relativeY * cosAngle);
-            vertex = Vector2{ rotatedX + center.x, rotatedY + center.y };
+            vertices[i] = Vector2{ rotatedX + center.x, rotatedY + center.y };
         }
     }
     
-    void Algo::GetBoxVertices(Vector2 *const vertices, unsigned int count, const Vector2 &center, const Vector2 &boxSize, const Vector2 &scale, float angle)
+    std::vector<Vector2> Algo::GetBoxVertices(const Vector2 &boxSize, const Transform &transform)
     {
+        const Vector2 center = transform.position;
+        const Vector2 scale = transform.scale;
         const float scaledHalfSizeX = (boxSize.x * scale.x) / 2.0f;
-        const float scaledHalfSizeY = (boxSize.y * scale.y) / 2.0f ;
-        vertices[0] = Vector2{ center.x - scaledHalfSizeX, center.y + scaledHalfSizeY };
-        vertices[1] = Vector2{ center.x + scaledHalfSizeX, center.y + scaledHalfSizeY };
-        vertices[2] = Vector2{ center.x + scaledHalfSizeX, center.y - scaledHalfSizeY };
-        vertices[3] = Vector2{ center.x - scaledHalfSizeX, center.y - scaledHalfSizeY };
-        RotateVertices(vertices, count, center, angle);
+        const float scaledHalfSizeY = (boxSize.y * scale.y) / 2.0f;
+        const float angle = transform.GetRadians();
+        std::vector<Vector2> vertices = 
+        {
+            Vector2{ center.x - scaledHalfSizeX, center.y + scaledHalfSizeY },
+            Vector2{ center.x + scaledHalfSizeX, center.y + scaledHalfSizeY },
+            Vector2{ center.x + scaledHalfSizeX, center.y - scaledHalfSizeY },
+            Vector2{ center.x - scaledHalfSizeX, center.y - scaledHalfSizeY }
+        };
+        RotateVertices(vertices, center, angle);
+        return vertices;
     }
 
-    Vector2 Algo::GetCircleAxis(const Vector2 *const vertices, unsigned int count, const Vector2 &circleCenter)
+    Vector2 Algo::GetCircleAxis(std::vector<Vector2> vertices, const Vector2 &circleCenter)
     {
         float dist = INF;
         Vector2 smallestAxis = Vector2{};
-        for(int i = 0; i < count; i++)
+        for(int i = 0; i < vertices.size(); i++)
         {
             Vector2 edge = vertices[i] - circleCenter;
             float d = edge.magnitude();

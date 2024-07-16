@@ -36,7 +36,7 @@ namespace pe2d
 
         for(int i = 0; i < m_Objects.size(); i++)
         {
-            for(int j = i + 1 ; j < m_Objects.size(); j++)
+            for(int j = 0 ; j < m_Objects.size(); j++)
             {
                 if(m_Objects[i] == m_Objects[j])
                 {
@@ -74,6 +74,8 @@ namespace pe2d
             else
             {
                 collisions.push_back(collision);
+                const CollisionPoints p = objectA->GetCollider()->TestCollision
+                (objectA->GetTransform(), objectB->GetCollider().get(), objectB->GetTransform());
             }
         }
     }
@@ -113,9 +115,8 @@ namespace pe2d
     {   
         for(int i = 0; i < m_Objects.size(); i++)
         {
-            std::shared_ptr<RigidObject> object;
-            object = std::dynamic_pointer_cast<RigidObject>(m_Objects[i]);
-            if(object == nullptr)
+            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(m_Objects[i]);;
+            if(!object)
             {
                 continue;
             }
@@ -127,9 +128,8 @@ namespace pe2d
     {
         for(int i = 0; i < m_Objects.size(); i++)
         {
-            std::shared_ptr<RigidObject> object;
-            object = std::dynamic_pointer_cast<RigidObject>(m_Objects[i]);
-            if(object == nullptr)
+            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(m_Objects[i]);
+            if(!object)
             {
                 continue;
             }

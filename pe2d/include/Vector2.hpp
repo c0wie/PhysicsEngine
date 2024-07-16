@@ -89,6 +89,10 @@ namespace pe2d
         constexpr Vector2 normalized() const
         {
             float length = magnitude();
+            if(length == 0)
+            {
+                ASSERT("DIVISION BY ZERO");
+            }
             return Vector2 {x / length, y / length};
         }
         // returns dot product of two vectors;
@@ -99,8 +103,7 @@ namespace pe2d
         //returns length of vector
         constexpr float magnitude() const
         {
-            //std::hypot == sqrt(pow(x, 2) + pow(y, 2));
-            return std::hypot(x, y);
+            return std::sqrt(x * x + y * y);
         }
         //return positvie value of vector
         constexpr  Vector2 abs() const
@@ -113,9 +116,10 @@ namespace pe2d
             t = std::clamp(t, 0.0f, 1.0f);
             return Vector2{x * (1.0f - t) + y * t};
         }
-        std::string GetString()
+        
+        std::string GetString() const
         {
-            std::string name = "Vector2: " + std::to_string(static_cast<int>(x)) + " " + std::to_string(static_cast<int>(y)) + '\n';
+            std::string name = std::to_string(x) + " " + std::to_string(y) + '\n';
             return name;
         }
     public:

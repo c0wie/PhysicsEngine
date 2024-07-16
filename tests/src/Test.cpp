@@ -1,4 +1,5 @@
 #include "Test.hpp"
+#include "../../pe2d/include/Algo.hpp"
 
 namespace test
 {
@@ -25,17 +26,21 @@ namespace test
         const std::shared_ptr<pe2d::CollisionObject> body = shape.GetBody();
         const std::shared_ptr<pe2d::BoxCollider> collider = std::dynamic_pointer_cast<pe2d::BoxCollider>(body->GetCollider());
         const pe2d::Vector2 size = collider->GetSize();
-        const pe2d::Vector2 position = body->GetTransform().position;
-        const pe2d::Vector2 scale = body->GetTransform().scale;
         const sf::Color color = shape.GetColor();
         
-        sf::RectangleShape box(sf::Vector2f{size.x, size.y});
-        box.setOrigin(box.getSize() / 2.0f);
-        box.setPosition(position.x, position.y);
-        box.setScale(scale.x, scale.y);
-        box.setRotation(body->GetTransform().rotation);
-        box.setFillColor(color);
-        window.draw(box);
+        std::vector<pe2d::Vector2> vertices = pe2d::Algo::GetBoxVertices(size, body->GetTransform());
+        for(int i = 0; i < vertices.size(); i++)
+        {
+            const int j = (i + 1) % vertices.size();
+            sf::Vector2f vertex1 = sf::Vector2f{vertices[i].x , vertices[i].y};
+            sf::Vector2f vertex2 = sf::Vector2f{vertices[j].x , vertices[j].y};
+            sf::Vertex line[] =
+            {
+                sf::Vertex(vertex1, color),
+                sf::Vertex(vertex2, color),
+            };
+            window.draw(line, 2, sf::Lines);
+        }
     }
 
     void Test::AddCircle(const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger)
@@ -54,8 +59,7 @@ namespace test
         world.AddCollisionObject(shape.GetBody());
     }
 
-    void Test::AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform,
-    bool isTrigger)
+    void Test::AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger)
     {
         const std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
         Shape shape = Shape(color, collider ,transform, isTrigger, DrawBox);
