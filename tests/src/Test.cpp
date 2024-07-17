@@ -61,10 +61,11 @@ namespace test
 
     void Test::AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger)
     {
-        const std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
-        Shape shape = Shape(color, collider ,transform, isTrigger, DrawBox);
+        std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
+        std::shared_ptr<pe2d::CollisionObject> body = std::make_shared<pe2d::CollisionObject>(collider, transform, isTrigger, nullptr);
+        Shape shape = Shape(color, body, DrawBox);
         m_Shapes.push_back(shape);
-        world.AddCollisionObject(shape.GetBody());
+        world.AddCollisionObject(body);
     }
 
     void Test::AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity)

@@ -40,7 +40,10 @@ namespace pe2d
             position.x += offset.x;
             position.y += offset.y;
         }
-        constexpr void Rotate(float angle) {rotation += angle; }
+        constexpr void Rotate(float angle) 
+        {
+            rotation += angle;
+        }
         // returns rotaion in radians
         constexpr float GetRadians() const { return rotation * (PI / 180.0f); }
     public:

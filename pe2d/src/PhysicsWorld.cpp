@@ -38,12 +38,12 @@ namespace pe2d
         {
             for(int j = 0 ; j < m_Objects.size(); j++)
             {
-                if(m_Objects[i] == m_Objects[j])
+                if(m_Objects[i] == m_Objects[j]) // unique pars
                 {
                     break;
                 }
 
-                if(!m_Objects[i]->GetCollider() || !m_Objects[j]->GetCollider())
+                if(!m_Objects[i]->GetCollider() || !m_Objects[j]->GetCollider()) // both have colliders
                 {
                     continue;
                 }
@@ -62,10 +62,10 @@ namespace pe2d
     {
         const CollisionPoints points = objectA->GetCollider()->TestCollision
             (objectA->GetTransform(), objectB->GetCollider().get(), objectB->GetTransform());
-        Collision collision = Collision{objectA, objectB, points};
 
         if(points.HasCollision)
         {
+            Collision collision = Collision{objectA, objectB, points};
             bool tigger = objectA->IsTrigger() || objectB -> IsTrigger();
             if(tigger)
             {
@@ -74,9 +74,7 @@ namespace pe2d
             else
             {
                 collisions.push_back(collision);
-                const CollisionPoints p = objectA->GetCollider()->TestCollision
-                (objectA->GetTransform(), objectB->GetCollider().get(), objectB->GetTransform());
-            }
+            }   
         }
     }
 
@@ -107,8 +105,8 @@ namespace pe2d
     void DynamicsWorld::Step(float deltaTime)
     {
         ApplyGravity();
-        MoveObjects(deltaTime);
         ResolveCollisions(deltaTime);
+        MoveObjects(deltaTime);
     }
     
     void DynamicsWorld::ApplyGravity()
@@ -141,7 +139,7 @@ namespace pe2d
 
             object->SetVelocity(vel);
             object->SetPosition(pos);
-            object->SetForce(Vector2{});
+            object->SetForce(Vector2{0.0f, 0.0f});
         }
     }
 #pragma endregion

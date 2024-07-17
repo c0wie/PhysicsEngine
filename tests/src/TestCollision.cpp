@@ -1,5 +1,5 @@
 #include "TestCollision.hpp"
-
+#include "../../pe2d/include/Algo.hpp"
 namespace test
 {
 
@@ -21,11 +21,12 @@ namespace test
         const pe2d::Vector2 s = world.GetObjects()[1]->GetPosition();
         const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
         const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 16.0f * deltaTime);
+
+        world.GetObjects()[1]->SetPosition(position);
         if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
-            world.GetObjects()[1]->Rotate(0.03f);
+            world.GetObjects()[1]->Rotate(100.0f * deltaTime);
         }
-        world.GetObjects()[1]->SetPosition(position);
         world.Step(deltaTime);  
     }
 

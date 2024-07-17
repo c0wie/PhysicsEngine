@@ -7,6 +7,7 @@
 
 #include "PhysicsWorld.hpp"
 #include "tests/include/TestCollision.hpp"
+#include "tests/include/TestSAT.hpp"
 
 
 int main()
@@ -14,7 +15,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1000.f, 1000.f), "DEMO", sf::Style::Titlebar | sf::Style::Close);
     ImGui::SFML::Init(window);
 
-    test::TestCollision test;
+    test::TestSAT test;
 
     sf::Clock DT_Clock;
     float deltaTime = 0.0f;

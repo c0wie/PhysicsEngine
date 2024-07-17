@@ -7,20 +7,14 @@ namespace pe2d
         for(const auto &collision : collisions)
         {
             const auto &points = collision.GetPoints();
-            if(points.Depth <= 0.0f)
-            {
-                continue;
-            }
-            
             auto objA = std::dynamic_pointer_cast<RigidObject>( collision.GetObjectA() );
             auto objB = std::dynamic_pointer_cast<RigidObject>( collision.GetObjectB() );
             const float massA = objA? objA->GetMass() : 0.0f;
             const float massB = objB? objB->GetMass() : 0.0f;
             const Vector2 &positionA = collision.GetObjectA()->GetPosition();
             const Vector2 &positionB = collision.GetObjectB()->GetPosition();
-            const Vector2 &normal = points.Normal;
             
-            Vector2 MTV = normal * points.Depth;
+            Vector2 MTV = points.Normal * points.Depth;
             
             if(MTV.dot(positionA - positionB) < 0.0f)
             {

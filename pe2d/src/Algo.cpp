@@ -70,7 +70,6 @@ namespace pe2d
         const BoxCollider *boxA, const Transform &transformBoxA,
         const BoxCollider *boxB, const Transform &transformBoxB)
     {
-        constexpr unsigned int axesCount = 4;
         const Vector2 *smallestAxis = nullptr;
         float overlap = INF;
         const std::vector<Vector2> verticesA = GetBoxVertices(boxA->GetSize(), transformBoxA);
@@ -78,7 +77,7 @@ namespace pe2d
         const std::vector<Vector2> axesA = GetAxes(verticesA);
         const std::vector<Vector2> axesB = GetAxes(verticesB);
 
-        for(int i = 0; i < axesCount; i++)
+        for(int i = 0; i < axesA.size(); i++)
         {
             const Vector2 pA1 = Project(verticesA, axesA[i]);
             const Vector2 pA2 = Project(verticesB, axesA[i]);  
@@ -138,7 +137,7 @@ namespace pe2d
             const Vector2 p1 = vertices[i];
             const Vector2 p2 = vertices[(i + 1) % vertices.size()];
             const Vector2 edge = p2 - p1;
-            const Vector2 normal = edge.perp().normalized();
+            const Vector2 normal = edge.normalized().perp();
             axes.push_back(normal);
         }
         return axes;
@@ -198,8 +197,8 @@ namespace pe2d
     
     std::vector<Vector2> Algo::GetBoxVertices(const Vector2 &boxSize, const Transform &transform)
     {
-        const Vector2 center = transform.position;
-        const Vector2 scale = transform.scale;
+        const Vector2 &center = transform.position;
+        const Vector2 &scale = transform.scale;
         const float scaledHalfSizeX = (boxSize.x * scale.x) / 2.0f;
         const float scaledHalfSizeY = (boxSize.y * scale.y) / 2.0f;
         const float angle = transform.GetRadians();
