@@ -119,7 +119,7 @@ namespace pe2d
         
         std::string GetString() const
         {
-            std::string name = std::to_string(x) + " " + std::to_string(y) + '\n';
+            std::string name = std::to_string(x) + " " + std::to_string(y);
             return name;
         }
     public:

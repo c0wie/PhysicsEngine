@@ -37,8 +37,11 @@ namespace test
         void OnRender(sf::RenderWindow &window) ;
         void OnImGuiRender(sf::RenderWindow &window) {} 
     private:
-        static bool CheckCollision(BoxCollision &A, BoxCollision &B);
+        static bool CheckCollision(BoxCollision &A, BoxCollision &B, pe2d::Vector2 &MTV);
     private:
-        std::array<BoxCollision, 2> m_Boxes;
+        std::array<BoxCollision, 2> m_Colliders;
+        BoxCollision m_Box;
     };
+
+    std::vector<pe2d::Vector2> GetAxes(const std::vector<pe2d::Vector2> &verticesA, const std::vector<pe2d::Vector2> &verticesB);
 }

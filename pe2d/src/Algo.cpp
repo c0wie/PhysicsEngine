@@ -129,15 +129,15 @@ namespace pe2d
         return overlapEnd - overlapStart;
     }
 
-    std::vector<Vector2> Algo::GetAxes(const std::vector<Vector2>vertices)
+    std::vector<Vector2> Algo::GetAxes(const std::vector<Vector2> &vertices)
     {
         std::vector<Vector2> axes;
         for(int i = 0; i < vertices.size(); i++)
         {
             const Vector2 p1 = vertices[i];
             const Vector2 p2 = vertices[(i + 1) % vertices.size()];
-            const Vector2 edge = p2 - p1;
-            const Vector2 normal = edge.normalized().perp();
+            const Vector2 edge = p1 - p2;
+            const Vector2 normal = edge.perp().normalized();
             axes.push_back(normal);
         }
         return axes;
@@ -145,10 +145,10 @@ namespace pe2d
 
     Vector2 Algo::Project(const std::vector<Vector2> &vertices, const Vector2 &axis)
     {
-        float min = INF;
-        float max = -INF;
+        float min = axis.dot(vertices[0]);
+        float max = min;
 
-        for(int i = 0; i < vertices.size(); i++)
+        for(int i = 1; i < vertices.size(); i++)
         {
             const float p = axis.dot(vertices[i]);
             if(p < min)
