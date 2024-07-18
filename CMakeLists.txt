@@ -18,7 +18,6 @@ add_subdirectory(ImGui-SFML)
 
 add_executable(${PROJECT_NAME} 
     Demo.cpp
-    tests/src/TestSAT.cpp
     tests/src/TestCollision.cpp
     tests/src/Test.cpp
 )

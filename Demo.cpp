@@ -7,7 +7,6 @@
 
 #include "PhysicsWorld.hpp"
 #include "tests/include/TestCollision.hpp"
-#include "tests/include/TestSAT.hpp"
 
 
 int main()
