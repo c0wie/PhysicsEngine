@@ -35,7 +35,7 @@ namespace pe2d
         const float boxRotation = transformBox.GetRadians();
         Vector2 *smallesAxis = nullptr;
         const std::vector<Vector2> boxVertices = GetBoxVertices(box->GetSize(), transformBox);
-        std::vector<Vector2> axes = GetAxes(boxVertices);
+        std::vector<Vector2> axes = GetRectangleAxes(boxVertices);
         axes.push_back(GetCircleAxis(boxVertices, circleCenter)) ;
 
         for(int i = 0; i < axes.size(); i++)
@@ -74,8 +74,8 @@ namespace pe2d
         float overlap = INF;
         const std::vector<Vector2> verticesA = GetBoxVertices(boxA->GetSize(), transformBoxA);
         const std::vector<Vector2> verticesB = GetBoxVertices(boxB->GetSize(), transformBoxB);
-        const std::vector<Vector2> axesA = GetAxes(verticesA);
-        const std::vector<Vector2> axesB = GetAxes(verticesB);
+        const std::vector<Vector2> axesA = GetRectangleAxes(verticesA);
+        const std::vector<Vector2> axesB = GetRectangleAxes(verticesB);
 
         for(int i = 0; i < axesA.size(); i++)
         {
@@ -133,6 +133,21 @@ namespace pe2d
     {
         std::vector<Vector2> axes;
         for(int i = 0; i < vertices.size(); i++)
+        {
+            const Vector2 p1 = vertices[i];
+            const Vector2 p2 = vertices[(i + 1) % vertices.size()];
+            const Vector2 edge = p1 - p2;
+            const Vector2 normal = edge.perp().normalized();
+            axes.push_back(normal);
+        }
+        return axes;
+    }
+
+    std::vector<Vector2> Algo::GetRectangleAxes(const std::vector<Vector2> &vertices)
+    {
+        std::vector<Vector2> axes;
+        // is has two parrarel edges so I don't have to check other two
+        for(int i = 0; i < vertices.size() / 2; i++)
         {
             const Vector2 p1 = vertices[i];
             const Vector2 p2 = vertices[(i + 1) % vertices.size()];
