@@ -91,7 +91,7 @@ namespace pe2d
             float length = magnitude();
             if(length == 0)
             {
-                ASSERT("DIVISION BY ZERO");
+                ASSERT("DIVISION BY ZERO in normalized");
             }
             return Vector2 {x / length, y / length};
         }

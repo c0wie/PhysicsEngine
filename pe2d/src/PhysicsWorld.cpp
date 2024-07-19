@@ -1,6 +1,6 @@
 #include "PhysicsWorld.hpp"
 
-namespace pe2d
+namespace pe2d 
 {   
 #pragma region COLLISION_WORLD 
     void CollisionWorld::AddCollisionObject(std::shared_ptr<CollisionObject> obj)
@@ -31,8 +31,12 @@ namespace pe2d
 
     void CollisionWorld::ResolveCollisions(float deltaTime)
     {
+        // could pass my own allocator with memory arena for example
         std::vector<Collision> collisions;
+        collisions.reserve(m_Objects.size() * 0.8);
+        
         std::vector<Collision> triggers;
+        triggers.reserve(m_Objects.size() * 0.2);
 
         for(int i = 0; i < m_Objects.size(); i++)
         {

@@ -26,7 +26,7 @@ namespace test
     public:
         void OnUpdate(float deltaTime, const sf::Vector2i &mousePos) override final;
         void OnRender(sf::RenderWindow &window) override final;
-        void OnImGuiRender(sf::RenderWindow &window) override final;
+        void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io) override final;
     private:
         void CollisionObjectInput();
         void RigidObjectInput();

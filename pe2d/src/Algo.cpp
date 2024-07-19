@@ -8,46 +8,50 @@ namespace pe2d
         const CircleCollider *circleA, const Transform &transformCircleA,
         const CircleCollider *circleB, const Transform &transformCircleB)
     {
-        Vector2 diff = transformCircleA.position - transformCircleB.position;
-        
+        const float radiusA = circleA->GetRadius();
+        const float radiusB =  circleB->GetRadius();
+        const Vector2 diff = transformCircleA.position - transformCircleB.position;
         const float &length = diff.magnitude();
-        // I make assumption that it would be safest option in this situation but I don't know if any good solution is there
-        // cuz I can only imagine how hard the math could be with calculating not circle sphere collision
-        float sum = circleA->GetRadius() * transformCircleA.scale.x + circleB->GetRadius() * transformCircleB.scale.x;
+        if(length == 0.0f)
+        {
+            const float overlap = radiusA > radiusB? radiusA : radiusB;
+            return CollisionPoints{pe2d::Vector2{1.0f, 0.0f}, overlap, true};
+        }
+        // with circle I scaled them based on x value of scale
+        float sum = ( radiusA * transformCircleA.scale.x ) + ( radiusB * transformCircleB.scale.x );
 
         if(length > sum)
         {
             return CollisionPoints();
         }
-
-        const float depth = sum - length;
+        
+        const float overlap = sum - length;
         const Vector2 &normal = diff.normalized();
         
-        return CollisionPoints{normal, depth, true};
+        return CollisionPoints{normal, overlap, true};
     }
 
     CollisionPoints Algo::FindCircleBoxCollision(
         const CircleCollider *circle, const Transform &transformCircle,
         const BoxCollider *box, const Transform &transformBox)
     {
-        float overlap = INF;
         const Vector2 &circleCenter = transformCircle.position;
-        const float boxRotation = transformBox.GetRadians();
-        Vector2 *smallesAxis = nullptr;
         const std::vector<Vector2> boxVertices = GetBoxVertices(box->GetSize(), transformBox);
         std::vector<Vector2> axes = GetRectangleAxes(boxVertices);
         axes.push_back(GetCircleAxis(boxVertices, circleCenter)) ;
+        const Vector2 *smallesAxis = nullptr;
+        float overlap = INF;
 
         for(int i = 0; i < axes.size(); i++)
         {
-            Vector2 p1 = ProjectCircle(axes[i], circleCenter, circle->GetRadius() * transformCircle.scale.x);
-            Vector2 p2 = Project(boxVertices, axes[i]);
+            const Vector2 p1 = ProjectCircle(axes[i], circleCenter, circle->GetRadius() * transformCircle.scale.x);
+            const Vector2 p2 = Project(boxVertices, axes[i]);
 
             if(!Overlap(p1, p2))
             {
                 return CollisionPoints();
             }
-            float o = GetOverlap(p1, p2);
+            const float o = GetOverlap(p1, p2);
             if(o < overlap)
             {
                 overlap = o;
@@ -70,12 +74,12 @@ namespace pe2d
         const BoxCollider *boxA, const Transform &transformBoxA,
         const BoxCollider *boxB, const Transform &transformBoxB)
     {
-        const Vector2 *smallestAxis = nullptr;
-        float overlap = INF;
         const std::vector<Vector2> verticesA = GetBoxVertices(boxA->GetSize(), transformBoxA);
         const std::vector<Vector2> verticesB = GetBoxVertices(boxB->GetSize(), transformBoxB);
         const std::vector<Vector2> axesA = GetRectangleAxes(verticesA);
         const std::vector<Vector2> axesB = GetRectangleAxes(verticesB);
+        const Vector2 *smallestAxis = nullptr;
+        float overlap = INF;
 
         for(int i = 0; i < axesA.size(); i++)
         {

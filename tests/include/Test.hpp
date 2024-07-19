@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Shape.hpp"
+#include <imgui.h>
 #include "../../pe2d/include/PhysicsWorld.hpp"
 
 
@@ -14,7 +15,7 @@ namespace test
     public:
         virtual void OnUpdate(float deltaTime, const sf::Vector2i &mousePos) = 0;
         virtual void OnRender(sf::RenderWindow &window) = 0;
-        virtual void OnImGuiRender(sf::RenderWindow &window) = 0;
+        virtual void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO& io) = 0;
     protected:
         void AddCircle(const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger);
         void AddCircle(const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity);

@@ -13,11 +13,13 @@ namespace pe2d
     
     class PositionSolver : public Solver
     {
+    public:
         void Solve(std::vector<Collision> &collisions, float deltaTime) override final;
     };
 
     class ImpulseSolver : public Solver
     {
+    public:
         void Solve(std::vector<Collision> &collisions, float deltaTime) override final;
     };
 }

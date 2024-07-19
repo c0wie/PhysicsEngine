@@ -19,7 +19,8 @@ int main()
     sf::Clock DT_Clock;
     float deltaTime = 0.0f;
     DT_Clock.restart();
-    
+    ImGuiIO& io = ImGui::GetIO();
+
     while(window.isOpen())
     {
         deltaTime = DT_Clock.restart().asSeconds();
@@ -40,7 +41,7 @@ int main()
 
         window.clear();
         test.OnRender(window);
-        test.OnImGuiRender(window);
+        test.OnImGuiRender(window, io);
         ImGui::SFML::Render(window);
         
         window.display();

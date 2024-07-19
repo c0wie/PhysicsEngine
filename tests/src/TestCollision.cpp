@@ -3,29 +3,21 @@
 namespace test
 {
 
-    TestCollision::TestCollision()
+    TestCollision::TestCollision() :
+        showObjectEditor(false)
     {
-        pe2d::Transform transform = pe2d::Transform{ pe2d::Vector2{500.0f, 800.0f}, pe2d::Vector2{1.0f, 1.0f}, 0.0f };
-        pe2d::Transform tracerTansform = pe2d::Transform{ pe2d::Vector2{500.0f, 500.0f}, pe2d::Vector2{1.0f, 1.0f}, 0.0f };
-        AddBox(sf::Color::White, pe2d::Vector2{700.0f, 50.0f}, transform, false);
-        AddBox(sf::Color::Cyan, pe2d::Vector2{100.0f, 100.f}, tracerTansform, false);
-
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         world.AddSolver(solver);
-        showObjectEditor = false;
         ResetVariables();        
     }
 
     void TestCollision::OnUpdate(float deltaTime, const sf::Vector2i &mousePos)
     {
-        const pe2d::Vector2 s = world.GetObjects()[1]->GetPosition();
-        const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
-        const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 16.0f * deltaTime);
-
-        world.GetObjects()[1]->SetPosition(position);
         if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
-            world.GetObjects()[1]->Rotate(100.0f * deltaTime);
+            pe2d::Vector2 position = pe2d::Vector2{(float)mousePos.x, (float)mousePos.y};
+            pe2d::Transform transform = pe2d::Transform{position, pe2d::Vector2(1.0f, 1.0f), 0.0f};
+            AddCircle(sf::Color::Magenta, 60.0f, transform, false, 10.0f, pe2d::Vector2{}, pe2d::Vector2{0.0f, 10.0f} );
         }
         world.Step(deltaTime);  
     }
@@ -35,7 +27,7 @@ namespace test
         Draw(window);
     }
 
-    void TestCollision::OnImGuiRender(sf::RenderWindow &window)
+    void TestCollision::OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io)
     {
         if( ImGui::Button("Add Object") )
         {
@@ -46,6 +38,7 @@ namespace test
             ClearObjects();
         }
         ImGui::Text("Number of objects: %i", world.GetObjects().size());
+        ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
         if(showObjectEditor)
         {
             ImGui::Begin("Object Editor");

@@ -56,6 +56,8 @@ namespace pe2d
 
         constexpr void Move(const Vector2 &offset) { m_Transform.Move(offset); }
         constexpr void Rotate(float angle) { m_Transform.Rotate(angle); }
+    public:
+        bool isMovable;
     protected:
         std::shared_ptr<Collider> m_Collider;
         Transform m_Transform;
