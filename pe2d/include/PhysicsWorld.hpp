@@ -27,6 +27,7 @@ namespace pe2d
         
         void ResolveCollisions(float deltaTime);
         inline const std::vector< std::shared_ptr<CollisionObject> >GetObjects() const { return m_Objects; }
+        int GetObjectsCount() const { return m_Objects.size(); }
     protected:
         void FindCollisions(std::shared_ptr<CollisionObject> objectA, std::shared_ptr<CollisionObject> objectB,
             std::vector<Collision> &collisions, std::vector<Collision> &triggers);

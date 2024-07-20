@@ -20,6 +20,26 @@ namespace pe2d
         virtual ~CollisionObject() = default;
     public:
         const std::shared_ptr<Collider> GetCollider() const { return m_Collider; }
+        const Vector2 GetBounadingBox() const
+        {
+            std::shared_ptr<CircleCollider> circleCollider = std::dynamic_pointer_cast<CircleCollider>( m_Collider );
+            std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );
+            if(!circleCollider && !boxCollider)
+            {
+                ASSERT("OBJECT CAN'T HAS VIRTUAL COLLIDER");
+            }
+
+            if(circleCollider)
+            {
+                const float radius = circleCollider->GetRadius();
+                return Vector2{radius, radius};
+            }
+            else if(boxCollider)
+            {
+                return boxCollider->GetSize();
+            }
+
+        }
         constexpr Vector2 GetPosition() const { return m_Transform.position; }
         constexpr Vector2 GetScale() const { return m_Transform.scale; }
         constexpr float GetRotation() const { return m_Transform.rotation; }
