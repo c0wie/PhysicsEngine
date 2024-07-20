@@ -8,7 +8,7 @@ namespace pe2d
     {
     public:
         BroadPhaseGrid();
-        BroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner);
+        BroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float precision);
     public:
         void Insert(std::shared_ptr<CollisionObject> object);
         bool InBoundary(Vector2 boundingBox, Vector2 position);
@@ -19,7 +19,8 @@ namespace pe2d
         std::unique_ptr<BroadPhaseGrid> m_BotRightTree;
         std::vector< std::shared_ptr<CollisionObject> > m_Objects;
         // info about a boundary of grid
-        Vector2 m_TopLeft;
-        Vector2 m_BottomRight;
+        Vector2 m_TopLeftCorner;
+        Vector2 m_BotRightCorner;
+        float m_Precision;
     };
 } 
