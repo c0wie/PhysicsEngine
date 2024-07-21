@@ -38,29 +38,60 @@ namespace pe2d
         std::vector<Collision> triggers;
         triggers.reserve(m_Objects.size() * 0.2);
 
-        for(int i = 0; i < m_Objects.size(); i++)
-        {
-            for(int j = 0 ; j < m_Objects.size(); j++)
-            {
-                if(m_Objects[i] == m_Objects[j]) // unique pars
-                {
-                    break;
-                }
 
-                if(!m_Objects[i]->GetCollider() || !m_Objects[j]->GetCollider()) // both have colliders
-                {
-                    continue;
-                }
-                
-                FindCollisions(m_Objects[i], m_Objects[j], collisions, triggers);
+        if(m_IsWorldPartionized)
+        {
+            UpdateGrid();
+            std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> pairs;
+            _Grid->GetCollisionPairs(pairs);
+            for(auto &[a, b] : pairs)
+            {
+                FindCollisions(a, b, collisions, triggers);
             }
         }
-        
+        else
+        {
+            for(int i = 0; i < m_Objects.size(); i++)
+            {
+                for(int j = 0 ; j < m_Objects.size(); j++)
+                {
+                    if(m_Objects[i] == m_Objects[j]) // unique pars
+                    {
+                        break;
+                    }
+
+                    if(!m_Objects[i]->GetCollider() || !m_Objects[j]->GetCollider()) // both have colliders
+                    {
+                        continue;
+                    }
+
+                    FindCollisions(m_Objects[i], m_Objects[j], collisions, triggers);
+                }
+            }
+        }
+
         SolveCollisions(collisions, deltaTime);
         SendCollisionCallbacks(collisions, deltaTime);
         SendCollisionCallbacks(triggers, deltaTime);
     }
     
+    void CollisionWorld::SetBroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float precision)
+    {
+        if(!m_IsWorldPartionized)
+        {
+            ASSERT("CAN'T SETUP PARTIONING SYSTEM WHEN IT IS DISABLED");
+        }
+        _Grid = std::make_unique<BroadPhaseGrid>(topLeftCorner, bottomRightCorner, precision);
+    }
+
+    void CollisionWorld::UpdateGrid()
+    {
+        for(int i = 0; i < m_Objects.size(); i++)
+        {
+            _Grid->Insert(m_Objects[i]);
+        }
+    }
+
     void CollisionWorld::FindCollisions(std::shared_ptr<CollisionObject> objectA, std::shared_ptr<CollisionObject> objectB,
         std::vector<Collision> &collisions, std::vector<Collision> &triggers)
     {

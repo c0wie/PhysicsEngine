@@ -11,6 +11,8 @@ namespace pe2d
         BroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float precision);
     public:
         void Insert(std::shared_ptr<CollisionObject> object);
+        void GetCollisionPairs(std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> &pairs);
+    private:
         bool InBoundary(Vector2 boundingBox, Vector2 position);
     private:
         std::unique_ptr<BroadPhaseGrid> m_TopLeftTree;

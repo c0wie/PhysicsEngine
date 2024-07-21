@@ -4,8 +4,10 @@ namespace test
 {
 
     TestCollision::TestCollision() :
+        Test(true),
         showObjectEditor(false)
     {
+        world.SetBroadPhaseGrid(pe2d::Vector2{0.0f, 0.0f}, pe2d::Vector2{1000.0f, 1000.0f}, 10.0f);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         world.AddSolver(solver);
         ResetVariables();        
@@ -14,19 +16,12 @@ namespace test
     void TestCollision::OnUpdate(float deltaTime, const sf::Vector2i &mousePos)
     {
         const auto objects = world.GetObjects();
-        for(int i = 0; i < world.GetObjectsCount(); i++)
-        {
-            /*const pe2d::Vector2 position = objects.at(i)->GetPosition();
-            if(position.y > 1040.0f || position.y < -40.0f || position.x >  1040.0f || position.x < -40.0f)
-            {
-                world.RemoveObject(objects.at(i));
-            }*/
-        }
         if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
             pe2d::Vector2 position = pe2d::Vector2{(float)mousePos.x, (float)mousePos.y};
             pe2d::Transform transform = pe2d::Transform{position, pe2d::Vector2(1.0f, 1.0f), 0.0f};
-            AddCircle(sf::Color::Magenta, 40.0f, transform, false, 10.0f, pe2d::Vector2{}, pe2d::Vector2{0.0f, 10.0f} );
+            AddCircle(sf::Color::Magenta, 40.0f, transform, false, 10.0f, pe2d::Vector2{}, pe2d::Vector2{0.0f, 10.0f});
+            world.Step(deltaTime);  
         }
         world.Step(deltaTime);  
     }

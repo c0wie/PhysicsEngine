@@ -34,10 +34,8 @@ namespace pe2d
                 const float radius = circleCollider->GetRadius();
                 return Vector2{radius, radius};
             }
-            else if(boxCollider)
-            {
-                return boxCollider->GetSize();
-            }
+            
+            return boxCollider->GetSize();
 
         }
         constexpr Vector2 GetPosition() const { return m_Transform.position; }
