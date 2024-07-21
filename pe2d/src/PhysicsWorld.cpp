@@ -41,9 +41,15 @@ namespace pe2d
 
         if(m_IsWorldPartionized)
         {
-            UpdateGrid();
+            if(!_Grid)
+            {
+                ASSERT("GRID HASN'T BEEN SETUP");
+            }
+
             std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> pairs;
+            UpdateGrid();
             _Grid->GetCollisionPairs(pairs);
+            std::cout << pairs.size() << '\n';
             for(auto &[a, b] : pairs)
             {
                 FindCollisions(a, b, collisions, triggers);
@@ -86,6 +92,7 @@ namespace pe2d
 
     void CollisionWorld::UpdateGrid()
     {
+        _Grid->Clear();
         for(int i = 0; i < m_Objects.size(); i++)
         {
             _Grid->Insert(m_Objects[i]);
