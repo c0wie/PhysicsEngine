@@ -12,11 +12,13 @@ namespace pe2d
         BroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int depth);
     public:
         void Insert(std::shared_ptr<CollisionObject> object);
-        void GetCollisionPairs(std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> &pairs);
+        std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> GetCollisionPairs() const;
+        unsigned int GetSize() const;
         void Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner);
         void Clear();
     private:
         static bool InBoundary(Vector2 boundingBox, Vector2 position, Vector2 leftCorner, Vector2 rightCorner);
+        void GetCollisionPairs(std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> &pairs) const;
     private:
         std::array<std::unique_ptr<BroadPhaseGrid>, 4> m_ChildNodes;
         std::array<std::pair<Vector2, Vector2>, 4> m_ChildNodesSize;
@@ -25,6 +27,6 @@ namespace pe2d
         Vector2 m_TopLeftCorner;
         Vector2 m_BotRightCorner;
         float m_Depth;
-        constexpr static unsigned int MAX_DEPTH = 6U;
+        constexpr static unsigned int MAX_DEPTH = 4U;
     };
 } 
