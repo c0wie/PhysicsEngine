@@ -7,13 +7,18 @@ namespace pe2d
     {
         if(obj != nullptr)
         {
-            m_Objects.push_back(obj);
+            const unsigned int ID = obj->GetID();
+            if(m_Objects.at(ID))
+            {
+                ASSERT("OBJECT WITH THIS INDEX ALREADY EXIST");
+            }
+            m_Objects[ID] = obj;
         }
     }
 
-    void CollisionWorld::RemoveObject(std::shared_ptr<CollisionObject> object)
+    void CollisionWorld::RemoveObject(unsigned int ID)
     {
-        m_Objects.erase( std::remove(m_Objects.begin(), m_Objects.end(), object) );
+        m_Objects.erase(ID);
     }
 
     void CollisionWorld::AddSolver(std::shared_ptr<Solver> &solver)
@@ -81,7 +86,7 @@ namespace pe2d
         SendCollisionCallbacks(triggers, deltaTime);
     }
     
-    void CollisionWorld::SetBroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float depth)
+    void CollisionWorld::SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, float depth)
     {
         if(!m_IsPartitioningSystemOn)
         {
@@ -140,7 +145,15 @@ namespace pe2d
 #pragma region DYNAMICS_WORLD 
     void DynamicsWorld::AddRigidObject(std::shared_ptr<RigidObject> object)
     {
-        m_Objects.push_back(object);
+        if(object != nullptr)
+        {
+            const unsigned int ID = object->GetID();
+            if(m_Objects.at(ID))
+            {
+                ASSERT("OBJECT WITH THIS INDEX ALREADY EXIST");
+            }
+            m_Objects[ID] = object;
+        }
     }
     
     void DynamicsWorld::Step(float deltaTime)

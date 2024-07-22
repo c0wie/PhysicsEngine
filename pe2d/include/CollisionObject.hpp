@@ -19,6 +19,7 @@ namespace pe2d
         CollisionObject& operator=(CollisionObject &&other);
         virtual ~CollisionObject() = default;
     public:
+        constexpr unsigned int GetID() const { return m_ID; }
         const std::shared_ptr<Collider> GetCollider() const { return m_Collider; }
         Vector2 GetBounadingBox() const;
         constexpr Vector2 GetPosition() const { return m_Transform.position; }

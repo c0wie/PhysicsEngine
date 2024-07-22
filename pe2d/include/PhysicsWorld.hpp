@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <unordered_map>
 #include <memory>
 #include <algorithm>
 
@@ -21,14 +21,14 @@ namespace pe2d
         virtual ~CollisionWorld() = default;
     public:
         void AddCollisionObject(std::shared_ptr<CollisionObject> obj);
-        void RemoveObject(std::shared_ptr<CollisionObject> object);
+        void RemoveObject(unsigned int ID);
 
         void AddSolver(std::shared_ptr<Solver> &solver);
         void RemoveSolver(std::shared_ptr<Solver> &solver);
         
         void ResolveCollisions(float deltaTime);
-        void SetBroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float depth);
-        const std::vector<std::shared_ptr<CollisionObject>> GetObjects() const { return m_Objects; }
+        void SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, float depth);
+        std::unordered_map<unsigned int, std::shared_ptr<CollisionObject>> GetObjects() const { return m_Objects; }
         
         int GetObjectsCount() const { return m_Objects.size(); }
         constexpr bool IsWorldPartitionizied() { return m_IsPartitioningSystemOn; }
@@ -39,7 +39,7 @@ namespace pe2d
         void SolveCollisions(std::vector<Collision> &collisions, float deltaTime);
         void SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime);
     protected:
-        std::vector< std::shared_ptr<CollisionObject> > m_Objects;
+        std::unordered_map<unsigned int, std::shared_ptr<CollisionObject>> m_Objects;
         std::vector< std::shared_ptr<Solver> > m_Solvers;
         bool m_IsPartitioningSystemOn;
         QuadTree m_PartitioningSystem;
