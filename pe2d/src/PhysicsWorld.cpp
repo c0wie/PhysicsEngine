@@ -8,7 +8,7 @@ namespace pe2d
         if(obj != nullptr)
         {
             const unsigned int ID = obj->GetID();
-            if(m_Objects.at(ID))
+            if(m_Objects.find(ID) != m_Objects.end())
             {
                 ASSERT("OBJECT WITH THIS INDEX ALREADY EXIST");
             }
@@ -52,11 +52,11 @@ namespace pe2d
             }*/
 
             UpdateGrid();
-            auto pairs = m_PartitioningSystem.GetCollisionPairs();
+            std::vector<std::pair<unsigned int, unsigned int>> pairs = m_PartitioningSystem.GetCollisionPairs();
             std::cout << pairs.size() << '\n';
             for(auto &[a, b] : pairs)
             {
-                FindCollisions(a, b, collisions, triggers);
+                FindCollisions(m_Objects[a], m_Objects[b], collisions, triggers);
             }
             m_PartitioningSystem.Clear();
         }

@@ -61,13 +61,13 @@ namespace pe2d
         }
         if(InBoundary(object->GetBounadingBox(), object->GetPosition(), m_TopLeftCorner, m_BotRightCorner))
         {
-            m_Objects.push_back(object);
+            m_ObjectsID.push_back(object->GetID());
         }
     }
 
-    std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> QuadTree::GetCollisionPairs() const
+    std::vector<std::pair<unsigned int, unsigned int>> QuadTree::GetCollisionPairs() const
     {
-        std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> pairs;
+        std::vector<std::pair<unsigned int, unsigned int>> pairs;
         const unsigned int size = GetCount();
         pairs.reserve( (size * (size - 1)) / 2);
         GetCollisionPairs(pairs);
@@ -76,7 +76,7 @@ namespace pe2d
 
     unsigned int QuadTree::GetCount() const
     {
-        unsigned int size = m_Objects.size();
+        unsigned int size = m_ObjectsID.size();
         for(int i = 0; i < m_ChildNodes.size(); i++)
         {
             if(m_ChildNodes[i])
@@ -107,7 +107,7 @@ namespace pe2d
  
     void QuadTree::Clear()
     {
-        m_Objects.clear();
+        m_ObjectsID.clear();
         for(unsigned char i = 0; i < m_ChildNodes.size(); i++)
         {
             if(m_ChildNodes[i])
@@ -141,18 +141,14 @@ namespace pe2d
 
     }
 
-    void QuadTree::GetCollisionPairs(std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> &pairs) const
+    void QuadTree::GetCollisionPairs(std::vector<std::pair<unsigned int, unsigned int>> &pairs) const
     {
 
-        for(int i = 0; i < m_Objects.size(); i++)
+        for(int i = 0; i < m_ObjectsID.size(); i++)
         {
-            for(int j = i + 1; j < m_Objects.size(); j++)
+            for(int j = i + 1; j < m_ObjectsID.size(); j++)
             {
-                if(!m_Objects[i]->GetCollider() || !m_Objects[j]->GetCollider()) // both have colliders
-                {
-                    continue;
-                }
-                pairs.emplace_back(std::make_pair(m_Objects[i], m_Objects[j]));
+                pairs.emplace_back(std::make_pair(m_ObjectsID[i], m_ObjectsID[j]));
             }
         }
         for(unsigned char i = 0; i < m_ChildNodes.size(); i++)

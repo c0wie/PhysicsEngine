@@ -17,13 +17,12 @@ namespace test
         virtual void OnRender(sf::RenderWindow &window) = 0;
         virtual void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO& io) = 0;
     protected:
-        void AddCircle(const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger);
-        void AddCircle(const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity);
-        void AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger);
-        void AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity);
+        void AddCircle(unsigned int ID, const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger);
+        void AddCircle(unsigned int ID, const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger, float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity);
+        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, const pe2d::Transform &transform, bool isTrigger);
+        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, const pe2d::Transform &transform, bool isTrigger, float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity);
         
         void Draw(sf::RenderWindow &window) const;
-        virtual void ClearObjects(); 
     private:
         static void DrawCircle(sf::RenderWindow &window, const Shape &shape);
         static void DrawBox(sf::RenderWindow &window, const Shape &shape);

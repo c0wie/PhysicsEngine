@@ -4,10 +4,10 @@ namespace test
 {
 
     TestCollision::TestCollision() :
-        Test(false),
+        Test(true),
         showObjectEditor(false)
     {
-        world.SetBroadPhaseGrid(pe2d::Vector2{0.0f, 0.0f}, pe2d::Vector2{1000.0f, 1000.0f}, 10.0f);
+        world.SetPartitioningSystem(pe2d::Vector2{0.0f, 0.0f}, pe2d::Vector2{1000.0f, 1000.0f}, 10.0f);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         world.AddSolver(solver);
         ResetVariables();        
@@ -20,7 +20,7 @@ namespace test
         {
             pe2d::Vector2 position = pe2d::Vector2{(float)mousePos.x, (float)mousePos.y};
             pe2d::Transform transform = pe2d::Transform{position, pe2d::Vector2(1.0f, 1.0f), 0.0f};
-            AddCircle(sf::Color::Magenta, 40.0f, transform, false, 10.0f, pe2d::Vector2{}, pe2d::Vector2{0.0f, 10.0f});
+            AddCircle(world.GetObjectsCount(), sf::Color::Magenta, 40.0f, transform, false, 10.0f, pe2d::Vector2{}, pe2d::Vector2{0.0f, 10.0f});
             world.Step(deltaTime);  
         }
         world.Step(deltaTime);  
@@ -39,7 +39,7 @@ namespace test
         }
         if( ImGui::Button("Clear Objects") )
         {
-            ClearObjects();
+            // add clear objects function
         }
         ImGui::Text("Number of objects: %i", world.GetObjects().size());
         ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
@@ -122,38 +122,29 @@ namespace test
     {
         const sf::Color Color = sf::Color{(sf::Uint8)color.red, (sf::Uint8)color.green, (sf::Uint8)color.blue};
         const pe2d::Transform transform = pe2d::Transform{ position, scale, rotation};
+        const unsigned int ID = world.GetObjectsCount();
         if(ID == ID::BOX)
         {
             if(isRigidObject)
             {
-                AddBox(Color, size, transform, false, mass, velocity, gravity);
+                AddBox(ID, Color, size, transform, false, mass, velocity, gravity);
             }
             else
             {
-                AddBox(Color, size, transform, false);
+                AddBox(ID, Color, size, transform, false);
             }
         }
         else if(ID == ID::CIRCLE)
         {
             if(isRigidObject)
             {
-                AddCircle(Color, radius, transform, false, mass, velocity, gravity);
+                AddCircle(ID, Color, radius, transform, false, mass, velocity, gravity);
             }
             else
             {
-                AddCircle(Color, radius, transform, false);
+                AddCircle(ID, Color, radius, transform, false);
             }
         }
         showObjectEditor = false;
-    }
-    
-    void TestCollision::ClearObjects() 
-    {
-        auto objects = world.GetObjects();
-        for(int i = 2; i < objects.size(); i++)
-        {
-            world.RemoveObject(objects[i]);
-            m_Shapes.pop_back();
-        }
     }
 }   

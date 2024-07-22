@@ -43,35 +43,40 @@ namespace test
         }
     }
 
-    void Test::AddCircle(const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger)
+    void Test::AddCircle(unsigned int ID, const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger)
     {
         const std::shared_ptr<pe2d::CircleCollider> collider = std::make_shared<pe2d::CircleCollider>(radius);
-        Shape shape = Shape(color, collider ,transform, isTrigger, DrawCircle);
+        const std::shared_ptr<pe2d::CollisionObject> body = std::make_shared<pe2d::CollisionObject>(ID, collider ,transform, isTrigger, nullptr);
+        Shape shape = Shape(color, body, DrawCircle);
         m_Shapes.push_back(shape);
         world.AddCollisionObject(shape.GetBody());
     }
 
-    void Test::AddCircle(const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity)
+    void Test::AddCircle(unsigned int ID, const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger, float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity)
     {
         const std::shared_ptr<pe2d::CircleCollider> collider = std::make_shared<pe2d::CircleCollider>(radius);
-        Shape shape = Shape(color, collider ,transform, isTrigger, mass, velocity, pe2d::Vector2{}, gravity, false, DrawCircle);
+        const std::shared_ptr<pe2d::CollisionObject> body = std::make_shared<pe2d::RigidObject>(ID, collider ,transform, isTrigger, nullptr, mass, velocity,
+                                                            pe2d::Vector2{}, gravity, false, 0.0f, 0.0f, 0.0f);
+        Shape shape = Shape(color, body, DrawCircle);
         m_Shapes.push_back(shape);
         world.AddCollisionObject(shape.GetBody());
     }
 
-    void Test::AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger)
+    void Test::AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, const pe2d::Transform &transform, bool isTrigger)
     {
         std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
-        std::shared_ptr<pe2d::CollisionObject> body = std::make_shared<pe2d::CollisionObject>(collider, transform, isTrigger, nullptr);
+        std::shared_ptr<pe2d::CollisionObject> body = std::make_shared<pe2d::CollisionObject>(ID, collider, transform, isTrigger, nullptr);
         Shape shape = Shape(color, body, DrawBox);
         m_Shapes.push_back(shape);
         world.AddCollisionObject(body);
     }
 
-    void Test::AddBox(const sf::Color &color, const pe2d::Vector2 &size, const pe2d::Transform &transform, bool isTrigger, float mass, const pe2d::Vector2 &velocity, const pe2d::Vector2 &gravity)
+    void Test::AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, const pe2d::Transform &transform, bool isTrigger, float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity)
     {
         const std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
-        Shape shape = Shape(color, collider ,transform, isTrigger, mass, velocity, pe2d::Vector2{}, gravity, false, DrawBox);
+        const std::shared_ptr<pe2d::CollisionObject> body = std::make_shared<pe2d::RigidObject>(ID, collider ,transform, isTrigger, nullptr, mass, velocity,
+                                                            pe2d::Vector2{}, gravity, false, 0.0f, 0.0f, 0.0f);
+        Shape shape = Shape(color, body, DrawBox);
         m_Shapes.push_back(shape);
         world.AddCollisionObject(shape.GetBody());
     }
@@ -84,13 +89,4 @@ namespace test
         }
     }
 
-    void Test::ClearObjects()
-    {
-        m_Shapes.clear();
-        auto objects = world.GetObjects();
-        for(int i = 0; i < objects.size(); i++)
-        {
-            world.RemoveObject(objects[i]);
-        }
-    }
 }
