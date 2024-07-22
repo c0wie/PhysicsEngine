@@ -1,8 +1,8 @@
-#include "BroadPhaseGrid.hpp"
+#include "QuadTree.hpp"
 
 namespace pe2d
 {
-    BroadPhaseGrid::BroadPhaseGrid() :
+    QuadTree::QuadTree() :
         m_ChildNodes
         ({
             nullptr,
@@ -17,7 +17,7 @@ namespace pe2d
         Resize(m_TopLeftCorner, m_BotRightCorner);
     }
 
-    BroadPhaseGrid::BroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int depth) :
+    QuadTree::QuadTree(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int depth) :
         m_ChildNodes
         ({
             nullptr,
@@ -32,7 +32,7 @@ namespace pe2d
         Resize(m_TopLeftCorner, m_BotRightCorner);
     }
 
-    void BroadPhaseGrid::Insert(std::shared_ptr<CollisionObject> object)
+    void QuadTree::Insert(std::shared_ptr<CollisionObject> object)
     {
         if(!object)
         {
@@ -47,7 +47,7 @@ namespace pe2d
                 {
                     if(!m_ChildNodes[i])
                     {
-                        m_ChildNodes[i] = std::make_unique<BroadPhaseGrid>
+                        m_ChildNodes[i] = std::make_unique<QuadTree>
                         (
                             Vector2{m_ChildNodesSize[i].first},
                             Vector2{m_ChildNodesSize[i].second},
@@ -65,7 +65,7 @@ namespace pe2d
         }
     }
 
-    std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>>  BroadPhaseGrid::GetCollisionPairs() const
+    std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> QuadTree::GetCollisionPairs() const
     {
         std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> pairs;
         const unsigned int size = GetSize();
@@ -74,7 +74,7 @@ namespace pe2d
         return pairs;
     }
 
-    unsigned int BroadPhaseGrid::GetSize() const
+    unsigned int QuadTree::GetSize() const
     {
         unsigned int size = m_Objects.size();
         for(int i = 0; i < m_ChildNodes.size(); i++)
@@ -87,7 +87,7 @@ namespace pe2d
         return size;
     }
 
-    void BroadPhaseGrid::Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner)
+    void QuadTree::Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner)
     {
         Clear(); 
         m_TopLeftCorner = topLeftCorner;
@@ -105,7 +105,7 @@ namespace pe2d
         };
     }
  
-    void BroadPhaseGrid::Clear()
+    void QuadTree::Clear()
     {
         m_Objects.clear();
         for(unsigned char i = 0; i < m_ChildNodes.size(); i++)
@@ -119,7 +119,7 @@ namespace pe2d
         
     }
 
-    bool BroadPhaseGrid::InBoundary(Vector2 boundingBox, Vector2 position, Vector2 leftCorner, Vector2 rightCorner)
+    bool QuadTree::InBoundary(Vector2 boundingBox, Vector2 position, Vector2 leftCorner, Vector2 rightCorner)
     {
         Vector2 vertices[4] =
         {
@@ -141,7 +141,7 @@ namespace pe2d
 
     }
 
-    void BroadPhaseGrid::GetCollisionPairs(std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> &pairs) const
+    void QuadTree::GetCollisionPairs(std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> &pairs) const
     {
 
         for(int i = 0; i < m_Objects.size(); i++)

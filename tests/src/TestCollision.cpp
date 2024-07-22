@@ -4,7 +4,7 @@ namespace test
 {
 
     TestCollision::TestCollision() :
-        Test(true),
+        Test(false),
         showObjectEditor(false)
     {
         world.SetBroadPhaseGrid(pe2d::Vector2{0.0f, 0.0f}, pe2d::Vector2{1000.0f, 1000.0f}, 10.0f);

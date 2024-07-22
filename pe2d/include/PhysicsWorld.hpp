@@ -6,14 +6,14 @@
 
 #include "Collision.hpp"
 #include "Solver.hpp"
-#include "BroadPhaseGrid.hpp"
+#include "QuadTree.hpp"
 
 namespace pe2d
 {
     class CollisionWorld
     {
     public:
-        CollisionWorld(bool IsWorldPartionized) : m_IsWorldPartionized(IsWorldPartionized),_Grid(nullptr) {}
+        CollisionWorld(bool IsWorldPartitionized) : m_IsPartitioningSystemOn(IsWorldPartitionized) {}
         CollisionWorld(const CollisionWorld &other) = delete;
         CollisionWorld(CollisionWorld &&other) = delete;
         CollisionWorld operator = (const CollisionWorld &other) = delete;
@@ -27,10 +27,11 @@ namespace pe2d
         void RemoveSolver(std::shared_ptr<Solver> &solver);
         
         void ResolveCollisions(float deltaTime);
-        void SetBroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float precision);
-        inline const std::vector< std::shared_ptr<CollisionObject> >GetObjects() const { return m_Objects; }
+        void SetBroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float depth);
+        const std::vector<std::shared_ptr<CollisionObject>> GetObjects() const { return m_Objects; }
+        
         int GetObjectsCount() const { return m_Objects.size(); }
-        constexpr bool IsWorldPartionized() { return m_IsWorldPartionized; }
+        constexpr bool IsWorldPartitionizied() { return m_IsPartitioningSystemOn; }
     protected:
         void UpdateGrid();
         void FindCollisions(std::shared_ptr<CollisionObject> objectA, std::shared_ptr<CollisionObject> objectB,
@@ -40,8 +41,8 @@ namespace pe2d
     protected:
         std::vector< std::shared_ptr<CollisionObject> > m_Objects;
         std::vector< std::shared_ptr<Solver> > m_Solvers;
-        bool m_IsWorldPartionized;
-        std::unique_ptr<BroadPhaseGrid> _Grid;
+        bool m_IsPartitioningSystemOn;
+        QuadTree m_PartitioningSystem;
     }; 
     
     class DynamicsWorld : public CollisionWorld

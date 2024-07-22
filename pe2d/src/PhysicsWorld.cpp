@@ -39,21 +39,21 @@ namespace pe2d
         triggers.reserve(m_Objects.size() * 0.2);
 
 
-        if(m_IsWorldPartionized)
+        if(m_IsPartitioningSystemOn)
         {
-            if(!_Grid)
+            /*if(!_Grid)
             {
                 ASSERT("GRID HASN'T BEEN SETUP");
-            }
+            }*/
 
             UpdateGrid();
-            auto pairs = _Grid->GetCollisionPairs();
+            auto pairs = m_PartitioningSystem.GetCollisionPairs();
             std::cout << pairs.size() << '\n';
             for(auto &[a, b] : pairs)
             {
                 FindCollisions(a, b, collisions, triggers);
             }
-            _Grid->Clear();
+            m_PartitioningSystem.Clear();
         }
         else
         {
@@ -81,20 +81,20 @@ namespace pe2d
         SendCollisionCallbacks(triggers, deltaTime);
     }
     
-    void CollisionWorld::SetBroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float precision)
+    void CollisionWorld::SetBroadPhaseGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float depth)
     {
-        if(!m_IsWorldPartionized)
+        if(!m_IsPartitioningSystemOn)
         {
             ASSERT("CAN'T SETUP PARTIONING SYSTEM WHEN IT IS DISABLED");
         }
-        _Grid = std::make_unique<BroadPhaseGrid>(topLeftCorner, bottomRightCorner, precision);
+        m_PartitioningSystem = QuadTree(topLeftCorner, bottomRightCorner, depth);
     }
 
     void CollisionWorld::UpdateGrid()
     {
         for(int i = 0; i < m_Objects.size(); i++)
         {
-            _Grid->Insert(m_Objects[i]);
+            m_PartitioningSystem.Insert(m_Objects[i]);
         }
     }
 
