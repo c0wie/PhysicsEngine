@@ -68,20 +68,20 @@ namespace pe2d
     std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> QuadTree::GetCollisionPairs() const
     {
         std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> pairs;
-        const unsigned int size = GetSize();
+        const unsigned int size = GetCount();
         pairs.reserve( (size * (size - 1)) / 2);
         GetCollisionPairs(pairs);
         return pairs;
     }
 
-    unsigned int QuadTree::GetSize() const
+    unsigned int QuadTree::GetCount() const
     {
         unsigned int size = m_Objects.size();
         for(int i = 0; i < m_ChildNodes.size(); i++)
         {
             if(m_ChildNodes[i])
             {
-                size += m_ChildNodes[i]->GetSize();
+                size += m_ChildNodes[i]->GetCount();
             }
         }
         return size;

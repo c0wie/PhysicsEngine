@@ -11,7 +11,7 @@ namespace pe2d
     class CollisionObject
     {
     public:
-        CollisionObject(const std::shared_ptr<Collider> collider, const Transform &transform, bool isTrigger,
+        CollisionObject(unsigned int ID, const std::shared_ptr<Collider> collider, const Transform &transform, bool isTrigger,
             std::function<void(Collision, float)> collisionCallback);
         CollisionObject(const CollisionObject &other);
         CollisionObject(CollisionObject &&other);
@@ -20,24 +20,7 @@ namespace pe2d
         virtual ~CollisionObject() = default;
     public:
         const std::shared_ptr<Collider> GetCollider() const { return m_Collider; }
-        const Vector2 GetBounadingBox() const
-        {
-            std::shared_ptr<CircleCollider> circleCollider = std::dynamic_pointer_cast<CircleCollider>( m_Collider );
-            std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );
-            if(!circleCollider && !boxCollider)
-            {
-                ASSERT("OBJECT CAN'T HAS VIRTUAL COLLIDER");
-            }
-
-            if(circleCollider)
-            {
-                const float radius = circleCollider->GetRadius();
-                return Vector2{radius, radius};
-            }
-            
-            return boxCollider->GetSize();
-
-        }
+        Vector2 GetBounadingBox() const;
         constexpr Vector2 GetPosition() const { return m_Transform.position; }
         constexpr Vector2 GetScale() const { return m_Transform.scale; }
         constexpr float GetRotation() const { return m_Transform.rotation; }
@@ -48,10 +31,11 @@ namespace pe2d
         constexpr void SetPosition(const Vector2 &pos) { m_Transform.position = pos; }
         constexpr void SetScale(const Vector2 &scale) 
         { 
-            if(scale.x > 0.0f && scale.y > 0.0f)
+            if(scale.x < 0.0f || scale.y < 0.0f)
             {
-                m_Transform.scale = scale; 
+                ASSERT("HOW SCALE COULD BE NEGATIVE NUMBER");
             }
+            m_Transform.scale = scale; 
         } 
         constexpr void SetRotation(float angle) { m_Transform.rotation = angle; }
         void SetCollider(const std::shared_ptr<BoxCollider> collider)
@@ -77,6 +61,7 @@ namespace pe2d
     public:
         bool isMovable;
     protected:
+        unsigned int m_ID;
         std::shared_ptr<Collider> m_Collider;
         Transform m_Transform;
         bool m_IsTrigger;

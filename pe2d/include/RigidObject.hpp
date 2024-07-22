@@ -7,28 +7,50 @@ namespace pe2d
     class RigidObject : public CollisionObject
     {
     public:
-        RigidObject(std::shared_ptr<Collider> collider, const Transform &transform, float trigger, 
+        RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, const Transform &transform, float trigger, 
             std::function<void(Collision, float)> collisionCallback, float mass, const Vector2 &velocity, const Vector2 &force,
             const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
         RigidObject(const RigidObject &other);
         RigidObject(RigidObject &&other);
         RigidObject& operator=(const RigidObject &other);
         RigidObject& operator=(RigidObject &&other);
-        virtual ~RigidObject() = default;
+        RigidObject() = default;
     public:
-        float GetMass() const;
-        Vector2 GetVelocity() const;
-        Vector2 GetForce() const;
-        Vector2 GetGravity() const;
-        float GetStaticFriction() const;
-        float GetDynamicFriction() const;
-        float GetRestitution() const;
-        void SetMass(float mass);
-        void SetVelocity(const Vector2 &velocity);
-        void SetForce(const Vector2 &force);
-        void SetStaticFriction(float staticFriction);
-        void SetDynamicFriction(float dynamicDriction);
-        void SetRestitution(float restitution);
+        constexpr float GetMass() const { return m_Mass; }
+        constexpr Vector2 GetVelocity() const { return m_Velocity; }
+        constexpr Vector2 GetForce() const { return m_Force; }
+        constexpr Vector2 GetGravity() const { return m_Gravity; }
+        constexpr float GetStaticFriction() const { return m_StaticFriction; }
+        constexpr float GetDynamicFriction() const { return m_DynamicFriction; }
+        constexpr float GetRestitution() const { return m_Restitution; }
+        constexpr void SetMass(float mass)
+        {
+            if(mass <= 0.0f)
+            {
+                ASSERT("MASS CANNOT BE LESS OR EQUEL TO ZERO");
+            }
+            m_Mass = mass;
+        }
+        constexpr void SetVelocity(const Vector2 &velocity)
+        {
+            m_Velocity = velocity;
+        }
+        constexpr void SetForce(const Vector2 &force)
+        {
+            m_Force = force;
+        }
+        constexpr void SetStaticFriction(float staticFriction)
+        {
+            m_StaticFriction = staticFriction;
+        }
+        constexpr void SetDynamicFriction(float dynamicDriction)
+        {
+            m_DynamicFriction = dynamicDriction;
+        }
+        constexpr void SetRestitution(float restitution)
+        {
+            m_Restitution = restitution;
+        }
     private:
         float m_Mass;
         Vector2 m_Velocity;

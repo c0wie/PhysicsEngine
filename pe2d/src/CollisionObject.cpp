@@ -3,24 +3,26 @@
 
 namespace pe2d
 {
-    CollisionObject::CollisionObject(const std::shared_ptr<Collider> collider, const Transform &transform, bool isTrigger,
+    CollisionObject::CollisionObject(unsigned int ID, const std::shared_ptr<Collider> collider, const Transform &transform, bool isTrigger,
         std::function<void(Collision, float)> collisionCallback) :
-        m_Collider(collider), m_Transform(transform), m_IsTrigger(isTrigger), m_OnCollision(collisionCallback) 
+        m_ID(ID), m_Collider(collider), m_Transform(transform), m_IsTrigger(isTrigger), m_OnCollision(collisionCallback) 
         {}
 
     CollisionObject::CollisionObject(const CollisionObject &other) :
-        m_Collider(other.m_Collider), m_Transform(other.m_Transform), m_IsTrigger(other.m_IsTrigger), m_OnCollision(other.m_OnCollision) 
+        m_ID(other.m_ID), m_Collider(other.m_Collider), m_Transform(other.m_Transform), m_IsTrigger(other.m_IsTrigger),
+        m_OnCollision(other.m_OnCollision) 
         {} 
 
     CollisionObject::CollisionObject (CollisionObject &&other) :
-        m_Collider(other.m_Collider), m_Transform(other.m_Transform),
-        m_IsTrigger(other.m_IsTrigger),
+        m_ID(other.m_ID), m_Collider(other.m_Collider), 
+        m_Transform(other.m_Transform), m_IsTrigger(other.m_IsTrigger),
         m_OnCollision(other.m_OnCollision)
     {
-        m_Collider = nullptr;
-        m_Transform = Transform{};
-        m_IsTrigger = false;
-        m_OnCollision = nullptr;
+        other.m_ID = 0U;
+        other.m_Collider = nullptr;
+        other.m_Transform = Transform{};
+        other.m_IsTrigger = false;
+        other.m_OnCollision = nullptr;
     };
 
     CollisionObject& CollisionObject::operator=(const CollisionObject &other)
@@ -30,6 +32,7 @@ namespace pe2d
             return *this;
         }
         
+        m_ID = other.m_ID;
         m_Collider = other.m_Collider;
         m_Transform = other.m_Transform;
         m_IsTrigger = other.m_IsTrigger;
@@ -43,17 +46,38 @@ namespace pe2d
         {
             return *this;
         }
+        m_ID = other.m_ID;
         m_Collider = other.m_Collider;
         m_Transform = other.m_Transform;
         m_IsTrigger = other.m_IsTrigger;
         m_OnCollision = other.m_OnCollision;
 
-        m_Collider = nullptr;
-        m_Transform = Transform{};
-        m_IsTrigger = false;
-        m_OnCollision = nullptr;
+        other.m_ID = 0U;
+        other.m_Collider = nullptr;
+        other.m_Transform = Transform{};
+        other.m_IsTrigger = false;
+        other.m_OnCollision = nullptr;
         return *this;
     }
+
+    Vector2 CollisionObject::GetBounadingBox() const
+    {
+        std::shared_ptr<CircleCollider> circleCollider = std::dynamic_pointer_cast<CircleCollider>( m_Collider );
+        std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );
+        if(!circleCollider && !boxCollider)
+        {
+            ASSERT("OBJECT CAN'T HAS VIRTUAL COLLIDER");
+        }
+
+        if(circleCollider)
+        {
+            const float radius = circleCollider->GetRadius();
+            return Vector2{radius, radius};
+        }
+        
+        return boxCollider->GetSize();
+    }
+
     void CollisionObject::OnCollision(Collision &collision, float deltaTime) const
     {
         if(m_OnCollision)

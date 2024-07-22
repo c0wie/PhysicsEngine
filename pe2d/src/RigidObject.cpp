@@ -2,10 +2,11 @@
 
 namespace pe2d
 {
-    RigidObject::RigidObject(std::shared_ptr<Collider> collider, const Transform &transform, float trigger,
+    RigidObject::RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, const Transform &transform, float trigger,
         std::function<void(Collision, float)> collisionCallback, float mass, const Vector2 &velocity, const Vector2 &force,
         const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution) :
-        CollisionObject(collider, transform, trigger, collisionCallback), m_Mass(mass), m_Velocity(velocity), m_Force(force), m_Gravity(gravity),
+        CollisionObject(ID, collider, transform, trigger, collisionCallback),
+        m_Mass(mass), m_Velocity(velocity), m_Force(force), m_Gravity(gravity),
         m_TakesGravity(takesGravity), m_StaticFriction(staticFriction), m_DynamicFriction(dynamicFriction), m_Restitution(restitution) {}
     
     RigidObject::RigidObject(const RigidObject &other):
@@ -83,71 +84,4 @@ namespace pe2d
         return *this;
     }
 
-    float RigidObject::GetMass() const
-    {
-        return m_Mass;
-    }
-
-    Vector2 RigidObject::GetVelocity() const
-    {
-        return m_Velocity;
-    }
-
-    Vector2 RigidObject::GetForce() const
-    {
-        return m_Force;
-    }
-
-    Vector2 RigidObject::GetGravity() const
-    {
-        return m_Gravity;
-    }
-
-    float RigidObject::GetStaticFriction() const
-    {
-        return m_StaticFriction;
-    }
-
-    float RigidObject::GetDynamicFriction() const
-    {
-        return m_DynamicFriction;
-    }
-
-    float RigidObject::GetRestitution() const
-    {
-        return m_Restitution;
-    }
-
-    void RigidObject::SetMass(float mass)
-    {
-        if(mass < 0.0f)
-        {
-            m_Mass = mass;
-        }
-    }
-
-    void RigidObject::SetVelocity(const Vector2 &velocity)
-    {
-        m_Velocity = velocity;
-    }
-
-    void RigidObject::SetForce(const Vector2 &force)
-    {
-        m_Force = force;
-    }
-
-    void RigidObject::SetStaticFriction(float staticFriction)
-    {
-        m_StaticFriction = staticFriction;
-    }
-
-    void RigidObject::SetDynamicFriction(float dynamicDriction)
-    {
-        m_DynamicFriction = m_DynamicFriction;
-    }
-
-    void RigidObject::SetRestitution(float restitution)
-    {
-        m_Restitution = restitution;
-    }
 }

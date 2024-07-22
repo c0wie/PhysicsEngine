@@ -13,7 +13,7 @@ namespace pe2d
     public:
         void Insert(std::shared_ptr<CollisionObject> object);
         std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> GetCollisionPairs() const;
-        unsigned int GetSize() const;
+        unsigned int GetCount() const;
         void Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner);
         void Clear();
     private:
