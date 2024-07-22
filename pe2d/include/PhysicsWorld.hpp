@@ -29,6 +29,7 @@ namespace pe2d
         void ResolveCollisions(float deltaTime);
         void SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, float depth);
         std::unordered_map<unsigned int, std::shared_ptr<CollisionObject>> GetObjects() const { return m_Objects; }
+        void ClearObjects() { m_Objects.clear(); }
         
         int GetObjectsCount() const { return m_Objects.size(); }
         constexpr bool IsWorldPartitionizied() { return m_IsPartitioningSystemOn; }

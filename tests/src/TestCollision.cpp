@@ -7,23 +7,23 @@ namespace test
         Test(true),
         showObjectEditor(false)
     {
-        world.SetPartitioningSystem(pe2d::Vector2{0.0f, 0.0f}, pe2d::Vector2{1000.0f, 1000.0f}, 10.0f);
+        m_World.SetPartitioningSystem(pe2d::Vector2{0.0f, 0.0f}, pe2d::Vector2{1000.0f, 1000.0f}, 10.0f);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
-        world.AddSolver(solver);
+        m_World.AddSolver(solver);
         ResetVariables();        
     }
 
     void TestCollision::OnUpdate(float deltaTime, const sf::Vector2i &mousePos)
     {
-        const auto objects = world.GetObjects();
+        const auto objects = m_World.GetObjects();
         if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
             pe2d::Vector2 position = pe2d::Vector2{(float)mousePos.x, (float)mousePos.y};
             pe2d::Transform transform = pe2d::Transform{position, pe2d::Vector2(1.0f, 1.0f), 0.0f};
-            AddCircle(world.GetObjectsCount(), sf::Color::Magenta, 40.0f, transform, false, 10.0f, pe2d::Vector2{}, pe2d::Vector2{0.0f, 10.0f});
-            world.Step(deltaTime);  
+            AddCircle(m_World.GetObjectsCount(), sf::Color::Magenta, 40.0f, transform, false, 10.0f, pe2d::Vector2{}, pe2d::Vector2{0.0f, 10.0f});
+            m_World.Step(deltaTime);  
         }
-        world.Step(deltaTime);  
+        m_World.Step(deltaTime);  
     }
 
     void TestCollision::OnRender(sf::RenderWindow &window)
@@ -39,9 +39,10 @@ namespace test
         }
         if( ImGui::Button("Clear Objects") )
         {
-            // add clear objects function
+            m_World.ClearObjects();
+            m_Shapes.clear();
         }
-        ImGui::Text("Number of objects: %i", world.GetObjects().size());
+        ImGui::Text("Number of objects: %i", m_World.GetObjects().size());
         ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
         if(showObjectEditor)
         {
@@ -122,7 +123,7 @@ namespace test
     {
         const sf::Color Color = sf::Color{(sf::Uint8)color.red, (sf::Uint8)color.green, (sf::Uint8)color.blue};
         const pe2d::Transform transform = pe2d::Transform{ position, scale, rotation};
-        const unsigned int ID = world.GetObjectsCount();
+        const unsigned int ID = m_World.GetObjectsCount();
         if(ID == ID::BOX)
         {
             if(isRigidObject)

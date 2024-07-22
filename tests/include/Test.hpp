@@ -10,7 +10,7 @@ namespace test
     class Test
     {
     public:
-        Test(bool IsWorldPartionized) : world(IsWorldPartionized) {}
+        Test(bool IsWorldPartionized) : m_World(IsWorldPartionized) {}
         ~Test() = default;
     public:
         virtual void OnUpdate(float deltaTime, const sf::Vector2i &mousePos) = 0;
@@ -28,6 +28,6 @@ namespace test
         static void DrawBox(sf::RenderWindow &window, const Shape &shape);
     protected:
         std::vector<Shape> m_Shapes;
-        pe2d::DynamicsWorld world;
+        pe2d::DynamicsWorld m_World;
     };
 }

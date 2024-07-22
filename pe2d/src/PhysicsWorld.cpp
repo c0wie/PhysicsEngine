@@ -46,11 +46,6 @@ namespace pe2d
 
         if(m_IsPartitioningSystemOn)
         {
-            /*if(!_Grid)
-            {
-                ASSERT("GRID HASN'T BEEN SETUP");
-            }*/
-
             UpdateGrid();
             std::vector<std::pair<unsigned int, unsigned int>> pairs = m_PartitioningSystem.GetCollisionPairs();
             std::cout << pairs.size() << '\n';
@@ -62,21 +57,21 @@ namespace pe2d
         }
         else
         {
-            for(int i = 0; i < m_Objects.size(); i++)
+            for(auto itA = m_Objects.begin(); itA != m_Objects.end(); itA++)
             {
-                for(int j = 0 ; j < m_Objects.size(); j++)
+                for(auto itB = m_Objects.begin(); itB != m_Objects.end(); itB++)
                 {
-                    if(m_Objects[i] == m_Objects[j]) // unique pars
+                    if(itA == itB) // unique pars
                     {
                         break;
                     }
 
-                    if(!m_Objects[i]->GetCollider() || !m_Objects[j]->GetCollider()) // both have colliders
+                    if(!itA->second->GetCollider() || !itB->second->GetCollider()) // both have colliders
                     {
                         continue;
                     }
 
-                    FindCollisions(m_Objects[i], m_Objects[j], collisions, triggers);
+                    FindCollisions(itA->second, itB->second, collisions, triggers);
                 }
             }
         }
