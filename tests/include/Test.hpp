@@ -2,7 +2,7 @@
 
 #include "Shape.hpp"
 #include <imgui.h>
-#include "../../pe2d/include/PhysicsWorld.hpp"
+#include "../../pe2d/include/DynamicsWorld.hpp"
 
 
 namespace test
