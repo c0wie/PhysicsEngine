@@ -16,6 +16,7 @@ namespace pe2d
         unsigned int GetCount() const;
         void Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner);
         void Clear();
+        bool IsValid() const;
     private:
         static bool InBoundary(Vector2 boundingBox, Vector2 position, Vector2 leftCorner, Vector2 rightCorner);
         void GetCollisionPairs(std::vector<std::pair<unsigned int, unsigned int>> &pairs) const;
@@ -26,7 +27,7 @@ namespace pe2d
         // info about a boundary of grid
         Vector2 m_TopLeftCorner;
         Vector2 m_BotRightCorner;
-        float m_Depth;
-        constexpr static unsigned int MAX_DEPTH = 4U;
+        float m_MaxDepth;
+        float m_CurrentDepth;
     };
 } 

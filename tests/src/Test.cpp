@@ -85,8 +85,12 @@ namespace test
     {
         for(int i = 0; i < m_Shapes.size(); i++)
         {
+            const pe2d::Vector2 position = m_Shapes[i].GetBody()->GetPosition();
+            if(position.y > 1100.0f || position.y < -100.0f || position.x < -100.0f || position.x > 1100.0f)
+            {
+                continue;
+            }
             m_Shapes[i].Draw(window, m_Shapes[i]);
         }
     }
-
 }

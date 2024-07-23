@@ -7,7 +7,7 @@ namespace test
         Test(true),
         showObjectEditor(false)
     {
-        m_World.SetPartitioningSystem(pe2d::Vector2{0.0f, 0.0f}, pe2d::Vector2{1000.0f, 1000.0f}, 10.0f);
+        m_World.SetPartitioningSystem(pe2d::Vector2{-100.0f, -100.0f}, pe2d::Vector2{1100.0f, 1100.0f}, 5U);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         m_World.AddSolver(solver);
         ResetVariables();        

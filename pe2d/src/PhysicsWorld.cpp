@@ -46,6 +46,10 @@ namespace pe2d
 
         if(m_IsPartitioningSystemOn)
         {
+            if(!m_PartitioningSystem.IsValid())
+            {
+                ASSERT("UNTIL YOU SETUP PARTITIONING SYSTEM YOU CAN'T USE IT");
+            }
             UpdateGrid();
             std::vector<std::pair<unsigned int, unsigned int>> pairs = m_PartitioningSystem.GetCollisionPairs();
             std::cout << pairs.size() << '\n';
@@ -81,13 +85,17 @@ namespace pe2d
         SendCollisionCallbacks(triggers, deltaTime);
     }
     
-    void CollisionWorld::SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, float depth)
+    void CollisionWorld::SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth)
     {
         if(!m_IsPartitioningSystemOn)
         {
             ASSERT("CAN'T SETUP PARTIONING SYSTEM WHEN IT IS DISABLED");
         }
-        m_PartitioningSystem = QuadTree(topLeftCorner, bottomRightCorner, depth);
+        if(maxDepth == 0)
+        {
+            ASSERT("MAX DEPTH HAS TO BE GRATER THAN ZERO");
+        }
+        m_PartitioningSystem = QuadTree(topLeftCorner, bottomRightCorner, maxDepth);
     }
 
     void CollisionWorld::UpdateGrid()

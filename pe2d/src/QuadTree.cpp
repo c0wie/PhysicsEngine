@@ -12,7 +12,8 @@ namespace pe2d
         }),
         m_TopLeftCorner(Vector2{0.0f, 0.0f}),
         m_BotRightCorner(Vector2{0.0f, 0.0f}),
-        m_Depth(0)
+        m_MaxDepth(0),
+        m_CurrentDepth(0)
     {
         Resize(m_TopLeftCorner, m_BotRightCorner);
     }
@@ -27,7 +28,8 @@ namespace pe2d
         }),
         m_TopLeftCorner(topLeftCorner),
         m_BotRightCorner(bottomRightCorner),
-        m_Depth(depth)
+        m_MaxDepth(depth),
+        m_CurrentDepth(0)
     {
         Resize(m_TopLeftCorner, m_BotRightCorner);
     }
@@ -43,7 +45,7 @@ namespace pe2d
         {
             if(InBoundary(object->GetBounadingBox(), object->GetPosition(), m_ChildNodesSize[i].first, m_ChildNodesSize[i].second))
             {
-                if(m_Depth + 1 < MAX_DEPTH)
+                if(m_CurrentDepth + 1 < m_MaxDepth)
                 {
                     if(!m_ChildNodes[i])
                     {
@@ -51,7 +53,7 @@ namespace pe2d
                         (
                             Vector2{m_ChildNodesSize[i].first},
                             Vector2{m_ChildNodesSize[i].second},
-                            m_Depth + 1
+                            m_CurrentDepth + 1
                         );
                     }
                     m_ChildNodes[i]->Insert(object);
@@ -119,6 +121,11 @@ namespace pe2d
         
     }
 
+    bool QuadTree::IsValid() const
+    {
+        return m_MaxDepth > 0U;
+    }
+    
     bool QuadTree::InBoundary(Vector2 boundingBox, Vector2 position, Vector2 leftCorner, Vector2 rightCorner)
     {
         Vector2 vertices[4] =

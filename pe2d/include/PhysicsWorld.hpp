@@ -27,7 +27,7 @@ namespace pe2d
         void RemoveSolver(std::shared_ptr<Solver> &solver);
         
         void ResolveCollisions(float deltaTime);
-        void SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, float depth);
+        void SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth);
         std::unordered_map<unsigned int, std::shared_ptr<CollisionObject>> GetObjects() const { return m_Objects; }
         void ClearObjects() { m_Objects.clear(); }
         
