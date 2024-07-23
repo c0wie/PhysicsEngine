@@ -11,12 +11,12 @@ namespace pe2d
     
     CollisionPoints CircleCollider::TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const 
     {
-        return Algo::FindCircleCircleCollision(this, transform, circle, circleTransform);
+        return algo::FindCircleCircleCollision(this, transform, circle, circleTransform);
     }
 
     CollisionPoints CircleCollider::TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const
     {
-        return Algo::FindCircleBoxCollision(this, transform, box, boxTransform);
+        return algo::FindCircleBoxCollision(this, transform, box, boxTransform);
     }
 
 #pragma endregion
@@ -30,12 +30,12 @@ namespace pe2d
 
     CollisionPoints BoxCollider::TestCollision(const Transform &transform, const CircleCollider *circle, const Transform &circleTransform) const
     {
-        return Algo::FindBoxCircleCollision(this, transform, circle, circleTransform);
+        return algo::FindBoxCircleCollision(this, transform, circle, circleTransform);
     }
 
     CollisionPoints BoxCollider::TestCollision(const Transform &transform, const BoxCollider *box, const Transform &boxTransform) const
     {
-        return Algo::FindBoxBoxCollision(this, transform, box, boxTransform);
+        return algo::FindBoxBoxCollision(this, transform, box, boxTransform);
     }
 
 #pragma endregion

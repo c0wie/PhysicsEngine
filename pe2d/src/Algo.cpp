@@ -4,9 +4,11 @@
 
 namespace pe2d
 {
-    CollisionPoints Algo::FindCircleCircleCollision(
-        const CircleCollider *circleA, const Transform &transformCircleA,
-        const CircleCollider *circleB, const Transform &transformCircleB)
+    namespace algo
+    {
+        CollisionPoints FindCircleCircleCollision(
+            const CircleCollider *circleA, const Transform &transformCircleA,
+            const CircleCollider *circleB, const Transform &transformCircleB)
     {
         const float radiusA = circleA->GetRadius();
         const float radiusB =  circleB->GetRadius();
@@ -31,9 +33,9 @@ namespace pe2d
         return CollisionPoints{normal, overlap, true};
     }
 
-    CollisionPoints Algo::FindCircleBoxCollision(
-        const CircleCollider *circle, const Transform &transformCircle,
-        const BoxCollider *box, const Transform &transformBox)
+        CollisionPoints FindCircleBoxCollision(
+            const CircleCollider *circle, const Transform &transformCircle,
+            const BoxCollider *box, const Transform &transformBox)
     {
         const Vector2 &circleCenter = transformCircle.position;
         const std::vector<Vector2> boxVertices = GetBoxVertices(box->GetSize(), transformBox);
@@ -61,18 +63,18 @@ namespace pe2d
         return CollisionPoints{*smallesAxis, overlap, true};
     }
 
-    CollisionPoints Algo::FindBoxCircleCollision(
-        const BoxCollider *box, const Transform &transformBox,
-        const CircleCollider *circle, const Transform &transformCircle)
+        CollisionPoints FindBoxCircleCollision(
+            const BoxCollider *box, const Transform &transformBox,
+            const CircleCollider *circle, const Transform &transformCircle)
     {
         CollisionPoints p = FindCircleBoxCollision(circle, transformCircle, box, transformBox);
         p.Normal *= -1.0f;
         return p;
     }
-    
-    CollisionPoints Algo::FindBoxBoxCollision(
-        const BoxCollider *boxA, const Transform &transformBoxA,
-        const BoxCollider *boxB, const Transform &transformBoxB)
+
+        CollisionPoints FindBoxBoxCollision(
+            const BoxCollider *boxA, const Transform &transformBoxA,
+            const BoxCollider *boxB, const Transform &transformBoxB)
     {
         const std::vector<Vector2> verticesA = GetBoxVertices(boxA->GetSize(), transformBoxA);
         const std::vector<Vector2> verticesB = GetBoxVertices(boxB->GetSize(), transformBoxB);
@@ -116,7 +118,7 @@ namespace pe2d
         return CollisionPoints{*smallestAxis, overlap, true};
     }
 
-    bool Algo::Overlap(const Vector2 &A, const Vector2 &B)
+        bool Overlap(const Vector2 &A, const Vector2 &B)
     {
         if(A.y >= B.x && B.y >= A.x)
         {
@@ -124,16 +126,16 @@ namespace pe2d
         }
         return false;
     }
-
-    float Algo::GetOverlap(const Vector2 &A, const Vector2 &B)
+    
+        float GetOverlap(const Vector2 &A, const Vector2 &B)
     {
         const float overlapStart = std::max(A.x, B.x);
         const float overlapEnd = std::min(A.y, B.y);
 
         return overlapEnd - overlapStart;
     }
-
-    std::vector<Vector2> Algo::GetAxes(const std::vector<Vector2> &vertices)
+    
+        std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices)
     {
         std::vector<Vector2> axes;
         for(int i = 0; i < vertices.size(); i++)
@@ -146,8 +148,8 @@ namespace pe2d
         }
         return axes;
     }
-
-    std::vector<Vector2> Algo::GetRectangleAxes(const std::vector<Vector2> &vertices)
+    
+        std::vector<Vector2> GetRectangleAxes(const std::vector<Vector2> &vertices)
     {
         std::vector<Vector2> axes;
         // is has two parrarel edges so I don't have to check other two
@@ -161,8 +163,8 @@ namespace pe2d
         }
         return axes;
     }
-
-    Vector2 Algo::Project(const std::vector<Vector2> &vertices, const Vector2 &axis)
+    
+        Vector2 Project(const std::vector<Vector2> &vertices, const Vector2 &axis)
     {
         float min = axis.dot(vertices[0]);
         float max = min;
@@ -182,7 +184,7 @@ namespace pe2d
         return Vector2{min, max};
     }    
     
-    Vector2 Algo::ProjectCircle(const Vector2 &axis, const Vector2 &circleCenter, float radius)
+        Vector2 ProjectCircle(const Vector2 &axis, const Vector2 &circleCenter, float radius)
     {
         const Vector2 dir = axis * radius;
 
@@ -198,8 +200,8 @@ namespace pe2d
         } 
         return Vector2{min, max};
     }
-
-    void Algo::RotateVertices(std::vector<Vector2> &vertices, const Vector2 &center, float angle)
+    
+        void RotateVertices(std::vector<Vector2> &vertices, const Vector2 &center, float angle)
     {
         const float cosAngle = cosf(angle);
         const float sinAngle = sinf(angle);
@@ -214,7 +216,7 @@ namespace pe2d
         }
     }
     
-    std::vector<Vector2> Algo::GetBoxVertices(const Vector2 &boxSize, const Transform &transform)
+        std::vector<Vector2> GetBoxVertices(const Vector2 &boxSize, const Transform &transform)
     {
         const Vector2 &center = transform.position;
         const Vector2 &scale = transform.scale;
@@ -231,8 +233,8 @@ namespace pe2d
         RotateVertices(vertices, center, angle);
         return vertices;
     }
-
-    Vector2 Algo::GetCircleAxis(std::vector<Vector2> vertices, const Vector2 &circleCenter)
+    
+        Vector2 GetCircleAxis(std::vector<Vector2> vertices, const Vector2 &circleCenter)
     {
         float dist = INF;
         Vector2 smallestAxis = Vector2{};
@@ -247,5 +249,6 @@ namespace pe2d
             }
         }
         return smallestAxis.normalized();
+    }
     }
 }

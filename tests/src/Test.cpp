@@ -28,7 +28,7 @@ namespace test
         const pe2d::Vector2 size = collider->GetSize();
         const sf::Color color = shape.GetColor();
         
-        std::vector<pe2d::Vector2> vertices = pe2d::Algo::GetBoxVertices(size, body->GetTransform());
+        std::vector<pe2d::Vector2> vertices = pe2d::algo::GetBoxVertices(size, body->GetTransform());
         for(int i = 0; i < vertices.size(); i++)
         {
             const int j = (i + 1) % vertices.size();
