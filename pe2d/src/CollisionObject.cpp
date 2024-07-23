@@ -6,7 +6,12 @@ namespace pe2d
     CollisionObject::CollisionObject(unsigned int ID, const std::shared_ptr<Collider> collider, const Transform &transform, bool isTrigger,
         std::function<void(Collision, float)> collisionCallback) :
         m_ID(ID), m_Collider(collider), m_Transform(transform), m_IsTrigger(isTrigger), m_OnCollision(collisionCallback) 
-        {}
+    {
+        if(!collider)
+        {
+            ASSERT("Unvalid collider");
+        }
+    }
 
     CollisionObject::CollisionObject(const CollisionObject &other) :
         m_ID(other.m_ID), m_Collider(other.m_Collider), m_Transform(other.m_Transform), m_IsTrigger(other.m_IsTrigger),
@@ -66,7 +71,7 @@ namespace pe2d
         std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );
         if(!circleCollider && !boxCollider)
         {
-            ASSERT("OBJECT CAN'T HAS VIRTUAL COLLIDER");
+            ASSERT("Unvalid type of collider");
         }
 
         if(circleCollider)

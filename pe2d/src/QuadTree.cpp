@@ -31,6 +31,10 @@ namespace pe2d
         m_MaxDepth(depth),
         m_CurrentDepth(0)
     {
+        if(m_MaxDepth == 0)
+        {
+            ASSERT("Max depth can't be equel 0");
+        }
         Resize(m_TopLeftCorner, m_BotRightCorner);
     }
 
@@ -38,7 +42,7 @@ namespace pe2d
     {
         if(!object)
         {
-            ASSERT("OBJECT CANNOT BE NULL POINTER");
+            ASSERT("Unvalid object");
         }   
 
         for(unsigned char i = 0; i < m_ChildNodes.size(); i++)
@@ -70,8 +74,8 @@ namespace pe2d
     std::vector<std::pair<unsigned int, unsigned int>> QuadTree::GetCollisionPairs() const
     {
         std::vector<std::pair<unsigned int, unsigned int>> pairs;
-        const unsigned int size = GetCount();
-        pairs.reserve( (size * (size - 1)) / 2);
+        const unsigned int count = GetCount();
+        pairs.reserve( (count * (count - 1)) / 2);
         GetCollisionPairs(pairs);
         return pairs;
     }

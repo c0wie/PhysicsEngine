@@ -27,7 +27,7 @@ namespace pe2d
         {
             if(radius <= 0.0f)
             {
-                ASSERT("Radius must be grater than 0");
+                ASSERT("Radius of circle has to be greater than 0");
             }
         }
         CircleCollider(const CircleCollider &other) = default;
@@ -74,7 +74,7 @@ namespace pe2d
         {
             if(size.x <= 0.0f && size.y <= 0.0f)
             {
-                ASSERT("SIZE CANNOT BE NEGATIVE");
+                ASSERT("Side of box has to be greater than 0");
             }
         }
         BoxCollider(const BoxCollider &other) = default;

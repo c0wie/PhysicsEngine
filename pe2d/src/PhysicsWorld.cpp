@@ -5,15 +5,16 @@ namespace pe2d
 #pragma region COLLISION_WORLD 
     void CollisionWorld::AddCollisionObject(std::shared_ptr<CollisionObject> obj)
     {
-        if(obj != nullptr)
+        if(!obj)
         {
-            const unsigned int ID = obj->GetID();
-            if(m_Objects.find(ID) != m_Objects.end())
-            {
-                ASSERT("OBJECT WITH THIS INDEX ALREADY EXIST");
-            }
-            m_Objects[ID] = obj;
+            ASSERT("Unvalid object beeing passed to CollisionWorld");
         }
+        const unsigned int ID = obj->GetID();
+        if(m_Objects.find(ID) != m_Objects.end())
+        {
+            ASSERT("This index is already taken");
+        }
+        m_Objects[ID] = obj;
     }
 
     void CollisionWorld::RemoveObject(unsigned int ID)
@@ -23,10 +24,11 @@ namespace pe2d
 
     void CollisionWorld::AddSolver(std::shared_ptr<Solver> &solver)
     {
-        if(solver != nullptr)
+        if(!solver )
         {
-            m_Solvers.push_back(solver);
+            ASSERT("Unvalid solver");
         }
+        m_Solvers.push_back(solver);
     }
 
     void CollisionWorld::RemoveSolver(std::shared_ptr<Solver> &solver)
@@ -89,11 +91,7 @@ namespace pe2d
     {
         if(!m_IsPartitioningSystemOn)
         {
-            ASSERT("CAN'T SETUP PARTIONING SYSTEM WHEN IT IS DISABLED");
-        }
-        if(maxDepth == 0)
-        {
-            ASSERT("MAX DEPTH HAS TO BE GRATER THAN ZERO");
+            ASSERT("Can't setup partitioninf system when it is disabled");
         }
         m_PartitioningSystem = QuadTree(topLeftCorner, bottomRightCorner, maxDepth);
     }

@@ -21,6 +21,6 @@
 constexpr float PI = 3.14159f;
 inline void errorMessage(const char *file, int line, const char *msg)
 {
-    std::cout << "In file " << file << " at line " << line << "\nERROR: " <<  msg << std::endl;
+    std::cout << file << " at line " << line << " ERROR: " <<  msg << std::endl;
 }
 

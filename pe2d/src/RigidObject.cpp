@@ -7,7 +7,13 @@ namespace pe2d
         const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution) :
         CollisionObject(ID, collider, transform, trigger, collisionCallback),
         m_Mass(mass), m_Velocity(velocity), m_Force(force), m_Gravity(gravity),
-        m_TakesGravity(takesGravity), m_StaticFriction(staticFriction), m_DynamicFriction(dynamicFriction), m_Restitution(restitution) {}
+        m_TakesGravity(takesGravity), m_StaticFriction(staticFriction), m_DynamicFriction(dynamicFriction), m_Restitution(restitution) 
+        {
+            if(m_Mass <= 0.0f)
+            {
+                ASSERT("Mass of object has to be greater than 0");
+            }
+        }
     
     RigidObject::RigidObject(const RigidObject &other):
         CollisionObject(other), m_Mass(other.m_Mass), m_Velocity(other.m_Velocity), m_Force(other.m_Force), m_Gravity(other.m_Gravity),

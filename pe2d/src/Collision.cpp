@@ -3,7 +3,13 @@
 namespace pe2d
 {
     Collision::Collision(std::shared_ptr<CollisionObject> a, std::shared_ptr<CollisionObject> b, CollisionPoints points) :
-        m_ObjectA(a), m_ObjectB(b), m_Points(points) {}
+        m_ObjectA(a), m_ObjectB(b), m_Points(points) 
+    {
+        if(!m_ObjectA || !m_ObjectB)
+        {
+            ASSERT("Invalid object");
+        }
+    }
 
     Collision::Collision(const Collision &other) :
         m_ObjectA(other.m_ObjectA), m_ObjectB(other.m_ObjectB), m_Points(other.m_Points) {}
@@ -60,18 +66,18 @@ namespace pe2d
 
     void Collision::SetCollisionObjectA(const std::shared_ptr<CollisionObject> a)
     {
-        if(a == nullptr)
+        if(!a)
         {
-            // Assert
+            ASSERT("Invalid object");
         }
         m_ObjectA = a;
     }
 
     void Collision::SetCollisionObjectB(const std::shared_ptr<CollisionObject> b)
     {
-        if(b == nullptr)
+        if(!b)
         {
-            // Assert
+            ASSERT("Invalid object");
         }
         m_ObjectB = b;
     }

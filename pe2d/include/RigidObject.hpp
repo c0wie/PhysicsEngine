@@ -27,7 +27,7 @@ namespace pe2d
         {
             if(mass <= 0.0f)
             {
-                ASSERT("MASS CANNOT BE LESS OR EQUEL TO ZERO");
+                ASSERT("Mass of object has to be greater than 0");
             }
             m_Mass = mass;
         }
