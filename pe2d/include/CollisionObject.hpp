@@ -11,7 +11,7 @@ namespace pe2d
     class CollisionObject
     {
     public:
-        CollisionObject(unsigned int ID, const std::shared_ptr<Collider> collider, const Transform &transform, bool isTrigger,
+        CollisionObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform, bool isTrigger,
             std::function<void(Collision, float)> collisionCallback);
         CollisionObject(const CollisionObject &other);
         CollisionObject(CollisionObject &&other);
@@ -20,7 +20,7 @@ namespace pe2d
         virtual ~CollisionObject() = default;
     public:
         constexpr unsigned int GetID() const { return m_ID; }
-        const std::shared_ptr<Collider> GetCollider() const { return m_Collider; }
+        std::shared_ptr<Collider> GetCollider() const { return m_Collider; }
         Vector2 GetBounadingBox() const;
         constexpr Vector2 GetPosition() const { return m_Transform.position; }
         constexpr Vector2 GetScale() const { return m_Transform.scale; }
@@ -53,7 +53,7 @@ namespace pe2d
                 m_Collider = collider;
             }
         }
-        constexpr void SetTransform(const Transform &transform) { m_Transform = transform; }
+        constexpr void SetTransform(Transform transform) { m_Transform = transform; }
         constexpr void SetTrigger(bool isTrigger) { m_IsTrigger = isTrigger; }
         void SetCollisionCallback(std::function<void(Collision, float)> collisionCallback) { m_OnCollision = collisionCallback; }
 

@@ -13,7 +13,7 @@ namespace test
         ResetVariables();        
     }
 
-    void TestCollision::OnUpdate(float deltaTime, const sf::Vector2i &mousePos)
+    void TestCollision::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
         const auto objects = m_World.GetObjects();
         if(sf::Mouse::isButtonPressed(sf::Mouse::Right))

@@ -13,14 +13,14 @@ namespace test
         Test(bool IsWorldPartionized) : m_World(IsWorldPartionized) {}
         ~Test() = default;
     public:
-        virtual void OnUpdate(float deltaTime, const sf::Vector2i &mousePos) = 0;
+        virtual void OnUpdate(float deltaTime, sf::Vector2i mousePos) = 0;
         virtual void OnRender(sf::RenderWindow &window) = 0;
         virtual void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO& io) = 0;
     protected:
-        void AddCircle(unsigned int ID, const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger);
-        void AddCircle(unsigned int ID, const sf::Color &color, float radius, const pe2d::Transform &transform, bool isTrigger, float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity);
-        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, const pe2d::Transform &transform, bool isTrigger);
-        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, const pe2d::Transform &transform, bool isTrigger, float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity);
+        void AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger);
+        void AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger, float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity);
+        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isTrigger);
+        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isTrigger, float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity);
         
         void Draw(sf::RenderWindow &window) const;
     private:

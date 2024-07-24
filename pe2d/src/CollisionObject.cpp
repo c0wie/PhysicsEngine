@@ -3,7 +3,7 @@
 
 namespace pe2d
 {
-    CollisionObject::CollisionObject(unsigned int ID, const std::shared_ptr<Collider> collider, const Transform &transform, bool isTrigger,
+    CollisionObject::CollisionObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform, bool isTrigger,
         std::function<void(Collision, float)> collisionCallback) :
         m_ID(ID), m_Collider(collider), m_Transform(transform), m_IsTrigger(isTrigger), m_OnCollision(collisionCallback) 
     {

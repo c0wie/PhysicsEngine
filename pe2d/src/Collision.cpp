@@ -64,7 +64,7 @@ namespace pe2d
         return m_Points;
     }
 
-    void Collision::SetCollisionObjectA(const std::shared_ptr<CollisionObject> a)
+    void Collision::SetCollisionObjectA(std::shared_ptr<CollisionObject> a)
     {
         if(!a)
         {
@@ -73,7 +73,7 @@ namespace pe2d
         m_ObjectA = a;
     }
 
-    void Collision::SetCollisionObjectB(const std::shared_ptr<CollisionObject> b)
+    void Collision::SetCollisionObjectB(std::shared_ptr<CollisionObject> b)
     {
         if(!b)
         {

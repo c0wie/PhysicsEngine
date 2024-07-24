@@ -19,8 +19,8 @@ namespace pe2d
         std::shared_ptr<CollisionObject> GetObjectA() const;
         std::shared_ptr<CollisionObject> GetObjectB() const;
         const CollisionPoints& GetPoints() const;
-        void SetCollisionObjectA(const std::shared_ptr<CollisionObject> a);
-        void SetCollisionObjectB(const std::shared_ptr<CollisionObject> b);
+        void SetCollisionObjectA(std::shared_ptr<CollisionObject> a);
+        void SetCollisionObjectB(std::shared_ptr<CollisionObject> b);
         void SetPoints(const CollisionPoints &points);
     private: 
         std::shared_ptr<CollisionObject> m_ObjectA;

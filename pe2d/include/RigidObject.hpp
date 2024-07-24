@@ -7,9 +7,9 @@ namespace pe2d
     class RigidObject : public CollisionObject
     {
     public:
-        RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, const Transform &transform, float trigger, 
-            std::function<void(Collision, float)> collisionCallback, float mass, const Vector2 &velocity, const Vector2 &force,
-            const Vector2 &gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
+        RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform, float trigger, 
+            std::function<void(Collision, float)> collisionCallback, float mass, Vector2 velocity, Vector2 force,
+            Vector2 gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
         RigidObject(const RigidObject &other);
         RigidObject(RigidObject &&other);
         RigidObject& operator=(const RigidObject &other);
@@ -31,11 +31,11 @@ namespace pe2d
             }
             m_Mass = mass;
         }
-        constexpr void SetVelocity(const Vector2 &velocity)
+        constexpr void SetVelocity(Vector2 velocity)
         {
             m_Velocity = velocity;
         }
-        constexpr void SetForce(const Vector2 &force)
+        constexpr void SetForce(Vector2 force)
         {
             m_Force = force;
         }

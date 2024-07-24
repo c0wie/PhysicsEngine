@@ -9,7 +9,7 @@ namespace pe2d
     public:
         constexpr CollisionPoints() :
             Normal(Vector2{}), Depth(0.0f), HasCollision(false) {}
-        constexpr CollisionPoints(const Vector2 &normal, float depth, bool hasCollision) :
+        constexpr CollisionPoints(Vector2 normal, float depth, bool hasCollision) :
             Normal(normal), Depth(depth), HasCollision(hasCollision) {}
         constexpr CollisionPoints(const CollisionPoints &other) = default;
         constexpr CollisionPoints(CollisionPoints &&other) noexcept :
