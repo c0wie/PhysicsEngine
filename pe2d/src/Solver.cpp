@@ -22,7 +22,7 @@ namespace pe2d
                 MTV *= -1.0f;
             }
             const float totalMass = massA + massB;
-            if(totalMass != 0.0f && objectB->isMovable)
+            if(totalMass != 0.0f && objectB->IsMovable())
             {
                 Vector2 MTVB, MTVA;
                 if(massA == 0.0f)
@@ -71,7 +71,7 @@ namespace pe2d
                 MTV *= -1.0f;
             }
             const float totalMass = massA + massB;
-            if(totalMass != 0.0f && objectB->isMovable)
+            if(totalMass != 0.0f && objectB->IsMovable())
             {
                 Vector2 MTVB, MTVA;
                 if(massA == 0.0f)

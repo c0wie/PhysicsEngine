@@ -37,7 +37,7 @@ namespace pe2d
         Vector2 Project(const std::vector<Vector2> &vertices, Vector2 axis);
         Vector2 ProjectCircle(Vector2 axis, Vector2 circleCenter, float radius);
         void RotateVertices(std::vector<Vector2> &vertices, Vector2 center, float angle);
-        Vector2 GetCircleAxis(std::vector<Vector2> &vertices, Vector2 circleCenter);
+        Vector2 GetCircleAxis(const std::vector<Vector2> &vertices, Vector2 circleCenter);
         constexpr float INF = std::numeric_limits<float>::infinity();
     }
 }

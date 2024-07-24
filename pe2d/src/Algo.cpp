@@ -234,7 +234,7 @@ namespace pe2d
             return vertices;
         }
         
-        Vector2 GetCircleAxis(std::vector<Vector2> vertices, Vector2 circleCenter)
+        Vector2 GetCircleAxis(const std::vector<Vector2> &vertices, Vector2 circleCenter)
         {
             float dist = INF;
             Vector2 smallestAxis = Vector2{};

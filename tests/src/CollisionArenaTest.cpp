@@ -1,37 +1,38 @@
-#include "TestCollision.hpp"
-#include "../../pe2d/include/Algo.hpp"
+#include "CollisionArenaTest.hpp"
+
 namespace test
 {
-
-    TestCollision::TestCollision() :
+    CollisionArenaTest::CollisionArenaTest() :
         Test(true),
         showObjectEditor(false)
     {
-        m_World.SetPartitioningSystem(pe2d::Vector2{-100.0f, -100.0f}, pe2d::Vector2{1100.0f, 1100.0f}, 5U);
+        m_World.SetPartitioningSystem(pe2d::Vector2(-100.0f, -100.0f), pe2d::Vector2(1100.0f, 1100.0f), 5U);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         m_World.AddSolver(solver);
+
+        const pe2d::Transform mouseTracerTransform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
+        const pe2d::Vector2 mouseTracerSize = pe2d::Vector2(100.0f, 100.0f);
+        AddBox(2137U, sf::Color::Magenta, mouseTracerSize, mouseTracerTransform, false, true);
+
+        const pe2d::Transform platformTransform = pe2d::Transform(pe2d::Vector2(500.0, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
+        const pe2d::Vector2 platformSize = pe2d::Vector2(700.0f, 75.0f);
+        AddBox(4030U, sf::Color::White, platformSize, platformTransform, false, false);
+
         ResetVariables();        
     }
 
-    void TestCollision::OnUpdate(float deltaTime, sf::Vector2i mousePos)
+    void CollisionArenaTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
         const auto objects = m_World.GetObjects();
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
-        {
-            pe2d::Vector2 position = pe2d::Vector2{(float)mousePos.x, (float)mousePos.y};
-            pe2d::Transform transform = pe2d::Transform{position, pe2d::Vector2(1.0f, 1.0f), 0.0f};
-            AddCircle(m_World.GetObjectsCount(), sf::Color::Magenta, 40.0f, transform, false, 10.0f, pe2d::Vector2{}, pe2d::Vector2{0.0f, 10.0f});
-            m_World.Step(deltaTime);  
-        }
         m_World.Step(deltaTime);  
     }
 
-    void TestCollision::OnRender(sf::RenderWindow &window)
+    void CollisionArenaTest::OnRender(sf::RenderWindow &window)
     {
         Draw(window);
     }
 
-    void TestCollision::OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io)
+    void CollisionArenaTest::OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io)
     {
         if( ImGui::Button("Add Object") )
         {
@@ -39,8 +40,7 @@ namespace test
         }
         if( ImGui::Button("Clear Objects") )
         {
-            m_World.ClearObjects();
-            m_Shapes.clear();
+            ClearObjects();
         }
         ImGui::Text("Number of objects: %i", m_World.GetObjects().size());
         ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
@@ -73,7 +73,7 @@ namespace test
         }
     }
 
-    void TestCollision::CollisionObjectInput()
+    void CollisionArenaTest::CollisionObjectInput()
     {
         if(ID == ID::BOX)
         {
@@ -95,18 +95,23 @@ namespace test
         ImGui::InputFloat2("Scale", &scale.x);
         ImGui::InputFloat("Rotation", &rotation);
         ImGui::InputInt3("Color", &color.red);
+        if(ImGui::Button("Is Movable"))
+        {
+            isMovable = !isMovable;
+        }
     }
    
-    void TestCollision::RigidObjectInput()
+    void CollisionArenaTest::RigidObjectInput()
     {
         ImGui::InputFloat("Mass", &mass);
         ImGui::InputFloat2("Velocity", &velocity.x);
         ImGui::InputFloat2("Gravity", &gravity.x);
     } 
 
-    void TestCollision::ResetVariables()
+    void CollisionArenaTest::ResetVariables()
     {
         isRigidObject = false;
+        isMovable = true;
         ID = ID::BOX;
         size = pe2d::Vector2{};
         radius = 0.0f;
@@ -119,7 +124,7 @@ namespace test
         gravity = pe2d::Vector2{};
     }
 
-    void TestCollision::CreateObject()
+    void CollisionArenaTest::CreateObject()
     {
         const sf::Color Color = sf::Color{(sf::Uint8)color.red, (sf::Uint8)color.green, (sf::Uint8)color.blue};
         const pe2d::Transform transform = pe2d::Transform{ position, scale, rotation};
@@ -128,24 +133,40 @@ namespace test
         {
             if(isRigidObject)
             {
-                AddBox(ID, Color, size, transform, false, mass, velocity, gravity);
+                AddBox(ID, Color, size, transform, false, isMovable, mass, velocity, gravity);
             }
             else
             {
-                AddBox(ID, Color, size, transform, false);
+                AddBox(ID, Color, size, transform, false, isMovable);
             }
         }
         else if(ID == ID::CIRCLE)
         {
             if(isRigidObject)
             {
-                AddCircle(ID, Color, radius, transform, false, mass, velocity, gravity);
+                AddCircle(ID, Color, radius, transform, false, isMovable, mass, velocity, gravity);
             }
             else
             {
-                AddCircle(ID, Color, radius, transform, false);
+                AddCircle(ID, Color, radius, transform, false, isMovable);
             }
         }
         showObjectEditor = false;
+    }
+
+    void CollisionArenaTest::ClearObjects()
+    {
+        auto objects = m_World.GetObjects();
+        auto it = objects.begin();
+        for(int i = 0; i < 2; i++) { it++; }
+        for(;it!=objects.end();it++)
+        {
+            unsigned int ID = it->first;
+            m_World.RemoveObject(ID);
+        }
+        for(int i = 2; i < m_Shapes.size(); i++)
+        {
+            m_Shapes.pop_back();
+        }
     }
 }   

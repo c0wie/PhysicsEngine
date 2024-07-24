@@ -1,12 +1,5 @@
-#pragma once
-
-#include <vector>
-
-#include <imgui-SFML.h>
-#include <imgui.h>
-
-
 #include "Test.hpp"
+
 namespace test
 {
     struct Color
@@ -18,23 +11,25 @@ namespace test
         BOX, 
         CIRCLE,
     };
-    class TestCollision : public Test
+    class CollisionArenaTest final : public Test
     {
     public:
-        TestCollision();
-        ~TestCollision() = default;
+        CollisionArenaTest();
+        ~CollisionArenaTest() = default;
     public:
-        void OnUpdate(float deltaTime, sf::Vector2i mousePos) override final;
-        void OnRender(sf::RenderWindow &window) override final;
-        void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io) override final;
+        void OnUpdate(float deltaTime, sf::Vector2i mousePos) override;
+        void OnRender(sf::RenderWindow &window) override;
+        void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io) override;
     private:
         void CollisionObjectInput();
         void RigidObjectInput();
         void ResetVariables();
         void CreateObject();
+        void ClearObjects();
     private:
         bool showObjectEditor;
         bool isRigidObject;
+        bool isMovable;
         ID ID;
         float radius;
         pe2d::Vector2 size;

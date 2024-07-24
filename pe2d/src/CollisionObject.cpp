@@ -3,9 +3,9 @@
 
 namespace pe2d
 {
-    CollisionObject::CollisionObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform, bool isTrigger,
+    CollisionObject::CollisionObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform, bool isTrigger, bool isMovable,
         std::function<void(Collision, float)> collisionCallback) :
-        m_ID(ID), m_Collider(collider), m_Transform(transform), m_IsTrigger(isTrigger), m_OnCollision(collisionCallback) 
+        m_ID(ID), m_Collider(collider), m_Transform(transform), m_IsTrigger(isTrigger), m_IsMovable(isMovable), m_OnCollision(collisionCallback) 
     {
         if(!collider)
         {
@@ -15,18 +15,19 @@ namespace pe2d
 
     CollisionObject::CollisionObject(const CollisionObject &other) :
         m_ID(other.m_ID), m_Collider(other.m_Collider), m_Transform(other.m_Transform), m_IsTrigger(other.m_IsTrigger),
-        m_OnCollision(other.m_OnCollision) 
-        {} 
+        m_IsMovable(other.m_IsMovable), m_OnCollision(other.m_OnCollision) 
+    {} 
 
     CollisionObject::CollisionObject (CollisionObject &&other) :
         m_ID(other.m_ID), m_Collider(other.m_Collider), 
         m_Transform(other.m_Transform), m_IsTrigger(other.m_IsTrigger),
-        m_OnCollision(other.m_OnCollision)
+        m_IsMovable(other.m_IsMovable), m_OnCollision(other.m_OnCollision)
     {
         other.m_ID = 0U;
         other.m_Collider = nullptr;
         other.m_Transform = Transform{};
         other.m_IsTrigger = false;
+        other.m_IsMovable = false;
         other.m_OnCollision = nullptr;
     };
 
@@ -41,6 +42,7 @@ namespace pe2d
         m_Collider = other.m_Collider;
         m_Transform = other.m_Transform;
         m_IsTrigger = other.m_IsTrigger;
+        m_IsMovable = other.m_IsMovable;
         m_OnCollision = other.m_OnCollision;
         return *this;
     }
@@ -55,12 +57,14 @@ namespace pe2d
         m_Collider = other.m_Collider;
         m_Transform = other.m_Transform;
         m_IsTrigger = other.m_IsTrigger;
+        m_IsMovable = other.m_IsMovable;
         m_OnCollision = other.m_OnCollision;
 
         other.m_ID = 0U;
         other.m_Collider = nullptr;
-        other.m_Transform = Transform{};
+        other.m_Transform = Transform();
         other.m_IsTrigger = false;
+        other.m_IsMovable = false;
         other.m_OnCollision = nullptr;
         return *this;
     }
@@ -77,7 +81,7 @@ namespace pe2d
         if(circleCollider)
         {
             const float radius = circleCollider->GetRadius();
-            return Vector2{radius, radius};
+            return Vector2(radius, radius);
         }
         
         return boxCollider->GetSize();

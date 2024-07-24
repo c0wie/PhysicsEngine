@@ -13,7 +13,7 @@ namespace pe2d
         {
             ASSERT("This index is already taken");
         }
-        m_Objects[ID] = obj;
+        m_Objects.insert({ID, obj});
     }
 
     void CollisionWorld::RemoveObject(unsigned int ID)
@@ -49,7 +49,7 @@ namespace pe2d
         {
             if(!m_PartitioningSystem.IsValid())
             {
-                ASSERT("UNTIL YOU SETUP PARTITIONING SYSTEM YOU CAN'T USE IT");
+                ASSERT("You have to setup partitioning system in order to use it");
             }
             UpdateGrid();
             std::vector<std::pair<unsigned int, unsigned int>> pairs = m_PartitioningSystem.GetCollisionPairs();
@@ -97,9 +97,9 @@ namespace pe2d
 
     void CollisionWorld::UpdateGrid()
     {
-        for(int i = 0; i < m_Objects.size(); i++)
+        for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
         {
-            m_PartitioningSystem.Insert(m_Objects[i]);
+            m_PartitioningSystem.Insert(it->second);
         }
     }
 

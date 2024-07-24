@@ -18,8 +18,9 @@ add_subdirectory(ImGui-SFML)
 
 add_executable(${PROJECT_NAME} 
     Demo.cpp
-    tests/src/TestCollision.cpp
     tests/src/Test.cpp
+    tests/src/FallingCirclesTest.cpp
+    tests/src/CollisionArenaTest.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics pe2d ImGui-SFML)

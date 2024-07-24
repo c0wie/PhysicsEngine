@@ -6,7 +6,8 @@
 #include <imgui-SFML.h>
 
 #include "DynamicsWorld.hpp"
-#include "tests/include/TestCollision.hpp"
+#include "tests/include/FallingCirclesTest.hpp"
+#include "tests/include/CollisionArenaTest.hpp"
 
 
 int main()
@@ -14,13 +15,13 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1000.f, 1000.f), "DEMO", sf::Style::Titlebar | sf::Style::Close);
     ImGui::SFML::Init(window);
 
-    test::TestCollision test;
+    test::CollisionArenaTest test;
 
     sf::Clock DT_Clock;
     float deltaTime = 0.0f;
     DT_Clock.restart();
     ImGuiIO& io = ImGui::GetIO();
-    window.setFramerateLimit(120);
+    window.setFramerateLimit(60);
     while(window.isOpen())
     {
         deltaTime = DT_Clock.restart().asSeconds();

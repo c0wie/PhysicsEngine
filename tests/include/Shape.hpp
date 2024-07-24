@@ -5,7 +5,7 @@
 
 namespace test
 {
-    class Shape
+    struct Shape
     {
     public:
         Shape(const sf::Color &color, std::shared_ptr<pe2d::CollisionObject> body, void (*drawFunction)(sf::RenderWindow &window, const Shape &shape)) : 
