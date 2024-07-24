@@ -19,7 +19,6 @@ namespace test
             pe2d::Vector2 position = pe2d::Vector2{(float)mousePos.x, (float)mousePos.y};
             pe2d::Transform transform = pe2d::Transform{position, pe2d::Vector2(1.0f, 1.0f), 0.0f};
             AddCircle(m_World.GetObjectsCount(), sf::Color::Magenta, 40.0f, transform, false, true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2{0.0f, 10.0f});
-            m_World.Step(deltaTime);  
         }
         m_World.Step(deltaTime);  
     }

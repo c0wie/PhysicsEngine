@@ -13,7 +13,7 @@ namespace pe2d
         {
             ASSERT("This index is already taken");
         }
-        m_Objects.insert({ID, obj});
+        m_Objects[ID] = obj;
     }
 
     void CollisionWorld::RemoveObject(unsigned int ID)
@@ -53,7 +53,6 @@ namespace pe2d
             }
             UpdateGrid();
             std::vector<std::pair<unsigned int, unsigned int>> pairs = m_PartitioningSystem.GetCollisionPairs();
-            std::cout << pairs.size() << '\n';
             for(auto &[a, b] : pairs)
             {
                 FindCollisions(m_Objects[a], m_Objects[b], collisions, triggers);
@@ -90,16 +89,16 @@ namespace pe2d
     {
         if(!m_IsPartitioningSystemOn)
         {
-            ASSERT("Can't setup partitioninf system when it is disabled");
+            ASSERT("Can't setup partitioning system when it is disabled");
         }
         m_PartitioningSystem = QuadTree(topLeftCorner, bottomRightCorner, maxDepth);
     }
 
     void CollisionWorld::UpdateGrid()
     {
-        for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
+        for(const auto [index, object] : m_Objects)
         {
-            m_PartitioningSystem.Insert(it->second);
+            m_PartitioningSystem.Insert(object);
         }
     }
 

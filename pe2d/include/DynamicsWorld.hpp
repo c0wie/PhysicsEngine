@@ -14,7 +14,7 @@ namespace pe2d
         DynamicsWorld operator=(CollisionWorld &&other) = delete;
         ~DynamicsWorld() = default;
     public:
-        void AddRigidObject(std::shared_ptr<RigidObject> object);
+        void AddRigidObject(std::shared_ptr<RigidObject> obj);
         void Step(float deltaTime);
     private:
         void ApplyGravity();

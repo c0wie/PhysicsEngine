@@ -78,7 +78,7 @@ namespace test
                                                             pe2d::Vector2{}, gravity, false, 0.0f, 0.0f, 0.0f);
         Shape shape = Shape(color, body, DrawBox);
         m_Shapes.push_back(shape);
-        m_World.AddCollisionObject(shape.GetBody());
+        m_World.AddCollisionObject(body);
     }
 
     void Test::Draw(sf::RenderWindow &window) const

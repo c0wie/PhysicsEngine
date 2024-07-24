@@ -2,17 +2,18 @@
 
 namespace pe2d 
 {   
-    void DynamicsWorld::AddRigidObject(std::shared_ptr<RigidObject> object)
+    void DynamicsWorld::AddRigidObject(std::shared_ptr<RigidObject> obj)
     {
-        if(object != nullptr)
+        if(!obj)
         {
-            const unsigned int ID = object->GetID();
-            if(m_Objects.at(ID))
-            {
-                ASSERT("OBJECT WITH THIS INDEX ALREADY EXIST");
-            }
-            m_Objects[ID] = object;
+            ASSERT("Unvalid object beeing passed to CollisionWorld");
         }
+        const unsigned int ID = obj->GetID();
+        if(m_Objects.find(ID) != m_Objects.end())
+        {
+            ASSERT("This index is already taken");
+        }
+        m_Objects[ID] = obj;
     }
     
     void DynamicsWorld::Step(float deltaTime)
@@ -24,35 +25,35 @@ namespace pe2d
     
     void DynamicsWorld::ApplyGravity()
     {   
-        for(int i = 0; i < m_Objects.size(); i++)
+        for(auto [index, object] : m_Objects)
         {
-            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(m_Objects[i]);;
-            if(!object)
+            std::shared_ptr<RigidObject> obj = std::dynamic_pointer_cast<RigidObject>(object);
+            if(!obj)
             {
                 continue;
             }
-            object->SetForce( object->GetGravity() * object->GetMass() );
+            obj->SetForce( obj->GetGravity() * obj->GetMass() );
         }
     }
 
     void DynamicsWorld::MoveObjects(float deltaTime)
     {
-        for(int i = 0; i < m_Objects.size(); i++)
+        for(auto [index, object] : m_Objects)
         {
-            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(m_Objects[i]);
-            if(!object)
+            std::shared_ptr<RigidObject> obj = std::dynamic_pointer_cast<RigidObject>(object);
+            if(!obj)
             {
                 continue;
             }
             
-            Vector2 vel = object->GetVelocity() + object->GetForce() * deltaTime;
+            Vector2 vel = obj->GetVelocity() + obj->GetForce() * deltaTime;
             vel.x = vel.x < m_MAX_VELOCITY? vel.x : m_MAX_VELOCITY;
             vel.y = vel.y < m_MAX_VELOCITY? vel.y : m_MAX_VELOCITY;
-            const Vector2 &pos = object->GetPosition() + object->GetVelocity() * deltaTime;
+            const Vector2 &pos = obj->GetPosition() + obj->GetVelocity() * deltaTime;
 
-            object->SetVelocity(vel);
-            object->SetPosition(pos);
-            object->SetForce(Vector2{0.0f, 0.0f});
+            obj->SetVelocity(vel);
+            obj->SetPosition(pos);
+            obj->SetForce( Vector2(0.0f, 0.0f) );
         }
     }
 }
