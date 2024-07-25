@@ -3,7 +3,8 @@
 namespace test
 {
     CollisionArenaTest::CollisionArenaTest() :
-        showObjectEditor(false)
+        showObjectEditor(false),
+        showPartitioningSystemEditor(false)
     {
         m_World.SetPartitioningSystem(pe2d::Vector2(-100.0f, -100.0f), pe2d::Vector2(1100.0f, 1100.0f), 5U);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
@@ -46,8 +47,29 @@ namespace test
         {
             ClearObjects();
         }
+        if(m_World.IsWorldPartitionizied())
+        {
+            if( ImGui::Button("Remove Partitioning System") )
+            {
+                m_World.RemovePartitiongSystem();
+            }
+        }
+        else
+        {
+            if( ImGui::Button("Add Partitioning System") )
+            {
+                showPartitioningSystemEditor = true;;
+            }
+            if(showPartitioningSystemEditor)
+            {
+                ImGui::Begin("Partitinoning System");
+                PartitioningSystemInput();
+                ImGui::End();
+            }
+        }
         ImGui::Text("Number of objects: %i", m_World.GetObjects().size());
         ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
+
         if(showObjectEditor)
         {
             ImGui::Begin("Object Editor");
@@ -112,20 +134,35 @@ namespace test
         ImGui::InputFloat2("Gravity", &gravity.x);
     } 
 
+    void CollisionArenaTest::PartitioningSystemInput()
+    {
+        ImGui::InputFloat2("Top Left Corner", &topLeftCorner.x);
+        ImGui::InputFloat2("Bottom Right Corner", &botRightCorner.x);
+        ImGui::InputInt("Max Depth", &maxDepth);
+        if( ImGui::Button("Add") )
+        {
+            m_World.SetPartitioningSystem(topLeftCorner, botRightCorner, maxDepth);
+            showPartitioningSystemEditor = false;
+        }
+    }
+
     void CollisionArenaTest::ResetVariables()
     {
         isRigidObject = false;
         isMovable = true;
         ID = ID::BOX;
-        size = pe2d::Vector2{};
+        size = pe2d::Vector2(0.0f, 0.0f);
         radius = 0.0f;
-        position = pe2d::Vector2{500.0f, 500.0f};
-        scale = pe2d::Vector2{1.0f, 1.0f};
+        position = pe2d::Vector2(500.0f, 500.0f);
+        scale = pe2d::Vector2(1.0f, 1.0f);
         rotation = 0.0f;
         color = {255, 255, 255};
         mass = 0.0f;
-        velocity = pe2d::Vector2{};
-        gravity = pe2d::Vector2{};
+        velocity = pe2d::Vector2(0.0f, 0.0f);
+        gravity = pe2d::Vector2(0.0f, 0.0f);
+        topLeftCorner = pe2d::Vector2(0.0f, 0.0f);
+        botRightCorner = pe2d::Vector2(0.0f, 0.0f);
+        maxDepth = 0;
     }
 
     void CollisionArenaTest::CreateObject()

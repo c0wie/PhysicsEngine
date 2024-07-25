@@ -23,11 +23,13 @@ namespace test
     private:
         void CollisionObjectInput();
         void RigidObjectInput();
+        void PartitioningSystemInput();
         void ResetVariables();
         void CreateObject();
         void ClearObjects();
     private:
         bool showObjectEditor;
+        bool showPartitioningSystemEditor;
         bool isRigidObject;
         bool isMovable;
         ID ID;
@@ -40,5 +42,8 @@ namespace test
         Color color;
         pe2d::Vector2 velocity;
         pe2d::Vector2 gravity;
+        pe2d::Vector2 topLeftCorner;
+        pe2d::Vector2 botRightCorner;
+        int maxDepth;
     };
 }

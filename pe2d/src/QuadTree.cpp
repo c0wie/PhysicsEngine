@@ -35,6 +35,10 @@ namespace pe2d
         {
             ASSERT("Max depth can't be equel 0");
         }
+        if(m_BotRightCorner.x <= m_TopLeftCorner.x || m_BotRightCorner.y <= m_TopLeftCorner.y)
+        {
+            ASSERT("Wrong placement of corners in partitioning system");
+        }
         Resize(m_TopLeftCorner, m_BotRightCorner);
     }
 

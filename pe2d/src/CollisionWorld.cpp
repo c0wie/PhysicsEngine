@@ -92,9 +92,12 @@ namespace pe2d
     }
 
     void CollisionWorld::RemovePartitiongSystem()
-    {
-        m_PartitioningSystem = QuadTree();
-        m_IsPartitioningSystemOn = false;
+    {  
+        if(m_IsPartitioningSystemOn)
+        {
+            m_PartitioningSystem = QuadTree();
+            m_IsPartitioningSystemOn = false;
+        }
     }
 
     void CollisionWorld::UpdateGrid()
