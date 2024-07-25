@@ -10,7 +10,7 @@ namespace test
     class Test
     {
     public:
-        Test(bool IsWorldPartionized) : m_World(IsWorldPartionized) {}
+        Test() = default;
         virtual ~Test() = default;
     public:
         virtual void OnUpdate(float deltaTime, sf::Vector2i mousePos) = 0;

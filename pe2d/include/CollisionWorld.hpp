@@ -13,7 +13,7 @@ namespace pe2d
     class CollisionWorld
     {
     public:
-        CollisionWorld(bool IsWorldPartitionized) : m_IsPartitioningSystemOn(IsWorldPartitionized) {}
+        CollisionWorld() = default;
         CollisionWorld(const CollisionWorld &other) = delete;
         CollisionWorld(CollisionWorld &&other) = delete;
         CollisionWorld operator = (const CollisionWorld &other) = delete;
@@ -26,8 +26,10 @@ namespace pe2d
         void AddSolver(std::shared_ptr<Solver> &solver);
         void RemoveSolver(std::shared_ptr<Solver> &solver);
         
-        void ResolveCollisions(float deltaTime);
         void SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth);
+        void RemovePartitiongSystem();
+        
+        void ResolveCollisions(float deltaTime);
         std::unordered_map<unsigned int, std::shared_ptr<CollisionObject>> GetObjects() const { return m_Objects; }
         void ClearObjects() { m_Objects.clear(); }
         

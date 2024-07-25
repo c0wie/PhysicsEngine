@@ -3,8 +3,7 @@
 namespace test
 {
 
-    FallingCirclesTest::FallingCirclesTest() :
-        Test(true)
+    FallingCirclesTest::FallingCirclesTest()
     {
         m_World.SetPartitioningSystem(pe2d::Vector2{-100.0f, -100.0f}, pe2d::Vector2{1100.0f, 1100.0f}, 5U);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();

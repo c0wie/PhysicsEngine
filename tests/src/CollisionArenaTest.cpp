@@ -3,7 +3,6 @@
 namespace test
 {
     CollisionArenaTest::CollisionArenaTest() :
-        Test(true),
         showObjectEditor(false)
     {
         m_World.SetPartitioningSystem(pe2d::Vector2(-100.0f, -100.0f), pe2d::Vector2(1100.0f, 1100.0f), 5U);

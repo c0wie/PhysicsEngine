@@ -8,6 +8,7 @@
 #include "DynamicsWorld.hpp"
 #include "tests/include/FallingCirclesTest.hpp"
 #include "tests/include/CollisionArenaTest.hpp"
+#include "tests/include/TestMenu.hpp"
 
 
 int main()
@@ -15,16 +16,24 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1000.f, 1000.f), "DEMO", sf::Style::Titlebar | sf::Style::Close);
     ImGui::SFML::Init(window);
 
-    test::CollisionArenaTest test;
+    test::Test* currentTest = nullptr;
+    test::TestMenu *testMenu = new test::TestMenu(currentTest);
+    currentTest = testMenu;
+
+    testMenu->RegisterTest<test::FallingCirclesTest>("Falling Circles Test");
+    testMenu->RegisterTest<test::CollisionArenaTest>("Collision Arena Test");
+
 
     sf::Clock DT_Clock;
     float deltaTime = 0.0f;
     DT_Clock.restart();
     ImGuiIO& io = ImGui::GetIO();
     window.setFramerateLimit(120);
+
     while(window.isOpen())
     {
         deltaTime = DT_Clock.restart().asSeconds();
+        sf::Time clock = sf::seconds(deltaTime);
 
         sf::Event event;
         while(window.pollEvent(event))
@@ -36,16 +45,24 @@ int main()
             }
         }
 
-        sf::Time clock = sf::seconds(deltaTime);
         ImGui::SFML::Update(window, clock);
-        test.OnUpdate(deltaTime, sf::Mouse::getPosition(window));
-
         window.clear();
-        test.OnRender(window);
-        test.OnImGuiRender(window, io);
+        if (currentTest)
+        {
+            currentTest->OnUpdate(deltaTime, sf::Mouse::getPosition(window));
+            currentTest->OnRender(window); 
+            ImGui::Begin("TEST");
+            if (currentTest != testMenu && ImGui::Button("<-"))
+            {
+                delete currentTest;
+                currentTest = testMenu;
+            }
+            currentTest->OnImGuiRender(window, io);
+
+        }            ImGui::End();
         ImGui::SFML::Render(window);
-        
         window.display();
     }
+    delete testMenu;
     ImGui::SFML::Shutdown();
 }

@@ -87,11 +87,14 @@ namespace pe2d
     
     void CollisionWorld::SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth)
     {
-        if(!m_IsPartitioningSystemOn)
-        {
-            ASSERT("Can't setup partitioning system when it is disabled");
-        }
         m_PartitioningSystem = QuadTree(topLeftCorner, bottomRightCorner, maxDepth);
+        m_IsPartitioningSystemOn = true;
+    }
+
+    void CollisionWorld::RemovePartitiongSystem()
+    {
+        m_PartitioningSystem = QuadTree();
+        m_IsPartitioningSystemOn = false;
     }
 
     void CollisionWorld::UpdateGrid()

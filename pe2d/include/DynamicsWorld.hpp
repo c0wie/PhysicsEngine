@@ -7,7 +7,7 @@ namespace pe2d
     class DynamicsWorld : public CollisionWorld
     {
     public:
-        DynamicsWorld(bool IsWorldPartionized) : CollisionWorld(IsWorldPartionized) {}
+        DynamicsWorld() = default;
         DynamicsWorld(const CollisionWorld &other) = delete;
         DynamicsWorld(DynamicsWorld &&other) = delete;
         DynamicsWorld operator=(const CollisionWorld &other) = delete;
