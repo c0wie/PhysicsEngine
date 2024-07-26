@@ -10,6 +10,7 @@ namespace pe2d
     class CircleCollider;
     class BoxCollider;
     
+    // virtual wraper class for arround algo namespace that allows to retrive info about collisions
     class Collider 
     {
     public:
@@ -18,6 +19,7 @@ namespace pe2d
         virtual CollisionPoints TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const = 0;
     };
     
+    // wraper class arround algo namespace that allows to retrive info about circle collisions
     class CircleCollider final : public Collider
     {
     public:
@@ -65,6 +67,7 @@ namespace pe2d
         float m_Radius;
     };
 
+    // wraper class arround algo namespace that allows to retrive info about box collisions
     class BoxCollider final : public Collider
     {
     public:
@@ -102,10 +105,11 @@ namespace pe2d
         constexpr Vector2 GetSize() const { return m_Size; }
         constexpr void SetSize(const Vector2 &size) 
         {
-            if(size.x > 0.0f && size.y > 0.0f)
+            if(size.x <= 0.0f && size.y <= 0.0f)
             {
-                m_Size = size;
+                ASSERT("Side of box has to be greater than 0");
             }
+            m_Size = size;
         }
     private:
         Vector2 m_Size;

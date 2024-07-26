@@ -4,6 +4,7 @@
 
 namespace pe2d
 {
+    // struct which holds info about collision
     struct CollisionPoints
     {
     public:

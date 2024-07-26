@@ -10,6 +10,8 @@
 
 namespace pe2d
 {
+    // class that run all collision checks and own all items 
+    // you call it to use physics engine
     class CollisionWorld
     {
     public:
@@ -45,6 +47,6 @@ namespace pe2d
         std::unordered_map<unsigned int, std::shared_ptr<CollisionObject>> m_Objects;
         std::vector<std::shared_ptr<Solver>> m_Solvers;
         bool m_IsPartitioningSystemOn;
-        QuadTree m_PartitioningSystem;
+        StaticQuadTreeContainer<std::shared_ptr<CollisionObject>> m_PartitioningSystem;
     }; 
 }

@@ -47,10 +47,6 @@ namespace pe2d
 
         if(m_IsPartitioningSystemOn)
         {
-            if(!m_PartitioningSystem.IsValid())
-            {
-                ASSERT("You have to setup partitioning system in order to use it");
-            }
             UpdateGrid();
             std::vector<std::pair<unsigned int, unsigned int>> pairs = m_PartitioningSystem.GetCollisionPairs();
             for(auto &[a, b] : pairs)
@@ -87,7 +83,7 @@ namespace pe2d
     
     void CollisionWorld::SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth)
     {
-        m_PartitioningSystem = QuadTree(topLeftCorner, bottomRightCorner, maxDepth);
+        m_PartitioningSystem = StaticQuadTreeContainer<std::shared_ptr<CollisionObject>>(topLeftCorner, bottomRightCorner, maxDepth);
         m_IsPartitioningSystemOn = true;
     }
 
@@ -95,7 +91,7 @@ namespace pe2d
     {  
         if(m_IsPartitioningSystemOn)
         {
-            m_PartitioningSystem = QuadTree();
+             m_PartitioningSystem = StaticQuadTreeContainer<std::shared_ptr<CollisionObject>>();
             m_IsPartitioningSystemOn = false;
         }
     }
@@ -104,7 +100,19 @@ namespace pe2d
     {
         for(const auto [index, object] : m_Objects)
         {
-            m_PartitioningSystem.Insert(object);
+            std::vector<Vector2> vertices;
+            std::shared_ptr<pe2d::CircleCollider> circleCollider = std::static_pointer_cast<pe2d::CircleCollider>(object->GetCollider());
+            if(circleCollider)
+            {
+                const float radius = circleCollider->GetRadius();
+                vertices = algo::GetBoxVertices(pe2d::Vector2(radius, radius), object->GetTransform());
+            }
+            else
+            {
+                std::shared_ptr<pe2d::BoxCollider> boxCollider = std::static_pointer_cast<pe2d::BoxCollider>(object->GetCollider());
+                vertices = algo::GetBoxVertices(boxCollider->GetSize(), object->GetTransform());
+            }
+            m_PartitioningSystem.Insert(object, vertices);
         }
     }
 

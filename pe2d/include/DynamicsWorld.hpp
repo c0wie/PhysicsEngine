@@ -4,6 +4,8 @@
 
 namespace pe2d
 {
+    // class that run all collision checks, simulate dynamics and own all items 
+    // you call it to use physics engine
     class DynamicsWorld : public CollisionWorld
     {
     public:

@@ -4,6 +4,7 @@
 
 namespace pe2d
 {
+    // class that holds information about object with dynamics
     class RigidObject : public CollisionObject
     {
     public:

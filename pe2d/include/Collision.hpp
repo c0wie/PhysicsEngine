@@ -5,6 +5,7 @@
 
 namespace pe2d
 {
+    // class which holds objects and their collision
     class Collision
     {
     public:

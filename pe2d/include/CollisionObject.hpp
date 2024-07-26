@@ -8,6 +8,7 @@
 namespace pe2d
 {
     class Collision;
+    // class that holds information about object without dynamics
     class CollisionObject
     {
     public:
@@ -58,9 +59,9 @@ namespace pe2d
         constexpr void SetTrigger(bool isTrigger) { m_IsTrigger = isTrigger; }
         constexpr void SetMovability (bool isMovable) { m_IsMovable = isMovable; }
         void SetCollisionCallback(std::function<void(Collision, float)> collisionCallback) { m_OnCollision = collisionCallback; }
-
         constexpr void Move(const Vector2 &offset) { m_Transform.Move(offset); }
         constexpr void Rotate(float angle) { m_Transform.Rotate(angle); }
+        
     public:
     protected:
         unsigned int m_ID;
