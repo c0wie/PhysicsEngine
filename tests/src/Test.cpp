@@ -7,17 +7,18 @@ namespace test
     {
         const std::shared_ptr<pe2d::CollisionObject> body = shape.GetBody();
         const std::shared_ptr<pe2d::CircleCollider> collider = std::dynamic_pointer_cast<pe2d::CircleCollider>(body->GetCollider());
+
         const float radius = collider->GetRadius();
-        const pe2d::Vector2 position = body->GetTransform().position;
-        const pe2d::Vector2 scale = body->GetTransform().scale;
         const sf::Color color = shape.GetColor();
-        
+
         sf::CircleShape circle(radius);
-        circle.setOrigin(radius, radius);
-        circle.setPosition(position.x, position.y);
-        circle.setScale(scale.x, scale.y);
-        circle.setRotation(body->GetTransform().rotation);
-        circle.setFillColor(color);
+        circle.setFillColor(sf::Color::Transparent); 
+        circle.setOutlineColor(color); 
+        circle.setOutlineThickness(1.0f);
+
+        const pe2d::Vector2 position = body->GetPosition();
+        circle.setPosition(position.x - radius, position.y - radius);
+
         window.draw(circle);
     }
 
@@ -27,20 +28,15 @@ namespace test
         const std::shared_ptr<pe2d::BoxCollider> collider = std::dynamic_pointer_cast<pe2d::BoxCollider>(body->GetCollider());
         const pe2d::Vector2 size = collider->GetSize();
         const sf::Color color = shape.GetColor();
+        const pe2d::Vector2 pos = body->GetPosition();
         
-        std::vector<pe2d::Vector2> vertices = pe2d::algo::GetBoxVertices(size, body->GetTransform());
-        for(int i = 0; i < vertices.size(); i++)
-        {
-            const int j = (i + 1) % vertices.size();
-            sf::Vector2f vertex1 = sf::Vector2f{vertices[i].x , vertices[i].y};
-            sf::Vector2f vertex2 = sf::Vector2f{vertices[j].x , vertices[j].y};
-            sf::Vertex line[] =
-            {
-                sf::Vertex(vertex1, color),
-                sf::Vertex(vertex2, color),
-            };
-            window.draw(line, 2, sf::Lines);
-        }
+        sf::RectangleShape rec(sf::Vector2f(size.x, size.y));
+        rec.setOrigin(rec.getSize() / 2.0f);
+        rec.setPosition(sf::Vector2f(pos.x, pos.y));
+        rec.setFillColor(sf::Color::Transparent);
+        rec.setOutlineColor(color);
+        rec.setOutlineThickness(1.0f);
+        window.draw(rec);
     }
 
     void Test::AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger, bool isMovable)

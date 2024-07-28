@@ -46,7 +46,8 @@ namespace test
         {
             if( ImGui::Button("Add Partitioning System") )
             {
-                showPartitioningSystemEditor = true;;
+                showPartitioningSystemEditor = true;
+                maxDepth = 0U;
             }
             if(showPartitioningSystemEditor)
             {
@@ -63,7 +64,7 @@ namespace test
     {
         topLeftCorner = pe2d::Vector2(0.0f, 0.0f);
         botRightCorner = pe2d::Vector2(0.0f, 0.0f);
-        maxDepth = 0;
+        maxDepth = 0U;
     }
 
     void FallingCirclesTest::PartitioningSystemInput()

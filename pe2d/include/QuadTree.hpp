@@ -13,11 +13,13 @@ namespace pe2d
     public:
         QuadTree() :
             m_TopLeftCorner(Vector2(0.0f, 0.0f)),
-            m_BotRightCorner(Vector2(100.0f, 100.0f)),
+            m_BotRightCorner(Vector2(0.0f, 0.0f)),
+            m_CurrentDepth(0),
             m_MaxDepth(4U)
         {}
         
-        QuadTree(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth)
+        QuadTree(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth) :
+            m_CurrentDepth(0)
         {   
             if(maxDepth == 0)
             {

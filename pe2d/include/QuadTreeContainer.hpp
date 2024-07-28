@@ -4,14 +4,13 @@
 
 namespace pe2d
 {
-    /*class QuadTreeContainer
+    template<typename OBJECT_TYPE>
+    class QuadTreeContainer
     {
     public:
-        QuadTreeContainer() :
-            m_Root(std::make_unique<QuadTreeContainer>()) 
-        {}
+        QuadTreeContainer() {}
         QuadTreeContainer(Vector2 topLeftCorner, Vector2 botRightCorner, unsigned int maxDepth) :
-            m_Root(std::make_unique<QuadTreeContainer>(topLeftCorner, botRightCorner, maxDepth))
+            m_Root(topLeftCorner, botRightCorner, maxDepth)
         {}
     public:
         void Resize(Vector2 topLeftCorner, Vector2 botRightCorner) { m_Root->Resize(topLeftCorner, botRightCorner); };
@@ -19,18 +18,22 @@ namespace pe2d
         bool Empty() const { return m_AllItems.empty(); }
         void Clear()
         {
-            m_Root->Clear();
+            m_Root.Clear();
             m_AllItems.clear();
         }
-        std::list<std::shared_ptr<CollisionObject>>::iterator Begin() { return m_AllItems.begin(); }
-        std::list<std::shared_ptr<CollisionObject>>::iterator End() { return m_AllItems.end(); }
-        void Insert(std::shared_ptr<CollisionObject> object, const std::vector<Vector2> &vertices)
+        typename std::list<OBJECT_TYPE>::iterator Begin() { return m_AllItems.begin(); }
+        typename std::list<OBJECT_TYPE>::iterator End() { return m_AllItems.end(); }
+        void Insert(OBJECT_TYPE object, const std::vector<Vector2> &vertices)
         {
             m_AllItems.push_back(object);
-            m_Root->Insert(std::prev(m_AllItems.end()), vertices);
+            m_Root.Insert(std::prev(m_AllItems.end()), vertices);
+        }
+        std::list< std::pair< typename std::list<OBJECT_TYPE>::iterator, typename std::list<OBJECT_TYPE>::iterator > > GetCollisionPairs() const
+        {
+            return m_Root.GetCollisionPairs();
         }
     private:
-        std::list<std::shared_ptr<CollisionObject>> m_AllItems;
-        std::unique_ptr<QuadTreeContainer::iterator> m_Root;
-    };*/
+        std::list<OBJECT_TYPE> m_AllItems;
+        QuadTree <typename std::list<OBJECT_TYPE>::iterator> m_Root;
+    };
 }

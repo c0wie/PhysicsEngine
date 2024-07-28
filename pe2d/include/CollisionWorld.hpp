@@ -6,7 +6,7 @@
 
 #include "Collision.hpp"
 #include "Solver.hpp"
-#include "QuadTree.hpp"
+#include "QuadTreeContainer.hpp"
 
 namespace pe2d
 {
@@ -47,6 +47,6 @@ namespace pe2d
         std::unordered_map<unsigned int, std::shared_ptr<CollisionObject>> m_Objects;
         std::vector<std::shared_ptr<Solver>> m_Solvers;
         bool m_IsPartitioningSystemOn;
-        QuadTree< std::shared_ptr<CollisionObject> > m_PartitioningSystem;
+        QuadTreeContainer< std::shared_ptr<CollisionObject> > m_PartitioningSystem;
     }; 
 }

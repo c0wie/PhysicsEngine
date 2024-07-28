@@ -51,7 +51,7 @@ namespace pe2d
             auto pairs = m_PartitioningSystem.GetCollisionPairs();
             for(auto &[a, b] : pairs)
             {
-                FindCollisions(a, b, collisions, triggers);
+                FindCollisions(*a, *b, collisions, triggers);
             }
             m_PartitioningSystem.Clear();
         }
@@ -82,7 +82,7 @@ namespace pe2d
     
     void CollisionWorld::SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth)
     {
-        m_PartitioningSystem = QuadTree<std::shared_ptr<CollisionObject>>(topLeftCorner, bottomRightCorner, maxDepth);
+        m_PartitioningSystem = QuadTreeContainer<std::shared_ptr<CollisionObject>>(topLeftCorner, bottomRightCorner, maxDepth);
         m_IsPartitioningSystemOn = true;
     }
 
@@ -90,7 +90,7 @@ namespace pe2d
     {  
         if(m_IsPartitioningSystemOn)
         {
-            m_PartitioningSystem = QuadTree<std::shared_ptr<CollisionObject>>();
+            m_PartitioningSystem = QuadTreeContainer<std::shared_ptr<CollisionObject>>();
             m_IsPartitioningSystemOn = false;
         }
     }
