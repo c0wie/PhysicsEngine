@@ -12,11 +12,11 @@ namespace test
 
         const pe2d::Transform mouseTracerTransform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
         const pe2d::Vector2 mouseTracerSize = pe2d::Vector2(100.0f, 100.0f);
-        AddBox(0U, sf::Color::Magenta, mouseTracerSize, mouseTracerTransform, false, true);
+        AddBox(2137U, sf::Color::Magenta, mouseTracerSize, mouseTracerTransform, false, true);
 
         const pe2d::Transform platformTransform = pe2d::Transform(pe2d::Vector2(500.0, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
         const pe2d::Vector2 platformSize = pe2d::Vector2(700.0f, 75.0f);
-        AddBox(21U, sf::Color::White, platformSize, platformTransform, false, false);
+        AddBox(210U, sf::Color::White, platformSize, platformTransform, false, false);
 
         ResetVariables();        
     }
@@ -24,11 +24,11 @@ namespace test
     void CollisionArenaTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
         const auto objects = m_World.GetObjects();
-        const pe2d::Vector2 s = objects.at(0)->GetPosition();
+        const pe2d::Vector2 s = objects.at(2137)->GetPosition();
         const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
         const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 10.0f * deltaTime);
 
-        objects.at(0)->SetPosition(position);
+        objects.at(2137)->SetPosition(position);
         m_World.Step(deltaTime);  
     }
 
@@ -101,19 +101,19 @@ namespace test
 
     void CollisionArenaTest::CollisionObjectInput()
     {
-        if(ID == ID::BOX)
+        if(objectType == ObjectType::BOX)
         {
             if( ImGui::Button("Make Circle") )
             {
-                ID = ID::CIRCLE;
+                objectType = ObjectType::CIRCLE;
             }
             ImGui::InputFloat2("Size", &size.x);
         }
-        else if(ID == ID::CIRCLE)
+        else if(objectType == ObjectType::CIRCLE)
         {
             if( ImGui::Button("Make Square") )
             {
-                ID = ID::BOX;
+                objectType = ObjectType::BOX;
             }
             ImGui::InputFloat("Radius", &radius);
         }
@@ -150,7 +150,7 @@ namespace test
     {
         isRigidObject = false;
         isMovable = true;
-        ID = ID::BOX;
+        objectType = ObjectType::BOX;
         size = pe2d::Vector2(0.0f, 0.0f);
         radius = 0.0f;
         position = pe2d::Vector2(500.0f, 500.0f);
@@ -170,7 +170,7 @@ namespace test
         const sf::Color Color = sf::Color{(sf::Uint8)color.red, (sf::Uint8)color.green, (sf::Uint8)color.blue};
         const pe2d::Transform transform = pe2d::Transform{ position, scale, rotation};
         const unsigned int ID = m_World.GetObjectsCount();
-        if(ID == ID::BOX)
+        if(objectType == ObjectType::BOX)
         {
             if(isRigidObject)
             {
@@ -181,7 +181,7 @@ namespace test
                 AddBox(ID, Color, size, transform, false, isMovable);
             }
         }
-        else if(ID == ID::CIRCLE)
+        else if(objectType == ObjectType::CIRCLE)
         {
             if(isRigidObject)
             {
@@ -191,6 +191,10 @@ namespace test
             {
                 AddCircle(ID, Color, radius, transform, false, isMovable);
             }
+        }
+        else
+        {
+            ASSERT("Unvalid ID for object");
         }
         showObjectEditor = false;
     }

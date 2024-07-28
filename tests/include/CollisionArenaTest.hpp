@@ -6,10 +6,10 @@ namespace test
     {
         int red, green, blue;
     };
-    enum ID
+    enum class ObjectType
     {
-        BOX, 
-        CIRCLE,
+        BOX = 0 , 
+        CIRCLE = 1,
     };
     class CollisionArenaTest final : public Test
     {
@@ -32,7 +32,7 @@ namespace test
         bool showPartitioningSystemEditor;
         bool isRigidObject;
         bool isMovable;
-        ID ID;
+        ObjectType objectType;
         float radius;
         pe2d::Vector2 size;
         pe2d::Vector2 position;
