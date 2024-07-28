@@ -7,27 +7,27 @@
 
 namespace pe2d
 {
-    template <typename OBJECT_TYPE>
+    template<typename OBJECT_TYPE>
     class QuadTree
     {
-    private:
+    public:
         QuadTree() :
             m_TopLeftCorner(Vector2(0.0f, 0.0f)),
-            m_BotRightCorner(Vector2(0.0f, 0.0f)),
-            m_MaxDepth(0U)
+            m_BotRightCorner(Vector2(100.0f, 100.0f)),
+            m_MaxDepth(4U)
         {}
         
-        QuadTree(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth) 
+        QuadTree(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth)
         {   
             if(maxDepth == 0)
             {
                 ASSERT("Max depth can't be equel 0");
             }
             m_MaxDepth = maxDepth;
-            Resize(m_TopLeftCorner, m_BotRightCorner);
-        } 
-    private:
-        void Insert(std::shared_ptr<CollisionObject> object, const std::vector<Vector2> &vertices)
+            Resize(topLeftCorner, bottomRightCorner);
+        }     
+    public:
+        void Insert(const OBJECT_TYPE &object, const std::vector<Vector2> &vertices)
         {
             for(unsigned char i = 0; i < m_Children.size(); i++)
             {
@@ -51,34 +51,29 @@ namespace pe2d
             }
             m_Items.push_back(object);
         }
-        
-        std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> GetCollisionPairs() const
+        typename std::list< std::pair<OBJECT_TYPE, OBJECT_TYPE> > GetCollisionPairs() const
         {
-            std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> pairs;
-            const unsigned int count = GetCount();
-            pairs.reserve( (count * (count - 1)) / 2);
+            std::list< std::pair<OBJECT_TYPE, OBJECT_TYPE> > pairs;
             SearchCollisionPairs(pairs);
             return pairs;
         }
-
-        unsigned int GetCount() const
+        unsigned int GetSize() const
         {
-            unsigned int count = m_Items.size();
+            unsigned int size = m_Items.size();
             for(int i = 0; i < m_Children.size(); i++)
             {
                 if(m_Children[i])
                 {
-                    count += m_Children[i]->GetCount();
+                    size += m_Children[i]->GetSize();
                 }
             }
-            return count;
+            return size;
         }
-        
         void Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner)
         {
             if(bottomRightCorner.x <= topLeftCorner.x || bottomRightCorner.y <= topLeftCorner.y)
             {
-                ASSERT("Wrong placement of corners in partitioning system");
+                ASSERT("Unvalid boundary for QuadTree");
             }
             Clear();
             m_TopLeftCorner = topLeftCorner;
@@ -95,7 +90,6 @@ namespace pe2d
                                 Vector2{m_BotRightCorner.x, m_BotRightCorner.y} )
             };
         }
-        
         void Clear()
         {
             m_Items.clear();
@@ -108,27 +102,28 @@ namespace pe2d
                 m_Children[i].reset();
             }
         }
-        
         bool InBoundary(const std::vector<Vector2> &vertices, Vector2 leftCorner, Vector2 rightCorner) const
         {
             for(int i = 0; i < m_Children.size(); i++)
             {
-                if( vertices[i].x < leftCorner.x || vertices[i].x > rightCorner.x 
-                    || vertices[i].y < leftCorner.y || vertices[i].y > rightCorner.y)
+                if( vertices[i].x < leftCorner.x || vertices[i].x > rightCorner.x || vertices[i].y < leftCorner.y || vertices[i].y > rightCorner.y )
                 {
                     return false;
                 }
             }
             return true;
         }
-        
-        void SearchCollisionPairs(std::vector<std::pair<std::shared_ptr<CollisionObject>, std::shared_ptr<CollisionObject>>> &pairs) const
+        void SearchCollisionPairs(std::list< std::pair<OBJECT_TYPE, OBJECT_TYPE> > &pairs) const
         {
-            for(int i = 0; i < m_Items.size(); i++)
+            for(auto objectA : m_Items)
             {
-                for(int j = i + 1; j < m_Items.size(); j++)
+                for(auto objectB : m_Items)
                 {
-                    pairs.emplace_back(std::make_pair(m_Items[i], m_Items[j]));
+                    if(objectA == objectB)
+                    {
+                        break;
+                    }
+                    pairs.emplace_back(std::make_pair(objectA, objectB));
                 }
             } 
             for(unsigned char i = 0; i < m_Children.size(); i++)
@@ -140,81 +135,13 @@ namespace pe2d
             }
         }
     private:
-        std::array<std::unique_ptr<QuadTree>, 4> m_Children;
+        std::array<std::unique_ptr<QuadTree<OBJECT_TYPE>>, 4> m_Children;
         std::array<std::pair<Vector2, Vector2>, 4> m_ChildrenSize;
-        std::vector<std::shared_ptr<CollisionObject>> m_Items;
+        std::list<OBJECT_TYPE> m_Items;
         // info about a boundary of grid
         Vector2 m_TopLeftCorner;
         Vector2 m_BotRightCorner;
         unsigned int m_MaxDepth;
         unsigned int m_CurrentDepth;
-        friend QuadTreeContainer<OBJECT_TYPE>;
     };  
-    
-    template<typename OBJECT_TYPE>
-    class StaticQuadTreeContainer
-    {
-        using QuadTreeContainer = std::list<OBJECT_TYPE>
-    public:
-        StaticQuadTreeContainer() : root() {}
-        StaticQuadTreeContainer(Vector2 topLeftCorner, Vector2 botRightCorner, unsigned int maxDepth) : root(topLeftCorner, botRightCorner, maxDepth) {}
-    public:
-        void Resize(Vector2 topLeftCorner, Vector2 botRightCorner)
-        {
-            root.Resize(topLeftCorner, botRightCorner);
-        }
-
-        size_t size() const 
-        {
-            return m_AllItems.size();
-        }
-
-        bool empty()
-        {
-            return m_AllItems.empty();
-        }
-
-        void clear()
-        {
-            root.clear();
-            m_AllItems.clear();
-        }
-
-        typename QuadTreeContainer::iterator begin()
-        {
-            return m_AllItems.begin();
-        }
-
-        typename QuadTreeContainer::iterator end()
-        {
-            return m_AllItems.end();
-        }
-
-        typename QuadTreeContainer::const_iterator cbegin()
-        {
-            return m_AllItems.cbegin();
-        }
-
-        typename QuadTreeContainer::const_iterator cend()
-        {
-            return m_AllItems.cend();
-        }
-
-        void insert(const OBJECT_TYPE &object, const std::vector<Vector2> vertices)
-        {
-            m_AllItems.push_back(object);
-            root.insert(std::prev(m_AllItems.end()));
-        }
-
-        std::list<typename QuadTreeContainer::iterator> GetCollisionParis() const
-        {
-            std::list<typename QuadTreeContainer::iterator> listItemPointers;
-            root.SearchCollisionPairs(listItemPointers);
-            return listItemPointers;
-        }
-
-    private:
-        std::list<OBJECT_TYPE> m_AllItems;
-        QuadTreeContainer<typename QuadTreeContainer::iterator> root;
-    };
 } 

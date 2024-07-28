@@ -48,30 +48,29 @@ namespace pe2d
         if(m_IsPartitioningSystemOn)
         {
             UpdateGrid();
-            std::vector<std::pair<unsigned int, unsigned int>> pairs = m_PartitioningSystem.GetCollisionPairs();
+            auto pairs = m_PartitioningSystem.GetCollisionPairs();
             for(auto &[a, b] : pairs)
             {
-                FindCollisions(m_Objects[a], m_Objects[b], collisions, triggers);
+                FindCollisions(a, b, collisions, triggers);
             }
             m_PartitioningSystem.Clear();
         }
         else
         {
-            for(auto itA = m_Objects.begin(); itA != m_Objects.end(); itA++)
+            for(auto [IDA, objectA] : m_Objects)
             {
-                for(auto itB = m_Objects.begin(); itB != m_Objects.end(); itB++)
+                for(auto [IDB, objectB] : m_Objects)
                 {
-                    if(itA == itB) // unique pars
+                    if(objectA == objectB)
                     {
                         break;
                     }
-
-                    if(!itA->second->GetCollider() || !itB->second->GetCollider()) // both have colliders
+                    if(!objectA->GetCollider() || !objectB->GetCollider()) // both have colliders
                     {
                         continue;
                     }
 
-                    FindCollisions(itA->second, itB->second, collisions, triggers);
+                    FindCollisions(objectA, objectB, collisions, triggers);
                 }
             }
         }
@@ -83,7 +82,7 @@ namespace pe2d
     
     void CollisionWorld::SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth)
     {
-        m_PartitioningSystem = StaticQuadTreeContainer<std::shared_ptr<CollisionObject>>(topLeftCorner, bottomRightCorner, maxDepth);
+        m_PartitioningSystem = QuadTree<std::shared_ptr<CollisionObject>>(topLeftCorner, bottomRightCorner, maxDepth);
         m_IsPartitioningSystemOn = true;
     }
 
@@ -91,7 +90,7 @@ namespace pe2d
     {  
         if(m_IsPartitioningSystemOn)
         {
-             m_PartitioningSystem = StaticQuadTreeContainer<std::shared_ptr<CollisionObject>>();
+            m_PartitioningSystem = QuadTree<std::shared_ptr<CollisionObject>>();
             m_IsPartitioningSystemOn = false;
         }
     }
