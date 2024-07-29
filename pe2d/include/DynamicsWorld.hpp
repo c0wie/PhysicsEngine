@@ -9,14 +9,15 @@ namespace pe2d
     class DynamicsWorld : public CollisionWorld
     {
     public:
-        DynamicsWorld() = default;
+        DynamicsWorld(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth) :
+            CollisionWorld(topLeftCorner, bottomRightCorner, maxDepth)
+        {}
         DynamicsWorld(const CollisionWorld &other) = delete;
         DynamicsWorld(DynamicsWorld &&other) = delete;
         DynamicsWorld operator=(const CollisionWorld &other) = delete;
         DynamicsWorld operator=(CollisionWorld &&other) = delete;
         ~DynamicsWorld() = default;
     public:
-        void AddRigidObject(std::shared_ptr<RigidObject> obj);
         void Step(float deltaTime);
     private:
         void ApplyGravity();

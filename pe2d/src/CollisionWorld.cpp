@@ -2,23 +2,21 @@
 
 namespace pe2d
 {
-    void CollisionWorld::AddCollisionObject(std::shared_ptr<CollisionObject> obj)
+    void CollisionWorld::AddObject(std::shared_ptr<CollisionObject> object)
     {
-        if(!obj)
+        std::vector<Vector2> vertices;
+        std::shared_ptr<pe2d::CircleCollider> circleCollider = std::static_pointer_cast<pe2d::CircleCollider>(object->GetCollider());
+        if(circleCollider)
         {
-            ASSERT("Unvalid object beeing passed to CollisionWorld");
+            const float radius = circleCollider->GetRadius();
+            vertices = algo::GetBoxVertices(pe2d::Vector2(radius, radius), object->GetTransform());
         }
-        const unsigned int ID = obj->GetID();
-        if(m_Objects.find(ID) != m_Objects.end())
+        else
         {
-            ASSERT("This index is already taken");
+            std::shared_ptr<pe2d::BoxCollider> boxCollider = std::static_pointer_cast<pe2d::BoxCollider>(object->GetCollider());
+            vertices = algo::GetBoxVertices(boxCollider->GetSize(), object->GetTransform());
         }
-        m_Objects[ID] = obj;
-    }
-
-    void CollisionWorld::RemoveObject(unsigned int ID)
-    {
-        m_Objects.erase(ID);
+        m_Objects.Insert(object, vertices);
     }
 
     void CollisionWorld::AddSolver(std::shared_ptr<Solver> &solver)
@@ -39,79 +37,47 @@ namespace pe2d
     {
         // could pass my own allocator with memory arena for example
         std::vector<Collision> collisions;
-        collisions.reserve(m_Objects.size() * 0.8);
+        collisions.reserve(m_Objects.Size() * 0.8);
         
         std::vector<Collision> triggers;
-        triggers.reserve(m_Objects.size() * 0.2);
+        triggers.reserve(m_Objects.Size() * 0.2);
 
 
-        if(m_IsPartitioningSystemOn)
+        UpdateQuadTreeContainer();
+        auto pairs = m_Objects.GetCollisionPairs();
+        for(auto &[a, b] : pairs)
         {
-            UpdateQuadTreeContainer();
-            auto pairs = m_PartitioningSystem.GetCollisionPairs();
-            for(auto &[a, b] : pairs)
-            {
-                FindCollisions(a->item, b->item, collisions, triggers);
-            }
-            m_PartitioningSystem.Clear();
+            FindCollisions(a->item, b->item, collisions, triggers);
         }
-        else
-        {
-            for(auto [IDA, objectA] : m_Objects)
-            {
-                for(auto [IDB, objectB] : m_Objects)
-                {
-                    if(objectA == objectB)
-                    {
-                        break;
-                    }
-                    if(!objectA->GetCollider() || !objectB->GetCollider()) // both have colliders
-                    {
-                        continue;
-                    }
-
-                    FindCollisions(objectA, objectB, collisions, triggers);
-                }
-            }
-        }
+        m_Objects.Clear();
 
         SolveCollisions(collisions, deltaTime);
         SendCollisionCallbacks(collisions, deltaTime);
         SendCollisionCallbacks(triggers, deltaTime);
     }
     
-    void CollisionWorld::SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth)
+    void CollisionWorld::Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner)
     {
-        m_PartitioningSystem = QuadTreeContainer<std::shared_ptr<CollisionObject>>(topLeftCorner, bottomRightCorner, maxDepth);
-        m_IsPartitioningSystemOn = true;
-    }
-
-    void CollisionWorld::RemovePartitiongSystem()
-    {  
-        if(m_IsPartitioningSystemOn)
-        {
-            m_PartitioningSystem = QuadTreeContainer<std::shared_ptr<CollisionObject>>();
-            m_IsPartitioningSystemOn = false;
-        }
+        m_Objects.Resize(topLeftCorner, bottomRightCorner);
     }
 
     void CollisionWorld::UpdateQuadTreeContainer()
     {
-        for(const auto [index, object] : m_Objects)
+        for(auto it = m_Objects.Begin(); it != m_Objects.End(); it++)
         {
             std::vector<Vector2> vertices;
-            std::shared_ptr<pe2d::CircleCollider> circleCollider = std::static_pointer_cast<pe2d::CircleCollider>(object->GetCollider());
+            std::shared_ptr<pe2d::CircleCollider> circleCollider = std::static_pointer_cast<pe2d::CircleCollider>(it->item->GetCollider());
             if(circleCollider)
             {
                 const float radius = circleCollider->GetRadius();
-                vertices = algo::GetBoxVertices(pe2d::Vector2(radius, radius), object->GetTransform());
+                vertices = algo::GetBoxVertices(pe2d::Vector2(radius, radius), it->item->GetTransform());
             }
             else
             {
-                std::shared_ptr<pe2d::BoxCollider> boxCollider = std::static_pointer_cast<pe2d::BoxCollider>(object->GetCollider());
-                vertices = algo::GetBoxVertices(boxCollider->GetSize(), object->GetTransform());
+                std::shared_ptr<pe2d::BoxCollider> boxCollider = std::static_pointer_cast<pe2d::BoxCollider>(it->item->GetCollider());
+                vertices = algo::GetBoxVertices(boxCollider->GetSize(), it->item->GetTransform());
             }
-            m_PartitioningSystem.Insert(object, vertices);
+            m_Objects.Relocate(it, vertices);
         }
     }
 

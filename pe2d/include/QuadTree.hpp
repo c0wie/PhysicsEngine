@@ -60,12 +60,14 @@ namespace pe2d
             m_Items.push_back(object);
             return { &m_Items, std::prev(m_Items.end()) };
         }
+        
         typename std::list< std::pair<OBJECT_TYPE, OBJECT_TYPE> > GetCollisionPairs() const
         {
             std::list< std::pair<OBJECT_TYPE, OBJECT_TYPE> > pairs;
             SearchCollisionPairs(pairs);
             return pairs;
         }
+        
         unsigned int GetSize() const
         {
             unsigned int size = m_Items.size();
@@ -78,6 +80,7 @@ namespace pe2d
             }
             return size;
         }
+        
         void Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner)
         {
             if(bottomRightCorner.x <= topLeftCorner.x || bottomRightCorner.y <= topLeftCorner.y)
@@ -99,6 +102,7 @@ namespace pe2d
                                 Vector2{m_BotRightCorner.x, m_BotRightCorner.y} )
             };
         }
+        
         void Clear()
         {
             m_Items.clear();
@@ -111,6 +115,7 @@ namespace pe2d
                 m_Children[i].reset();
             }
         }
+        
         bool InBoundary(const std::vector<Vector2> &vertices, Vector2 leftCorner, Vector2 rightCorner) const
         {
             for(int i = 0; i < m_Children.size(); i++)
@@ -122,6 +127,7 @@ namespace pe2d
             }
             return true;
         }
+        
         void SearchCollisionPairs(std::list< std::pair<OBJECT_TYPE, OBJECT_TYPE> > &pairs) const
         {
             for(auto objectA : m_Items)

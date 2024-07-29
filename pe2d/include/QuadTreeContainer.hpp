@@ -39,7 +39,13 @@ namespace pe2d
             return m_Root.GetCollisionPairs();
         }
         
-        void Resize(Vector2 topLeftCorner, Vector2 botRightCorner) { m_Root->Resize(topLeftCorner, botRightCorner); };
+        void Relocate(typename Container::iterator item, const std::vector<Vector2> &vertices)
+        {
+            item->locator.container->erase(item->locator.iterator);
+            item-> locator = m_Root.Insert(item, vertices);
+        }
+
+        void Resize(Vector2 topLeftCorner, Vector2 botRightCorner) { m_Root.Resize(topLeftCorner, botRightCorner); };
         
         size_t Size() const { return m_AllItems.size(); }
         

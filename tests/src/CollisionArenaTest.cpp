@@ -6,7 +6,6 @@ namespace test
         showObjectEditor(false),
         showPartitioningSystemEditor(false)
     {
-        m_World.SetPartitioningSystem(pe2d::Vector2(-100.0f, -100.0f), pe2d::Vector2(1100.0f, 1100.0f), 5U);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         m_World.AddSolver(solver);
 
@@ -23,7 +22,6 @@ namespace test
 
     void CollisionArenaTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
-        const auto objects = m_World.GetObjects();
         const pe2d::Vector2 s = objects.at(2137)->GetPosition();
         const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
         const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 10.0f * deltaTime);
@@ -133,18 +131,6 @@ namespace test
         ImGui::InputFloat2("Velocity", &velocity.x);
         ImGui::InputFloat2("Gravity", &gravity.x);
     } 
-
-    void CollisionArenaTest::PartitioningSystemInput()
-    {
-        ImGui::InputFloat2("Top Left Corner", &topLeftCorner.x);
-        ImGui::InputFloat2("Bottom Right Corner", &botRightCorner.x);
-        ImGui::InputInt("Max Depth", &maxDepth);
-        if( ImGui::Button("Add") )
-        {
-            m_World.SetPartitioningSystem(topLeftCorner, botRightCorner, maxDepth);
-            showPartitioningSystemEditor = false;
-        }
-    }
 
     void CollisionArenaTest::ResetVariables()
     {

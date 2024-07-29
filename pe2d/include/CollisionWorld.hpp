@@ -15,28 +15,32 @@ namespace pe2d
     class CollisionWorld
     {
     public:
-        CollisionWorld() = default;
+        CollisionWorld(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth) :
+            m_Objects(topLeftCorner, bottomRightCorner, maxDepth)
+        {}
         CollisionWorld(const CollisionWorld &other) = delete;
         CollisionWorld(CollisionWorld &&other) = delete;
         CollisionWorld operator = (const CollisionWorld &other) = delete;
         CollisionWorld operator = (CollisionWorld &&other) = delete;
         virtual ~CollisionWorld() = default;
     public:
-        void AddCollisionObject(std::shared_ptr<CollisionObject> obj);
-        void RemoveObject(unsigned int ID);
+        void AddObject(std::shared_ptr<CollisionObject> object);
+        void RemoveObject(std::list<QuadTreeItem<std::shared_ptr<CollisionObject>>>::iterator object) { m_Objects.Remove(object); }
 
         void AddSolver(std::shared_ptr<Solver> &solver);
         void RemoveSolver(std::shared_ptr<Solver> &solver);
         
-        void SetPartitioningSystem(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth);
-        void RemovePartitiongSystem();
+        void Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner);
         
         void ResolveCollisions(float deltaTime);
-        std::unordered_map<unsigned int, std::shared_ptr<CollisionObject>> GetObjects() const { return m_Objects; }
-        void ClearObjects() { m_Objects.clear(); }
+        void ClearObjects() { m_Objects.Clear(); }
         
-        unsigned int GetObjectsCount() const { return m_Objects.size(); }
-        constexpr bool IsWorldPartitionizied() { return m_IsPartitioningSystemOn; }
+
+        size_t Size() const { return m_Objects.Size(); }
+        bool Empty() const { return m_Objects.Empty(); }
+        std::list<QuadTreeItem<std::shared_ptr<CollisionObject>>>::iterator Begin() { return m_Objects.Begin(); }
+        std::list<QuadTreeItem<std::shared_ptr<CollisionObject>>>::iterator End() { return m_Objects.End(); }
+
     protected:
         void UpdateQuadTreeContainer();
         void FindCollisions(std::shared_ptr<CollisionObject> objectA, std::shared_ptr<CollisionObject> objectB,
@@ -44,9 +48,7 @@ namespace pe2d
         void SolveCollisions(std::vector<Collision> &collisions, float deltaTime);
         void SendCollisionCallbacks(std::vector<Collision> &collisions, float deltaTime);
     protected:
-        std::unordered_map<unsigned int, std::shared_ptr<CollisionObject>> m_Objects;
         std::vector<std::shared_ptr<Solver>> m_Solvers;
-        bool m_IsPartitioningSystemOn;
-        QuadTreeContainer<std::shared_ptr<CollisionObject>> m_PartitioningSystem;
+        QuadTreeContainer<std::shared_ptr<CollisionObject>> m_Objects;
     }; 
 }
