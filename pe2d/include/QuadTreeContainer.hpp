@@ -5,35 +5,57 @@
 namespace pe2d
 {
     template<typename OBJECT_TYPE>
+    struct QuadTreeItem
+    {
+        OBJECT_TYPE item;
+        QuadTreeItemLocation<typename std::list<QuadTreeItem<OBJECT_TYPE>>::iterator> locator;
+    };
+    template<typename OBJECT_TYPE>
     class QuadTreeContainer
     {
+        using Container = std::list<QuadTreeItem<OBJECT_TYPE>>;
     public:
         QuadTreeContainer() {}
         QuadTreeContainer(Vector2 topLeftCorner, Vector2 botRightCorner, unsigned int maxDepth) :
             m_Root(topLeftCorner, botRightCorner, maxDepth)
         {}
     public:
+        void Insert(OBJECT_TYPE object, const std::vector<Vector2> &vertices)
+        {
+            QuadTreeItem<OBJECT_TYPE> newItem;
+            newItem.item = object;
+            m_AllItems.push_back(newItem);
+            m_AllItems.back().locator = m_Root.Insert(std::prev(m_AllItems.end()), vertices);
+        }
+        
+        void Remove(typename std::list<QuadTreeItem<OBJECT_TYPE>>::iterator &item)
+        {
+            item->locator.container->erase(item->locator.iterator);
+            m_AllItems.erase(item);
+        }
+        
+        std::list< std::pair< typename Container::iterator, typename Container::iterator > > GetCollisionPairs() const
+        {
+            return m_Root.GetCollisionPairs();
+        }
+        
         void Resize(Vector2 topLeftCorner, Vector2 botRightCorner) { m_Root->Resize(topLeftCorner, botRightCorner); };
+        
         size_t Size() const { return m_AllItems.size(); }
+        
         bool Empty() const { return m_AllItems.empty(); }
+        
         void Clear()
         {
             m_Root.Clear();
             m_AllItems.clear();
         }
-        typename std::list<OBJECT_TYPE>::iterator Begin() { return m_AllItems.begin(); }
-        typename std::list<OBJECT_TYPE>::iterator End() { return m_AllItems.end(); }
-        void Insert(OBJECT_TYPE object, const std::vector<Vector2> &vertices)
-        {
-            m_AllItems.push_back(object);
-            m_Root.Insert(std::prev(m_AllItems.end()), vertices);
-        }
-        std::list< std::pair< typename std::list<OBJECT_TYPE>::iterator, typename std::list<OBJECT_TYPE>::iterator > > GetCollisionPairs() const
-        {
-            return m_Root.GetCollisionPairs();
-        }
+        
+        typename Container::iterator Begin() { return m_AllItems.begin(); }
+        
+        typename Container::iterator End() { return m_AllItems.end(); }
     private:
-        std::list<OBJECT_TYPE> m_AllItems;
-        QuadTree <typename std::list<OBJECT_TYPE>::iterator> m_Root;
+        Container m_AllItems;
+        QuadTree <typename Container::iterator> m_Root;
     };
 }

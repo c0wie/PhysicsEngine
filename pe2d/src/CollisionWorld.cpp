@@ -47,11 +47,11 @@ namespace pe2d
 
         if(m_IsPartitioningSystemOn)
         {
-            UpdateGrid();
+            UpdateQuadTreeContainer();
             auto pairs = m_PartitioningSystem.GetCollisionPairs();
             for(auto &[a, b] : pairs)
             {
-                FindCollisions(*a, *b, collisions, triggers);
+                FindCollisions(a->item, b->item, collisions, triggers);
             }
             m_PartitioningSystem.Clear();
         }
@@ -95,7 +95,7 @@ namespace pe2d
         }
     }
 
-    void CollisionWorld::UpdateGrid()
+    void CollisionWorld::UpdateQuadTreeContainer()
     {
         for(const auto [index, object] : m_Objects)
         {

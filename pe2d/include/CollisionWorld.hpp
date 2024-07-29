@@ -38,7 +38,7 @@ namespace pe2d
         unsigned int GetObjectsCount() const { return m_Objects.size(); }
         constexpr bool IsWorldPartitionizied() { return m_IsPartitioningSystemOn; }
     protected:
-        void UpdateGrid();
+        void UpdateQuadTreeContainer();
         void FindCollisions(std::shared_ptr<CollisionObject> objectA, std::shared_ptr<CollisionObject> objectB,
             std::vector<Collision> &collisions, std::vector<Collision> &triggers);
         void SolveCollisions(std::vector<Collision> &collisions, float deltaTime);
@@ -47,6 +47,6 @@ namespace pe2d
         std::unordered_map<unsigned int, std::shared_ptr<CollisionObject>> m_Objects;
         std::vector<std::shared_ptr<Solver>> m_Solvers;
         bool m_IsPartitioningSystemOn;
-        QuadTreeContainer< std::shared_ptr<CollisionObject> > m_PartitioningSystem;
+        QuadTreeContainer<std::shared_ptr<CollisionObject>> m_PartitioningSystem;
     }; 
 }

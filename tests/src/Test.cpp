@@ -26,7 +26,7 @@ namespace test
     {
         const std::shared_ptr<pe2d::CollisionObject> body = shape.GetBody();
         const std::shared_ptr<pe2d::BoxCollider> collider = std::dynamic_pointer_cast<pe2d::BoxCollider>(body->GetCollider());
-        const pe2d::Vector2 size = collider->GetSize();
+        const pe2d::Vector2 size = collider->GetSize() * body->GetScale();
         const sf::Color color = shape.GetColor();
         const pe2d::Vector2 pos = body->GetPosition();
         
@@ -34,6 +34,7 @@ namespace test
         rec.setOrigin(rec.getSize() / 2.0f);
         rec.setPosition(sf::Vector2f(pos.x, pos.y));
         rec.setFillColor(sf::Color::Transparent);
+        rec.setRotation(body->GetRotation());
         rec.setOutlineColor(color);
         rec.setOutlineThickness(1.0f);
         window.draw(rec);

@@ -8,6 +8,13 @@
 namespace pe2d
 {
     template<typename OBJECT_TYPE>
+    struct QuadTreeItemLocation
+    {
+        typename std::list<OBJECT_TYPE> *container;
+        typename std::list<OBJECT_TYPE>::iterator iterator;
+    };
+
+    template<typename OBJECT_TYPE>
     class QuadTree
     {
     public:
@@ -29,7 +36,7 @@ namespace pe2d
             Resize(topLeftCorner, bottomRightCorner);
         }     
     public:
-        void Insert(const OBJECT_TYPE &object, const std::vector<Vector2> &vertices)
+        QuadTreeItemLocation<OBJECT_TYPE> Insert(const OBJECT_TYPE &object, const std::vector<Vector2> &vertices)
         {
             for(unsigned char i = 0; i < m_Children.size(); i++)
             {
@@ -39,19 +46,19 @@ namespace pe2d
                     {
                         if(!m_Children[i])
                         {
-                            m_Children[i] = std::make_unique<QuadTree>
+                            m_Children[i] = std::make_unique<QuadTree<OBJECT_TYPE>>
                             (
                                 Vector2{m_ChildrenSize[i].first},
                                 Vector2{m_ChildrenSize[i].second},
                                 m_CurrentDepth + 1
                             );
                         }
-                        m_Children[i]->Insert(object, vertices);
-                        return;
+                        return m_Children[i]->Insert(object, vertices);;
                     }
                 }
             }
             m_Items.push_back(object);
+            return { &m_Items, std::prev(m_Items.end()) };
         }
         typename std::list< std::pair<OBJECT_TYPE, OBJECT_TYPE> > GetCollisionPairs() const
         {

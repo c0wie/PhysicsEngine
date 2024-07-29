@@ -202,15 +202,9 @@ namespace test
     void CollisionArenaTest::ClearObjects()
     {
         auto objects = m_World.GetObjects();
-        auto it = objects.begin();
-        for(int i = 0; i < 2; i++) { it++; }
-        for(;it!=objects.end();it++)
-        {
-            unsigned int ID = it->first;
-            m_World.RemoveObject(ID);
-        }
         for(int i = 2; i < m_Shapes.size(); i++)
         {
+            m_World.RemoveObject(objects.at(i)->GetID());
             m_Shapes.pop_back();
         }
     }
