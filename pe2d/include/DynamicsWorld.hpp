@@ -9,9 +9,7 @@ namespace pe2d
     class DynamicsWorld : public CollisionWorld
     {
     public:
-        DynamicsWorld(Vector2 topLeftCorner, Vector2 bottomRightCorner, unsigned int maxDepth) :
-            CollisionWorld(topLeftCorner, bottomRightCorner, maxDepth)
-        {}
+        DynamicsWorld() = default;
         DynamicsWorld(const CollisionWorld &other) = delete;
         DynamicsWorld(DynamicsWorld &&other) = delete;
         DynamicsWorld operator=(const CollisionWorld &other) = delete;

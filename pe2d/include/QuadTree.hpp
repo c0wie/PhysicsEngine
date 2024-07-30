@@ -130,18 +130,18 @@ namespace pe2d
         
         void SearchCollisionPairs(std::list< std::pair<OBJECT_TYPE, OBJECT_TYPE> > &pairs) const
         {
-            for(auto objectA : m_Items)
+            for(auto itA = m_Items.begin(); itA != m_Items.end(); itA++)
             {
-                for(auto objectB : m_Items)
+                for(auto itB = m_Items.begin(); itB != m_Items.end(); itB++)
                 {
-                    if(objectA == objectB)
+                    if(itA == itB)
                     {
                         break;
                     }
-                    pairs.emplace_back(std::make_pair(objectA, objectB));
+                    pairs.emplace_back(std::make_pair(*itA, *itB));
                 }
-            } 
-            for(unsigned char i = 0; i < m_Children.size(); i++)
+            }
+            for(unsigned char i = 0; i < m_Children.size(); i++) 
             {
                 if(m_Children[i])
                 {

@@ -8,7 +8,12 @@ namespace pe2d
         {
             ASSERT("Unvalid object");
         }
-        m_Objects.Insert(object, object->GetBounadingBox());
+        const unsigned int ID = object->GetID();
+        if(m_Objects.find(ID) == m_Objects.end())
+        {
+            ASSERT("Can't assign same ID to two objects in CollisionWorld");
+        }
+        m_Objects[object->GetID()] = object;
     }
 
     void CollisionWorld::AddSolver(std::shared_ptr<Solver> &solver)
@@ -29,45 +34,51 @@ namespace pe2d
     {
         // could pass my own allocator with memory arena for example
         std::vector<Collision> collisions;
-        collisions.reserve(m_Objects.Size() * 0.8);
+        collisions.reserve(m_Objects.size() * 0.8);
         
         std::vector<Collision> triggers;
-        triggers.reserve(m_Objects.Size() * 0.2);
+        triggers.reserve(m_Objects.size() * 0.2);
 
-
-        UpdateQuadTreeContainer();
-        auto pairs = m_Objects.GetCollisionPairs();
-        for(auto &[a, b] : pairs)
+        if(m_IsGridOn)
         {
-            FindCollisions(a->item, b->item, collisions, triggers);
+            m_Grid.Update();
+            //auto pairs = m_Grid.GetPairs();
         }
-
+        else
+        {
+            for(auto itA = m_Objects.begin(); itA != m_Objects.end(); itA++)
+            {
+                for(auto itB = m_Objects.begin(); itB != m_Objects.end(); itB++)
+                {
+                    if(itA == itB)
+                    {
+                        break;
+                    }
+                    FindCollisions(itA->second, itB->second, collisions, triggers);
+                }
+            }
+        }
+        
         SolveCollisions(collisions, deltaTime);
         SendCollisionCallbacks(collisions, deltaTime);
         SendCollisionCallbacks(triggers, deltaTime);
     }
     
-    void CollisionWorld::Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner)
+    void CollisionWorld::AddGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float cellSize)
     {
-        std::list<std::shared_ptr<CollisionObject>> backup;
-        for(auto it = m_Objects.Begin(); it != m_Objects.End(); it++)
-        {
-            backup.push_back(it->item);
-        }
-        m_Objects.Resize(topLeftCorner, bottomRightCorner);
-        for(auto it = backup.begin(); it != backup.end(); it++)
-        {
-            auto object = *it;
-            m_Objects.Insert(object, object->GetBounadingBox());
-        }
+        m_Grid = Grid(topLeftCorner, bottomRightCorner, cellSize);
+        m_IsGridOn = true;
     }
 
-    void CollisionWorld::UpdateQuadTreeContainer()
+    void CollisionWorld::RemoveGrid()
     {
-        for(auto it = m_Objects.Begin(); it != m_Objects.End(); it++)
-        {
-            m_Objects.Relocate(it, it->item->GetBounadingBox());
-        }
+        m_Grid = Grid();
+        m_IsGridOn = false;
+    }
+
+    void CollisionWorld::ResizeGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float cellSize)
+    {
+        m_Grid = Grid(topLeftCorner, bottomRightCorner, cellSize);
     }
 
     void CollisionWorld::FindCollisions(std::shared_ptr<CollisionObject> objectA, std::shared_ptr<CollisionObject> objectB,

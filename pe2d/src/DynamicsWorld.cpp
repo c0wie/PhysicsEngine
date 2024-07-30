@@ -11,9 +11,9 @@ namespace pe2d
     
     void DynamicsWorld::ApplyGravity()
     {   
-        for(auto it = m_Objects.Begin(); it != m_Objects.End(); it++)
+        for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
         {
-            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(it->item);
+            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(it->second);
             // checks if object is RigidBody
             if(!object)
             {
@@ -25,9 +25,9 @@ namespace pe2d
 
     void DynamicsWorld::MoveObjects(float deltaTime)
     {
-        for(auto it = m_Objects.Begin(); it != m_Objects.End(); it++)
+        for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
         {
-            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(it->item);
+            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(it->second);
             // checks if object is rigidObject
             if(!object)
             {
