@@ -18,13 +18,5 @@ namespace test
         void OnUpdate(float deltaTime, sf::Vector2i mousePos) override;
         void OnRender(sf::RenderWindow &window) override;
         void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io) override;
-    private:
-        void ResetVariables();
-        void PartitioningSystemInput();
-    private:
-        bool showPartitioningSystemEditor;
-        pe2d::Vector2 topLeftCorner;
-        pe2d::Vector2 botRightCorner;
-        int maxDepth;
     };
 }

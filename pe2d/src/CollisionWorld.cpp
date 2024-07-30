@@ -41,7 +41,6 @@ namespace pe2d
         {
             FindCollisions(a->item, b->item, collisions, triggers);
         }
-        m_Objects.Clear();
 
         SolveCollisions(collisions, deltaTime);
         SendCollisionCallbacks(collisions, deltaTime);

@@ -4,8 +4,7 @@ namespace test
 {
     CollisionArenaTest::CollisionArenaTest(pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth) :
         Test(topLeftCorner, bottomRightCorner, maxDepth),
-        showObjectEditor(false),
-        showPartitioningSystemEditor(false)
+        showObjectEditor(false)
     {
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         m_World.AddSolver(solver);

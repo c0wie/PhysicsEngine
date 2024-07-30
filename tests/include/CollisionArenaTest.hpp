@@ -28,7 +28,6 @@ namespace test
         void ClearObjects();
     private:
         bool showObjectEditor;
-        bool showPartitioningSystemEditor;
         bool isRigidObject;
         bool isMovable;
         ObjectType objectType;
