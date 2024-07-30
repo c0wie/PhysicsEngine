@@ -38,19 +38,40 @@ namespace pe2d
             const BoxCollider *boxB, Transform transformBoxB);
         
         std::vector<Vector2> GetBoxVertices(Vector2 boxSize, Transform transform);
+        
         //checks if two projections overlap
-        bool Overlap(Vector2 A, Vector2 B);
+        constexpr bool Overlap(Vector2 A, Vector2 B)
+        {
+            if(A.y >= B.x && B.y >= A.x)
+            {
+                return true;
+            }
+            return false;
+        }
+        
         // returns overlap of two objects
-        float GetOverlap(Vector2 A,  Vector2 B);
+        constexpr float GetOverlap(Vector2 A,  Vector2 B)
+        {
+            const float overlapStart = std::max(A.x, B.x);
+            const float overlapEnd = std::min(A.y, B.y);
+
+            return overlapEnd - overlapStart;
+        }
+        
         // returns perpendicular and normalized axes of an object's edges
         std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices);
+        
         // returns perpendicular and normalized axes of an rectangle
         std::vector<Vector2> GetRectangleAxes(const std::vector<Vector2> &vertices);
+        
         // project an shape on axis 
         Vector2 Project(const std::vector<Vector2> &vertices, Vector2 axis);
+        
         // project circle on axis
         Vector2 ProjectCircle(Vector2 axis, Vector2 circleCenter, float radius);
+        
         void RotateVertices(std::vector<Vector2> &vertices, Vector2 center, float angle);
+        
         // returns perpendicular and normalized axis to circle center
         Vector2 GetCircleAxis(const std::vector<Vector2> &vertices, Vector2 circleCenter);
         constexpr float INF = std::numeric_limits<float>::infinity();

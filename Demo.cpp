@@ -17,11 +17,11 @@ int main()
     ImGui::SFML::Init(window);
 
     test::Test* currentTest = nullptr;
-    test::TestMenu *testMenu = new test::TestMenu(currentTest);
+    test::TestMenu *testMenu = new test::TestMenu(currentTest, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 4U);
     currentTest = testMenu;
 
-    testMenu->RegisterTest<test::FallingCirclesTest>("Falling Circles Test");
-    testMenu->RegisterTest<test::CollisionArenaTest>("Collision Arena Test");
+    testMenu->RegisterTest<test::FallingCirclesTest>("Falling Circles Test", pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 4U);
+    testMenu->RegisterTest<test::CollisionArenaTest>("Collision Arena Test", pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 4U);
 
 
     sf::Clock DT_Clock;

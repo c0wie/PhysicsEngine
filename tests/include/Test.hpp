@@ -10,7 +10,9 @@ namespace test
     class Test
     {
     public:
-        Test() = default;
+        Test(pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth) :
+            m_World(topLeftCorner, bottomRightCorner, maxDepth)
+        {}
         virtual ~Test() = default;
     public:
         virtual void OnUpdate(float deltaTime, sf::Vector2i mousePos) = 0;

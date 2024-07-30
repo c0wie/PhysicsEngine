@@ -7,7 +7,12 @@ namespace test
     class TestMenu final : public Test
     {
     public:
-        TestMenu(Test *&currentTestPtr) : m_CurrentTest(currentTestPtr) {}
+        TestMenu(Test *&currentTestPtr, pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth) : 
+            m_CurrentTest(currentTestPtr),
+            Test(topLeftCorner, bottomRightCorner, maxDepth)
+        {
+
+        }
         ~TestMenu() {};
     public:
         void OnUpdate(float deltaTime, sf::Vector2i mousePos) override {}
@@ -24,12 +29,13 @@ namespace test
         }
 
         template<typename T>
-        void RegisterTest(const std::string &testName)
+        void RegisterTest(const std::string &testName, pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth)
         {
-            m_Tests.push_back(std::make_pair(testName, []() { return new T(); } ) );
+            m_Tests.push_back(std::make_pair(testName, [=]() { return new T(topLeftCorner, bottomRightCorner, maxDepth); } ) );
         }
     private:
         std::vector< std::pair<std::string, std::function<Test*()> >> m_Tests;
+        
         Test *&m_CurrentTest;
     };
 }

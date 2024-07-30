@@ -118,23 +118,6 @@ namespace pe2d
             return CollisionPoints{*smallestAxis, overlap, true};
         }
 
-        bool Overlap(Vector2 A, Vector2 B)
-        {
-            if(A.y >= B.x && B.y >= A.x)
-            {
-                return true;
-            }
-            return false;
-        }
-        
-        float GetOverlap(Vector2 A, Vector2 B)
-        {
-            const float overlapStart = std::max(A.x, B.x);
-            const float overlapEnd = std::min(A.y, B.y);
-
-            return overlapEnd - overlapStart;
-        }
-
         std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices)
         {
             std::vector<Vector2> axes;

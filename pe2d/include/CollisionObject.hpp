@@ -22,7 +22,7 @@ namespace pe2d
     public:
         constexpr unsigned int GetID() const { return m_ID; }
         std::shared_ptr<Collider> GetCollider() const { return m_Collider; }
-        Vector2 GetBounadingBox() const;
+        std::vector<Vector2> GetBounadingBox() const;
         constexpr Vector2 GetPosition() const { return m_Transform.position; }
         constexpr Vector2 GetScale() const { return m_Transform.scale; }
         constexpr float GetRotation() const { return m_Transform.rotation; }
@@ -45,15 +45,17 @@ namespace pe2d
         {
             if(collider)
             {
-                m_Collider = collider;
+                ASSERT("Unvalid collider");
             }
+            m_Collider = collider;
         }
         void SetCollider(const std::shared_ptr<CircleCollider> collider)
         {
             if(collider)
             {
-                m_Collider = collider;
+                ASSERT("Unvalid collider");
             }
+            m_Collider = collider;
         }
         constexpr void SetTransform(Transform transform) { m_Transform = transform; }
         constexpr void SetTrigger(bool isTrigger) { m_IsTrigger = isTrigger; }

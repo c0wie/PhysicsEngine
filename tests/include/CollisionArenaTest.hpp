@@ -14,7 +14,7 @@ namespace test
     class CollisionArenaTest final : public Test
     {
     public:
-        CollisionArenaTest();
+        CollisionArenaTest(pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth);
         ~CollisionArenaTest() = default;
     public:
         void OnUpdate(float deltaTime, sf::Vector2i mousePos) override;
@@ -23,7 +23,6 @@ namespace test
     private:
         void CollisionObjectInput();
         void RigidObjectInput();
-        void PartitioningSystemInput();
         void ResetVariables();
         void CreateObject();
         void ClearObjects();

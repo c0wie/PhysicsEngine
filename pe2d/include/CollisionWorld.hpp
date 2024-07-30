@@ -35,7 +35,6 @@ namespace pe2d
         void ResolveCollisions(float deltaTime);
         void ClearObjects() { m_Objects.Clear(); }
         
-
         size_t Size() const { return m_Objects.Size(); }
         bool Empty() const { return m_Objects.Empty(); }
         std::list<QuadTreeItem<std::shared_ptr<CollisionObject>>>::iterator Begin() { return m_Objects.Begin(); }

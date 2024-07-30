@@ -23,7 +23,11 @@ namespace pe2d
         for(auto it = m_Objects.Begin(); it != m_Objects.End(); it++)
         {
             std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(it->item);
-            
+            // checks if object is rigidObject
+            if(!object)
+            {
+                continue;
+            }
             Vector2 vel = object->GetVelocity() + object->GetForce() * deltaTime;
             vel.x = std::min(vel.x, m_MAX_VELOCITY);
             vel.y = std::min(vel.x, m_MAX_VELOCITY);

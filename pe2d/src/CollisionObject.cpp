@@ -1,5 +1,6 @@
 #include "CollisionObject.hpp"
 #include "Collision.hpp"
+#include "Algo.hpp"
 
 namespace pe2d
 {
@@ -69,22 +70,17 @@ namespace pe2d
         return *this;
     }
 
-    Vector2 CollisionObject::GetBounadingBox() const
+    std::vector<Vector2> CollisionObject::GetBounadingBox() const
     {
         std::shared_ptr<CircleCollider> circleCollider = std::dynamic_pointer_cast<CircleCollider>( m_Collider );
         std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );
-        if(!circleCollider && !boxCollider)
-        {
-            ASSERT("Unvalid type of collider");
-        }
 
         if(circleCollider)
         {
             const float radius = circleCollider->GetRadius();
-            return Vector2(radius, radius);
+            return algo::GetBoxVertices(Vector2(radius, radius), m_Transform);
         }
-        
-        return boxCollider->GetSize();
+        return algo::GetBoxVertices(boxCollider->GetSize(), m_Transform);
     }
 
     void CollisionObject::OnCollision(Collision &collision, float deltaTime) const

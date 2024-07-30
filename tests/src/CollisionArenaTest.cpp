@@ -2,7 +2,8 @@
 
 namespace test
 {
-    CollisionArenaTest::CollisionArenaTest() :
+    CollisionArenaTest::CollisionArenaTest(pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth) :
+        Test(topLeftCorner, bottomRightCorner, maxDepth),
         showObjectEditor(false),
         showPartitioningSystemEditor(false)
     {
@@ -22,11 +23,11 @@ namespace test
 
     void CollisionArenaTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
-        const pe2d::Vector2 s = objects.at(2137)->GetPosition();
+        const pe2d::Vector2 s = m_World.Begin()->item->GetPosition();
         const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
         const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 10.0f * deltaTime);
 
-        objects.at(2137)->SetPosition(position);
+        m_World.Begin()->item->SetPosition(position);
         m_World.Step(deltaTime);  
     }
 
@@ -45,27 +46,7 @@ namespace test
         {
             ClearObjects();
         }
-        if(m_World.IsWorldPartitionizied())
-        {
-            if( ImGui::Button("Remove Partitioning System") )
-            {
-                m_World.RemovePartitiongSystem();
-            }
-        }
-        else
-        {
-            if( ImGui::Button("Add Partitioning System") )
-            {
-                showPartitioningSystemEditor = true;;
-            }
-            if(showPartitioningSystemEditor)
-            {
-                ImGui::Begin("Partitinoning System");
-                PartitioningSystemInput();
-                ImGui::End();
-            }
-        }
-        ImGui::Text("Number of objects: %i", m_World.GetObjects().size());
+        ImGui::Text("Number of objects: %i", m_World.Size());
         ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
 
         if(showObjectEditor)
@@ -155,7 +136,7 @@ namespace test
     {
         const sf::Color Color = sf::Color{(sf::Uint8)color.red, (sf::Uint8)color.green, (sf::Uint8)color.blue};
         const pe2d::Transform transform = pe2d::Transform{ position, scale, rotation};
-        const unsigned int ID = m_World.GetObjectsCount();
+        const unsigned int ID = m_World.Size();
         if(objectType == ObjectType::BOX)
         {
             if(isRigidObject)
@@ -187,11 +168,13 @@ namespace test
 
     void CollisionArenaTest::ClearObjects()
     {
-        auto objects = m_World.GetObjects();
-        for(int i = 2; i < m_Shapes.size(); i++)
+        for(auto it = std::next(m_World.Begin(), 2); it != m_World.End(); it++)
         {
-            m_World.RemoveObject(objects.at(i)->GetID());
-            m_Shapes.pop_back();
+            m_World.RemoveObject(it);
+        }
+        for(auto it = std::next(m_Shapes.begin(), 2); it != m_Shapes.end(); it++)
+        {
+            m_Shapes.erase(it);
         }
     }
 }   

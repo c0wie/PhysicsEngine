@@ -3,7 +3,8 @@
 namespace test
 {
 
-    FallingCirclesTest::FallingCirclesTest() :
+    FallingCirclesTest::FallingCirclesTest(pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth) :
+        Test(topLeftCorner, bottomRightCorner, maxDepth),
         showPartitioningSystemEditor(false)
     {
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
@@ -16,7 +17,7 @@ namespace test
         {
             pe2d::Vector2 position = pe2d::Vector2{(float)mousePos.x, (float)mousePos.y};
             pe2d::Transform transform = pe2d::Transform{position, pe2d::Vector2(1.0f, 1.0f), 0.0f};
-            AddCircle(m_World.GetObjectsCount(), sf::Color::Magenta, 40.0f, transform, false, true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2{0.0f, 10.0f});
+            AddCircle(m_World.Size(), sf::Color::Magenta, 40.0f, transform, false, true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2{0.0f, 10.0f});
         }
         m_World.Step(deltaTime);  
     }
@@ -33,7 +34,7 @@ namespace test
             m_World.ClearObjects();
             m_Shapes.clear();
         }
-        ImGui::Text("Number of objects: %i", m_World.GetObjectsCount());
+        ImGui::Text("Number of objects: %i", m_World.Size());
         ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
     }
 }   

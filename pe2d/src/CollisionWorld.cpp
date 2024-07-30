@@ -4,19 +4,11 @@ namespace pe2d
 {
     void CollisionWorld::AddObject(std::shared_ptr<CollisionObject> object)
     {
-        std::vector<Vector2> vertices;
-        std::shared_ptr<pe2d::CircleCollider> circleCollider = std::static_pointer_cast<pe2d::CircleCollider>(object->GetCollider());
-        if(circleCollider)
+        if(!object)
         {
-            const float radius = circleCollider->GetRadius();
-            vertices = algo::GetBoxVertices(pe2d::Vector2(radius, radius), object->GetTransform());
+            ASSERT("Unvalid object");
         }
-        else
-        {
-            std::shared_ptr<pe2d::BoxCollider> boxCollider = std::static_pointer_cast<pe2d::BoxCollider>(object->GetCollider());
-            vertices = algo::GetBoxVertices(boxCollider->GetSize(), object->GetTransform());
-        }
-        m_Objects.Insert(object, vertices);
+        m_Objects.Insert(object, object->GetBounadingBox());
     }
 
     void CollisionWorld::AddSolver(std::shared_ptr<Solver> &solver)
@@ -58,26 +50,24 @@ namespace pe2d
     
     void CollisionWorld::Resize(Vector2 topLeftCorner, Vector2 bottomRightCorner)
     {
+        std::list<std::shared_ptr<CollisionObject>> backup;
+        for(auto it = m_Objects.Begin(); it != m_Objects.End(); it++)
+        {
+            backup.push_back(it->item);
+        }
         m_Objects.Resize(topLeftCorner, bottomRightCorner);
+        for(auto it = backup.begin(); it != backup.end(); it++)
+        {
+            auto object = *it;
+            m_Objects.Insert(object, object->GetBounadingBox());
+        }
     }
 
     void CollisionWorld::UpdateQuadTreeContainer()
     {
         for(auto it = m_Objects.Begin(); it != m_Objects.End(); it++)
         {
-            std::vector<Vector2> vertices;
-            std::shared_ptr<pe2d::CircleCollider> circleCollider = std::static_pointer_cast<pe2d::CircleCollider>(it->item->GetCollider());
-            if(circleCollider)
-            {
-                const float radius = circleCollider->GetRadius();
-                vertices = algo::GetBoxVertices(pe2d::Vector2(radius, radius), it->item->GetTransform());
-            }
-            else
-            {
-                std::shared_ptr<pe2d::BoxCollider> boxCollider = std::static_pointer_cast<pe2d::BoxCollider>(it->item->GetCollider());
-                vertices = algo::GetBoxVertices(boxCollider->GetSize(), it->item->GetTransform());
-            }
-            m_Objects.Relocate(it, vertices);
+            m_Objects.Relocate(it, it->item->GetBounadingBox());
         }
     }
 
@@ -89,8 +79,8 @@ namespace pe2d
 
         if(points.HasCollision)
         {
-            Collision collision = Collision{objectA, objectB, points};
-            bool tigger = objectA->IsTrigger() || objectB -> IsTrigger();
+            const Collision collision = Collision(objectA, objectB, points);
+            const bool tigger = objectA->IsTrigger() || objectB -> IsTrigger();
             if(tigger)
             {
                 triggers.push_back(collision);
