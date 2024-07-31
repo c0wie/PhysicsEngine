@@ -75,5 +75,6 @@ namespace pe2d
         // returns perpendicular and normalized axis to circle center
         Vector2 GetCircleAxis(const std::vector<Vector2> &vertices, Vector2 circleCenter);
         constexpr float INF = std::numeric_limits<float>::infinity();
+        constexpr float MIN = std::numeric_limits<float>::min();
     }
 }

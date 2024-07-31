@@ -29,45 +29,14 @@ namespace pe2d
             }
             m_Height = std::floor((m_BotRightCorner.y - m_TopLeftCorner.y) / m_CellSize);
             m_Width = std::floor((m_BotRightCorner.x - m_TopLeftCorner.x) / m_CellSize);
+            m_Grid.reserve(m_Height);
+            for(auto row : m_Grid)
+            {
+                row.reserve(m_Width);
+            }
         }
     public:
-        void Update()
-        {
-
-        }
-        
-        /*void Clear()
-        {
-            for(auto &rows : m_Grid)
-            {
-                rows.clear();
-            }
-            m_Grid.clear();
-        }
-    private:
-        Vector2 GetObjectPosInGrid(Vector2 objectPosition) const
-        {
-            const Vector2 gridSize = Vector2( (m_BotRightCorner.x - m_TopLeftCorner.x), (m_BotRightCorner.y - m_TopLeftCorner.y) );
-            float cellRow = (objectPosition.x / gridSize.x) * m_CellCount;
-            if(cellRow - floor(cellRow) < 0.5f)
-            {
-                cellRow = floor(cellRow);
-            }
-            else
-            {
-                cellRow = ceil(cellRow);
-            }
-            float cellColumn = (objectPosition.y / gridSize.y) * m_CellCount;
-            if(cellColumn- floor(cellColumn) < 0.5f)
-            {
-                cellColumn = floor(cellColumn);
-            }
-            else
-            {
-                cellColumn = ceil(cellColumn);
-            }
-            return Vector2(cellRow, cellColumn);
-        }*/
+        void Insert(size_t ID, const std::vector<Vector2> &boundingBox);
 
     private:
         Vector2 m_TopLeftCorner;
@@ -75,5 +44,6 @@ namespace pe2d
         float m_Width;
         float m_Height;
         float m_CellSize;
+        std::vector<std::vector<std::list<size_t>>> m_Grid;
     };
 }
