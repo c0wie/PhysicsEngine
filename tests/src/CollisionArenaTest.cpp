@@ -12,8 +12,8 @@ namespace test
         const pe2d::Vector2 mouseTracerSize = pe2d::Vector2(100.0f, 100.0f);
         AddBox(2137U, sf::Color::Magenta, mouseTracerSize, mouseTracerTransform, false, true);
 
-        const pe2d::Transform platformTransform = pe2d::Transform(pe2d::Vector2(800.0, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
-        const pe2d::Vector2 platformSize = pe2d::Vector2(100.0f, 75.0f);
+        const pe2d::Transform platformTransform = pe2d::Transform(pe2d::Vector2(500.0, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
+        const pe2d::Vector2 platformSize = pe2d::Vector2(600.0f, 75.0f);
         AddBox(210U, sf::Color::White, platformSize, platformTransform, false, false);
 
         ResetVariables();        
@@ -21,17 +21,17 @@ namespace test
 
     void CollisionArenaTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
-        /*auto mouseTracer = m_World.At(2137);
-        const pe2d::Vector2 s = mouseTracer->GetPosition();
-        const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
-        const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 10.0f * deltaTime);
-
-        mouseTracer->SetPosition(position);*/
-        m_World.Step(deltaTime);  
         if(m_World.Size() != m_Shapes.size())
         {
             ASSERT("m_World size and m_Shapes size aren't the same");
         }
+        auto mouseTracer = m_World.At(2137);
+        const pe2d::Vector2 s = mouseTracer->GetPosition();
+        const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
+        const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 10.0f * deltaTime);
+
+        mouseTracer->SetPosition(position);
+        m_World.Step(deltaTime);  
     }
 
     void CollisionArenaTest::OnRender(sf::RenderWindow &window)
@@ -182,7 +182,6 @@ namespace test
                 it = m_World.RemoveObject(it);
             }
         }
-        LogCall('\n');
         if(m_Shapes.size() > 2)
         {
             m_Shapes.erase(std::next(m_Shapes.begin(), 2), m_Shapes.end());

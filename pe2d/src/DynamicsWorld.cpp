@@ -9,6 +9,19 @@ namespace pe2d
         MoveObjects(deltaTime);
     }
     
+    void DynamicsWorld::AddRigidObject(std::shared_ptr<RigidObject> object)
+    {
+        if(!object)
+        {
+            ASSERT("Unvalid object");
+        }
+        const unsigned int ID = object->GetID();
+        if(m_Objects.find(ID) != m_Objects.end())
+        {
+            ASSERT("Can't assign same ID to more than one object in CollisionWorld");
+        }
+        m_Objects[object->GetID()] = object;
+    }
     void DynamicsWorld::ApplyGravity()
     {   
         for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
@@ -35,7 +48,7 @@ namespace pe2d
             }
             Vector2 vel = object->GetVelocity() + object->GetForce() * deltaTime;
             vel.x = std::min(vel.x, m_MAX_VELOCITY);
-            vel.y = std::min(vel.x, m_MAX_VELOCITY);
+            vel.y = std::min(vel.y, m_MAX_VELOCITY);
             object->SetVelocity(vel);
             object->Move(object->GetVelocity() * deltaTime);
             object->SetForce(Vector2(0.0f, 0.0f));

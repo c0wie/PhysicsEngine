@@ -3,7 +3,7 @@
 namespace pe2d
 {
 
-    void CollisionWorld::AddObject(std::shared_ptr<CollisionObject> object)
+    void CollisionWorld::AddCollisionObject(std::shared_ptr<CollisionObject> object)
     {
         if(!object)
         {

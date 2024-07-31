@@ -37,8 +37,7 @@ namespace pe2d
     public:
         constexpr void Move(const Vector2 &offset)
         {
-            position.x += offset.x;
-            position.y += offset.y;
+            position += offset;
         }
         constexpr void Rotate(float angle) 
         {

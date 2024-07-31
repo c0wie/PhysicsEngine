@@ -31,8 +31,8 @@ namespace pe2d
         constexpr bool IsMovable() const { return m_IsMovable; }
         void OnCollision(Collision &collision, float deltaTime) const;
         
-        constexpr void SetPosition(const Vector2 &pos) { m_Transform.position = pos; }
-        constexpr void SetScale(const Vector2 &scale) 
+        constexpr void SetPosition(Vector2 pos) { m_Transform.position = pos; }
+        constexpr void SetScale(Vector2 scale) 
         { 
             if(scale.x < 0.0f || scale.y < 0.0f)
             {
@@ -61,7 +61,7 @@ namespace pe2d
         constexpr void SetTrigger(bool isTrigger) { m_IsTrigger = isTrigger; }
         constexpr void SetMovability (bool isMovable) { m_IsMovable = isMovable; }
         void SetCollisionCallback(std::function<void(Collision, float)> collisionCallback) { m_OnCollision = collisionCallback; }
-        constexpr void Move(const Vector2 &offset) { m_Transform.Move(offset); }
+        constexpr void Move(Vector2 offset) { m_Transform.Move(offset); }
         constexpr void Rotate(float angle) { m_Transform.Rotate(angle); }
         
     public:
