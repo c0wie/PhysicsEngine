@@ -15,7 +15,10 @@ namespace pe2d
     class CollisionWorld
     {
     public:
-        CollisionWorld();
+        CollisionWorld() : 
+            m_Grid(),
+            m_IsGridOn(false)
+        {}
         CollisionWorld(const CollisionWorld &other) = delete;
         CollisionWorld(CollisionWorld &&other) = delete;
         CollisionWorld operator = (const CollisionWorld &other) = delete;
@@ -23,7 +26,16 @@ namespace pe2d
         virtual ~CollisionWorld() = default;
     public:
         void AddObject(std::shared_ptr<CollisionObject> object);
-        void RemoveObject(size_t ID) { m_Objects.erase(ID); }
+        std::unordered_map<size_t, std::shared_ptr<CollisionObject>>::iterator RemoveObject(size_t ID);
+        
+        std::unordered_map<size_t, std::shared_ptr<CollisionObject>>::iterator RemoveObject
+            (std::unordered_map<size_t, std::shared_ptr<CollisionObject>>::iterator object) { return m_Objects.erase(object); }
+
+        std::unordered_map<size_t, std::shared_ptr<CollisionObject>>::iterator RemoveObjects
+            (std::unordered_map<size_t, std::shared_ptr<CollisionObject>>::iterator firstObject, std::unordered_map<size_t,
+             std::shared_ptr<CollisionObject>>::iterator lastObject) { return m_Objects.erase(firstObject, lastObject); }
+             
+        void ClearObjects() { m_Objects.clear(); }
 
         void AddSolver(std::shared_ptr<Solver> &solver);
         void RemoveSolver(std::shared_ptr<Solver> &solver);
@@ -33,14 +45,21 @@ namespace pe2d
         void ResizeGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float cellSize);
         
         void ResolveCollisions(float deltaTime);
-        void ClearObjects() { m_Objects.clear(); }
         
+        bool IsGridOn() const { return m_IsGridOn; }
+        //returns size of container which holds object items
         size_t Size() const { return m_Objects.size(); }
+        // returns if container with objects is empty
         bool Empty() const { return m_Objects.empty(); }
+        // returns iterator to begin of container which hold object items
         std::unordered_map<size_t, std::shared_ptr<CollisionObject>>::iterator Begin() { return m_Objects.begin(); }
+        // returns iterator to end of container which hold object items
         std::unordered_map<size_t, std::shared_ptr<CollisionObject>>::iterator End() { return m_Objects.end(); }
+        // returns const iterator to begin of container which hold object items
         std::unordered_map<size_t, std::shared_ptr<CollisionObject>>::const_iterator cBegin() const { return m_Objects.cbegin(); }
+        // returns const iterator to begin of container which hold object items
         std::unordered_map<size_t, std::shared_ptr<CollisionObject>>::const_iterator cEnd() const { return m_Objects.cend(); }
+        // returns object at given index from container which holds object items
         std::shared_ptr<CollisionObject> At(unsigned int ID) { return m_Objects.at(ID); }
 
     protected:

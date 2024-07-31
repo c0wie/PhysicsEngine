@@ -12,7 +12,7 @@ namespace test
     class FallingCirclesTest final : public Test
     {
     public:
-        FallingCirclesTest(pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth);
+        FallingCirclesTest();
         ~FallingCirclesTest() = default;
     public:
         void OnUpdate(float deltaTime, sf::Vector2i mousePos) override;

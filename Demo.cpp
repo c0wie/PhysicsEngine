@@ -20,8 +20,8 @@ int main()
     test::TestMenu *testMenu = new test::TestMenu(currentTest, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 1U);
     currentTest = testMenu;
 
-    testMenu->RegisterTest<test::FallingCirclesTest>("Falling Circles Test", pe2d::Vector2(-100.0f, -100.0f), pe2d::Vector2(1100.0f, 1100.0f), 5U);
-    testMenu->RegisterTest<test::CollisionArenaTest>("Collision Arena Test", pe2d::Vector2(-100.0f, -100.0f), pe2d::Vector2(1100.0f, 1100.0f), 5U);
+    testMenu->RegisterTest<test::FallingCirclesTest>("Falling Circles Test");
+    testMenu->RegisterTest<test::CollisionArenaTest>("Collision Arena Test");
 
 
     sf::Clock DT_Clock;

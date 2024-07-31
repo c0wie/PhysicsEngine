@@ -39,7 +39,6 @@ namespace pe2d
             object->SetVelocity(vel);
             object->Move(object->GetVelocity() * deltaTime);
             object->SetForce(Vector2(0.0f, 0.0f));
-
         }
     }
 }

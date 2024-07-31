@@ -3,8 +3,7 @@
 namespace test
 {
 
-    FallingCirclesTest::FallingCirclesTest(pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth) :
-        Test(topLeftCorner, bottomRightCorner, maxDepth)
+    FallingCirclesTest::FallingCirclesTest()
     {
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         m_World.AddSolver(solver);

@@ -2,6 +2,7 @@
 
 namespace pe2d
 {
+
     void CollisionWorld::AddObject(std::shared_ptr<CollisionObject> object)
     {
         if(!object)
@@ -9,11 +10,21 @@ namespace pe2d
             ASSERT("Unvalid object");
         }
         const unsigned int ID = object->GetID();
-        if(m_Objects.find(ID) == m_Objects.end())
+        if(m_Objects.find(ID) != m_Objects.end())
         {
-            ASSERT("Can't assign same ID to two objects in CollisionWorld");
+            ASSERT("Can't assign same ID to more than one object in CollisionWorld");
         }
         m_Objects[object->GetID()] = object;
+    }
+
+    std::unordered_map<size_t, std::shared_ptr<CollisionObject>>::iterator CollisionWorld::RemoveObject(size_t ID)
+    {
+        auto it = m_Objects.find(ID);
+        if (it != m_Objects.end()) 
+        {
+            return m_Objects.erase(it); 
+        }
+        return m_Objects.end(); 
     }
 
     void CollisionWorld::AddSolver(std::shared_ptr<Solver> &solver)

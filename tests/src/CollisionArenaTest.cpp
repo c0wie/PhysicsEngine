@@ -2,8 +2,7 @@
 
 namespace test
 {
-    CollisionArenaTest::CollisionArenaTest(pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth) :
-        Test(topLeftCorner, bottomRightCorner, maxDepth),
+    CollisionArenaTest::CollisionArenaTest() :
         showObjectEditor(false)
     {
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
@@ -22,12 +21,17 @@ namespace test
 
     void CollisionArenaTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
-        const pe2d::Vector2 s = m_World.Begin()->item->GetPosition();
+        /*auto mouseTracer = m_World.At(2137);
+        const pe2d::Vector2 s = mouseTracer->GetPosition();
         const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
         const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 10.0f * deltaTime);
 
-        m_World.Begin()->item->SetPosition(position);
+        mouseTracer->SetPosition(position);*/
         m_World.Step(deltaTime);  
+        if(m_World.Size() != m_Shapes.size())
+        {
+            ASSERT("m_World size and m_Shapes size aren't the same");
+        }
     }
 
     void CollisionArenaTest::OnRender(sf::RenderWindow &window)
@@ -167,13 +171,21 @@ namespace test
 
     void CollisionArenaTest::ClearObjects()
     {
-        for(auto it = std::next(m_World.Begin(), 2); it != m_World.End(); it++)
+        for(auto it = m_World.Begin(); it != m_World.End();)
         {
-            m_World.RemoveObject(it);
+            if(it->first == 210 || it->first == 2137)
+            {
+                it++;
+            }
+            else
+            {
+                it = m_World.RemoveObject(it);
+            }
         }
-        for(auto it = std::next(m_Shapes.begin(), 2); it != m_Shapes.end(); it++)
+        LogCall('\n');
+        if(m_Shapes.size() > 2)
         {
-            m_Shapes.erase(it);
+            m_Shapes.erase(std::next(m_Shapes.begin(), 2), m_Shapes.end());
         }
     }
 }   

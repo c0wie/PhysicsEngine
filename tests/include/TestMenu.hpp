@@ -8,11 +8,8 @@ namespace test
     {
     public:
         TestMenu(Test *&currentTestPtr, pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth) : 
-            m_CurrentTest(currentTestPtr),
-            Test(topLeftCorner, bottomRightCorner, maxDepth)
-        {
-
-        }
+            m_CurrentTest(currentTestPtr)
+        {}
         ~TestMenu() {};
     public:
         void OnUpdate(float deltaTime, sf::Vector2i mousePos) override {}
@@ -29,9 +26,9 @@ namespace test
         }
 
         template<typename T>
-        void RegisterTest(const std::string &testName, pe2d::Vector2 topLeftCorner, pe2d::Vector2 bottomRightCorner, unsigned int maxDepth)
+        void RegisterTest(const std::string &testName)
         {
-            m_Tests.push_back(std::make_pair(testName, [=]() { return new T(topLeftCorner, bottomRightCorner, maxDepth); } ) );
+            m_Tests.push_back(std::make_pair(testName, []() { return new T(); } ) );
         }
     private:
         std::vector< std::pair<std::string, std::function<Test*()> >> m_Tests;
