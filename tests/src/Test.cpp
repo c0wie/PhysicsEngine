@@ -38,6 +38,21 @@ namespace test
         rec.setOutlineColor(color);
         rec.setOutlineThickness(1.0f);
         window.draw(rec);
+        // DRAW BOUNDING BOX
+        /*std::vector<pe2d::Vector2> vertices = body->GetBounadingBox();
+        sf::Color color = shape.GetColor();
+        for(int i = 0; i < vertices.size(); i++)
+        {
+            const int j = (i + 1) % vertices.size();
+            sf::Vector2f vertex1 = sf::Vector2f{vertices[i].x , vertices[i].y};
+            sf::Vector2f vertex2 = sf::Vector2f{vertices[j].x , vertices[j].y};
+            sf::Vertex line[] =
+            {
+                sf::Vertex(vertex1, color),
+                sf::Vertex(vertex2, color),
+            };
+            window.draw(line, 2, sf::Lines);
+        }*/
     }
 
     void Test::AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger, bool isMovable)

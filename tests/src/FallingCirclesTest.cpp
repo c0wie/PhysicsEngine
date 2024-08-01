@@ -7,6 +7,7 @@ namespace test
     {
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         m_World.AddSolver(solver);
+        m_World.AddGrid(pe2d::Vector2(-200.0f, -200.0f), pe2d::Vector2(1200.0f, 1200.0f), 200.0f);
     }
 
     void FallingCirclesTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)

@@ -65,6 +65,7 @@ namespace pe2d
         std::shared_ptr<CollisionObject> At(unsigned int ID) { return m_Objects.at(ID); }
 
     protected:
+        void UpdateGrid();
         void FindCollisions(std::shared_ptr<CollisionObject> objectA, std::shared_ptr<CollisionObject> objectB,
             std::vector<Collision> &collisions, std::vector<Collision> &triggers);
         void SolveCollisions(std::vector<Collision> &collisions, float deltaTime);

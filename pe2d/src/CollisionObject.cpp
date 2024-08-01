@@ -76,16 +76,13 @@ namespace pe2d
         std::shared_ptr<CircleCollider> circleCollider = std::dynamic_pointer_cast<CircleCollider>( m_Collider );
         std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );
 
-        std::vector<Vector2> vertices;
-        Vector2 size;
         if(circleCollider)
         {
             const float radius = circleCollider->GetRadius();
-            size = Vector2(radius, radius);
-            vertices = algo::GetBoxVertices(size, m_Transform);
+            return algo::GetBoxVertices(Vector2(radius, radius), m_Transform);
         }
-        size = boxCollider->GetSize();
-        vertices =  algo::GetBoxVertices(size, m_Transform);
+        const Vector2 size = boxCollider->GetSize();
+        const std::vector<Vector2> vertices = algo::GetBoxVertices(size, m_Transform);
 
         Vector2 topLeftCorner = Vector2(algo::INF, algo::INF);
         Vector2 botRightCorner = Vector2(algo::MIN, algo::MIN);
@@ -96,8 +93,9 @@ namespace pe2d
             botRightCorner.x = std::max(botRightCorner.x, vertex.x);
             botRightCorner.y = std::max(botRightCorner.y, vertex.y);
         }
-        return std::vector<Vector2>{topLeftCorner, Vector2(topLeftCorner.x + size.x, topLeftCorner.y),
-                                    botRightCorner, Vector2(botRightCorner.x - size.x, botRightCorner.y)};
+        Vector2 topRightCorner = Vector2(botRightCorner.x, topLeftCorner.y);
+        Vector2 botLeftCorner = Vector2(topLeftCorner.x, botRightCorner.y);
+        return std::vector<Vector2>{topLeftCorner, topRightCorner, botRightCorner, botLeftCorner};
     }
 
     void CollisionObject::OnCollision(Collision &collision, float deltaTime) const
