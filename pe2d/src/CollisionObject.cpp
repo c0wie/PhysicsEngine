@@ -71,7 +71,7 @@ namespace pe2d
     }
 
     // returns non rotated smallest rectangle which contains object 
-    std::vector<Vector2> CollisionObject::GetBounadingBox() const
+    std::array<Vector2, 4> CollisionObject::GetBounadingBox() const
     {
         std::shared_ptr<CircleCollider> circleCollider = std::dynamic_pointer_cast<CircleCollider>( m_Collider );
         std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );
@@ -82,7 +82,7 @@ namespace pe2d
             return algo::GetBoxVertices(Vector2(radius, radius), m_Transform);
         }
         const Vector2 size = boxCollider->GetSize();
-        const std::vector<Vector2> vertices = algo::GetBoxVertices(size, m_Transform);
+        const std::array<Vector2, 4> vertices = algo::GetBoxVertices(size, m_Transform);
 
         Vector2 topLeftCorner = Vector2(algo::INF, algo::INF);
         Vector2 botRightCorner = Vector2(algo::MIN, algo::MIN);
@@ -95,7 +95,7 @@ namespace pe2d
         }
         Vector2 topRightCorner = Vector2(botRightCorner.x, topLeftCorner.y);
         Vector2 botLeftCorner = Vector2(topLeftCorner.x, botRightCorner.y);
-        return std::vector<Vector2>{topLeftCorner, topRightCorner, botRightCorner, botLeftCorner};
+        return std::array<Vector2, 4>{topLeftCorner, topRightCorner, botRightCorner, botLeftCorner};
     }
 
     void CollisionObject::OnCollision(Collision &collision, float deltaTime) const

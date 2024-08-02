@@ -30,12 +30,10 @@ namespace pe2d
         void AddCollisionObject(std::shared_ptr<CollisionObject> object);
         iterator RemoveObject(size_t ID);
         
-        iterator RemoveObject
-            (iterator object) { return m_Objects.erase(object); }
+        iterator RemoveObject (iterator object) { return m_Objects.erase(object); }
 
-        iterator RemoveObjects
-            (iterator firstObject, std::unordered_map<size_t,
-             std::shared_ptr<CollisionObject>>::iterator lastObject) { return m_Objects.erase(firstObject, lastObject); }
+        iterator RemoveObjects (iterator firstObject, std::unordered_map<size_t,
+                std::shared_ptr<CollisionObject>>::iterator lastObject) { return m_Objects.erase(firstObject, lastObject); }
              
         void ClearObjects() { m_Objects.clear(); }
 

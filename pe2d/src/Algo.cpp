@@ -38,9 +38,8 @@ namespace pe2d
             const BoxCollider *box, Transform transformBox)
         {
             Vector2 circleCenter = transformCircle.position;
-            const std::vector<Vector2> boxVertices = GetBoxVertices(box->GetSize(), transformBox);
-            std::vector<Vector2> axes = GetRectangleAxes(boxVertices);
-            axes.push_back(GetCircleAxis(boxVertices, circleCenter)) ;
+            const std::array<Vector2, 4> boxVertices = GetBoxVertices(box->GetSize(), transformBox);
+            const std::array<Vector2, 2> axes = GetRectangleAxes(boxVertices);
             const Vector2 *smallesAxis = nullptr;
             float overlap = INF;
 
@@ -60,6 +59,20 @@ namespace pe2d
                     smallesAxis = &axes[i];
                 }
             }
+            const Vector2 circleAxis = GetCircleAxis(boxVertices, circleCenter); 
+            const Vector2 p1 = ProjectCircle(circleAxis, circleCenter, circle->GetRadius() * transformCircle.scale.x);
+            const Vector2 p2 = Project(boxVertices, circleAxis);
+
+            if(!Overlap(p1, p2))
+            {
+                return CollisionPoints();
+            }
+            const float o = GetOverlap(p1, p2);
+            if(o < overlap)
+            {
+                overlap = o;
+                smallesAxis = &circleAxis;
+            }
             return CollisionPoints{*smallesAxis, overlap, true};
         }
         
@@ -76,10 +89,10 @@ namespace pe2d
             const BoxCollider *boxA, Transform transformBoxA,
             const BoxCollider *boxB, Transform transformBoxB)
         {
-            const std::vector<Vector2> verticesA = GetBoxVertices(boxA->GetSize(), transformBoxA);
-            const std::vector<Vector2> verticesB = GetBoxVertices(boxB->GetSize(), transformBoxB);
-            const std::vector<Vector2> axesA = GetRectangleAxes(verticesA);
-            const std::vector<Vector2> axesB = GetRectangleAxes(verticesB);
+            const std::array<Vector2, 4> verticesA = GetBoxVertices(boxA->GetSize(), transformBoxA);
+            const std::array<Vector2, 4> verticesB = GetBoxVertices(boxB->GetSize(), transformBoxB);
+            const std::array<Vector2, 2> axesA = GetRectangleAxes(verticesA);
+            const std::array<Vector2, 2> axesB = GetRectangleAxes(verticesB);
             const Vector2 *smallestAxis = nullptr;
             float overlap = INF;
 
@@ -132,40 +145,20 @@ namespace pe2d
             return axes;
         }
 
-        std::vector<Vector2> GetRectangleAxes(const std::vector<Vector2> &vertices)
+        std::array<Vector2, 2> GetRectangleAxes(const std::array<Vector2, 4> &vertices)
         {
-            std::vector<Vector2> axes;
+            std::array<Vector2, 2> axes;
             // is has two parrarel edges so I don't have to check other two
-            for(int i = 0; i < vertices.size() / 2; i++)
+            for(int i = 0; i < 2; i++)
             {
                 const Vector2 p1 = vertices[i];
                 const Vector2 p2 = vertices[(i + 1) % vertices.size()];
                 const Vector2 edge = p1 - p2;
                 const Vector2 normal = edge.perp().normalized();
-                axes.push_back(normal);
+                axes[i] = normal;
             }
             return axes;
         }
-        
-        Vector2 Project(const std::vector<Vector2> &vertices, Vector2 axis)
-        {
-            float min = axis.dot(vertices[0]);
-            float max = min;
-
-            for(int i = 1; i < vertices.size(); i++)
-            {
-                const float p = axis.dot(vertices[i]);
-                if(p < min)
-                {
-                    min = p;
-                }
-                else if(p > max)
-                {
-                    max = p;
-                }
-            }
-            return Vector2{min, max};
-        }    
         
         Vector2 ProjectCircle(Vector2 axis, Vector2 circleCenter, float radius)
         {
@@ -184,54 +177,23 @@ namespace pe2d
             return Vector2{min, max};
         }
         
-        void RotateVertices(std::vector<Vector2> &vertices, Vector2 center, float angle)
-        {
-            const float cosAngle = cosf(angle);
-            const float sinAngle = sinf(angle);
-            for(int i = 0; i < vertices.size(); i++)
-            {
-                const float relativeX = vertices[i].x - center.x;
-                const float relativeY = vertices[i].y - center.y;
-
-                const float rotatedX = (relativeX * cosAngle) - (relativeY * sinAngle);
-                const float rotatedY = (relativeX * sinAngle) + (relativeY * cosAngle);
-                vertices[i] = Vector2{ rotatedX + center.x, rotatedY + center.y };
-            }
-        }
-        
-        std::vector<Vector2> GetBoxVertices(Vector2 boxSize, Transform transform)
+        std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform)
         {
             Vector2 center = transform.position;
             Vector2 scale = transform.scale;
             const float scaledHalfSizeX = (boxSize.x * scale.x) / 2.0f;
             const float scaledHalfSizeY = (boxSize.y * scale.y) / 2.0f;
             const float angle = transform.GetRadians();
-            std::vector<Vector2> vertices = 
+            std::array<Vector2, 4> vertices = 
             {
                 Vector2{ center.x - scaledHalfSizeX, center.y + scaledHalfSizeY },
                 Vector2{ center.x + scaledHalfSizeX, center.y + scaledHalfSizeY },
                 Vector2{ center.x + scaledHalfSizeX, center.y - scaledHalfSizeY },
                 Vector2{ center.x - scaledHalfSizeX, center.y - scaledHalfSizeY }
             };
-            RotateVertices(vertices, center, angle);
+            RotateVertices<std::array<Vector2, 4>>(vertices, center, angle);
             return vertices;
         }
         
-        Vector2 GetCircleAxis(const std::vector<Vector2> &vertices, Vector2 circleCenter)
-        {
-            float dist = INF;
-            Vector2 smallestAxis = Vector2{};
-            for(int i = 0; i < vertices.size(); i++)
-            {
-                Vector2 edge = vertices[i] - circleCenter;
-                float d = edge.magnitude();
-                if(d < dist)
-                {
-                    dist = d;
-                    smallestAxis = edge;
-                }
-            }
-            return smallestAxis.normalized();
-        }
     }
 }  

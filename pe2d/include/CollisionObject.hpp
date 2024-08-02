@@ -22,7 +22,7 @@ namespace pe2d
     public:
         constexpr unsigned int GetID() const { return m_ID; }
         std::shared_ptr<Collider> GetCollider() const { return m_Collider; }
-        std::vector<Vector2> GetBounadingBox() const;
+        std::array<Vector2, 4> GetBounadingBox() const;
         constexpr Vector2 GetPosition() const { return m_Transform.position; }
         constexpr Vector2 GetScale() const { return m_Transform.scale; }
         constexpr float GetRotation() const { return m_Transform.rotation; }

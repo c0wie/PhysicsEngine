@@ -66,7 +66,7 @@ namespace pe2d
                 {
                     return;
                 }
-                const std::vector<Vector2> boundingBox = it->second->GetBounadingBox();
+                const std::array<Vector2, 4> boundingBox = it->second->GetBounadingBox();
                 // calculating position of vertices in grid
                 int bodyMinX = static_cast<int>(std::floor((boundingBox[0].x - m_TopLeftCorner.x) / m_CellSize));
                 bodyMinX = std::clamp(bodyMinX, 0, (int)m_Width);
@@ -80,16 +80,16 @@ namespace pe2d
                 int bodyMaxY = static_cast<int>(std::floor((boundingBox[3].y - m_TopLeftCorner.y)) / m_CellSize);
                 bodyMaxY = std::clamp(bodyMaxY, 0, (int)m_Height - 1);
            
-                for(int y = bodyMinY; y <= bodyMaxY; y++)
+                for(int x = bodyMinX; x <= bodyMaxX; x++)
                 {
-                    auto &row = m_Grid[y];
+                    auto &row = m_Grid[x];
                     if(row.empty())
                     {
                         row.resize(m_Width);
                     } 
-                    for(int x = bodyMinX; x <= bodyMaxX; x++)
+                    for(int y = bodyMinY; y <= bodyMaxY; y++)
                     {
-                        m_Grid[y][x].push_back(it->first);
+                        m_Grid[x][y].push_back(it->first);
                     }
                 }
             }

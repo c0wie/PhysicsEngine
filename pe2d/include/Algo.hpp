@@ -13,6 +13,8 @@ namespace pe2d
 
     namespace algo
     {
+        constexpr float INF = std::numeric_limits<float>::infinity();
+        constexpr float MIN = std::numeric_limits<float>::min();
         // returns info about circle - circle collision 
         // returns empty CollisionPoints if collision doesn't occur
         CollisionPoints FindCircleCircleCollision(
@@ -37,7 +39,7 @@ namespace pe2d
             const BoxCollider *boxA, Transform transformBoxA,
             const BoxCollider *boxB, Transform transformBoxB);
         
-        std::vector<Vector2> GetBoxVertices(Vector2 boxSize, Transform transform);
+        std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform);
         
         //checks if two projections overlap
         constexpr bool Overlap(Vector2 A, Vector2 B)
@@ -62,19 +64,67 @@ namespace pe2d
         std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices);
         
         // returns perpendicular and normalized axes of an rectangle
-        std::vector<Vector2> GetRectangleAxes(const std::vector<Vector2> &vertices);
+        std::array<Vector2, 2> GetRectangleAxes(const std::array<Vector2, 4> &vertices);
         
         // project an shape on axis 
-        Vector2 Project(const std::vector<Vector2> &vertices, Vector2 axis);
+        template<typename Container>
+        Vector2 Project(const Container &vertices, Vector2 axis)
+        {
+            float min = axis.dot(*vertices.begin());
+            float max = min;
+
+            for(auto it = std::next(vertices.begin()); it != vertices.end(); it++)
+            {
+                const float p = axis.dot(*it);
+                if(p < min)
+                {
+                    min = p;
+                }
+                else if(p > max)
+                {
+                    max = p;
+                }
+            }
+            return Vector2{min, max};
+        }    
         
         // project circle on axis
         Vector2 ProjectCircle(Vector2 axis, Vector2 circleCenter, float radius);
         
-        void RotateVertices(std::vector<Vector2> &vertices, Vector2 center, float angle);
+        template <typename Container>
+        void RotateVertices(Container &vertices, Vector2 center, float angle)
+        {
+            const float cosAngle = cosf(angle);
+            const float sinAngle = sinf(angle);
+            for(auto it = vertices.begin(); it != vertices.end(); it++)
+            {
+                const float relativeX = it->x - center.x;
+                const float relativeY = it->y - center.y;
+
+                const float rotatedX = (relativeX * cosAngle) - (relativeY * sinAngle);
+                const float rotatedY = (relativeX * sinAngle) + (relativeY * cosAngle);
+                *it = Vector2{ rotatedX + center.x, rotatedY + center.y };
+            }
+        }
         
         // returns perpendicular and normalized axis to circle center
-        Vector2 GetCircleAxis(const std::vector<Vector2> &vertices, Vector2 circleCenter);
-        constexpr float INF = std::numeric_limits<float>::infinity();
-        constexpr float MIN = std::numeric_limits<float>::min();
+        template <typename Container>
+        Vector2 GetCircleAxis(const Container &vertices, Vector2 circleCenter)
+        {
+            float dist = INF;
+            Vector2 smallestAxis = Vector2{};
+            for(auto it = vertices.begin(); it != vertices.end(); it++)
+            {
+                Vector2 edge = *it - circleCenter;
+                float d = edge.magnitude();
+                if(d < dist)
+                {
+                    dist = d;
+                    smallestAxis = edge;
+                }
+            }
+            return smallestAxis.normalized();
+        }
+
     }
 }
