@@ -4,6 +4,7 @@
 #include <list>
 #include "Vector2.hpp"
 #include <CollisionObject.hpp>
+#include <set>
 
 namespace pe2d
 {
@@ -119,7 +120,9 @@ namespace pe2d
 
         std::list<std::pair<size_t, size_t>> GetCollisionPairs() const
         {
+            std::unordered_multimap<size_t, size_t> checkedPairs;
             std::list<std::pair<size_t, size_t>> pairs;
+
             for(auto rowIterator = m_Grid.begin(); rowIterator != m_Grid.end(); ++rowIterator)
             {
                 for(auto cellIterator = rowIterator->begin(); cellIterator != rowIterator->end(); ++cellIterator)
@@ -132,9 +135,14 @@ namespace pe2d
                             {
                                 break;
                             }
-                            auto objectAID = *objectIteratorA;
-                            auto objectBID = *objectIteratorB;
-                            pairs.push_back(std::make_pair(objectAID, objectBID));
+                            std::pair<size_t, size_t> pair = *objectIteratorA < *objectIteratorB ? 
+                                std::make_pair(*objectIteratorA, *objectIteratorB) :
+                                std::make_pair(*objectIteratorB, *objectIteratorA);
+                            if(!HasBeenChecked(checkedPairs, pair))
+                            {
+                                pairs.push_back(pair);
+                                checkedPairs.insert(pair);
+                            }
                         }
                     }
                 }
@@ -164,6 +172,18 @@ namespace pe2d
                 return false;
             }
             return true;
+        }
+        bool HasBeenChecked(std::unordered_multimap<size_t, size_t> &checkedPairs, std::pair<size_t, size_t> pair) const
+        {
+            auto [ first, second ] = checkedPairs.equal_range(pair.first);
+            for(auto &i = first; i != second; ++i)
+            {
+                if(i->second == pair.second)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     private:
         Vector2 m_TopLeftCorner;
