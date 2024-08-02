@@ -186,14 +186,16 @@ namespace pe2d
             const float angle = transform.GetRadians();
             std::array<Vector2, 4> vertices = 
             {
-                Vector2{ center.x - scaledHalfSizeX, center.y + scaledHalfSizeY },
-                Vector2{ center.x + scaledHalfSizeX, center.y + scaledHalfSizeY },
-                Vector2{ center.x + scaledHalfSizeX, center.y - scaledHalfSizeY },
-                Vector2{ center.x - scaledHalfSizeX, center.y - scaledHalfSizeY }
+                Vector2( center.x - scaledHalfSizeX, center.y - scaledHalfSizeY ),
+                Vector2( center.x + scaledHalfSizeX, center.y - scaledHalfSizeY ),
+                Vector2( center.x + scaledHalfSizeX, center.y + scaledHalfSizeY ),
+                Vector2( center.x - scaledHalfSizeX, center.y + scaledHalfSizeY )
             };
-            RotateVertices<std::array<Vector2, 4>>(vertices, center, angle);
+            if(!(int)transform.rotation % 90 == 0)
+            {
+                RotateVertices<std::array<Vector2, 4>>(vertices, center, angle);
+            }
             return vertices;
         }
-        
     }
 }  

@@ -39,7 +39,7 @@ namespace test
         rec.setOutlineThickness(1.0f);
         window.draw(rec);
         // DRAW BOUNDING BOX
-        /*std::vector<pe2d::Vector2> vertices = body->GetBounadingBox();
+        /*std::array<pe2d::Vector2, 4> vertices = body->GetBounadingBox();
         sf::Color color = shape.GetColor();
         for(int i = 0; i < vertices.size(); i++)
         {

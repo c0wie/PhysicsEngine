@@ -5,6 +5,7 @@ namespace test
     CollisionArenaTest::CollisionArenaTest() :
         showObjectEditor(false)
     {
+        m_World.AddGrid(pe2d::Vector2(-100, -100), pe2d::Vector2(1100, 1100), 200.0f);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         m_World.AddSolver(solver);
 

@@ -52,11 +52,13 @@ namespace pe2d
 
         if(m_IsGridOn)
         {
-            UpdateGrid();
+            m_Grid.Update(m_Objects);
             auto pairs = m_Grid.GetCollisionPairs();
+            int i = 0;
             for(auto it = pairs.begin(); it != pairs.end(); it++)
             {
                 FindCollisions(m_Objects.at(it->first), m_Objects.at(it->second), collisions, triggers);
+                i++;
             }
         }
         else
@@ -96,16 +98,6 @@ namespace pe2d
         m_Grid = Grid(topLeftCorner, bottomRightCorner, cellSize);
     }
 
-    void CollisionWorld::UpdateGrid()
-    {
-        if(!m_IsGridOn)
-        {
-            ASSERT("Can't update grid when grid is diabled");
-        }
-        m_Grid.Clear();
-        m_Grid.Update(m_Objects);
-    }
-    
     void CollisionWorld::FindCollisions(std::shared_ptr<CollisionObject> objectA, std::shared_ptr<CollisionObject> objectB,
         std::vector<Collision> &collisions, std::vector<Collision> &triggers)
     {

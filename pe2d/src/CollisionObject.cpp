@@ -78,11 +78,10 @@ namespace pe2d
 
         if(circleCollider)
         {
-            const float radius = circleCollider->GetRadius();
-            return algo::GetBoxVertices(Vector2(radius, radius), m_Transform);
+            const float diameter = circleCollider->GetRadius() * 2;
+            return algo::GetBoxVertices(Vector2(diameter, diameter), m_Transform);
         }
-        const Vector2 size = boxCollider->GetSize();
-        const std::array<Vector2, 4> vertices = algo::GetBoxVertices(size, m_Transform);
+        const std::array<Vector2, 4> vertices = algo::GetBoxVertices(boxCollider->GetSize(), m_Transform);
 
         Vector2 topLeftCorner = Vector2(algo::INF, algo::INF);
         Vector2 botRightCorner = Vector2(algo::MIN, algo::MIN);
@@ -90,11 +89,11 @@ namespace pe2d
         {
             topLeftCorner.x = std::min(topLeftCorner.x, vertex.x);
             topLeftCorner.y = std::min(topLeftCorner.y, vertex.y);
-            botRightCorner.x = std::max(botRightCorner.x, vertex.x);
+            botRightCorner.x = std::max(botRightCorner.x, vertex.x);    
             botRightCorner.y = std::max(botRightCorner.y, vertex.y);
         }
-        Vector2 topRightCorner = Vector2(botRightCorner.x, topLeftCorner.y);
-        Vector2 botLeftCorner = Vector2(topLeftCorner.x, botRightCorner.y);
+        const Vector2 topRightCorner = Vector2(botRightCorner.x, topLeftCorner.y);
+        const Vector2 botLeftCorner = Vector2(topLeftCorner.x, botRightCorner.y);
         return std::array<Vector2, 4>{topLeftCorner, topRightCorner, botRightCorner, botLeftCorner};
     }
 

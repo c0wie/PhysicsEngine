@@ -90,7 +90,7 @@ namespace pe2d
         
         // project circle on axis
         Vector2 ProjectCircle(Vector2 axis, Vector2 circleCenter, float radius);
-        
+
         template <typename Container>
         void RotateVertices(Container &vertices, Vector2 center, float angle)
         {
@@ -103,7 +103,7 @@ namespace pe2d
 
                 const float rotatedX = (relativeX * cosAngle) - (relativeY * sinAngle);
                 const float rotatedY = (relativeX * sinAngle) + (relativeY * cosAngle);
-                *it = Vector2{ rotatedX + center.x, rotatedY + center.y };
+                *it = Vector2( rotatedX + center.x, rotatedY + center.y );
             }
         }
         
