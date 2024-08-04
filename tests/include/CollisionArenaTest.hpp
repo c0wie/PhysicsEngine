@@ -29,7 +29,6 @@ namespace test
     private:
         bool showObjectEditor;
         bool isRigidObject;
-        bool isMovable;
         ObjectType objectType;
         float radius;
         pe2d::Vector2 size;

@@ -2,12 +2,14 @@
 
 namespace pe2d
 {
-    RigidObject::RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform, bool isTrigger, bool isMovable,
-        std::function<void(Collision, float)> collisionCallback, float mass, Vector2 velocity, Vector2 force,
-        Vector2 gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution) :
-        CollisionObject(ID, collider, transform, isTrigger, isMovable, collisionCallback),
+    RigidObject::RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform,
+                            bool isTrigger, std::function<void(Collision, float)> collisionCallback,
+                            float mass, Vector2 velocity, Vector2 force, Vector2 gravity, bool takesGravity, 
+                            float staticFriction, float dynamicFriction, float restitution) :
+        CollisionObject(ID, collider, transform, isTrigger, collisionCallback),
         m_Mass(mass), m_Velocity(velocity), m_Force(force), m_Gravity(gravity),
-        m_TakesGravity(takesGravity), m_StaticFriction(staticFriction), m_DynamicFriction(dynamicFriction), m_Restitution(restitution) 
+        m_TakesGravity(takesGravity), m_StaticFriction(staticFriction),
+        m_DynamicFriction(dynamicFriction), m_Restitution(restitution) 
         {
             if(m_Mass <= 0.0f)
             {
@@ -17,21 +19,21 @@ namespace pe2d
     
     RigidObject::RigidObject(const RigidObject &other):
         CollisionObject(other), m_Mass(other.m_Mass), m_Velocity(other.m_Velocity), m_Force(other.m_Force), m_Gravity(other.m_Gravity),
-        m_TakesGravity(other.m_TakesGravity), m_StaticFriction(other.m_StaticFriction), m_DynamicFriction(other.m_DynamicFriction),
-        m_Restitution(other.m_Restitution) {}
+        m_TakesGravity(other.m_TakesGravity), m_StaticFriction(other.m_StaticFriction),
+        m_DynamicFriction(other.m_DynamicFriction), m_Restitution(other.m_Restitution) {}
 
     RigidObject::RigidObject(RigidObject &&other) :
-        CollisionObject(std::move(other)), m_Mass(other.m_Mass), m_Velocity(std::move(other.m_Velocity)), m_Force(std::move(other.m_Force)),
-        m_Gravity(std::move(other.m_Gravity)), m_TakesGravity(other.m_TakesGravity), m_StaticFriction(other.m_StaticFriction),
+        CollisionObject(std::move(other)), m_Mass(other.m_Mass), m_Velocity(other.m_Velocity), m_Force(other.m_Force),
+        m_Gravity(other.m_Gravity), m_TakesGravity(other.m_TakesGravity), m_StaticFriction(other.m_StaticFriction),
         m_DynamicFriction(other.m_DynamicFriction), m_Restitution(other.m_Restitution) 
     {
         other.m_Collider = nullptr;
         other.m_Transform = Transform{};
         other.m_IsTrigger = false;
         other.m_Mass = 0.0f;
-        other.m_Velocity = Vector2{};
-        other.m_Force = Vector2{};
-        other.m_Gravity = Vector2{};
+        other.m_Velocity = Vector2(0.0f, 0.0f);
+        other.m_Force = Vector2(0.0f, 0.0f);
+        other.m_Gravity = Vector2(0.0f, 0.0f);
         other.m_TakesGravity = false;
         other.m_StaticFriction = 0.0f;
         other.m_DynamicFriction = 0.0f;
@@ -80,9 +82,9 @@ namespace pe2d
         other.m_Transform = Transform{};
         other.m_IsTrigger = false;
         other.m_Mass = 0.0f;
-        other.m_Velocity = Vector2{};
-        other.m_Force = Vector2{};
-        other.m_Gravity = Vector2{};
+        other.m_Velocity = Vector2(0.0f, 0.0f);
+        other.m_Force = Vector2(0.0f, 0.0f);
+        other.m_Gravity = Vector2(0.0f, 0.0f);
         other.m_TakesGravity = false;
         other.m_StaticFriction = 0.0f;
         other.m_DynamicFriction = 0.0f;

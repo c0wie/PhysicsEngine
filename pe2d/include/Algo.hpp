@@ -39,9 +39,10 @@ namespace pe2d
             const BoxCollider *boxA, Transform transformBoxA,
             const BoxCollider *boxB, Transform transformBoxB);
         
+        // return box vertices in clockwise direction
         std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform);
         
-        //checks if two projections overlap
+        //check if two projections overlap
         constexpr bool Overlap(Vector2 A, Vector2 B)
         {
             if(A.y >= B.x && B.y >= A.x)
@@ -51,7 +52,7 @@ namespace pe2d
             return false;
         }
         
-        // returns overlap of two objects
+        // return overlap of two objects
         constexpr float GetOverlap(Vector2 A,  Vector2 B)
         {
             const float overlapStart = std::max(A.x, B.x);
@@ -60,10 +61,10 @@ namespace pe2d
             return overlapEnd - overlapStart;
         }
         
-        // returns perpendicular and normalized axes of an object's edges
+        // return perpendicular and normalized axes of an object's edges
         std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices);
         
-        // returns perpendicular and normalized axes of an rectangle
+        // return perpendicular and normalized axes of an rectangle edges
         std::array<Vector2, 2> GetRectangleAxes(const std::array<Vector2, 4> &vertices);
         
         // project an shape on axis 
@@ -107,7 +108,7 @@ namespace pe2d
             }
         }
         
-        // returns perpendicular and normalized axis to circle center
+        // return perpendicular and normalized axis to circle center
         template <typename Container>
         Vector2 GetCircleAxis(const Container &vertices, Vector2 circleCenter)
         {

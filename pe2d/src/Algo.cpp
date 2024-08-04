@@ -131,6 +131,27 @@ namespace pe2d
             return CollisionPoints{*smallestAxis, overlap, true};
         }
 
+        std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform)
+        {
+            Vector2 center = transform.position;
+            Vector2 scale = transform.scale;
+            const float scaledHalfSizeX = (boxSize.x * scale.x) / 2.0f;
+            const float scaledHalfSizeY = (boxSize.y * scale.y) / 2.0f;
+            const float angle = transform.GetRadians();
+            std::array<Vector2, 4> vertices = 
+            {
+                Vector2( center.x - scaledHalfSizeX, center.y - scaledHalfSizeY ),
+                Vector2( center.x + scaledHalfSizeX, center.y - scaledHalfSizeY ),
+                Vector2( center.x + scaledHalfSizeX, center.y + scaledHalfSizeY ),
+                Vector2( center.x - scaledHalfSizeX, center.y + scaledHalfSizeY )
+            };
+            if(!(int)transform.rotation % 90 == 0)
+            {
+                RotateVertices<std::array<Vector2, 4>>(vertices, center, angle);
+            }
+            return vertices;
+        }
+
         std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices)
         {
             std::vector<Vector2> axes;
@@ -175,27 +196,6 @@ namespace pe2d
                 std::swap(min, max);
             } 
             return Vector2{min, max};
-        }
-        
-        std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform)
-        {
-            Vector2 center = transform.position;
-            Vector2 scale = transform.scale;
-            const float scaledHalfSizeX = (boxSize.x * scale.x) / 2.0f;
-            const float scaledHalfSizeY = (boxSize.y * scale.y) / 2.0f;
-            const float angle = transform.GetRadians();
-            std::array<Vector2, 4> vertices = 
-            {
-                Vector2( center.x - scaledHalfSizeX, center.y - scaledHalfSizeY ),
-                Vector2( center.x + scaledHalfSizeX, center.y - scaledHalfSizeY ),
-                Vector2( center.x + scaledHalfSizeX, center.y + scaledHalfSizeY ),
-                Vector2( center.x - scaledHalfSizeX, center.y + scaledHalfSizeY )
-            };
-            if(!(int)transform.rotation % 90 == 0)
-            {
-                RotateVertices<std::array<Vector2, 4>>(vertices, center, angle);
-            }
-            return vertices;
         }
     }
 }  

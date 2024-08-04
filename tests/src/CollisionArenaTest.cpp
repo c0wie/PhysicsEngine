@@ -11,17 +11,25 @@ namespace test
 
         const pe2d::Transform mouseTracerTransform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
         const pe2d::Vector2 mouseTracerSize = pe2d::Vector2(100.0f, 100.0f);
-        AddBox(2137U, sf::Color::Magenta, mouseTracerSize, mouseTracerTransform, false, true);
+        AddBox(2137U, sf::Color::Magenta, mouseTracerSize, mouseTracerTransform, false);
 
         const pe2d::Transform platformTransform = pe2d::Transform(pe2d::Vector2(500.0, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
         const pe2d::Vector2 platformSize = pe2d::Vector2(600.0f, 75.0f);
-        AddBox(210U, sf::Color::White, platformSize, platformTransform, false, false);
+        AddBox(210U, sf::Color::White, platformSize, platformTransform, false);
 
         ResetVariables();        
     }
 
     void CollisionArenaTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+        {
+            m_World.At(2137)->Rotate(100.0f * deltaTime);
+        }
+        else if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+        {
+            m_World.At(2137)->Rotate(-100.0f * deltaTime);
+        }
         if(m_World.Size() != m_Shapes.size())
         {
             ASSERT("m_World size and m_Shapes size aren't the same");
@@ -57,14 +65,19 @@ namespace test
         {
             ImGui::Begin("Object Editor");
             CollisionObjectInput();
-            if( ImGui::Button("CollisionObject") )
+            if(isRigidObject)
             {
-                isRigidObject = false;
+                if( ImGui::Button("Make Collision Object") )
+                {
+                    isRigidObject = false;
+                }
             }
-            ImGui::SameLine();
-            if( ImGui::Button("RigidObject") )
+            else
             {
-                isRigidObject = true;
+                if( ImGui::Button("Make Rigid Object") )
+                {
+                    isRigidObject = true;
+                }
             }
             if(isRigidObject)
             {
@@ -104,10 +117,6 @@ namespace test
         ImGui::InputFloat2("Scale", &scale.x);
         ImGui::InputFloat("Rotation", &rotation);
         ImGui::InputInt3("Color", &color.red);
-        if(ImGui::Button("Is Movable"))
-        {
-            isMovable = !isMovable;
-        }
     }
    
     void CollisionArenaTest::RigidObjectInput()
@@ -120,7 +129,6 @@ namespace test
     void CollisionArenaTest::ResetVariables()
     {
         isRigidObject = false;
-        isMovable = true;
         objectType = ObjectType::BOX;
         size = pe2d::Vector2(0.0f, 0.0f);
         radius = 0.0f;
@@ -145,22 +153,22 @@ namespace test
         {
             if(isRigidObject)
             {
-                AddBox(ID, Color, size, transform, false, isMovable, mass, velocity, gravity);
+                AddBox(ID, Color, size, transform, false, mass, velocity, gravity);
             }
             else
             {
-                AddBox(ID, Color, size, transform, false, isMovable);
+                AddBox(ID, Color, size, transform, false);
             }
         }
         else if(objectType == ObjectType::CIRCLE)
         {
             if(isRigidObject)
             {
-                AddCircle(ID, Color, radius, transform, false, isMovable, mass, velocity, gravity);
+                AddCircle(ID, Color, radius, transform, false, mass, velocity, gravity);
             }
             else
             {
-                AddCircle(ID, Color, radius, transform, false, isMovable);
+                AddCircle(ID, Color, radius, transform, false);
             }
         }
         else

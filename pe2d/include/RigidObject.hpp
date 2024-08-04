@@ -8,9 +8,10 @@ namespace pe2d
     class RigidObject : public CollisionObject
     {
     public:
-        RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform, bool isTrigger, bool isMovable,
-            std::function<void(Collision, float)> collisionCallback, float mass, Vector2 velocity, Vector2 force,
-            Vector2 gravity, bool takesGravity, float staticFriction, float dynamicFriction, float restitution);
+        RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform,
+                    bool isTrigger, std::function<void(Collision, float)> collisionCallback,
+                    float mass, Vector2 velocity, Vector2 force, Vector2 gravity, bool takesGravity,
+                    float staticFriction, float dynamicFriction, float restitution);
         RigidObject(const RigidObject &other);
         RigidObject(RigidObject &&other);
         RigidObject& operator=(const RigidObject &other);
@@ -21,9 +22,11 @@ namespace pe2d
         constexpr Vector2 GetVelocity() const { return m_Velocity; }
         constexpr Vector2 GetForce() const { return m_Force; }
         constexpr Vector2 GetGravity() const { return m_Gravity; }
+        constexpr bool TakesGravity() const { return m_TakesGravity; }
         constexpr float GetStaticFriction() const { return m_StaticFriction; }
         constexpr float GetDynamicFriction() const { return m_DynamicFriction; }
         constexpr float GetRestitution() const { return m_Restitution; }
+
         constexpr void SetMass(float mass)
         {
             if(mass <= 0.0f)
@@ -39,6 +42,14 @@ namespace pe2d
         constexpr void SetForce(Vector2 force)
         {
             m_Force = force;
+        }
+        constexpr void SetGravity(Vector2 gravity)
+        {
+            if(m_TakesGravity)
+            {
+                ASSERT("Can't change gravity value if object get it from environment");
+            }
+            m_Gravity = gravity;
         }
         constexpr void SetStaticFriction(float staticFriction)
         {

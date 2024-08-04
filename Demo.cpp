@@ -28,7 +28,6 @@ int main()
     float deltaTime = 0.0f;
     DT_Clock.restart();
     ImGuiIO& io = ImGui::GetIO();
-    window.setFramerateLimit(120);
 
     while(window.isOpen())
     {

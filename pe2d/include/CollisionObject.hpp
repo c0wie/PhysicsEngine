@@ -12,7 +12,7 @@ namespace pe2d
     class CollisionObject
     {
     public:
-        CollisionObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform, bool isTrigger, bool isMovable,
+        CollisionObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform, bool isTrigger,
             std::function<void(Collision, float)> collisionCallback);
         CollisionObject(const CollisionObject &other);
         CollisionObject(CollisionObject &&other);
@@ -28,7 +28,6 @@ namespace pe2d
         constexpr float GetRotation() const { return m_Transform.rotation; }
         constexpr Transform GetTransform() const { return m_Transform; }
         constexpr bool IsTrigger() const { return m_IsTrigger; }
-        constexpr bool IsMovable() const { return m_IsMovable; }
         void OnCollision(Collision &collision, float deltaTime) const;
         
         constexpr void SetPosition(Vector2 pos) { m_Transform.position = pos; }
@@ -59,7 +58,6 @@ namespace pe2d
         }
         constexpr void SetTransform(Transform transform) { m_Transform = transform; }
         constexpr void SetTrigger(bool isTrigger) { m_IsTrigger = isTrigger; }
-        constexpr void SetMovability (bool isMovable) { m_IsMovable = isMovable; }
         void SetCollisionCallback(std::function<void(Collision, float)> collisionCallback) { m_OnCollision = collisionCallback; }
         constexpr void Move(Vector2 offset) { m_Transform.Move(offset); }
         constexpr void Rotate(float angle) { m_Transform.Rotate(angle); }
@@ -70,7 +68,6 @@ namespace pe2d
         std::shared_ptr<Collider> m_Collider;
         Transform m_Transform;
         bool m_IsTrigger;
-        bool m_IsMovable;
         std::function<void(Collision, float)> m_OnCollision;
     };
 }

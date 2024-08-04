@@ -3,7 +3,8 @@
 namespace test
 {
 
-    FallingCirclesTest::FallingCirclesTest()
+    FallingCirclesTest::FallingCirclesTest() :
+        m_TimeSinceLastSpawn(0.0f)
     {
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         m_World.AddSolver(solver);
@@ -12,11 +13,18 @@ namespace test
 
     void FallingCirclesTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
+        m_TimeSinceLastSpawn += deltaTime;
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_TimeSinceLastSpawn >= m_SquareSpawnCooldown)
         {
+            m_TimeSinceLastSpawn = 0.0f;
             pe2d::Vector2 position = pe2d::Vector2{(float)mousePos.x, (float)mousePos.y};
             pe2d::Transform transform = pe2d::Transform{position, pe2d::Vector2(1.0f, 1.0f), 0.0f};
-            AddCircle(m_World.Size(), sf::Color::Magenta, 40.0f, transform, false, true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2{0.0f, 10.0f});
+            const float mass = 10.0f;
+            const float radius = 40.0f;
+            const bool isTrigger = false;
+            const pe2d::Vector2 velocity = pe2d::Vector2(0.0f, 0.0f);
+            const pe2d::Vector2 gravity = pe2d::Vector2(0.0f, 10.0f);
+            AddCircle(m_World.Size(), sf::Color::Magenta, radius, transform, isTrigger, mass, velocity, gravity);
         }
         m_World.Step(deltaTime);  
     }
