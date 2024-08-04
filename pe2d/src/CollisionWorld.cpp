@@ -54,11 +54,9 @@ namespace pe2d
         {
             m_Grid.Update(m_Objects);
             auto pairs = m_Grid.GetCollisionPairs();
-            int i = 0;
             for(auto it = pairs.begin(); it != pairs.end(); it++)
             {
                 FindCollisions(m_Objects.at(it->first), m_Objects.at(it->second), collisions, triggers);
-                i++;
             }
         }
         else
