@@ -44,7 +44,7 @@ namespace pe2d
         void RemoveGrid();
         void ResizeGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float cellSize);
         
-        void ResolveCollisions(float deltaTime);
+        void virtual ResolveCollisions(float deltaTime);
         
         bool IsGridOn() const { return m_IsGridOn; }
         //returns size of container which holds object items

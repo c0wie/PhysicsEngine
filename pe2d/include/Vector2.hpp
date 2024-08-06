@@ -92,7 +92,7 @@ namespace pe2d
         // returns normalized vector
         constexpr Vector2 normalized() const
         {
-            float length = magnitude();
+            const float length = magnitude();
             if(length == 0)
             {
                 ASSERT("DIVISION BY ZERO in normalized");

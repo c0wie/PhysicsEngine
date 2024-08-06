@@ -6,7 +6,7 @@ namespace test
         showObjectEditor(false)
     {
         m_World.AddGrid(pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 100.0f);
-        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
+        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
         m_World.AddSolver(solver);
 
         const pe2d::Transform mouseTracerTransform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
@@ -25,10 +25,6 @@ namespace test
         if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
         {
             m_World.At(2137)->Rotate(100.0f * deltaTime);
-        }
-        else if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-        {
-            m_World.At(2137)->Rotate(-100.0f * deltaTime);
         }
         if(m_World.Size() != m_Shapes.size())
         {
@@ -124,6 +120,8 @@ namespace test
         ImGui::InputFloat("Mass", &mass);
         ImGui::InputFloat2("Velocity", &velocity.x);
         ImGui::InputFloat2("Gravity", &gravity.x);
+        ImGui::InputFloat("Static Friction", &staticFriction);
+        ImGui::InputFloat("DynamicFriction", &dynamicFriction);
     } 
 
     void CollisionArenaTest::ResetVariables()
@@ -139,9 +137,8 @@ namespace test
         mass = 0.0f;
         velocity = pe2d::Vector2(0.0f, 0.0f);
         gravity = pe2d::Vector2(0.0f, 0.0f);
-        topLeftCorner = pe2d::Vector2(0.0f, 0.0f);
-        botRightCorner = pe2d::Vector2(0.0f, 0.0f);
-        maxDepth = 0;
+        staticFriction = 0.5f;
+        dynamicFriction = 0.5f;
     }
 
     void CollisionArenaTest::CreateObject()
@@ -149,11 +146,12 @@ namespace test
         const sf::Color Color = sf::Color{(sf::Uint8)color.red, (sf::Uint8)color.green, (sf::Uint8)color.blue};
         const pe2d::Transform transform = pe2d::Transform{ position, scale, rotation};
         const unsigned int ID = m_World.Size();
+        constexpr pe2d::Vector2 force = pe2d::Vector2(0.0f, 0.0f);
         if(objectType == ObjectType::BOX)
         {
             if(isRigidObject)
             {
-                AddBox(ID, Color, size, transform, false, mass, velocity, gravity);
+                AddBox(ID, Color, size, transform, false, mass, force, velocity, gravity, staticFriction, dynamicFriction, 0.0f);
             }
             else
             {
@@ -164,7 +162,7 @@ namespace test
         {
             if(isRigidObject)
             {
-                AddCircle(ID, Color, radius, transform, false, mass, velocity, gravity);
+                AddCircle(ID, Color, radius, transform, false, mass, force, velocity, gravity, staticFriction, dynamicFriction, 0.0f);
             }
             else
             {

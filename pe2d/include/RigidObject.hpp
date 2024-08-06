@@ -19,6 +19,7 @@ namespace pe2d
         RigidObject() = default;
     public:
         constexpr float GetMass() const { return m_Mass; }
+        constexpr float GetInvMass() const { return (1.0f / m_Mass); }
         constexpr Vector2 GetVelocity() const { return m_Velocity; }
         constexpr Vector2 GetForce() const { return m_Force; }
         constexpr Vector2 GetGravity() const { return m_Gravity; }
@@ -43,6 +44,10 @@ namespace pe2d
         {
             m_Force = force;
         }
+        constexpr void AddForce(Vector2 force)
+        {
+            m_Force += force;
+        }
         constexpr void SetGravity(Vector2 gravity)
         {
             if(m_TakesGravity)
@@ -53,11 +58,19 @@ namespace pe2d
         }
         constexpr void SetStaticFriction(float staticFriction)
         {
+            if(staticFriction < 0.0f || staticFriction > 1.0f)
+            {
+                ASSERT("Value of static friction have to be beetwen 0 and 1");
+            }
             m_StaticFriction = staticFriction;
         }
-        constexpr void SetDynamicFriction(float dynamicDriction)
-        {
-            m_DynamicFriction = dynamicDriction;
+        constexpr void SetDynamicFriction(float dynamicFriction)
+        {  
+            if(dynamicFriction < 0.0f || dynamicFriction > 1.0f)
+            {
+                ASSERT("Value of dynamic friction has to be beetwen 0 and 1");
+            }
+            m_DynamicFriction = dynamicFriction;
         }
         constexpr void SetRestitution(float restitution)
         {
@@ -69,8 +82,8 @@ namespace pe2d
         Vector2 m_Force;
         Vector2 m_Gravity;          // Gravitional acceleration
         bool m_TakesGravity;        // If the rigidobject will take gravity from the world
-        float m_StaticFriction;     // Static friction coefficient
-        float m_DynamicFriction;    // Dynamic friction coefficient
+        float m_StaticFriction;     // Static friction coefficient wich value has to be form 0 to 1
+        float m_DynamicFriction;    // Dynamic friction coefficient wich value has to be form 0 to 1
         float m_Restitution;        // Elasticy of collision
     };
 }

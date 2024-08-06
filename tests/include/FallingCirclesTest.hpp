@@ -19,7 +19,7 @@ namespace test
         void OnRender(sf::RenderWindow &window) override;
         void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io) override;
     private:
-        static constexpr float m_SquareSpawnCooldown = 0.05f;
+        static constexpr float m_SquareSpawnCooldown = 0.55f;
         float m_TimeSinceLastSpawn;
     };
 }

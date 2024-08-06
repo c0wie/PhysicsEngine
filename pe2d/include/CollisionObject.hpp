@@ -28,6 +28,7 @@ namespace pe2d
         constexpr float GetRotation() const { return m_Transform.rotation; }
         constexpr Transform GetTransform() const { return m_Transform; }
         constexpr bool IsTrigger() const { return m_IsTrigger; }
+        constexpr bool IsRigid() const { return m_IsRigid; }
         void OnCollision(Collision &collision, float deltaTime) const;
         
         constexpr void SetPosition(Vector2 pos) { m_Transform.position = pos; }
@@ -68,6 +69,7 @@ namespace pe2d
         std::shared_ptr<Collider> m_Collider;
         Transform m_Transform;
         bool m_IsTrigger;
+        bool m_IsRigid;
         std::function<void(Collision, float)> m_OnCollision;
     };
 }

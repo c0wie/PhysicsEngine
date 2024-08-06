@@ -6,7 +6,7 @@ namespace test
     FallingCirclesTest::FallingCirclesTest() :
         m_TimeSinceLastSpawn(0.0f)
     {
-        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
+        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
         m_World.AddSolver(solver);
         m_World.AddGrid(pe2d::Vector2(-200.0f, -200.0f), pe2d::Vector2(1200.0f, 1200.0f), 200.0f);
     }
@@ -17,14 +17,18 @@ namespace test
         if(sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_TimeSinceLastSpawn >= m_SquareSpawnCooldown)
         {
             m_TimeSinceLastSpawn = 0.0f;
-            pe2d::Vector2 position = pe2d::Vector2{(float)mousePos.x, (float)mousePos.y};
-            pe2d::Transform transform = pe2d::Transform{position, pe2d::Vector2(1.0f, 1.0f), 0.0f};
-            const float mass = 10.0f;
-            const float radius = 40.0f;
-            const bool isTrigger = false;
-            const pe2d::Vector2 velocity = pe2d::Vector2(0.0f, 0.0f);
-            const pe2d::Vector2 gravity = pe2d::Vector2(0.0f, 10.0f);
-            AddCircle(m_World.Size(), sf::Color::Magenta, radius, transform, isTrigger, mass, velocity, gravity);
+            const pe2d::Vector2 position = pe2d::Vector2{(float)mousePos.x, (float)mousePos.y};
+            const pe2d::Transform transform = pe2d::Transform{position, pe2d::Vector2(1.0f, 1.0f), 0.0f};
+            constexpr float mass = 10.0f;
+            constexpr float radius = 40.0f;
+            constexpr bool isTrigger = false;
+            constexpr pe2d::Vector2 force = pe2d::Vector2(0.0f, 0.0f);
+            constexpr pe2d::Vector2 velocity = pe2d::Vector2(0.0f, 100.0f);
+            constexpr pe2d::Vector2 gravity = pe2d::Vector2(0.0f, 9.81f);
+            constexpr float staticFriction = 0.5f;
+            constexpr float dynamicFriction = 0.5f;
+            AddCircle(m_World.Size(), sf::Color::Magenta, radius, transform, isTrigger, mass,
+                    velocity, force, gravity, staticFriction, dynamicFriction, 0.0f);
         }
         m_World.Step(deltaTime);  
     }

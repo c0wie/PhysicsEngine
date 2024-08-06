@@ -19,7 +19,9 @@ namespace pe2d
         void AddRigidObject(std::shared_ptr<RigidObject> object);
         void Step(float deltaTime);
     private:
+        void ResolveCollisions(float deltaTime) override;
         void ApplyGravity();
+        void ApplyFriction(std::vector<Collision> &collisions, float deltaTime);
         void MoveObjects(float deltaTime);
     private:
         static constexpr float m_GRAVITY = 98.1f;

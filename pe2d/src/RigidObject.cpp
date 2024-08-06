@@ -15,6 +15,7 @@ namespace pe2d
             {
                 ASSERT("Mass of object has to be greater than 0");
             }
+            m_IsRigid = true;
         }
     
     RigidObject::RigidObject(const RigidObject &other):

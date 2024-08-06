@@ -75,7 +75,6 @@ namespace pe2d
                 }
             }
         }
-        
         SolveCollisions(collisions, deltaTime);
         SendCollisionCallbacks(collisions, deltaTime);
         SendCollisionCallbacks(triggers, deltaTime);

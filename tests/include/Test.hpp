@@ -18,9 +18,17 @@ namespace test
         virtual void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO& io) = 0;
     protected:
         void AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger);
-        void AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger, float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity);
+        void AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger,
+                        float mass, pe2d::Vector2 velocity, pe2d::Vector2 force, pe2d::Vector2 gravity, float staticFriction,
+                        float dynamicFriction, float bounciness);
+        void AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger,
+                        float mass, pe2d::Vector2 velocity, pe2d::Vector2 force, float staticFriction, float dynamicFriction, float bounciness);
         void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isTrigger);
-        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isTrigger, float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity);
+        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isTrigger,
+                    float mass, pe2d::Vector2 velocity, pe2d::Vector2 force, pe2d::Vector2 gravity, float staticFriction,
+                    float dynamicFriction, float bounciness);
+        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isTrigger,
+                    float mass, pe2d::Vector2 velocity, pe2d::Vector2 force, float staticFriction, float dynamicFriction, float bounciness);
         
         void Draw(sf::RenderWindow &window) const;
     private:
