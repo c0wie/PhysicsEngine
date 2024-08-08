@@ -129,8 +129,17 @@ namespace test
         }
         ImGui::InputFloat2("Position", &position.x);
         ImGui::InputFloat2("Scale", &scale.x);
-        ImGui::InputFloat("Rotation", &rotation);
-        ImGui::InputInt3("Color", &color.red);
+        ImGui::SliderFloat("Rotation", &rotation, -360.0f, 360.0f);
+        if( ImGui::Button("Pick color") )
+        {
+            showColorPicker = !showColorPicker;
+        }
+        if(showColorPicker)
+        {
+            ImGui::ColorPicker3("Color", &color.red);
+        }
+        ImGui::SameLine();
+         ImGui::ColorButton("##current_color", ImVec4(color.red, color.green, color.blue, 1.0f));
     }
    
     void CollisionArenaTest::RigidObjectInput()
@@ -138,8 +147,8 @@ namespace test
         ImGui::InputFloat("Mass", &mass);
         ImGui::InputFloat2("Velocity", &velocity.x);
         ImGui::InputFloat2("Gravity", &gravity.x);
-        ImGui::InputFloat("Static Friction", &staticFriction);
-        ImGui::InputFloat("DynamicFriction", &dynamicFriction);
+        ImGui::SliderFloat("Static Friction", &staticFriction, 0.0f, 1.0f);
+        ImGui::SliderFloat("DynamicFriction", &dynamicFriction, 0.0f, 1.0f);
     } 
 
     void CollisionArenaTest::ResetVariables()
