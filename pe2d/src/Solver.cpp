@@ -67,44 +67,6 @@ namespace pe2d
             }
             objectA->Move(MTVA);
             objectB->Move(MTVB * -1);
-
-            // apply force
-            const Vector2 velocityA = objectA->IsRigid()? rigidBodyA->GetVelocity() : Vector2(0.0f, 0.0f); 
-            const Vector2 velocityB = objectB->IsRigid()? rigidBodyB->GetVelocity() : Vector2(0.0f, 0.0f); 
-            const float dynamicFrictionA = objectA->IsRigid()? rigidBodyA->GetDynamicFriction() : 0.0f;
-            const float dynamicFrictionB = objectA->IsRigid()? rigidBodyA->GetDynamicFriction() : 0.0f;
-            const float coefficientOfDynamicFriction = (dynamicFrictionA + dynamicFrictionB) / 2.0f;
-            const Vector2 relativeVelocity = velocityB - velocityA;
-            
-            const float velocityAlongNormal = relativeVelocity.dot(points.Normal);
-            
-            const float inverseMassA = massA > 0.0f ? 1.0f / massA : 0.0f;
-            const float inverseMassB = massB > 0.0f ? 1.0f / massB : 0.0f;
-            const float impulseScalar = velocityAlongNormal / (inverseMassA + inverseMassB);
-
-            const Vector2 impulse = points.Normal * impulseScalar;
-            const Vector2 tangent = (relativeVelocity - points.Normal * velocityAlongNormal).normalized();
-
-            float frictionImpulseScalar = (relativeVelocity.dot(tangent) * -1.0f) / (inverseMassA + inverseMassB);
-
-            const float maxFriction = coefficientOfDynamicFriction * impulseScalar;
-            if(std::abs(frictionImpulseScalar) > maxFriction)
-            {
-                frictionImpulseScalar = maxFriction * (frictionImpulseScalar > 0.0f ? 1.0f : -1.0f);
-            }
-
-            const Vector2 frictionImpulse = tangent * frictionImpulseScalar;
-
-            if(rigidBodyA)
-            {
-                const Vector2 force = velocityA - impulse * inverseMassA;
-                rigidBodyA->AddForce(force - frictionImpulse * inverseMassA);
-            }
-            if(rigidBodyB)
-            {
-                const Vector2 force = velocityB - impulse * inverseMassB;
-                rigidBodyB->AddForce(force - frictionImpulse * inverseMassB);
-            }
         }
     }
 }

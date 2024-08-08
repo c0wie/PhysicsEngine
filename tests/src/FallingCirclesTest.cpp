@@ -23,7 +23,7 @@ namespace test
             constexpr float radius = 40.0f;
             constexpr bool isTrigger = false;
             constexpr pe2d::Vector2 force = pe2d::Vector2(0.0f, 0.0f);
-            constexpr pe2d::Vector2 velocity = pe2d::Vector2(0.0f, 100.0f);
+            constexpr pe2d::Vector2 velocity = pe2d::Vector2(0.0f, 0.0f);
             constexpr pe2d::Vector2 gravity = pe2d::Vector2(0.0f, 9.81f);
             constexpr float staticFriction = 0.5f;
             constexpr float dynamicFriction = 0.5f;

@@ -26,5 +26,7 @@ namespace pe2d
     private:
         static constexpr float m_GRAVITY = 98.1f;
         static constexpr float m_MAX_VELOCITY = 1000.0f;
+    public:
+        bool isColliding = false;
     };
 }

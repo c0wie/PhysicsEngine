@@ -41,5 +41,7 @@ namespace test
         pe2d::Vector2 gravity;
         float staticFriction;
         float dynamicFriction;
+    public:
+        bool wasColliding = false;
     };
 }

@@ -2,6 +2,7 @@
 
 namespace test
 {
+    Stoper stoper;
     CollisionArenaTest::CollisionArenaTest() :
         showObjectEditor(false)
     {
@@ -9,14 +10,20 @@ namespace test
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
         m_World.AddSolver(solver);
 
-        const pe2d::Transform mouseTracerTransform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
+        const pe2d::Transform mouseTracerTransform = pe2d::Transform(pe2d::Vector2(1000.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
         const pe2d::Vector2 mouseTracerSize = pe2d::Vector2(100.0f, 100.0f);
         AddBox(2137U, sf::Color::Magenta, mouseTracerSize, mouseTracerTransform, false);
 
-        const pe2d::Transform platformTransform = pe2d::Transform(pe2d::Vector2(500.0, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
-        const pe2d::Vector2 platformSize = pe2d::Vector2(600.0f, 75.0f);
-        AddBox(210U, sf::Color::White, platformSize, platformTransform, false);
-
+        const pe2d::Vector2 platformSize = pe2d::Vector2(400.0f, 50.0f);
+        const float platformMass = 100000.0f;
+        AddBox(420U, sf::Color::Red, platformSize, pe2d::Transform(pe2d::Vector2(500.0f, 600.0f), pe2d::Vector2(1.0f, 1.0f), 30.0f),
+                false, platformMass, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.0f, 0.0f, 0.0f);
+        
+        const float circleRadius = 40.0f;
+        const float circleMass = 100.0f;
+        AddCircle(24U, sf::Color::Red, circleRadius, pe2d::Transform(pe2d::Vector2(400.0f, 100.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
+                false, circleMass, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 9.81f), 0.0f, 0.0f, 0.0f);
+        
         ResetVariables();        
     }
 
@@ -35,6 +42,17 @@ namespace test
         const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
         const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 10.0f * deltaTime);
 
+        if(m_World.isColliding == !wasColliding && stoper.running == false)
+        {
+            stoper.start();
+            wasColliding = m_World.isColliding;
+        }
+        if(m_World.isColliding == !wasColliding && stoper.running == true)
+        {
+            stoper.stop();
+            stoper.printTime();
+            wasColliding = m_World.isColliding;
+        }
         mouseTracer->SetPosition(position);
         m_World.Step(deltaTime);  
     }

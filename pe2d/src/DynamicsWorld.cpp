@@ -36,11 +36,9 @@ namespace pe2d
         {
             m_Grid.Update(m_Objects);
             auto pairs = m_Grid.GetCollisionPairs();
-            int i = 0;
             for(auto it = pairs.begin(); it != pairs.end(); it++)
             {
                 FindCollisions(m_Objects.at(it->first), m_Objects.at(it->second), collisions, triggers);
-                i++;
             }
         }
         else
@@ -67,12 +65,11 @@ namespace pe2d
     {   
         for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
         {
-            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(it->second);
-            // checks if object is RigidBody
-            if(!object)
+            if(!it->second->IsRigid())
             {
                 continue;
             }
+            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(it->second);
             // 2nd Newton's law F = ma
             object->AddForce( object->GetGravity() * object->GetMass() );
         }
@@ -80,26 +77,59 @@ namespace pe2d
 
     void DynamicsWorld::ApplyFriction(std::vector<Collision> &collisions, float deltaTime)
     {
+        bool wasCollision = false;
         for(auto &collision : collisions)
         {
-            std::shared_ptr<CollisionObject> objectA = collision.GetObjectA();
-            std::shared_ptr<CollisionObject> objectB = collision.GetObjectB();
-            std::shared_ptr<RigidObject> rigidBodyA = objectA->IsRigid()? std::static_pointer_cast<RigidObject>(objectA) : nullptr;
-            std::shared_ptr<RigidObject> rigidBodyB = objectB->IsRigid()? std::static_pointer_cast<RigidObject>(objectB) : nullptr;
+            if(collision.GetObjectA()->GetID() == 24 && collision.GetObjectB()->GetID() == 420)
+            {
+                wasCollision = true;
+            }
+            const std::shared_ptr<CollisionObject> objectA = collision.GetObjectA();
+            const std::shared_ptr<CollisionObject> objectB = collision.GetObjectB();
             const CollisionPoints &points = collision.GetPoints();
+            if(!objectA->IsRigid() && !objectB->IsRigid())
+            {
+                continue;
+            }
 
-            const Vector2 velocityA = objectA->IsRigid()? rigidBodyA->GetVelocity() : Vector2(0.0f, 0.0f); 
-    
-            const Vector2 velocityB = objectB->IsRigid()? rigidBodyB->GetVelocity() : Vector2(0.0f, 0.0f); 
-            const float dynamicFrictionA = objectA->IsRigid()? rigidBodyA->GetDynamicFriction() : 0.0f;
-            const float dynamicFrictionB = objectA->IsRigid()? rigidBodyA->GetDynamicFriction() : 0.0f;
-            const float coefficientOfDynamicFriction = (dynamicFrictionA + dynamicFrictionB) / 2.0f;
+            std::shared_ptr<RigidObject> rigidBodyA, rigidBodyB;
+            Vector2 velocityA, velocityB;
+            float dynamicFrictionA, dynamicFrictionB;
+            float inverseMassA, inverseMassB;
+
+            if( objectA->IsRigid() )
+            {
+                rigidBodyA = std::static_pointer_cast<RigidObject>(objectA);
+                velocityA = rigidBodyA->GetVelocity();
+                dynamicFrictionA = rigidBodyA->GetDynamicFriction();
+                inverseMassA = rigidBodyA->GetInvMass();
+            }
+            else
+            {
+                rigidBodyA = nullptr;
+                velocityA = Vector2(0.0f, 0.0f);
+                dynamicFrictionA = 0.0f;
+                inverseMassA = 0.0f;
+            }
+            if( objectB->IsRigid() )
+            {
+                rigidBodyB = std::static_pointer_cast<RigidObject>(objectB);
+                velocityB = rigidBodyB->GetVelocity();
+                dynamicFrictionB = rigidBodyB->GetDynamicFriction();
+                inverseMassB = rigidBodyB->GetInvMass();
+            }
+            else
+            {
+                rigidBodyB = nullptr;
+                velocityB = Vector2(0.0f, 0.0f);
+                dynamicFrictionB = 0.0f;
+                inverseMassB = 0.0f;
+            }
+
             const Vector2 relativeVelocity = velocityB - velocityA;
-
+            const float coefficientOfDynamicFriction = (dynamicFrictionA + dynamicFrictionB) / 2.0f;
             const float velocityAlongNormal = relativeVelocity.dot(points.Normal);
 
-            const float inverseMassA = objectA->IsRigid()? rigidBodyA->GetInvMass() : 0.0f;
-            const float inverseMassB = objectB->IsRigid()? rigidBodyB->GetInvMass() : 0.0f;
             const float impulseScalar = velocityAlongNormal / (inverseMassA + inverseMassB);
 
             const Vector2 impulse = points.Normal * impulseScalar;
@@ -110,7 +140,7 @@ namespace pe2d
             const float maxFriction = coefficientOfDynamicFriction * impulseScalar;
             if(std::abs(frictionImpulseScalar) > maxFriction)
             {
-                frictionImpulseScalar = maxFriction * (frictionImpulseScalar > 0.0f ? 1.0f : -1.0f);
+                frictionImpulseScalar = maxFriction * (frictionImpulseScalar > 0.0f ? -1.0f : 1.0f);
             }
 
             const Vector2 frictionImpulse = tangent * frictionImpulseScalar;
@@ -126,18 +156,18 @@ namespace pe2d
                 rigidBodyB->AddForce(force - frictionImpulse * inverseMassB);
             }
         }
+        isColliding = wasCollision;
     }
 
     void DynamicsWorld::MoveObjects(float deltaTime)
     {
         for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
         {
-            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(it->second);
-            // checks if object is rigidObject
-            if(!object)
+            if(!it->second->IsRigid())
             {
                 continue;
             }
+            std::shared_ptr<RigidObject> object = std::dynamic_pointer_cast<RigidObject>(it->second);
             const Vector2 acceleration = object->GetForce() / object->GetMass();
             Vector2 newVel = object->GetVelocity() + acceleration * deltaTime;
             object->Move(object->GetVelocity() * deltaTime + (acceleration * std::pow(deltaTime, 2) * 0.5));

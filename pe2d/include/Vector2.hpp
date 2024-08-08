@@ -95,9 +95,9 @@ namespace pe2d
             const float length = magnitude();
             if(length == 0)
             {
-                ASSERT("DIVISION BY ZERO in normalized");
+                return Vector2(0.0f, 0.0f);
             }
-            return Vector2 {x / length, y / length};
+            return Vector2 (x / length, y / length);
         }
         // returns dot product of two vectors;
         constexpr float dot(const Vector2 &other) const

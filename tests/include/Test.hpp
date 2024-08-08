@@ -3,8 +3,49 @@
 #include "Shape.hpp"
 #include <imgui.h>
 #include "../../pe2d/include/DynamicsWorld.hpp"
+#include <chrono>
 
+struct Stoper {
+    // Use chrono to represent time points
+    std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock> endTime;
+    bool running = false;
 
+    // Start the timer
+    void start() {
+        std::cout << "Stoper starts\n";
+        startTime = std::chrono::high_resolution_clock::now();
+        running = true;
+    }
+
+    // Stop the timer
+    void stop() {
+        if (running) {
+            std::cout << "Stoper stops\n";
+            endTime = std::chrono::high_resolution_clock::now();
+            running = false;
+        } else {
+            std::cout << "Stoper is not running. Please start it first.\n";
+        }
+    }
+
+    // Print the elapsed time
+    void printTime() const {
+        if (!running) {
+            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+            std::cout << "Elapsed time: " << elapsed.count() << " milliseconds\n";
+        } else {
+            std::cout << "Stoper is still running. Please stop it first.\n";
+        }
+    }
+
+    // Reset the timer
+    void reset() {
+        startTime = std::chrono::time_point<std::chrono::high_resolution_clock>();
+        endTime = std::chrono::time_point<std::chrono::high_resolution_clock>();
+        running = false;
+    }
+};
 namespace test
 {
     class Test
