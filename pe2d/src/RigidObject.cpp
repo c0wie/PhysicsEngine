@@ -15,13 +15,13 @@ namespace pe2d
             {
                 ASSERT("Mass of object has to be greater than 0");
             }
-            if(m_StaticFriction < 0.0f || m_StaticFriction > 1.0f)
-            {
-                ASSERT("Value of static friction have to be beetwen 0 and 1");
-            }
             if(m_DynamicFriction < 0.0f || m_DynamicFriction > 1.0f)
             {
                 ASSERT("Value of dynamic friction has to be beetwen 0 and 1");
+            }
+            if(m_StaticFriction < 0.0f || m_StaticFriction > 1.0f)
+            {
+                ASSERT("Value of static friction have to be beetwen 0 and 1");
             }
             m_IsRigid = true;
         }

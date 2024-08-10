@@ -6,9 +6,9 @@
 #include <imgui-SFML.h>
 
 #include "DynamicsWorld.hpp"
-#include "tests/include/FallingCirclesTest.hpp"
-#include "tests/include/CollisionArenaTest.hpp"
-#include "tests/include/TestMenu.hpp"
+#include "Samples/include/FallingCirclesTest.hpp"
+#include "Samples/include/CollisionArenaTest.hpp"
+#include "Samples/include/TestMenu.hpp"
 
 
 int main()

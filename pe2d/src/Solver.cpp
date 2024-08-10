@@ -5,8 +5,10 @@ namespace pe2d
     {
         for(const auto &collision : collisions)
         {
-            auto objectA = collision.GetObjectA();
-            auto objectB = collision.GetObjectB();
+            std::shared_ptr<CollisionObject> objectA = collision.GetObjectA();
+            std::shared_ptr<CollisionObject> objectB = collision.GetObjectB();
+            std::shared_ptr<RigidObject> rigidBodyA = objectA->IsRigid()? std::static_pointer_cast<RigidObject>(objectA) : nullptr;
+            std::shared_ptr<RigidObject> rigidBodyB = objectB->IsRigid()? std::static_pointer_cast<RigidObject>(objectB) : nullptr;
             const auto &points = collision.GetPoints();
             const Vector2 positionA = objectA->GetPosition();
             const Vector2 positionB = objectB->GetPosition();
@@ -17,7 +19,16 @@ namespace pe2d
             {
                 MTV *= -1.0f;
             }
+            
+            if(rigidBodyA)
+            {
+                rigidBodyA->AddForce(MTV);
+            }
             objectA->Move(MTV);
+            if(rigidBodyB)
+            {
+                rigidBodyB->AddForce(MTV * -1.0f);
+            }
             objectB->Move(MTV * -1.0f);
         }
     }
@@ -30,11 +41,6 @@ namespace pe2d
             std::shared_ptr<CollisionObject> objectB = collision.GetObjectB();
             std::shared_ptr<RigidObject> rigidBodyA = objectA->IsRigid()? std::static_pointer_cast<RigidObject>(objectA) : nullptr;
             std::shared_ptr<RigidObject> rigidBodyB = objectB->IsRigid()? std::static_pointer_cast<RigidObject>(objectB) : nullptr;
-            if(!rigidBodyA && !rigidBodyB)
-            {
-                PositionSolver solver;
-                return solver.Solve(collisions, deltaTime);
-            }
             const auto &points = collision.GetPoints();
             const Vector2 positionA = objectA->GetPosition();
             const Vector2 positionB = objectB->GetPosition();
@@ -60,12 +66,24 @@ namespace pe2d
                 MTVA = MTV;
                 MTVB = Vector2{};
             }
-            else
+            else if(massA != 0.0f && massB != 0.0f)
             {
                 MTVA = MTV * (massB / totalMass);
                 MTVB = MTV * (massA / totalMass);
             }
+            if(rigidBodyA)
+            {   
+                const float normalForceScalar = points.Normal.dot(rigidBodyA->GetGravity() * rigidBodyA->GetMass() * -1);
+                const Vector2 normalForce = points.Normal * normalForceScalar;
+                rigidBodyA->AddForce(normalForce);
+            }
             objectA->Move(MTVA);
+            if(rigidBodyB)
+            {
+                const float normalForceScalar = points.Normal.dot(rigidBodyB->GetGravity() * rigidBodyB->GetMass());
+                const Vector2 normalForce = points.Normal * normalForceScalar;
+                rigidBodyB->AddForce(normalForce);
+            }
             objectB->Move(MTVB * -1);
         }
     }

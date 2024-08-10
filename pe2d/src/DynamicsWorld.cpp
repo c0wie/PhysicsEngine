@@ -78,6 +78,7 @@ namespace pe2d
     void DynamicsWorld::ApplyFriction(std::vector<Collision> &collisions, float deltaTime)
     {
         bool wasCollision = false;
+        constexpr float FRICTION_SCALING_FACTOR = 15.0f;
         for(auto &collision : collisions)
         {
             if(collision.GetObjectA()->GetID() == 24 && collision.GetObjectB()->GetID() == 420)
@@ -94,6 +95,7 @@ namespace pe2d
 
             std::shared_ptr<RigidObject> rigidBodyA, rigidBodyB;
             Vector2 velocityA, velocityB;
+            float staticFrictionA, staticFrictionB;
             float dynamicFrictionA, dynamicFrictionB;
             float inverseMassA, inverseMassB;
 
@@ -101,6 +103,7 @@ namespace pe2d
             {
                 rigidBodyA = std::static_pointer_cast<RigidObject>(objectA);
                 velocityA = rigidBodyA->GetVelocity();
+                staticFrictionA = rigidBodyA->GetStaticFriction();
                 dynamicFrictionA = rigidBodyA->GetDynamicFriction();
                 inverseMassA = rigidBodyA->GetInvMass();
             }
@@ -108,6 +111,7 @@ namespace pe2d
             {
                 rigidBodyA = nullptr;
                 velocityA = Vector2(0.0f, 0.0f);
+                staticFrictionA = 0.0f;
                 dynamicFrictionA = 0.0f;
                 inverseMassA = 0.0f;
             }
@@ -115,6 +119,7 @@ namespace pe2d
             {
                 rigidBodyB = std::static_pointer_cast<RigidObject>(objectB);
                 velocityB = rigidBodyB->GetVelocity();
+                staticFrictionB = rigidBodyB->GetStaticFriction();
                 dynamicFrictionB = rigidBodyB->GetDynamicFriction();
                 inverseMassB = rigidBodyB->GetInvMass();
             }
@@ -122,25 +127,42 @@ namespace pe2d
             {
                 rigidBodyB = nullptr;
                 velocityB = Vector2(0.0f, 0.0f);
+                staticFrictionB = 0.0f;
                 dynamicFrictionB = 0.0f;
                 inverseMassB = 0.0f;
             }
 
             const Vector2 relativeVelocity = velocityB - velocityA;
-            const float coefficientOfDynamicFriction = (dynamicFrictionA + dynamicFrictionB) / 2.0f;
+            const float coefficientOfStaticFriction = FRICTION_SCALING_FACTOR * (staticFrictionA + staticFrictionB) / 2.0f;
+            const float coefficientOfDynamicFriction = FRICTION_SCALING_FACTOR * (dynamicFrictionA + dynamicFrictionB) / 2.0f;
             const float velocityAlongNormal = relativeVelocity.dot(points.Normal);
 
+            // magnitude of impulse required to resolve the collision along the normal direction
             const float impulseScalar = velocityAlongNormal / (inverseMassA + inverseMassB);
 
             const Vector2 impulse = points.Normal * impulseScalar;
+            
+            // perpendicular to normal, represent direciton in which friction will act
             const Vector2 tangent = (relativeVelocity - points.Normal * velocityAlongNormal).normalized();
 
-            float frictionImpulseScalar = (relativeVelocity.dot(tangent) * -1.0f) / (inverseMassA + inverseMassB);
+            const float maxStaticFriction = coefficientOfStaticFriction * impulseScalar;
+            const float maxDynamicFriction = coefficientOfDynamicFriction * impulseScalar;
+            const float relativeVelocityAlongTangent = relativeVelocity.dot(tangent);
+            
+            float frictionImpulseScalar;
 
-            const float maxFriction = coefficientOfDynamicFriction * impulseScalar;
-            if(std::abs(frictionImpulseScalar) > maxFriction)
+            if(std::abs(relativeVelocityAlongTangent) < maxStaticFriction)
             {
-                frictionImpulseScalar = maxFriction * (frictionImpulseScalar > 0.0f ? -1.0f : 1.0f);
+                frictionImpulseScalar = -relativeVelocityAlongTangent / (inverseMassA + inverseMassB);
+            }
+            else
+            {
+                frictionImpulseScalar = -relativeVelocityAlongTangent / (inverseMassA + inverseMassB);
+
+                if(std::abs(frictionImpulseScalar) > maxDynamicFriction)
+                {
+                    frictionImpulseScalar = maxDynamicFriction * (frictionImpulseScalar > 0.0f? -1.0f : 1.0f);
+                }
             }
 
             const Vector2 frictionImpulse = tangent * frictionImpulseScalar;

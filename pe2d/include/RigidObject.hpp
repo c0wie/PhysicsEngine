@@ -40,6 +40,10 @@ namespace pe2d
         {
             m_Velocity = velocity;
         }
+        constexpr void AddVelocity(Vector2 velocity)
+        {
+            m_Velocity += velocity;
+        }
         constexpr void SetForce(Vector2 force)
         {
             m_Force = force;

@@ -14,15 +14,15 @@ namespace test
         const pe2d::Vector2 mouseTracerSize = pe2d::Vector2(100.0f, 100.0f);
         AddBox(2137U, sf::Color::Magenta, mouseTracerSize, mouseTracerTransform, false);
 
-        const pe2d::Vector2 platformSize = pe2d::Vector2(400.0f, 50.0f);
+        const pe2d::Vector2 platformSize = pe2d::Vector2(600.0f, 100.0f);
         const float platformMass = 100000.0f;
-        AddBox(420U, sf::Color::Red, platformSize, pe2d::Transform(pe2d::Vector2(500.0f, 600.0f), pe2d::Vector2(1.0f, 1.0f), 30.0f),
+        AddBox(420U, sf::Color::Red, platformSize, pe2d::Transform(pe2d::Vector2(500.0f, 700.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
                 false, platformMass, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.0f, 0.0f, 0.0f);
         
         const float circleRadius = 40.0f;
         const float circleMass = 100.0f;
         AddCircle(24U, sf::Color::Red, circleRadius, pe2d::Transform(pe2d::Vector2(400.0f, 100.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                false, circleMass, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 9.81f), 0.0f, 0.0f, 0.0f);
+                false, circleMass, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 0.0f, 0.0f, 0.0f);
         
         ResetVariables();        
     }
@@ -72,6 +72,9 @@ namespace test
         {
             ClearObjects();
         }
+        auto obj = std::static_pointer_cast<pe2d::RigidObject>(m_World.At(24));
+        const pe2d::Vector2 vel = obj->GetVelocity();
+        ImGui::Text("Velocity: %i, %i", (int)vel.x, (int)vel.y);
         ImGui::Text("Number of objects: %i", m_World.Size());
         ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
 
@@ -153,6 +156,7 @@ namespace test
 
     void CollisionArenaTest::ResetVariables()
     {
+        showColorPicker = false;
         isRigidObject = false;
         objectType = ObjectType::BOX;
         size = pe2d::Vector2(0.0f, 0.0f);
