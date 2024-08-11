@@ -6,6 +6,16 @@ namespace test
     CollisionArenaTest::CollisionArenaTest() :
         showObjectEditor(false)
     {   
+        const std::array<pe2d::Vector2, 4> testVertices1 = 
+        {
+            pe2d::Vector2(499.999969f, 429.289307f), 
+            pe2d::Vector2(570.710693f, 499.999969f),
+            pe2d::Vector2(500.000031f, 570.710693f), 
+            pe2d::Vector2(429.289307f, 500.000031f) 
+        };
+        const pe2d::Vector2 testAxis1 = pe2d::Vector2(0.69f, 0.31f);
+        pe2d::Vector2 projection1 = pe2d::algo::Project(testVertices1, testAxis1);
+        LogCall(projection1.GetString(), '\n');
         m_World.AddGrid(pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 100.0f);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
         m_World.AddSolver(solver);
