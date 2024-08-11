@@ -45,7 +45,7 @@ namespace pe2d
 
             for(int i = 0; i < axes.size(); i++)
             {
-                const Vector2 p1 = ProjectCircle(axes[i], circleCenter, circle->GetRadius() * transformCircle.scale.x);
+                const Vector2 p1 = ProjectCircle(circleCenter, circle->GetRadius() * transformCircle.scale.x, axes[i]);
                 const Vector2 p2 = Project(boxVertices, axes[i]);
 
                 if(!Overlap(p1, p2))
@@ -60,7 +60,7 @@ namespace pe2d
                 }
             }
             const Vector2 circleAxis = GetCircleAxis(boxVertices, circleCenter); 
-            const Vector2 p1 = ProjectCircle(circleAxis, circleCenter, circle->GetRadius() * transformCircle.scale.x);
+            const Vector2 p1 = ProjectCircle(circleCenter, circle->GetRadius() * transformCircle.scale.x, circleAxis);
             const Vector2 p2 = Project(boxVertices, circleAxis);
 
             if(!Overlap(p1, p2))
@@ -178,7 +178,7 @@ namespace pe2d
             return axes;
         }
         
-        Vector2 ProjectCircle(Vector2 axis, Vector2 circleCenter, float radius)
+        Vector2 ProjectCircle(Vector2 circleCenter, float radius, Vector2 axis)
         {
             const Vector2 dir = axis * radius;
 

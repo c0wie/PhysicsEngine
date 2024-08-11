@@ -6,16 +6,6 @@ namespace test
     CollisionArenaTest::CollisionArenaTest() :
         showObjectEditor(false)
     {   
-        const std::array<pe2d::Vector2, 4> testVertices1 = 
-        {
-            pe2d::Vector2(499.999969f, 429.289307f), 
-            pe2d::Vector2(570.710693f, 499.999969f),
-            pe2d::Vector2(500.000031f, 570.710693f), 
-            pe2d::Vector2(429.289307f, 500.000031f) 
-        };
-        const pe2d::Vector2 testAxis1 = pe2d::Vector2(0.69f, 0.31f);
-        pe2d::Vector2 projection1 = pe2d::algo::Project(testVertices1, testAxis1);
-        LogCall(projection1.GetString(), '\n');
         m_World.AddGrid(pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 100.0f);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
         m_World.AddSolver(solver);
@@ -33,7 +23,6 @@ namespace test
         const float circleMass = 100.0f;
         AddCircle(24U, sf::Color::Red, circleRadius, pe2d::Transform(pe2d::Vector2(400.0f, 100.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
                 false, circleMass, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 0.0f, 0.0f, 0.0f);
-        
         ResetVariables();        
     }
 
@@ -197,11 +186,6 @@ namespace test
             else
             {
                 AddBox(ID, Color, size, transform, false);
-                auto vert = pe2d::algo::GetBoxVertices(size, transform);
-                for(auto ver : vert)
-                {
-                    LogCall(ver.GetString(),'\n');
-                }
             }
         }
         else if(objectType == ObjectType::CIRCLE)

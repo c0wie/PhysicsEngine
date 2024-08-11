@@ -107,7 +107,7 @@ namespace pe2d
         }    
         
         // project circle on axis
-        Vector2 ProjectCircle(Vector2 axis, Vector2 circleCenter, float radius);
+        Vector2 ProjectCircle(Vector2 circleCenter, float radius, Vector2 axis);
 
         // return perpendicular and normalized axis to circle center
         template <typename Container>

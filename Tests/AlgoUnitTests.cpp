@@ -69,7 +69,7 @@ namespace
         this->CheckRotation(90.0f, expectedVertices);
     }
 
-    TYPED_TEST(RotateVerticesTest, obtuseAngle)
+    TYPED_TEST(RotateVerticesTest, obtuseAngles)
     {
         const TypeParam expectedVertices1 = 
         {
@@ -89,7 +89,7 @@ namespace
         this->CheckRotation(211.5f, expectedVertices2);
     }
     
-    TEST(GetVerticesTest, notRotatednotScaled)
+    TEST(GetBoxVerticesTest, notRotatednotScaled)
     {
         const pe2d::Vector2 boxSize = pe2d::Vector2(100.0f, 100.0f);
         const pe2d::Transform boxTransform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
@@ -103,7 +103,7 @@ namespace
         EXPECT_EQ(pe2d::algo::GetBoxVertices(boxSize, boxTransform), expected);
     }
 
-    TEST(GetVerticesTest, rotatedScaled)
+    TEST(GetBoxVerticesTest, rotatedScaled)
     {
         const pe2d::Vector2 boxSize = pe2d::Vector2(100.0f, 100.0f);
         const pe2d::Transform boxTransform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 2.0f), 45.0f);
@@ -207,6 +207,36 @@ namespace
         const pe2d::Vector2 testAxis2 = pe2d::Vector2(0.69f, 0.31f);
         const pe2d::Vector2 expectedProjection2 = pe2d::Vector2(451.209656f, 548.790344f);
         pe2d::Vector2 projection2 = pe2d::algo::Project(testVertices2, testAxis2);
+        EXPECT_EQ(projection2, expectedProjection2);
+    }
+
+    TEST(ProjectCircle, alignedAxis)
+    {
+        const pe2d::Vector2 circleCenter = pe2d::Vector2(70.0f, 800.0f);
+        const float radius = 60.0f;
+        const pe2d::Vector2 axis1 = pe2d::Vector2(0.0f, 1.0f);
+        const pe2d::Vector2 expectedProjection1 = pe2d::Vector2(740.0f, 860.0f);
+        const pe2d::Vector2 projection1 = pe2d::algo::ProjectCircle(circleCenter, radius, axis1);
+        EXPECT_EQ(projection1, expectedProjection1);
+
+        const pe2d::Vector2 axis2 = pe2d::Vector2(1.0f, 0.0f);
+        const pe2d::Vector2 expectedProjection2 = pe2d::Vector2(10.0f , 130.0f);
+        const pe2d::Vector2 projection2 = pe2d::algo::ProjectCircle(circleCenter, radius, axis2);
+        EXPECT_EQ(projection2, expectedProjection2);
+    }
+
+    TEST(ProjectCircle, nonAlignedAxis)
+    {
+        const pe2d::Vector2 circleCenter = pe2d::Vector2(500.0f, 480.0f);
+        const float radius = 78.0f;
+        const pe2d::Vector2 axis1 = pe2d::Vector2(0.5f, 0.5f);
+        const pe2d::Vector2 expectedProjection1 = pe2d::Vector2(451.0f, 529.0f);
+        const pe2d::Vector2 projection1 = pe2d::algo::ProjectCircle(circleCenter, radius, axis1);
+        EXPECT_EQ(projection1, expectedProjection1);
+
+        const pe2d::Vector2 axis2 = pe2d::Vector2(0.7f, 0.3f);
+        const pe2d::Vector2 expectedProjection2 = pe2d::Vector2(448.76001f, 539.23999f);
+        const pe2d::Vector2 projection2 = pe2d::algo::ProjectCircle(circleCenter, radius, axis2);
         EXPECT_EQ(projection2, expectedProjection2);
     }
 }
