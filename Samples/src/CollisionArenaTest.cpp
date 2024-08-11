@@ -1,11 +1,11 @@
 #include "CollisionArenaTest.hpp"
-
+#include"Algo.hpp"
 namespace test
 {
     Stoper stoper;
     CollisionArenaTest::CollisionArenaTest() :
         showObjectEditor(false)
-    {
+    {   
         m_World.AddGrid(pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 100.0f);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
         m_World.AddSolver(solver);
@@ -187,6 +187,11 @@ namespace test
             else
             {
                 AddBox(ID, Color, size, transform, false);
+                auto vert = pe2d::algo::GetBoxVertices(size, transform);
+                for(auto ver : vert)
+                {
+                    LogCall(ver.GetString(),'\n');
+                }
             }
         }
         else if(objectType == ObjectType::CIRCLE)

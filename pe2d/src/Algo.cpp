@@ -145,10 +145,7 @@ namespace pe2d
                 Vector2( center.x + scaledHalfSizeX, center.y + scaledHalfSizeY ),
                 Vector2( center.x - scaledHalfSizeX, center.y + scaledHalfSizeY )
             };
-            if(!(int)transform.rotation % 90 == 0)
-            {
-                RotateVertices<std::array<Vector2, 4>>(vertices, center, angle);
-            }
+            RotateVertices<std::array<Vector2, 4>>(vertices, center, angle);
             return vertices;
         }
 
