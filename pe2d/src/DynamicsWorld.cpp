@@ -18,9 +18,13 @@ namespace pe2d
         const unsigned int ID = object->GetID();
         if(m_Objects.find(ID) != m_Objects.end())
         {
-            ASSERT("Can't assign same ID to more than one object in CollisionWorld");
+            ASSERT("Can't assign same ID to more than one object in DynamicsWorld");
         }
         m_Objects[object->GetID()] = object;
+        if(object->TakesGravity())
+        {
+            object->SetGravity(m_GRAVITY);
+        }
     }
     
     void DynamicsWorld::ResolveCollisions(float deltaTime)

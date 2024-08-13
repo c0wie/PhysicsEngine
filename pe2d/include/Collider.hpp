@@ -72,10 +72,18 @@ namespace pe2d
     {
     public:
         BoxCollider() = delete;
-        constexpr BoxCollider(const Vector2 &size) : 
+        constexpr BoxCollider(Vector2 size) : 
             m_Size(size) 
         {
             if(size.x <= 0.0f && size.y <= 0.0f)
+            {
+                ASSERT("Side of box has to be greater than 0");
+            }
+        }
+        constexpr BoxCollider(float x, float y) :
+            m_Size(x, y)
+        {
+            if(x <= 0.0f && y <= 0.0f)
             {
                 ASSERT("Side of box has to be greater than 0");
             }

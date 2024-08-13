@@ -24,7 +24,7 @@ namespace pe2d
         void ApplyFriction(std::vector<Collision> &collisions, float deltaTime);
         void MoveObjects(float deltaTime);
     private:
-        static constexpr float m_GRAVITY = 98.1f;
+        static constexpr Vector2 m_GRAVITY = pe2d::Vector2(0.0f, 98.1f);
         static constexpr float m_MAX_VELOCITY = 1000.0f;
     public:
         bool isColliding = false;

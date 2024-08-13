@@ -71,7 +71,7 @@ namespace test
         const std::shared_ptr<pe2d::CircleCollider> collider = std::make_shared<pe2d::CircleCollider>(radius);
         const std::shared_ptr<pe2d::RigidObject> body = std::make_shared<pe2d::RigidObject>
                                                         (ID, collider ,transform, isTrigger, nullptr, mass, velocity,
-                                                        force, gravity, false, staticFriction, dynamicFriction, bounciness);
+                                                        force, gravity, staticFriction, dynamicFriction, bounciness);
         Shape shape = Shape(color, body, DrawCircle);
         m_Shapes.push_back(shape);
         m_World.AddRigidObject(body);
@@ -82,8 +82,8 @@ namespace test
     {
         const std::shared_ptr<pe2d::CircleCollider> collider = std::make_shared<pe2d::CircleCollider>(radius);
         const std::shared_ptr<pe2d::RigidObject> body = std::make_shared<pe2d::RigidObject>
-                                                        (ID, collider ,transform, isTrigger, nullptr, mass, velocity,
-                                                        force, pe2d::Vector2(0.0f, 0.0f), true, staticFriction,
+                                                        (ID, collider ,transform, isTrigger, nullptr, mass,
+                                                        velocity, force, staticFriction,
                                                         dynamicFriction, bounciness);
         Shape shape = Shape(color, body, DrawCircle);
         m_Shapes.push_back(shape);
@@ -106,7 +106,7 @@ namespace test
         const std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
         const std::shared_ptr<pe2d::RigidObject> body = std::make_shared<pe2d::RigidObject>
                                                         (ID, collider ,transform, isTrigger, nullptr, mass, velocity,
-                                                        force, gravity, false, staticFriction, dynamicFriction, bounciness);
+                                                        force, gravity, staticFriction, dynamicFriction, bounciness);
         Shape shape = Shape(color, body, DrawBox);
         m_Shapes.push_back(shape);
         m_World.AddRigidObject(body);
@@ -118,8 +118,7 @@ namespace test
         const std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
         const std::shared_ptr<pe2d::RigidObject> body = std::make_shared<pe2d::RigidObject>
                                                         (ID, collider ,transform, isTrigger, nullptr, mass, velocity,
-                                                        force, pe2d::Vector2(0.0f, 0.0f), true, staticFriction, 
-                                                        dynamicFriction, bounciness);
+                                                        force, staticFriction, dynamicFriction, bounciness);
         Shape shape = Shape(color, body, DrawBox);
         m_Shapes.push_back(shape);
         m_World.AddRigidObject(body);

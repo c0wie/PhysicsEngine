@@ -1,8 +1,9 @@
 #include <gtest/gtest.h>
-#include "../pe2d/include/Algo.hpp"
+#include "Algo.hpp"
 
 namespace
 {
+    using ::testing::Types;
     template <typename Container>
     class RotateVerticesTest : public testing::Test
     {
@@ -31,7 +32,6 @@ namespace
         Container m_TestVertices;
         pe2d::Vector2 m_Center;
     };
-    using testing::Types;
     typedef Types<std::array<pe2d::Vector2, 4>, std::vector<pe2d::Vector2>> Implementations;
 
     TYPED_TEST_SUITE(RotateVerticesTest, Implementations);
@@ -160,7 +160,7 @@ namespace
     class ProjectTest : public testing::Test
     {
     protected:
-        void SetUp()
+        void SetUp() override
         {
             m_TestVertices =
             {
@@ -236,7 +236,7 @@ namespace
     class GetCircleAxisTest : public testing::Test
     {
     protected:
-        void SetUp()
+        void SetUp() override
         {
             m_TestVertices = 
             {
