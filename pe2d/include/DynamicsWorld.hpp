@@ -21,7 +21,7 @@ namespace pe2d
     protected:
         void ResolveCollisions(float deltaTime) override;
         void ApplyGravity();
-        void ApplyFriction(std::vector<Collision> &collisions, float deltaTime);
+        void ApplyFriction(std::vector<Collision> &collisions);
         void MoveObjects(float deltaTime);
     protected:
         static constexpr Vector2 m_GRAVITY = pe2d::Vector2(0.0f, 98.1f);

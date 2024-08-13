@@ -10,9 +10,9 @@ namespace test
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
         m_World.AddSolver(solver);
 
-        AddBox(420U, sf::Color::Red, pe2d::Vector2(100.0f, 100.0f), pe2d::Transform(pe2d::Vector2(600.0f, 100.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
+        AddBox(420U, sf::Color::Red, pe2d::Vector2(100.0f, 100.0f), pe2d::Transform(pe2d::Vector2(600.0f, 300.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
                 false, 100.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 1.0f, 1.0f, 0.0f);
-        AddCircle(24U, sf::Color::Blue, 40.0f, pe2d::Transform(pe2d::Vector2(300.0f, 580.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
+        AddCircle(24U, sf::Color::Blue, 40.0f, pe2d::Transform(pe2d::Vector2(600.0f, 211.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
                 false, 200.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 0.5f, 0.5f, 0.0f);
         AddBox(69U, sf::Color::Red, pe2d::Vector2(40.0f, 100.0f), pe2d::Transform(pe2d::Vector2(800.0f, 721.0f), pe2d::Vector2(1.0f, 1.0f), 30.0f),
                 false, 50.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 9.81f), 0.0f, 0.0f, 0.0f);

@@ -49,6 +49,10 @@ namespace pe2d
             
             Vector2 MTV = points.Normal * points.Depth;
             
+            if(points.Depth == 0.0f)
+            {
+                return;
+            }
             if(MTV.dot(positionA - positionB) < 0.0f)
             {
                 MTV *= -1.0f;

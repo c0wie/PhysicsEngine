@@ -60,7 +60,7 @@ namespace pe2d
             }
         }
         SolveCollisions(collisions, deltaTime);
-        ApplyFriction(collisions, deltaTime);
+        ApplyFriction(collisions);
         SendCollisionCallbacks(collisions, deltaTime);
         SendCollisionCallbacks(triggers, deltaTime);
     }   
@@ -79,16 +79,11 @@ namespace pe2d
         }
     }
 
-    void DynamicsWorld::ApplyFriction(std::vector<Collision> &collisions, float deltaTime)
+    void DynamicsWorld::ApplyFriction(std::vector<Collision> &collisions)
     {
-        bool wasCollision = false;
         constexpr float FRICTION_SCALING_FACTOR = 15.0f;
         for(auto &collision : collisions)
         {
-            if(collision.GetObjectA()->GetID() == 24 && collision.GetObjectB()->GetID() == 420)
-            {
-                wasCollision = true;
-            }
             const std::shared_ptr<CollisionObject> objectA = collision.GetObjectA();
             const std::shared_ptr<CollisionObject> objectB = collision.GetObjectB();
             const CollisionPoints &points = collision.GetPoints();
@@ -175,14 +170,16 @@ namespace pe2d
             {
                 const Vector2 force = velocityA - impulse * inverseMassA;
                 rigidBodyA->AddForce(force - frictionImpulse * inverseMassA);
+                std::cout << rigidBodyA->GetForce().GetString() << '\n';
             }
             if(rigidBodyB)
             {
                 const Vector2 force = velocityB - impulse * inverseMassB;
                 rigidBodyB->AddForce(force - frictionImpulse * inverseMassB);
+                std::cout << rigidBodyB->GetForce().GetString() << '\n';
             }
+            std::exit(0);
         }
-        isColliding = wasCollision;
     }
 
     void DynamicsWorld::MoveObjects(float deltaTime)
