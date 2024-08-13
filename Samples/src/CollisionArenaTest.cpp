@@ -10,36 +10,30 @@ namespace test
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
         m_World.AddSolver(solver);
 
-        const pe2d::Transform mouseTracerTransform = pe2d::Transform(pe2d::Vector2(1000.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f);
-        const pe2d::Vector2 mouseTracerSize = pe2d::Vector2(100.0f, 100.0f);
-        AddBox(2137U, sf::Color::Magenta, mouseTracerSize, mouseTracerTransform, false);
-
-        const pe2d::Vector2 platformSize = pe2d::Vector2(600.0f, 100.0f);
-        const float platformMass = 100000.0f;
-        AddBox(420U, sf::Color::Red, platformSize, pe2d::Transform(pe2d::Vector2(500.0f, 700.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                false, platformMass, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.0f, 0.0f, 0.0f);
-        
-        const float circleRadius = 40.0f;
-        const float circleMass = 100.0f;
-        AddCircle(24U, sf::Color::Red, circleRadius, pe2d::Transform(pe2d::Vector2(400.0f, 100.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                false, circleMass, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 0.0f, 0.0f, 0.0f);
+        AddBox(420U, sf::Color::Red, pe2d::Vector2(100.0f, 100.0f), pe2d::Transform(pe2d::Vector2(600.0f, 100.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
+                false, 100.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 1.0f, 1.0f, 0.0f);
+        AddCircle(24U, sf::Color::Blue, 40.0f, pe2d::Transform(pe2d::Vector2(300.0f, 580.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
+                false, 200.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 0.5f, 0.5f, 0.0f);
+        AddBox(69U, sf::Color::Red, pe2d::Vector2(40.0f, 100.0f), pe2d::Transform(pe2d::Vector2(800.0f, 721.0f), pe2d::Vector2(1.0f, 1.0f), 30.0f),
+                false, 50.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 9.81f), 0.0f, 0.0f, 0.0f);
+        m_World.Step(0.0001f);
         ResetVariables();        
     }
 
     void CollisionArenaTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
-        {
-            m_World.At(2137)->Rotate(100.0f * deltaTime);
-        }
         if(m_World.Size() != m_Shapes.size())
         {
             ASSERT("m_World size and m_Shapes size aren't the same");
         }
+        /*if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+        {
+            m_World.At(2137)->Rotate(100.0f * deltaTime);
+        }
         auto mouseTracer = m_World.At(2137);
         const pe2d::Vector2 s = mouseTracer->GetPosition();
         const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
-        const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 10.0f * deltaTime);
+        const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 10.0f * deltaTime);*/
 
         if(m_World.isColliding == !wasColliding && stoper.running == false)
         {
@@ -52,7 +46,7 @@ namespace test
             stoper.printTime();
             wasColliding = m_World.isColliding;
         }
-        mouseTracer->SetPosition(position);
+        //mouseTracer->SetPosition(position);
         m_World.Step(deltaTime);  
     }
 

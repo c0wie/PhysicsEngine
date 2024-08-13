@@ -18,12 +18,12 @@ namespace pe2d
     public:
         void AddRigidObject(std::shared_ptr<RigidObject> object);
         void Step(float deltaTime);
-    private:
+    protected:
         void ResolveCollisions(float deltaTime) override;
         void ApplyGravity();
         void ApplyFriction(std::vector<Collision> &collisions, float deltaTime);
         void MoveObjects(float deltaTime);
-    private:
+    protected:
         static constexpr Vector2 m_GRAVITY = pe2d::Vector2(0.0f, 98.1f);
         static constexpr float m_MAX_VELOCITY = 1000.0f;
     public:
