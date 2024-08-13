@@ -6,6 +6,16 @@ namespace test
     CollisionArenaTest::CollisionArenaTest() :
         showObjectEditor(false)
     {   
+        const std::vector<pe2d::Vector2> veritces =
+        {
+            pe2d::Vector2(535.355286f, 393.93396f),
+            pe2d::Vector2(606.065979f, 464.644592f),
+            pe2d::Vector2(464.644714f, 606.06604f),
+            pe2d::Vector2(393.934021f, 535.355408f)
+        };
+        const pe2d::Vector2 circleCenter = pe2d::Vector2(600.0f, 300.0f);
+        LogCall(pe2d::algo::GetCircleAxis(veritces, circleCenter).GetString(), '\n');
+
         m_World.AddGrid(pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 100.0f);
         std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
         m_World.AddSolver(solver);

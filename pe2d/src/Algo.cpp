@@ -39,7 +39,7 @@ namespace pe2d
         {
             Vector2 circleCenter = transformCircle.position;
             const std::array<Vector2, 4> boxVertices = GetBoxVertices(box->GetSize(), transformBox);
-            const std::array<Vector2, 2> axes = GetRectangleAxes(boxVertices);
+            const std::array<Vector2, 2> axes = GetBoxAxes(boxVertices);
             const Vector2 *smallesAxis = nullptr;
             float overlap = INF;
 
@@ -91,8 +91,8 @@ namespace pe2d
         {
             const std::array<Vector2, 4> verticesA = GetBoxVertices(boxA->GetSize(), transformBoxA);
             const std::array<Vector2, 4> verticesB = GetBoxVertices(boxB->GetSize(), transformBoxB);
-            const std::array<Vector2, 2> axesA = GetRectangleAxes(verticesA);
-            const std::array<Vector2, 2> axesB = GetRectangleAxes(verticesB);
+            const std::array<Vector2, 2> axesA = GetBoxAxes(verticesA);
+            const std::array<Vector2, 2> axesB = GetBoxAxes(verticesB);
             const Vector2 *smallestAxis = nullptr;
             float overlap = INF;
 
@@ -163,7 +163,7 @@ namespace pe2d
             return axes;
         }
 
-        std::array<Vector2, 2> GetRectangleAxes(const std::array<Vector2, 4> &vertices)
+        std::array<Vector2, 2> GetBoxAxes(const std::array<Vector2, 4> &vertices)
         {
             std::array<Vector2, 2> axes;
             // is has two parrarel edges so I don't have to check other two

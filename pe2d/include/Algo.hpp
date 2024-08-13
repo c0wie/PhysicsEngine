@@ -81,8 +81,8 @@ namespace pe2d
         // return perpendicular and normalized axes of an object's edges
         std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices);
         
-        // return perpendicular and normalized axes of an rectangle edges
-        std::array<Vector2, 2> GetRectangleAxes(const std::array<Vector2, 4> &vertices);
+        // return perpendicular and normalized axes of a box edges
+        std::array<Vector2, 2> GetBoxAxes(const std::array<Vector2, 4> &vertices);
         
         // project an shape on axis 
         template<typename Container>
@@ -114,11 +114,11 @@ namespace pe2d
         Vector2 GetCircleAxis(const Container &vertices, Vector2 circleCenter)
         {
             float dist = INF;
-            Vector2 smallestAxis = Vector2{};
+            Vector2 smallestAxis = Vector2(0.0f, 0.0f);
             for(auto it = vertices.begin(); it != vertices.end(); it++)
             {
-                Vector2 edge = *it - circleCenter;
-                float d = edge.magnitude();
+                const Vector2 edge = *it - circleCenter;
+                const float d = edge.magnitude();
                 if(d < dist)
                 {
                     dist = d;
@@ -127,6 +127,5 @@ namespace pe2d
             }
             return smallestAxis.normalized();
         }
-
     }
 }

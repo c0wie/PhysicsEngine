@@ -107,7 +107,7 @@ namespace pe2d
         //returns length of vector
         constexpr float magnitude() const
         {
-            return std::sqrt(x * x + y * y);
+            return std::hypot(x, y);
         }
         //return positvie value of vector
         constexpr  Vector2 abs() const

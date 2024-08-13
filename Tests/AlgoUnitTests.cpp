@@ -139,7 +139,7 @@ namespace
         EXPECT_EQ(pe2d::algo::Overlap(proj3, proj4), false);
     }
 
-    TEST(GetRectangleAxesTest, notRotatednotScaled)
+    TEST(GetBoxAxesTest, notRotatednotScaled)
     {
         const std::array<pe2d::Vector2, 4> vertices = 
         {
@@ -153,64 +153,56 @@ namespace
             pe2d::Vector2(0.0f, -1.0f),
             pe2d::Vector2(1.0f, 0.0f)
         };
-        EXPECT_EQ(pe2d::algo::GetRectangleAxes(vertices), axes);
+        EXPECT_EQ(pe2d::algo::GetBoxAxes(vertices), axes);
     }
 
-    TEST(Project, alignedAxis)
+    template<typename Container>
+    class ProjectTest : public testing::Test
     {
-        const std::array<pe2d::Vector2, 4> testVertices1 = 
+    protected:
+        void SetUp()
         {
-            pe2d::Vector2(375.0f, 375.0f),
-            pe2d::Vector2(525.0f, 375.0f),
-            pe2d::Vector2(525.0f, 525.0f),
-            pe2d::Vector2(375.0f, 525.0f)
-        };
-        const pe2d::Vector2 testAxis1 = pe2d::Vector2(0.0f, 1.0f);
-        const pe2d::Vector2 expectedProjection1 = pe2d::Vector2(375.0f, 525.0f);
-        pe2d::Vector2 projection1 = pe2d::algo::Project(testVertices1, testAxis1);
-        EXPECT_EQ(projection1, expectedProjection1);
-
-        const std::array<pe2d::Vector2, 4> testVertices2 = 
+            m_TestVertices =
+            {
+                pe2d::Vector2(339.5f, 170.0f),
+                pe2d::Vector2(418.5f, 170.0f),
+                pe2d::Vector2(418.5f, 252.0f),
+                pe2d::Vector2(339.5f, 252.0f)
+            };
+        }
+        void CheckProjection(pe2d::Vector2 expectedProjection, pe2d::Vector2 axis)
         {
-            pe2d::Vector2(339.5f, 170.f),
-            pe2d::Vector2(418.5f, 170.f),
-            pe2d::Vector2(418.5f, 252.f),
-            pe2d::Vector2(339.5f, 252.f)
-        };
-        const pe2d::Vector2 testAxis2 = pe2d::Vector2(1.0f, 0.0f);
-        const pe2d::Vector2 expectedProjection2 = pe2d::Vector2(339.5f, 418.5f);
-        pe2d::Vector2 projection2 = pe2d::algo::Project(testVertices2, testAxis2);
-        EXPECT_EQ(projection2, expectedProjection2);
-    }
+            EXPECT_EQ(pe2d::algo::Project(m_TestVertices, axis), expectedProjection);
+        }
+    protected:
+        Container m_TestVertices;
+    };
 
-    TEST(Project, nonAlignedAxis)
+    TYPED_TEST_SUITE(ProjectTest, Implementations);
+
+    TYPED_TEST(ProjectTest, alignedAxis)
     {
-        const std::array<pe2d::Vector2, 4> testVertices1 = 
-        {
-            pe2d::Vector2(535.355286f, 393.93396f),
-            pe2d::Vector2(606.065979f, 464.644592f),
-            pe2d::Vector2(464.644714f, 606.06604f),
-            pe2d::Vector2(393.934021f, 535.355408f)
-        };
-        const pe2d::Vector2 testAxis1 = pe2d::Vector2(0.5f, 0.5f);
-        const pe2d::Vector2 expectedProjection1 = pe2d::Vector2(464.644623f, 535.355347f);
-        pe2d::Vector2 projection1 = pe2d::algo::Project(testVertices1, testAxis1);
-        EXPECT_EQ(projection1, expectedProjection1);
+        const pe2d::Vector2 testAxis1 = pe2d::Vector2(1.0f, 0.0f);
+        const pe2d::Vector2 expectedProjection1 = pe2d::Vector2(339.5f, 418.5f);
+        this->CheckProjection(expectedProjection1, testAxis1);
 
-        const std::array<pe2d::Vector2, 4> testVertices2 = 
-        {
-            pe2d::Vector2(499.999969f, 429.289307f), 
-            pe2d::Vector2(570.710693f, 499.999969f),
-            pe2d::Vector2(500.000031f, 570.710693f), 
-            pe2d::Vector2(429.289307f, 500.000031f) 
-        };
-        const pe2d::Vector2 testAxis2 = pe2d::Vector2(0.69f, 0.31f);
-        const pe2d::Vector2 expectedProjection2 = pe2d::Vector2(451.209656f, 548.790344f);
-        pe2d::Vector2 projection2 = pe2d::algo::Project(testVertices2, testAxis2);
-        EXPECT_EQ(projection2, expectedProjection2);
+        const pe2d::Vector2 testAxis2 = pe2d::Vector2(0.0f, 1.0f);
+        const pe2d::Vector2 expectedProjection2 = pe2d::Vector2(170.0f, 252.0f);
+        this->CheckProjection(expectedProjection2, testAxis2);
     }
 
-    TEST(ProjectCircle, alignedAxis)
+    TYPED_TEST(ProjectTest, nonAlignedAxis)
+    {
+        const pe2d::Vector2 testAxis1 = pe2d::Vector2(0.05, 0.95);
+        const pe2d::Vector2 expectedProjection1 = pe2d::Vector2(178.475006f, 260.324982f);
+        this->CheckProjection(expectedProjection1, testAxis1);
+
+        const pe2d::Vector2 testAxis2 = pe2d::Vector2(0.21, 0.79);
+        const pe2d::Vector2 expectedProjection2 = pe2d::Vector2(205.595001f, 286.964996f);
+        this->CheckProjection(expectedProjection2, testAxis2); 
+    }
+
+    TEST(ProjectCircleTest, alignedAxis)
     {
         const pe2d::Vector2 circleCenter = pe2d::Vector2(70.0f, 800.0f);
         const float radius = 60.0f;
@@ -225,7 +217,7 @@ namespace
         EXPECT_EQ(projection2, expectedProjection2);
     }
 
-    TEST(ProjectCircle, nonAlignedAxis)
+    TEST(ProjectCircleTest, nonAlignedAxis)
     {
         const pe2d::Vector2 circleCenter = pe2d::Vector2(500.0f, 480.0f);
         const float radius = 78.0f;
@@ -239,4 +231,43 @@ namespace
         const pe2d::Vector2 projection2 = pe2d::algo::ProjectCircle(circleCenter, radius, axis2);
         EXPECT_EQ(projection2, expectedProjection2);
     }
+
+    template<typename Container>
+    class GetCircleAxisTest : public testing::Test
+    {
+    protected:
+        void SetUp()
+        {
+            m_TestVertices = 
+            {
+                pe2d::Vector2(535.355286f, 393.93396f),
+                pe2d::Vector2(606.065979f, 464.644592f),
+                pe2d::Vector2(464.644714f, 606.06604f),
+                pe2d::Vector2(393.934021f, 535.355408f)
+            };
+        }
+        void checkAxis(pe2d::Vector2 circleCenter, pe2d::Vector2 expectedAxis)
+        {
+            const pe2d::Vector2 resultAxis = pe2d::algo::GetCircleAxis(this->m_TestVertices, circleCenter);
+            const float error = 0.000001f;
+            EXPECT_NEAR(resultAxis.x, expectedAxis.x, error);
+            EXPECT_NEAR(resultAxis.y, expectedAxis.y, error);
+        }
+    protected:
+        Container m_TestVertices;
+    };
+
+    TYPED_TEST_SUITE(GetCircleAxisTest, Implementations);
+
+    TYPED_TEST(GetCircleAxisTest, standardScenario)
+    {
+        const pe2d::Vector2 circleCenter1 = pe2d::Vector2(600.0f, 300.0f);
+        const pe2d::Vector2 expectedAxis1 = pe2d::Vector2(-0.566917f, 0.823775f);
+        this->checkAxis(circleCenter1, expectedAxis1);
+
+        const pe2d::Vector2 circleCenter2 = pe2d::Vector2(0.0f, 420.0f);
+        const pe2d::Vector2 expectedAxis2 = pe2d::Vector2(0.959700f, 0.281028f);
+        this->checkAxis(circleCenter2, expectedAxis2);
+    }
+
 }
