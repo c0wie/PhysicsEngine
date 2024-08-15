@@ -39,6 +39,23 @@ namespace pe2d
             const BoxCollider *boxA, Transform transformBoxA,
             const BoxCollider *boxB, Transform transformBoxB);
         
+        // angle in radians
+        template <typename Container>
+        void RotateVertices(Container &vertices, Vector2 center, float angle)
+        {
+            const float cosAngle = cosf(angle);
+            const float sinAngle = sinf(angle);
+            for(auto it = vertices.begin(); it != vertices.end(); it++)
+            {
+                const float relativeX = it->x - center.x;
+                const float relativeY = it->y - center.y;
+
+                float rotatedX = (relativeX * cosAngle) - (relativeY * sinAngle);
+                float rotatedY = (relativeX * sinAngle) + (relativeY * cosAngle);
+                *it = Vector2( rotatedX + center.x, rotatedY + center.y );
+            }
+        }
+        
         // return box vertices in clockwise direction
         std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform);
         
@@ -64,8 +81,8 @@ namespace pe2d
         // return perpendicular and normalized axes of an object's edges
         std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices);
         
-        // return perpendicular and normalized axes of an rectangle edges
-        std::array<Vector2, 2> GetRectangleAxes(const std::array<Vector2, 4> &vertices);
+        // return perpendicular and normalized axes of a box edges
+        std::array<Vector2, 2> GetBoxAxes(const std::array<Vector2, 4> &vertices);
         
         // project an shape on axis 
         template<typename Container>
@@ -86,38 +103,22 @@ namespace pe2d
                     max = p;
                 }
             }
-            return Vector2{min, max};
+            return Vector2(min, max);
         }    
         
         // project circle on axis
-        Vector2 ProjectCircle(Vector2 axis, Vector2 circleCenter, float radius);
+        Vector2 ProjectCircle(Vector2 circleCenter, float radius, Vector2 axis);
 
-        template <typename Container>
-        void RotateVertices(Container &vertices, Vector2 center, float angle)
-        {
-            const float cosAngle = cosf(angle);
-            const float sinAngle = sinf(angle);
-            for(auto it = vertices.begin(); it != vertices.end(); it++)
-            {
-                const float relativeX = it->x - center.x;
-                const float relativeY = it->y - center.y;
-
-                const float rotatedX = (relativeX * cosAngle) - (relativeY * sinAngle);
-                const float rotatedY = (relativeX * sinAngle) + (relativeY * cosAngle);
-                *it = Vector2( rotatedX + center.x, rotatedY + center.y );
-            }
-        }
-        
         // return perpendicular and normalized axis to circle center
         template <typename Container>
         Vector2 GetCircleAxis(const Container &vertices, Vector2 circleCenter)
         {
             float dist = INF;
-            Vector2 smallestAxis = Vector2{};
+            Vector2 smallestAxis = Vector2(0.0f, 0.0f);
             for(auto it = vertices.begin(); it != vertices.end(); it++)
             {
-                Vector2 edge = *it - circleCenter;
-                float d = edge.magnitude();
+                const Vector2 edge = *it - circleCenter;
+                const float d = edge.magnitude();
                 if(d < dist)
                 {
                     dist = d;
@@ -126,6 +127,5 @@ namespace pe2d
             }
             return smallestAxis.normalized();
         }
-
     }
 }

@@ -74,6 +74,10 @@ namespace pe2d
         {
             return Vector2{ x * multiplier, y * multiplier};
         }
+         friend constexpr Vector2 operator*(float multiplier, const Vector2& vec)
+        {
+            return vec * multiplier;
+        }
         constexpr Vector2& operator*=(float multiplier)
         {
             x *= multiplier;
@@ -92,12 +96,12 @@ namespace pe2d
         // returns normalized vector
         constexpr Vector2 normalized() const
         {
-            float length = magnitude();
+            const float length = magnitude();
             if(length == 0)
             {
-                ASSERT("DIVISION BY ZERO in normalized");
+                return Vector2(0.0f, 0.0f);
             }
-            return Vector2 {x / length, y / length};
+            return Vector2 (x / length, y / length);
         }
         // returns dot product of two vectors;
         constexpr float dot(const Vector2 &other) const
@@ -107,7 +111,7 @@ namespace pe2d
         //returns length of vector
         constexpr float magnitude() const
         {
-            return std::sqrt(x * x + y * y);
+            return std::hypot(x, y);
         }
         //return positvie value of vector
         constexpr  Vector2 abs() const

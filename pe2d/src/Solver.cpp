@@ -3,26 +3,58 @@ namespace pe2d
 {
     void PositionSolver::Solve(std::vector<Collision> &collisions, float deltaTime)
     {
+        for(size_t i = 0; i < collisions.size(); i++)
+        {
+            std::shared_ptr<CollisionObject> objectA = collisions[i].GetObjectA();
+            std::shared_ptr<CollisionObject> objectB = collisions[i].GetObjectB();
+            std::shared_ptr<RigidObject> rigidBodyA = objectA->IsRigid()? std::static_pointer_cast<RigidObject>(objectA) : nullptr;
+            std::shared_ptr<RigidObject> rigidBodyB = objectB->IsRigid()? std::static_pointer_cast<RigidObject>(objectB) : nullptr;
+            const auto &points = collisions[i].GetPoints();
+            
+            const Vector2 relativeVelocity = rigidBodyB->GetVelocity() - rigidBodyA->GetVelocity();
+            const float relativeVelocityAlongNormal = relativeVelocity.dot(points.Normal);
+            
+            if(relativeVelocityAlongNormal > 0.0f)
+            {
+                return;
+            }
+
+            float j = -relativeVelocityAlongNormal;
+            j /= (rigidBodyA->GetInvMass() + rigidBodyB->GetInvMass());
+
+            const Vector2 impulse = j * points.Normal;
+
+            rigidBodyA->AddVelocity(-1.0f * impulse * rigidBodyA->GetInvMass());
+            rigidBodyB->AddVelocity(impulse * rigidBodyB->GetInvMass());
+        }
+    }
+
+    void ImpulseSolver::Solve(std::vector<Collision> &collisions, float deltaTime)
+    {
         for(const auto &collision : collisions)
         {
-            auto objectA = collision.GetObjectA();
-            auto objectB = collision.GetObjectB();
+            std::shared_ptr<CollisionObject> objectA = collision.GetObjectA();
+            std::shared_ptr<CollisionObject> objectB = collision.GetObjectB();
+            std::shared_ptr<RigidObject> rigidBodyA = objectA->IsRigid()? std::static_pointer_cast<RigidObject>(objectA) : nullptr;
+            std::shared_ptr<RigidObject> rigidBodyB = objectB->IsRigid()? std::static_pointer_cast<RigidObject>(objectB) : nullptr;
             const auto &points = collision.GetPoints();
-            auto rigidBodyA = std::dynamic_pointer_cast<RigidObject>(objectA);
-            auto rigidBodyB = std::dynamic_pointer_cast<RigidObject>(objectB);
-            const float massA = rigidBodyA? rigidBodyA->GetMass() : 0.0f;
-            const float massB = rigidBodyB? rigidBodyB->GetMass() : 0.0f;
             const Vector2 positionA = objectA->GetPosition();
             const Vector2 positionB = objectB->GetPosition();
+            const float massA = objectA->IsRigid()? rigidBodyA->GetMass() : 0.0f;
+            const float massB = objectB->IsRigid()? rigidBodyB->GetMass() : 0.0f;
             
             Vector2 MTV = points.Normal * points.Depth;
             
+            if(points.Depth == 0.0f)
+            {
+                return;
+            }
             if(MTV.dot(positionA - positionB) < 0.0f)
             {
                 MTV *= -1.0f;
             }
-            const float totalMass = massA + massB;
-            
+
+            const float totalMass = massA + massB > 0.0f? (massA + massB) : 1.0f;
             Vector2 MTVB, MTVA;
             if(massA == 0.0f)
             {
@@ -34,27 +66,25 @@ namespace pe2d
                 MTVA = MTV;
                 MTVB = Vector2{};
             }
-            else
+            else if(massA != 0.0f && massB != 0.0f)
             {
-                MTVA = MTV * ( massB / totalMass);
-                MTVB = MTV * ( massA / totalMass);
+                MTVA = MTV * (massB / totalMass);
+                MTVB = MTV * (massA / totalMass);
             }
-            if(rigidBodyA? true : false)
+            /*if(rigidBodyA)
+            {   
+                const float normalForceScalar = points.Normal.dot(rigidBodyA->GetGravity() * rigidBodyA->GetMass() * -1);
+                const Vector2 normalForce = points.Normal * normalForceScalar;
+                rigidBodyA->AddForce(normalForce);
+            }*/
+            objectA->Move(MTVA);
+            /*if(rigidBodyB)
             {
-                objectA->Move(MTVA);
-            }
-            if(rigidBodyB? true : false)
-            {
-                objectB->Move(MTVB * -1);
-            }
-        }
-    }
-
-    void ImpulseSolver::Solve(std::vector<Collision> &collisions, float deltaTime)
-    {
-        for(const auto &collision : collisions)
-        {
-        
+                const float normalForceScalar = points.Normal.dot(rigidBodyB->GetGravity() * rigidBodyB->GetMass());
+                const Vector2 normalForce = points.Normal * normalForceScalar;
+                rigidBodyB->AddForce(normalForce);
+            }*/
+            objectB->Move(MTVB * -1);
         }
     }
 }

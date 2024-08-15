@@ -10,8 +10,12 @@ namespace pe2d
     public:
         RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform,
                     bool isTrigger, std::function<void(Collision, float)> collisionCallback,
-                    float mass, Vector2 velocity, Vector2 force, Vector2 gravity, bool takesGravity,
+                    float mass, Vector2 velocity, Vector2 force, Vector2 gravity,
                     float staticFriction, float dynamicFriction, float restitution);
+        RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform,
+                    bool isTrigger, std::function<void(Collision, float)> collisionCallback,
+                    float mass, Vector2 velocity, Vector2 force, float staticFriction,
+                    float dynamicFriction, float restitution);
         RigidObject(const RigidObject &other);
         RigidObject(RigidObject &&other);
         RigidObject& operator=(const RigidObject &other);
@@ -19,6 +23,7 @@ namespace pe2d
         RigidObject() = default;
     public:
         constexpr float GetMass() const { return m_Mass; }
+        constexpr float GetInvMass() const { return (1.0f / m_Mass); }
         constexpr Vector2 GetVelocity() const { return m_Velocity; }
         constexpr Vector2 GetForce() const { return m_Force; }
         constexpr Vector2 GetGravity() const { return m_Gravity; }
@@ -39,25 +44,37 @@ namespace pe2d
         {
             m_Velocity = velocity;
         }
+        constexpr void AddVelocity(Vector2 velocity)
+        {
+            m_Velocity += velocity;
+        }
         constexpr void SetForce(Vector2 force)
         {
             m_Force = force;
         }
+        constexpr void AddForce(Vector2 force)
+        {
+            m_Force += force;
+        }
         constexpr void SetGravity(Vector2 gravity)
         {
-            if(m_TakesGravity)
-            {
-                ASSERT("Can't change gravity value if object get it from environment");
-            }
             m_Gravity = gravity;
         }
         constexpr void SetStaticFriction(float staticFriction)
         {
+            if(staticFriction < 0.0f || staticFriction > 1.0f)
+            {
+                ASSERT("Value of static friction have to be beetwen 0 and 1");
+            }
             m_StaticFriction = staticFriction;
         }
-        constexpr void SetDynamicFriction(float dynamicDriction)
-        {
-            m_DynamicFriction = dynamicDriction;
+        constexpr void SetDynamicFriction(float dynamicFriction)
+        {  
+            if(dynamicFriction < 0.0f || dynamicFriction > 1.0f)
+            {
+                ASSERT("Value of dynamic friction has to be beetwen 0 and 1");
+            }
+            m_DynamicFriction = dynamicFriction;
         }
         constexpr void SetRestitution(float restitution)
         {
@@ -69,8 +86,8 @@ namespace pe2d
         Vector2 m_Force;
         Vector2 m_Gravity;          // Gravitional acceleration
         bool m_TakesGravity;        // If the rigidobject will take gravity from the world
-        float m_StaticFriction;     // Static friction coefficient
-        float m_DynamicFriction;    // Dynamic friction coefficient
+        float m_StaticFriction;     // Static friction coefficient wich value has to be form 0 to 1
+        float m_DynamicFriction;    // Dynamic friction coefficient wich value has to be form 0 to 1
         float m_Restitution;        // Elasticy of collision
     };
 }

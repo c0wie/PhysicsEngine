@@ -4,7 +4,7 @@ namespace test
 {
     struct Color
     {
-        int red, green, blue;
+        float red, green, blue;
     };
     enum class ObjectType
     {
@@ -27,6 +27,7 @@ namespace test
         void CreateObject();
         void ClearObjects();
     private:
+        bool showColorPicker; 
         bool showObjectEditor;
         bool isRigidObject;
         ObjectType objectType;
@@ -39,8 +40,9 @@ namespace test
         Color color;
         pe2d::Vector2 velocity;
         pe2d::Vector2 gravity;
-        pe2d::Vector2 topLeftCorner;
-        pe2d::Vector2 botRightCorner;
-        int maxDepth;
+        float staticFriction;
+        float dynamicFriction;
+    public:
+        bool wasColliding = false;
     };
 }
