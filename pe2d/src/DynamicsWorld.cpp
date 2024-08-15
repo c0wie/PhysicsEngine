@@ -81,7 +81,8 @@ namespace pe2d
 
     void DynamicsWorld::ApplyFriction(std::vector<Collision> &collisions)
     {
-        constexpr float FRICTION_SCALING_FACTOR = 15.0f;
+        constexpr float FRICTION_SCALING_FACTOR = 30.0f;
+        isColliding = false;
         for(auto &collision : collisions)
         {
             const std::shared_ptr<CollisionObject> objectA = collision.GetObjectA();
@@ -92,6 +93,10 @@ namespace pe2d
                 continue;
             }
 
+            if(objectA->GetID() == 24 && objectB->GetID() == 420)
+            {
+                isColliding = true;
+            }
             std::shared_ptr<RigidObject> rigidBodyA, rigidBodyB;
             Vector2 velocityA, velocityB;
             float staticFrictionA, staticFrictionB;
@@ -134,51 +139,33 @@ namespace pe2d
             const Vector2 relativeVelocity = velocityB - velocityA;
             const float coefficientOfStaticFriction = FRICTION_SCALING_FACTOR * (staticFrictionA + staticFrictionB) / 2.0f;
             const float coefficientOfDynamicFriction = FRICTION_SCALING_FACTOR * (dynamicFrictionA + dynamicFrictionB) / 2.0f;
-            const float velocityAlongNormal = relativeVelocity.dot(points.Normal);
 
-            // magnitude of impulse required to resolve the collision along the normal direction
-            const float impulseScalar = velocityAlongNormal / (inverseMassA + inverseMassB);
-
-            const Vector2 impulse = points.Normal * impulseScalar;
-            
             // perpendicular to normal, represent direciton in which friction will act
-            const Vector2 tangent = (relativeVelocity - points.Normal * velocityAlongNormal).normalized();
-
-            const float maxStaticFriction = coefficientOfStaticFriction * impulseScalar;
-            const float maxDynamicFriction = coefficientOfDynamicFriction * impulseScalar;
-            const float relativeVelocityAlongTangent = relativeVelocity.dot(tangent);
-            
-            float frictionImpulseScalar;
-
-            if(std::abs(relativeVelocityAlongTangent) < maxStaticFriction)
+            Vector2 tangent = relativeVelocity - relativeVelocity.dot(points.Normal) * points.Normal;
+            if(tangent == pe2d::Vector2(0.0f, 0.0f))
             {
-                frictionImpulseScalar = -relativeVelocityAlongTangent / (inverseMassA + inverseMassB);
+                continue;
             }
             else
             {
-                frictionImpulseScalar = -relativeVelocityAlongTangent / (inverseMassA + inverseMassB);
-
-                if(std::abs(frictionImpulseScalar) > maxDynamicFriction)
-                {
-                    frictionImpulseScalar = maxDynamicFriction * (frictionImpulseScalar > 0.0f? -1.0f : 1.0f);
-                }
+                tangent = tangent.normalized();
             }
+            float jt = relativeVelocity.dot(tangent);
+            jt /= (rigidBodyA->GetInvMass() + rigidBodyB->GetInvMass());
 
-            const Vector2 frictionImpulse = tangent * frictionImpulseScalar;
-
-            if(rigidBodyA)
+            Vector2 frictionImpulse;
+            const float j = relativeVelocity.dot(points.Normal);
+            if(abs(jt) <= j * coefficientOfStaticFriction)
             {
-                const Vector2 force = velocityA - impulse * inverseMassA;
-                rigidBodyA->AddForce(force - frictionImpulse * inverseMassA);
-                std::cout << rigidBodyA->GetForce().GetString() << '\n';
+                frictionImpulse = jt * tangent;
             }
-            if(rigidBodyB)
+            else
             {
-                const Vector2 force = velocityB - impulse * inverseMassB;
-                rigidBodyB->AddForce(force - frictionImpulse * inverseMassB);
-                std::cout << rigidBodyB->GetForce().GetString() << '\n';
+                frictionImpulse = -j * tangent * coefficientOfDynamicFriction;
             }
-            std::exit(0);
+            
+            rigidBodyA->AddForce(frictionImpulse);
+            rigidBodyB->AddForce(frictionImpulse);
         }
     }
 

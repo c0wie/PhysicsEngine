@@ -5,7 +5,6 @@ namespace
 {    
     class DynamicsWorldForTest : public pe2d::DynamicsWorld {
     public:
-        using DynamicsWorld::ResolveCollisions;
         using DynamicsWorld::ApplyGravity; 
         using DynamicsWorld::ApplyFriction;
     };
@@ -41,7 +40,7 @@ namespace
                 EXPECT_EQ(object->GetForce(), expectedForces[i]);
             }
         }
-        
+
         void CheckFriction(pe2d::Vector2 expectedFriction1, pe2d::Vector2 expectedFriction2)
         {
             std::vector<pe2d::Collision> collisions = 

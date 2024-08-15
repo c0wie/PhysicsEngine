@@ -1,5 +1,5 @@
 #include "CollisionArenaTest.hpp"
-#include"Algo.hpp"
+#include "Algo.hpp"
 namespace test
 {
     Stoper stoper;
@@ -7,16 +7,13 @@ namespace test
         showObjectEditor(false)
     {   
         m_World.AddGrid(pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 100.0f);
-        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
+        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
         m_World.AddSolver(solver);
 
-        AddBox(420U, sf::Color::Red, pe2d::Vector2(100.0f, 100.0f), pe2d::Transform(pe2d::Vector2(600.0f, 300.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                false, 100.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 1.0f, 1.0f, 0.0f);
-        AddCircle(24U, sf::Color::Blue, 40.0f, pe2d::Transform(pe2d::Vector2(600.0f, 211.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                false, 200.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 0.5f, 0.5f, 0.0f);
-        AddBox(69U, sf::Color::Red, pe2d::Vector2(40.0f, 100.0f), pe2d::Transform(pe2d::Vector2(800.0f, 721.0f), pe2d::Vector2(1.0f, 1.0f), 30.0f),
-                false, 50.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 9.81f), 0.0f, 0.0f, 0.0f);
-        m_World.Step(0.0001f);
+        AddBox(420U, sf::Color::Red, pe2d::Vector2(1000.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 30.0f),
+                false, 100000000.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
+        AddCircle(24U, sf::Color::Blue, 40.0f, pe2d::Transform(pe2d::Vector2(100.0f, 100.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
+                false, 200.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
         ResetVariables();        
     }
 
@@ -26,15 +23,16 @@ namespace test
         {
             ASSERT("m_World size and m_Shapes size aren't the same");
         }
-        /*if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            m_World.At(2137)->Rotate(100.0f * deltaTime);
+            auto object = std::static_pointer_cast<pe2d::RigidObject>(m_World.At(24));
+            object->AddVelocity(pe2d::Vector2(100.0f, 0.0f) * deltaTime);
         }
-        auto mouseTracer = m_World.At(2137);
-        const pe2d::Vector2 s = mouseTracer->GetPosition();
-        const pe2d::Vector2 end = pe2d::Vector2{ (float)mousePos.x, (float)mousePos.y};
-        const pe2d::Vector2 position = pe2d::Vector2::lerp(s, end, 10.0f * deltaTime);*/
-
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
+        {
+            auto object = std::static_pointer_cast<pe2d::RigidObject>(m_World.At(24));
+            object->AddVelocity(pe2d::Vector2(-100.0f, 0.0f) * deltaTime);
+        }
         if(m_World.isColliding == !wasColliding && stoper.running == false)
         {
             stoper.start();
@@ -46,7 +44,6 @@ namespace test
             stoper.printTime();
             wasColliding = m_World.isColliding;
         }
-        //mouseTracer->SetPosition(position);
         m_World.Step(deltaTime);  
     }
 

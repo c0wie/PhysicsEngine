@@ -58,10 +58,6 @@ namespace pe2d
         }
         constexpr void SetGravity(Vector2 gravity)
         {
-            if(m_TakesGravity)
-            {
-                ASSERT("Can't change gravity value if object get it from environment");
-            }
             m_Gravity = gravity;
         }
         constexpr void SetStaticFriction(float staticFriction)

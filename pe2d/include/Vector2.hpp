@@ -74,6 +74,10 @@ namespace pe2d
         {
             return Vector2{ x * multiplier, y * multiplier};
         }
+         friend constexpr Vector2 operator*(float multiplier, const Vector2& vec)
+        {
+            return vec * multiplier;
+        }
         constexpr Vector2& operator*=(float multiplier)
         {
             x *= multiplier;
