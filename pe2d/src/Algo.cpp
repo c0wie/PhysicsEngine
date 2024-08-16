@@ -137,7 +137,7 @@ namespace pe2d
             Vector2 scale = transform.scale;
             const float scaledHalfSizeX = (boxSize.x * scale.x) / 2.0f;
             const float scaledHalfSizeY = (boxSize.y * scale.y) / 2.0f;
-            const float angle = transform.GetRadians();
+            const float angle = transform.GetRotationInRadians();
             std::array<Vector2, 4> vertices = 
             {
                 Vector2( center.x - scaledHalfSizeX, center.y - scaledHalfSizeY ),

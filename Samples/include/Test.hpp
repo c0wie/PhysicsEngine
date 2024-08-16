@@ -2,7 +2,7 @@
 
 #include "Shape.hpp"
 #include <imgui.h>
-#include "../../pe2d/include/DynamicsWorld.hpp"
+#include "PhysicsWorld.hpp"
 #include <chrono>
 
 struct Stoper {
@@ -58,18 +58,12 @@ namespace test
         virtual void OnRender(sf::RenderWindow &window) = 0;
         virtual void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO& io) = 0;
     protected:
-        void AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger);
-        void AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger,
-                        float mass, pe2d::Vector2 velocity, pe2d::Vector2 force, pe2d::Vector2 gravity, float staticFriction,
-                        float dynamicFriction, float bounciness);
-        void AddCircle(unsigned int ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isTrigger,
-                        float mass, pe2d::Vector2 velocity, pe2d::Vector2 force, float staticFriction, float dynamicFriction, float bounciness);
-        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isTrigger);
-        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isTrigger,
-                    float mass, pe2d::Vector2 velocity, pe2d::Vector2 force, pe2d::Vector2 gravity, float staticFriction,
-                    float dynamicFriction, float bounciness);
-        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isTrigger,
-                    float mass, pe2d::Vector2 velocity, pe2d::Vector2 force, float staticFriction, float dynamicFriction, float bounciness);
+        void AddCircle(size_t ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isStatic,
+                        float mass, pe2d::Vector2 velocity,pe2d::Vector2 gravity, float staticFriction,
+                        float dynamicFriction, float restitution);
+        void AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isStatic,
+                    float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity, float staticFriction,
+                    float dynamicFriction, float restitution);
         
         void Draw(sf::RenderWindow &window) const;
     private:
@@ -77,6 +71,6 @@ namespace test
         static void DrawBox(sf::RenderWindow &window, const Shape &shape);
     protected:
         std::vector<Shape> m_Shapes;
-        pe2d::DynamicsWorld m_World;
+        pe2d::PhysicsWorld m_World;
     };
 }

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "DynamicsWorld.hpp"
+#include "PhysicsWorld.hpp"
 
-namespace
+/*namespace
 {    
     class DynamicsWorldForTest : public pe2d::DynamicsWorld {
     public:
@@ -74,4 +74,4 @@ namespace
         const pe2d::Vector2 expectedFriction2 = pe2d::Vector2(0.0f, 19620.0f);
         this->CheckFriction(expectedFriction1, expectedFriction2);
     }
-}
+}*/

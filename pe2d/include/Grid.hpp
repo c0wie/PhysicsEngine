@@ -2,9 +2,9 @@
 
 #include <vector>
 #include <list>
-#include "Vector2.hpp"
-#include <CollisionObject.hpp>
 #include <set>
+#include "Vector2.hpp"
+#include "RigidObject.hpp"
 
 namespace pe2d
 {
@@ -20,7 +20,7 @@ namespace pe2d
         Grid& operator=(Grid &&other);
     public:
         // inserts objects id to grid in correct places 
-        void Update(const std::unordered_map<size_t, std::shared_ptr<CollisionObject>> &objects);
+        void Update(const std::unordered_map<size_t, RigidObject> &objects);
         //returns list of unique id to collision pairs
         std::list<std::pair<size_t, size_t>> GetCollisionPairs() const;
     private:

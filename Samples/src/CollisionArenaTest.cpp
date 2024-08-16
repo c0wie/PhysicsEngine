@@ -1,8 +1,7 @@
 #include "CollisionArenaTest.hpp"
 #include "Algo.hpp"
 namespace test
-{
-    Stoper stoper;
+{   
     CollisionArenaTest::CollisionArenaTest() :
         showObjectEditor(false)
     {   
@@ -11,9 +10,9 @@ namespace test
         m_World.AddSolver(solver);
 
         AddBox(420U, sf::Color::Red, pe2d::Vector2(1000.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 30.0f),
-                false, 100000000.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
+                false, 100000000.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
         AddCircle(24U, sf::Color::Blue, 40.0f, pe2d::Transform(pe2d::Vector2(100.0f, 100.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                false, 200.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
+                false, 200.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 1.0f, 1.0f, 0.0f);
         ResetVariables();        
     }
 
@@ -25,24 +24,11 @@ namespace test
         }
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            auto object = std::static_pointer_cast<pe2d::RigidObject>(m_World.At(24));
-            object->AddVelocity(pe2d::Vector2(100.0f, 0.0f) * deltaTime);
+            m_World.At(24).AddVelocity(pe2d::Vector2(100.0f, 0.0f) * deltaTime);
         }
         if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
-            auto object = std::static_pointer_cast<pe2d::RigidObject>(m_World.At(24));
-            object->AddVelocity(pe2d::Vector2(-100.0f, 0.0f) * deltaTime);
-        }
-        if(m_World.isColliding == !wasColliding && stoper.running == false)
-        {
-            stoper.start();
-            wasColliding = m_World.isColliding;
-        }
-        if(m_World.isColliding == !wasColliding && stoper.running == true)
-        {
-            stoper.stop();
-            stoper.printTime();
-            wasColliding = m_World.isColliding;
+            m_World.At(24).AddVelocity(pe2d::Vector2(-100.0f, 0.0f) * deltaTime);
         }
         m_World.Step(deltaTime);  
     }
@@ -62,34 +48,17 @@ namespace test
         {
             ClearObjects();
         }
-        auto obj = std::static_pointer_cast<pe2d::RigidObject>(m_World.At(24));
-        const pe2d::Vector2 vel = obj->GetVelocity();
+        const pe2d::Vector2 vel = m_World.At(24).GetVelocity();
+        const pe2d::Vector2 pos = m_World.At(24).GetPosition();
         ImGui::Text("Velocity: %i, %i", (int)vel.x, (int)vel.y);
         ImGui::Text("Number of objects: %i", m_World.Size());
+        ImGui::Text("Position: %i, %i", (int)pos.x, (int)pos.y);
         ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
 
         if(showObjectEditor)
         {
             ImGui::Begin("Object Editor");
             CollisionObjectInput();
-            if(isRigidObject)
-            {
-                if( ImGui::Button("Make Collision Object") )
-                {
-                    isRigidObject = false;
-                }
-            }
-            else
-            {
-                if( ImGui::Button("Make Rigid Object") )
-                {
-                    isRigidObject = true;
-                }
-            }
-            if(isRigidObject)
-            {
-                RigidObjectInput();                
-            }
             if( ImGui::Button("Reset Variables") )
             {
                 ResetVariables();
@@ -132,22 +101,17 @@ namespace test
             ImGui::ColorPicker3("Color", &color.red);
         }
         ImGui::SameLine();
-         ImGui::ColorButton("##current_color", ImVec4(color.red, color.green, color.blue, 1.0f));
-    }
-   
-    void CollisionArenaTest::RigidObjectInput()
-    {
+        ImGui::ColorButton("##current_color", ImVec4(color.red, color.green, color.blue, 1.0f));
         ImGui::InputFloat("Mass", &mass);
         ImGui::InputFloat2("Velocity", &velocity.x);
         ImGui::InputFloat2("Gravity", &gravity.x);
         ImGui::SliderFloat("Static Friction", &staticFriction, 0.0f, 1.0f);
         ImGui::SliderFloat("DynamicFriction", &dynamicFriction, 0.0f, 1.0f);
-    } 
-
+    }
+   
     void CollisionArenaTest::ResetVariables()
     {
         showColorPicker = false;
-        isRigidObject = false;
         objectType = ObjectType::BOX;
         size = pe2d::Vector2(0.0f, 0.0f);
         radius = 0.0f;
@@ -170,25 +134,11 @@ namespace test
         constexpr pe2d::Vector2 force = pe2d::Vector2(0.0f, 0.0f);
         if(objectType == ObjectType::BOX)
         {
-            if(isRigidObject)
-            {
-                AddBox(ID, Color, size, transform, false, mass, force, velocity, gravity, staticFriction, dynamicFriction, 0.0f);
-            }
-            else
-            {
-                AddBox(ID, Color, size, transform, false);
-            }
+            AddBox(ID, Color, size, transform, false, mass, velocity, gravity, staticFriction, dynamicFriction, 0.0f);
         }
         else if(objectType == ObjectType::CIRCLE)
         {
-            if(isRigidObject)
-            {
-                AddCircle(ID, Color, radius, transform, false, mass, force, velocity, gravity, staticFriction, dynamicFriction, 0.0f);
-            }
-            else
-            {
-                AddCircle(ID, Color, radius, transform, false);
-            }
+            AddCircle(ID, Color, radius, transform, false, mass, velocity, gravity, staticFriction, dynamicFriction, 0.0f);
         }
         else
         {
@@ -199,20 +149,7 @@ namespace test
 
     void CollisionArenaTest::ClearObjects()
     {
-        for(auto it = m_World.Begin(); it != m_World.End();)
-        {
-            if(it->first == 210 || it->first == 2137)
-            {
-                it++;
-            }
-            else
-            {
-                it = m_World.RemoveObject(it);
-            }
-        }
-        if(m_Shapes.size() > 2)
-        {
-            m_Shapes.erase(std::next(m_Shapes.begin(), 2), m_Shapes.end());
-        }
+        m_Shapes.clear();
+        m_World.ClearObjects();
     }
 }   

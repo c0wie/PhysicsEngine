@@ -5,33 +5,56 @@
 namespace pe2d
 {
     // class that holds information about object with dynamics
-    class RigidObject : public CollisionObject
+    class RigidObject
     {
     public:
-        RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform,
-                    bool isTrigger, std::function<void(Collision, float)> collisionCallback,
-                    float mass, Vector2 velocity, Vector2 force, Vector2 gravity,
-                    float staticFriction, float dynamicFriction, float restitution);
-        RigidObject(unsigned int ID, std::shared_ptr<Collider> collider, Transform transform,
-                    bool isTrigger, std::function<void(Collision, float)> collisionCallback,
-                    float mass, Vector2 velocity, Vector2 force, float staticFriction,
-                    float dynamicFriction, float restitution);
+        RigidObject(size_t ID, std::shared_ptr<Collider> collider, Transform transform, float mass,
+                    Vector2 velocity, Vector2 gravity, bool isStatic, 
+                    float staticFriction, float dynamicFriction, float restitiution);
         RigidObject(const RigidObject &other);
         RigidObject(RigidObject &&other);
         RigidObject& operator=(const RigidObject &other);
         RigidObject& operator=(RigidObject &&other);
         RigidObject() = default;
     public:
+        constexpr unsigned int GetID() const { return m_ID; }
+        std::shared_ptr<Collider> GetCollider() const { return m_Collider; }
+        std::array<Vector2, 4> GetBounadingBox() const;
+        constexpr Vector2 GetPosition() const { return m_Transform.position; }
+        constexpr Vector2 GetScale() const { return m_Transform.scale; }
+        constexpr float GetRotation() const { return m_Transform.rotation; }
+        constexpr Transform GetTransform() const { return m_Transform; }
         constexpr float GetMass() const { return m_Mass; }
         constexpr float GetInvMass() const { return (1.0f / m_Mass); }
         constexpr Vector2 GetVelocity() const { return m_Velocity; }
         constexpr Vector2 GetForce() const { return m_Force; }
         constexpr Vector2 GetGravity() const { return m_Gravity; }
-        constexpr bool TakesGravity() const { return m_TakesGravity; }
+        constexpr bool IsStatic() const { return m_IsStatic; }
         constexpr float GetStaticFriction() const { return m_StaticFriction; }
         constexpr float GetDynamicFriction() const { return m_DynamicFriction; }
         constexpr float GetRestitution() const { return m_Restitution; }
 
+        constexpr void SetPosition(Vector2 pos) { m_Transform.position = pos; }
+        constexpr void SetScale(Vector2 scale) 
+        { 
+            if(scale.x < 0.0f || scale.y < 0.0f)
+            {
+                ASSERT("HOW SCALE COULD BE NEGATIVE NUMBER");
+            }
+            m_Transform.scale = scale; 
+        } 
+        constexpr void SetRotation(float angle) { m_Transform.rotation = angle; }
+        void SetCollider(std::shared_ptr<Collider> collider)
+        {
+            if(!collider)
+            {
+                ASSERT("Unvalid collider");
+            }
+            m_Collider = collider;
+        }
+        constexpr void SetTransform(Transform transform) { m_Transform = transform; }
+        constexpr void Move(Vector2 offset) { m_Transform.Move(offset); }
+        constexpr void Rotate(float angle) { m_Transform.Rotate(angle); }
         constexpr void SetMass(float mass)
         {
             if(mass <= 0.0f)
@@ -81,11 +104,14 @@ namespace pe2d
             m_Restitution = restitution;
         }
     private:
+        size_t m_ID;
+        std::shared_ptr<Collider> m_Collider;
+        Transform m_Transform;
         float m_Mass;
         Vector2 m_Velocity;
         Vector2 m_Force;
         Vector2 m_Gravity;          // Gravitional acceleration
-        bool m_TakesGravity;        // If the rigidobject will take gravity from the world
+        bool m_IsStatic;
         float m_StaticFriction;     // Static friction coefficient wich value has to be form 0 to 1
         float m_DynamicFriction;    // Dynamic friction coefficient wich value has to be form 0 to 1
         float m_Restitution;        // Elasticy of collision

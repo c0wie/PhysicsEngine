@@ -5,7 +5,7 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 
-#include "DynamicsWorld.hpp"
+#include "PhysicsWorld.hpp"
 #include "Samples/include/FallingCirclesTest.hpp"
 #include "Samples/include/CollisionArenaTest.hpp"
 #include "Samples/include/TestMenu.hpp"

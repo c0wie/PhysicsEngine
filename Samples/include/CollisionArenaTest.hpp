@@ -22,14 +22,12 @@ namespace test
         void OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io) override;
     private:
         void CollisionObjectInput();
-        void RigidObjectInput();
         void ResetVariables();
         void CreateObject();
         void ClearObjects();
     private:
         bool showColorPicker; 
         bool showObjectEditor;
-        bool isRigidObject;
         ObjectType objectType;
         float radius;
         pe2d::Vector2 size;
@@ -42,7 +40,5 @@ namespace test
         pe2d::Vector2 gravity;
         float staticFriction;
         float dynamicFriction;
-    public:
-        bool wasColliding = false;
     };
 }
