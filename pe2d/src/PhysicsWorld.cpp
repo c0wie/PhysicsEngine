@@ -95,12 +95,19 @@ namespace pe2d
 
     void PhysicsWorld::FindCollisions(size_t IDA, size_t IDB, std::vector<Collision> &collisions)
     {
-        const CollisionPoints points = m_Objects.at(IDA).GetCollider()->TestCollision
-            ( m_Objects.at(IDA).GetTransform(),  m_Objects.at(IDB).GetCollider().get(),  m_Objects.at(IDB).GetTransform());
+        RigidObject &A = m_Objects.at(IDA);
+        RigidObject &B = m_Objects.at(IDB);
+
+        if(A.IsStatic() && B.IsStatic())
+        {
+            return;
+        }
+
+        const CollisionPoints points = A.GetCollider()->TestCollision(A.GetTransform(), B.GetCollider().get(), B.GetTransform());
 
         if(points.HasCollision)
         {
-            collisions.emplace_back( m_Objects.at(IDA),  m_Objects.at(IDB), points);
+            collisions.emplace_back(A, B, points);
         }
     }
 

@@ -8,7 +8,7 @@ namespace test
     struct Shape
     {
     public:
-        Shape(const sf::Color &color, pe2d::RigidObject &body, void (*drawFunction)(sf::RenderWindow &window, const Shape &shape)) : 
+        explicit Shape(const sf::Color &color, pe2d::RigidObject &body, void (*drawFunction)(sf::RenderWindow &window, const Shape &shape)) : 
         m_Color(color),
         m_Body(body),
         m_Draw(drawFunction)

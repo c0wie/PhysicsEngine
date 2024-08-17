@@ -40,5 +40,9 @@ namespace test
         pe2d::Vector2 gravity;
         float staticFriction;
         float dynamicFriction;
+        static constexpr float m_SquareSpawnCooldown = 0.1f;
+        float m_TimeSinceLastSpawn;
     };
+    pe2d::RigidObject GetRandomCircle(size_t ID, pe2d::Vector2 pos);
+    pe2d::RigidObject GetRandomBox(size_t ID, pe2d::Vector2 pos);
 }

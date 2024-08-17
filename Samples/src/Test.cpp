@@ -3,7 +3,7 @@
 
 namespace test
 {
-    void Test::DrawCircle(sf::RenderWindow &window, const Shape &shape)
+    void DrawCircle(sf::RenderWindow &window, const Shape &shape)
     {
         const pe2d::RigidObject body = shape.GetBody();
         const std::shared_ptr<pe2d::CircleCollider> collider = std::dynamic_pointer_cast<pe2d::CircleCollider>(body.GetCollider());
@@ -22,7 +22,7 @@ namespace test
         window.draw(circle);
     }
 
-    void Test::DrawBox(sf::RenderWindow &window, const Shape &shape)
+    void DrawBox(sf::RenderWindow &window, const Shape &shape)
     {
         const pe2d::RigidObject &body = shape.GetBody();
         const std::shared_ptr<pe2d::BoxCollider> collider = std::dynamic_pointer_cast<pe2d::BoxCollider>(body.GetCollider());
@@ -55,6 +55,12 @@ namespace test
         }*/
     }
 
+    void Test::AddCircle(const sf::Color color, pe2d::RigidObject &object)
+    {
+        m_World.AddObject(object);
+        m_Shapes.emplace_back(color, m_World.At(object.GetID()), DrawCircle);
+    }
+    
     void Test::AddCircle(size_t ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isStatic,
         float mass, pe2d::Vector2 velocity,pe2d::Vector2 gravity, float staticFriction, float dynamicFriction, float restitution)
     {
@@ -64,7 +70,13 @@ namespace test
         m_World.AddObject(object);
         m_Shapes.emplace_back(color, m_World.At(ID), DrawCircle);
     }   
-
+    
+    void Test::AddBox(const sf::Color color, pe2d::RigidObject &object)
+    {
+        m_World.AddObject(object);
+        m_Shapes.emplace_back(color, m_World.At(object.GetID()), DrawBox);
+    }
+    
     void Test::AddBox(unsigned int ID, const sf::Color &color, pe2d::Vector2 size, pe2d::Transform transform, bool isStatic,
         float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity, float staticFriction, float dynamicFriction, float restitution)
     {

@@ -1,34 +1,39 @@
 #include "CollisionArenaTest.hpp"
 #include "Algo.hpp"
+#include <random>
 namespace test
 {   
     CollisionArenaTest::CollisionArenaTest() :
+        m_TimeSinceLastSpawn(0.0f),
         showObjectEditor(false)
     {   
         m_World.AddGrid(pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 100.0f);
-        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::PositionSolver>();
+        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
         m_World.AddSolver(solver);
 
-        AddBox(420U, sf::Color::Red, pe2d::Vector2(1000.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 30.0f),
-                false, 100000000.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
-        AddCircle(24U, sf::Color::Blue, 40.0f, pe2d::Transform(pe2d::Vector2(100.0f, 100.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                false, 200.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), 1.0f, 1.0f, 0.0f);
+        AddBox(2217U, sf::Color::Green, pe2d::Vector2(800.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
+                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.75f, 0.75f, 0.0f);
         ResetVariables();        
     }
 
     void CollisionArenaTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)
     {
+        m_TimeSinceLastSpawn += deltaTime;
         if(m_World.Size() != m_Shapes.size())
         {
             ASSERT("m_World size and m_Shapes size aren't the same");
         }
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && m_TimeSinceLastSpawn >= m_SquareSpawnCooldown)
         {
-            m_World.At(24).AddVelocity(pe2d::Vector2(100.0f, 0.0f) * deltaTime);
+            m_TimeSinceLastSpawn = 0.0f;
+            pe2d::RigidObject obj = GetRandomBox(m_World.Size(), pe2d::Vector2(mousePos.x, mousePos.y));
+            AddBox(sf::Color::Blue, obj);
         }
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_TimeSinceLastSpawn >= m_SquareSpawnCooldown)
         {
-            m_World.At(24).AddVelocity(pe2d::Vector2(-100.0f, 0.0f) * deltaTime);
+            m_TimeSinceLastSpawn = 0.0f;
+            pe2d::RigidObject obj = GetRandomCircle(m_World.Size(), pe2d::Vector2(mousePos.x, mousePos.y));
+            AddCircle(sf::Color::Red, obj);
         }
         m_World.Step(deltaTime);  
     }
@@ -48,8 +53,8 @@ namespace test
         {
             ClearObjects();
         }
-        const pe2d::Vector2 vel = m_World.At(24).GetVelocity();
-        const pe2d::Vector2 pos = m_World.At(24).GetPosition();
+        const pe2d::Vector2 vel = m_World.At(2217).GetVelocity();
+        const pe2d::Vector2 pos = m_World.At(2217).GetPosition();
         ImGui::Text("Velocity: %i, %i", (int)vel.x, (int)vel.y);
         ImGui::Text("Number of objects: %i", m_World.Size());
         ImGui::Text("Position: %i, %i", (int)pos.x, (int)pos.y);
@@ -151,5 +156,47 @@ namespace test
     {
         m_Shapes.clear();
         m_World.ClearObjects();
+    }
+
+    pe2d::RigidObject GetRandomBox(size_t ID, pe2d::Vector2 pos)
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> distribInt(30, 150);
+        std::uniform_real_distribution<float> distribFloat(0.0f, 1.0f);
+        std::uniform_int_distribution<int> distribPos(200, 800);
+        std::uniform_int_distribution<int> distribRotation(0, 180);
+        float mass = distribInt(gen);
+        pe2d::Transform transform = pe2d::Transform(pos, pe2d::Vector2(1.0f, 1.0f), distribRotation(gen));
+        pe2d::Vector2 size = pe2d::Vector2(distribInt(gen), distribInt(gen));
+        float staticFriction = distribFloat(gen);
+        float dynamicFriction = distribFloat(gen);
+        float resistance = distribFloat(gen);
+        std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
+        pe2d::RigidObject object(ID, collider, transform, mass,
+                        pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), false,
+                        staticFriction, dynamicFriction, resistance);
+        return object;
+    }
+
+    pe2d::RigidObject GetRandomCircle(size_t ID, pe2d::Vector2 pos)
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> distribInt(30, 70);
+        std::uniform_real_distribution<float> distribFloat(0.0f, 1.0f);
+        std::uniform_int_distribution<int> distribPos(200, 800);
+        std::uniform_int_distribution<int> distribRotation(0, 360);
+        const pe2d::Transform transform = pe2d::Transform(pos, pe2d::Vector2(1.0f, 1.0f), 0.0f);
+        float mass = distribInt(gen);
+        float radius = distribInt(gen);
+        float staticFriction = distribFloat(gen);
+        float dynamicFriction = distribFloat(gen);
+        float resistance = distribFloat(gen);
+        std::shared_ptr<pe2d::CircleCollider> collider = std::make_shared<pe2d::CircleCollider>(radius);
+        pe2d::RigidObject object(ID, collider, transform, mass,
+                        pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), false,
+                        staticFriction, dynamicFriction, resistance);
+        return object;
     }
 }   

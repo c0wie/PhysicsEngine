@@ -23,9 +23,17 @@ namespace pe2d
         constexpr Vector2 GetPosition() const { return m_Transform.position; }
         constexpr Vector2 GetScale() const { return m_Transform.scale; }
         constexpr float GetRotation() const { return m_Transform.rotation; }
+        constexpr float GetRotationInRadians() const { return m_Transform.GetRotationInRadians(); }
         constexpr Transform GetTransform() const { return m_Transform; }
         constexpr float GetMass() const { return m_Mass; }
-        constexpr float GetInvMass() const { return (1.0f / m_Mass); }
+        constexpr float GetInvMass() const 
+        {
+            if(m_IsStatic)
+            {
+                return 0.0f;
+            }
+            return (1.0f / m_Mass); 
+        }
         constexpr Vector2 GetVelocity() const { return m_Velocity; }
         constexpr Vector2 GetForce() const { return m_Force; }
         constexpr Vector2 GetGravity() const { return m_Gravity; }
