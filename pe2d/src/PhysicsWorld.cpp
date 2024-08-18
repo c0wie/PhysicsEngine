@@ -4,9 +4,13 @@ namespace pe2d
 {
     void PhysicsWorld::Step(float deltaTime)
     {
-        ApplyGravity();
-        ResolveCollisions(deltaTime);
-        MoveObjects(deltaTime);
+        const float subTime = deltaTime / (float)m_Substeps;
+        for(unsigned int i = 0; i < m_Substeps; i++)
+        {
+            ApplyGravity();
+            ResolveCollisions(subTime);
+            MoveObjects(subTime);
+        }   
     }
 
     void PhysicsWorld::AddObject(const RigidObject &object)
@@ -72,8 +76,8 @@ namespace pe2d
                 }
             }
         }
-        SolveCollisions(collisions, deltaTime);
         ApplyFriction(collisions);
+        SolveCollisions(collisions, deltaTime);
     }
     
     void PhysicsWorld::AddGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float cellSize)

@@ -17,7 +17,7 @@ namespace pe2d
             if(length == 0.0f)
             {
                 const float overlap = radiusA > radiusB? radiusA : radiusB;
-                return CollisionPoints{pe2d::Vector2{1.0f, 0.0f}, overlap, true};
+                return CollisionPoints(pe2d::Vector2(1.0f, 0.0f), overlap, Vector2(0.0f, 0.0f), Vector2(0.0f, 0.0f), 0, true);
             }
             // with circle I scaled them based on x value of scale
             float sum = ( radiusA * transformCircleA.scale.x ) + ( radiusB * transformCircleB.scale.x );
@@ -30,7 +30,7 @@ namespace pe2d
             const float overlap = sum - length;
             Vector2 normal = diff.normalized();
 
-            return CollisionPoints{normal, overlap, true};
+            return CollisionPoints(normal, overlap, Vector2(0.0f, 0.0f), Vector2(0.0f, 0.0f), 0, true);
         }
 
         CollisionPoints FindCircleBoxCollision(
@@ -73,7 +73,7 @@ namespace pe2d
                 overlap = o;
                 smallesAxis = &circleAxis;
             }
-            return CollisionPoints{*smallesAxis, overlap, true};
+            return CollisionPoints(*smallesAxis, overlap, Vector2(0.0f, 0.0f), Vector2(0.0f, 0.0f), 0 ,true);
         }
         
         CollisionPoints FindBoxCircleCollision(
@@ -128,7 +128,7 @@ namespace pe2d
                     smallestAxis = &axesB[i];
                 }
             }
-            return CollisionPoints{*smallestAxis, overlap, true};
+            return CollisionPoints(*smallestAxis, overlap, Vector2(0.0f, 0.0f), Vector2(0.0f, 0.0f), 0, true);
         }
 
         std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform)

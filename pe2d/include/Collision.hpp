@@ -9,7 +9,7 @@ namespace pe2d
     class Collision
     {
     public:
-        Collision(RigidObject &a, RigidObject &b, CollisionPoints points) :
+        Collision(RigidObject &a, RigidObject &b, const CollisionPoints &points) :
             m_ObjectA(a), m_ObjectB(b), m_Points(points) {}
         Collision(const Collision &other) = default;
         Collision(Collision &&other) noexcept = default;

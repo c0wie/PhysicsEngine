@@ -1,5 +1,5 @@
 #include "Test.hpp"
-#include "../../pe2d/include/Algo.hpp"
+#include "Algo.hpp"
 
 namespace test
 {
@@ -19,7 +19,13 @@ namespace test
         const pe2d::Vector2 position = body.GetPosition();
         circle.setPosition(position.x - radius, position.y - radius);
 
+        sf::VertexArray line(sf::Lines, 2);
+        line[0].position = sf::Vector2f(position.x, position.y);
+        line[0].color = color;
+        line[1].position = sf::Vector2f(position.x + radius, position.y);
+        line[1].color = color;
         window.draw(circle);
+        window.draw(line);
     }
 
     void DrawBox(sf::RenderWindow &window, const Shape &shape)

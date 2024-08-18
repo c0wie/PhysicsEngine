@@ -19,7 +19,13 @@ namespace pe2d
     public:
         PhysicsWorld() : 
             m_Grid(),
-            m_IsGridOn(false)
+            m_IsGridOn(false),
+            m_Substeps(8)
+        {}
+        PhysicsWorld(unsigned int substeps) :
+            m_Grid(),
+            m_IsGridOn(false),
+            m_Substeps(std::clamp(substeps, 1U, 64U))
         {}
         PhysicsWorld(const PhysicsWorld &other) = delete;
         PhysicsWorld(PhysicsWorld &&other) = delete;
@@ -67,5 +73,6 @@ namespace pe2d
         std::unordered_map<size_t, RigidObject> m_Objects;
         Grid m_Grid;
         bool m_IsGridOn;
+        unsigned int m_Substeps;
     }; 
 }

@@ -28,7 +28,7 @@ namespace test
         template<typename T>
         void RegisterTest(const std::string &testName)
         {
-            m_Tests.push_back(std::make_pair(testName, []() { return new T(); } ) );
+            m_Tests.push_back(std::make_pair(testName, []() -> test::Test* { return new T(); } ) );
         }
     private:
         std::vector< std::pair<std::string, std::function<Test*()> >> m_Tests;

@@ -12,7 +12,7 @@ namespace test
         m_World.AddSolver(solver);
 
         AddBox(2217U, sf::Color::Green, pe2d::Vector2(800.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.75f, 0.75f, 0.0f);
+                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.75f, 0.75f, 1.0f);
         ResetVariables();        
     }
 
@@ -167,11 +167,11 @@ namespace test
         std::uniform_int_distribution<int> distribPos(200, 800);
         std::uniform_int_distribution<int> distribRotation(0, 180);
         float mass = distribInt(gen);
-        pe2d::Transform transform = pe2d::Transform(pos, pe2d::Vector2(1.0f, 1.0f), distribRotation(gen));
+        pe2d::Transform transform = pe2d::Transform(pos, pe2d::Vector2(1.0f, 1.0f), 0.0f);
         pe2d::Vector2 size = pe2d::Vector2(distribInt(gen), distribInt(gen));
         float staticFriction = distribFloat(gen);
         float dynamicFriction = distribFloat(gen);
-        float resistance = distribFloat(gen);
+        float resistance = 1.0f;
         std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
         pe2d::RigidObject object(ID, collider, transform, mass,
                         pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), false,
