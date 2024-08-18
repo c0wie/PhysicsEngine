@@ -171,7 +171,7 @@ namespace test
         pe2d::Vector2 size = pe2d::Vector2(distribInt(gen), distribInt(gen));
         float staticFriction = distribFloat(gen);
         float dynamicFriction = distribFloat(gen);
-        float resistance = 1.0f;
+        float resistance = 0.0f;
         std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
         pe2d::RigidObject object(ID, collider, transform, mass,
                         pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), false,

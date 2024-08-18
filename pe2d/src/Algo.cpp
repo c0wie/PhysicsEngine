@@ -6,42 +6,36 @@ namespace pe2d
 {
     namespace algo
     {
-        CollisionPoints FindCircleCircleCollision(
-            const CircleCollider *circleA, Transform transformCircleA,
-            const CircleCollider *circleB, Transform transformCircleB)
+        bool FindCircleCircleCollision(const CircleCollider *circleA, Transform transformCircleA, const CircleCollider *circleB, Transform transformCircleB, Vector2 &normal, float &depth)
         {
             const float radiusA = circleA->GetRadius();
             const float radiusB =  circleB->GetRadius();
-            const Vector2 diff = transformCircleA.position - transformCircleB.position;
+            const Vector2 centerA = transformCircleA.position;
+            const Vector2 centerB = transformCircleB.position;
+
+            const Vector2 diff = centerA - centerB;
             const float &length = diff.magnitude();
-            if(length == 0.0f)
-            {
-                const float overlap = radiusA > radiusB? radiusA : radiusB;
-                return CollisionPoints(pe2d::Vector2(1.0f, 0.0f), overlap, Vector2(0.0f, 0.0f), Vector2(0.0f, 0.0f), 0, true);
-            }
-            // with circle I scaled them based on x value of scale
             float sum = ( radiusA * transformCircleA.scale.x ) + ( radiusB * transformCircleB.scale.x );
 
             if(length > sum)
             {
-                return CollisionPoints();
+                depth = 0.0f;
+                normal = Vector2(0.0f, 0.0f);
+                return false;
             }
 
-            const float overlap = sum - length;
-            Vector2 normal = diff.normalized();
+            depth = sum - length;
+            normal = diff.normalized();
 
-            return CollisionPoints(normal, overlap, Vector2(0.0f, 0.0f), Vector2(0.0f, 0.0f), 0, true);
+            return true;
         }
 
-        CollisionPoints FindCircleBoxCollision(
-            const CircleCollider *circle, Transform transformCircle,
-            const BoxCollider *box, Transform transformBox)
+        bool FindCircleBoxCollision(const CircleCollider *circle, Transform transformCircle, const BoxCollider *box, Transform transformBox, Vector2 &normal, float &depth)
         {
             Vector2 circleCenter = transformCircle.position;
             const std::array<Vector2, 4> boxVertices = GetBoxVertices(box->GetSize(), transformBox);
             const std::array<Vector2, 2> axes = GetBoxAxes(boxVertices);
-            const Vector2 *smallesAxis = nullptr;
-            float overlap = INF;
+            depth = INF;
 
             for(int i = 0; i < axes.size(); i++)
             {
@@ -49,14 +43,16 @@ namespace pe2d
                 const Vector2 p2 = Project(boxVertices, axes[i]);
 
                 if(!Overlap(p1, p2))
-                {
-                    return CollisionPoints();
+                {  
+                    depth = 0.0f;
+                    normal = Vector2(0.0f, 0.0f);
+                    return false;
                 }
                 const float o = GetOverlap(p1, p2);
-                if(o < overlap)
+                if(o < depth)
                 {
-                    overlap = o;
-                    smallesAxis = &axes[i];
+                    depth = o;
+                    normal = axes[i];
                 }
             }
             const Vector2 circleAxis = GetCircleAxis(boxVertices, circleCenter); 
@@ -65,36 +61,33 @@ namespace pe2d
 
             if(!Overlap(p1, p2))
             {
-                return CollisionPoints();
+                depth = 0.0f;
+                normal = Vector2(0.0f, 0.0f);
+                return false;
             }
             const float o = GetOverlap(p1, p2);
-            if(o < overlap)
+            if(o < depth)
             {
-                overlap = o;
-                smallesAxis = &circleAxis;
+                depth = o;
+                normal = circleAxis;
             }
-            return CollisionPoints(*smallesAxis, overlap, Vector2(0.0f, 0.0f), Vector2(0.0f, 0.0f), 0 ,true);
+            return true;
         }
         
-        CollisionPoints FindBoxCircleCollision(
-            const BoxCollider *box, Transform transformBox,
-            const CircleCollider *circle, Transform transformCircle)
+        bool FindBoxCircleCollision(const BoxCollider *box, Transform transformBox, const CircleCollider *circle, Transform transformCircle, Vector2 &normal, float &depth)
         {
-            CollisionPoints p = FindCircleBoxCollision(circle, transformCircle, box, transformBox);
-            p.Normal *= -1.0f;
+            bool p = FindCircleBoxCollision(circle, transformCircle, box, transformBox, normal, depth);
+            normal *= -1.0f;
             return p;
         }
 
-        CollisionPoints FindBoxBoxCollision(
-            const BoxCollider *boxA, Transform transformBoxA,
-            const BoxCollider *boxB, Transform transformBoxB)
+        bool FindBoxBoxCollision(const BoxCollider *boxA, Transform transformBoxA, const BoxCollider *boxB, Transform transformBoxB, Vector2 &normal, float &depth)
         {
             const std::array<Vector2, 4> verticesA = GetBoxVertices(boxA->GetSize(), transformBoxA);
             const std::array<Vector2, 4> verticesB = GetBoxVertices(boxB->GetSize(), transformBoxB);
             const std::array<Vector2, 2> axesA = GetBoxAxes(verticesA);
             const std::array<Vector2, 2> axesB = GetBoxAxes(verticesB);
-            const Vector2 *smallestAxis = nullptr;
-            float overlap = INF;
+            depth = INF;
 
             for(int i = 0; i < axesA.size(); i++)
             {
@@ -103,7 +96,9 @@ namespace pe2d
 
                 if(!Overlap(pA1, pA2))
                 {
-                    return CollisionPoints();
+                    depth = 0.0f;
+                    normal = Vector2(0.0f, 0.0f);
+                    return false;
                 }
 
                 const Vector2 pB1 = Project(verticesA, axesB[i]);
@@ -111,24 +106,26 @@ namespace pe2d
 
                 if(!Overlap(pB1, pB2))
                 {
-                    return CollisionPoints();
+                    depth = 0.0f;
+                    normal = Vector2(0.0f, 0.0f);
+                    return false;
                 }
 
                 const float overlapA = GetOverlap(pA1, pA2);
                 const float overlapB = GetOverlap(pB1, pB2);
 
-                if(overlapA < overlap)
+                if(overlapA < depth)
                 {
-                    overlap = overlapA;
-                    smallestAxis = &axesA[i];
+                    depth = overlapA;
+                    normal = axesA[i];
                 }
-                if(overlapB < overlap)
+                if(overlapB < depth)
                 {
-                    overlap = overlapB;
-                    smallestAxis = &axesB[i];
+                    depth = overlapB;
+                    normal = axesB[i];
                 }
             }
-            return CollisionPoints(*smallestAxis, overlap, Vector2(0.0f, 0.0f), Vector2(0.0f, 0.0f), 0, true);
+            return true;
         }
 
         std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform)

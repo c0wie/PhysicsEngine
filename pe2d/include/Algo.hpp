@@ -17,27 +17,19 @@ namespace pe2d
         constexpr float MIN = std::numeric_limits<float>::min();
         // returns info about circle - circle collision 
         // returns empty CollisionPoints if collision doesn't occur
-        CollisionPoints FindCircleCircleCollision(
-            const CircleCollider *circleA, Transform transformCircleA,
-            const CircleCollider *circleB, Transform transformCircleB);
+        bool FindCircleCircleCollision(const CircleCollider *circleA, Transform transformCircleA, const CircleCollider *circleB, Transform transformCircleB, Vector2 &normal, float &depth);
 
         // returns info about circle - box collision
         // returns empty CollisionPoints if collision doesn't occur
-        CollisionPoints FindCircleBoxCollision(
-            const CircleCollider *circle, Transform transformCircle,
-            const BoxCollider *box, Transform transformBox);
+        bool FindCircleBoxCollision(const CircleCollider *circle, Transform transformCircle, const BoxCollider *box, Transform transformBox, Vector2 &normal, float &depth);
 
         // returns info about box - circle collision 
         // returns empty CollisionPoints if collision doesn't occur
-        CollisionPoints FindBoxCircleCollision(
-            const BoxCollider *box, Transform transformBox,
-            const CircleCollider *circle, Transform transformCircle);
+        bool FindBoxCircleCollision(const BoxCollider *box, Transform transformBox, const CircleCollider *circle, Transform transformCircle, Vector2 &normal, float &depth);
 
         // returns info about box - box collision 
         // returns empty CollisionPoints if collision doesn't occur
-        CollisionPoints FindBoxBoxCollision(
-            const BoxCollider *boxA, Transform transformBoxA,
-            const BoxCollider *boxB, Transform transformBoxB);
+        bool FindBoxBoxCollision(const BoxCollider *boxA, Transform transformBoxA, const BoxCollider *boxB, Transform transformBoxB, Vector2 &normal, float &depth);
         
         // angle in radians
         template <typename Container>

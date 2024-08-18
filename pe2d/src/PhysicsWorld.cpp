@@ -106,11 +106,32 @@ namespace pe2d
         {
             return;
         }
+        Vector2 normal = Vector2(0.0f, 0.0f);
+        float depth = 0.0f;
 
-        const CollisionPoints points = A.GetCollider()->TestCollision(A.GetTransform(), B.GetCollider().get(), B.GetTransform());
-
-        if(points.HasCollision)
+        // check if objects are penetrating if so pull them apart
+        if(!A.GetCollider()->TestCollision(A.GetTransform(), B.GetCollider().get(), B.GetTransform(), normal, depth))
         {
+            Vector2 MTV = normal * depth;
+            if(MTV.dot(A.GetPosition() - B.GetPosition()) < 0.0f)
+            {
+                MTV *= -1.0f;
+            }
+            
+            if (A.IsStatic())
+            {
+                B.Move(-1.0f * MTV);
+            }
+            else if (B.IsStatic())
+            {
+                A.Move(MTV);
+            }
+            else
+            {
+                A.Move(MTV / 2.0f);
+                B.Move(MTV / -2.0f);
+            }
+            CollisionPoints points = A.GetCollider()->FindCollisionPoints(A.GetTransform(), B.GetCollider().get(), B.GetTransform(), normal, depth);
             collisions.emplace_back(A, B, points);
         }
     }
