@@ -34,27 +34,27 @@ namespace pe2d
             return *this;
         }
     public:
-        constexpr bool operator==(const Vector2 &other) const
+        constexpr bool operator==(Vector2 other) const
         {
             return x == other.x && y == other.y;
         }
-        constexpr bool operator!=(const Vector2 &other) const
+        constexpr bool operator!=(Vector2 other) const
         {
             return x != other.x && y != other.y;
         }
-        constexpr bool operator <=(const Vector2 &other) const
+        constexpr bool operator <=(Vector2 other) const
         {
             return (x <= other.x && y <= other.y);
         }
-        constexpr Vector2 operator+(const Vector2 &other) const
+        constexpr Vector2 operator+(Vector2 other) const
         {
             return Vector2{ x + other.x, y + other.y};
         }
-        constexpr Vector2 operator-(const Vector2 &other) const
+        constexpr Vector2 operator-(Vector2 other) const
         {
             return Vector2{x - other.x, y - other.y};
         }      
-        constexpr Vector2& operator+=(const Vector2 &other)
+        constexpr Vector2& operator+=(Vector2 other)
         {
             x += other.x;
             y += other.y;
@@ -66,7 +66,7 @@ namespace pe2d
             y += number;
             return *this;
         }
-        constexpr Vector2 operator*(const Vector2 &other) const
+        constexpr Vector2 operator*(Vector2 other) const
         {
             return Vector2{x * other.x, y * other.y};
         }
@@ -74,7 +74,7 @@ namespace pe2d
         {
             return Vector2{ x * multiplier, y * multiplier};
         }
-         friend constexpr Vector2 operator*(float multiplier, const Vector2& vec)
+        friend constexpr Vector2 operator*(float multiplier, const Vector2& vec)
         {
             return vec * multiplier;
         }
@@ -88,43 +88,6 @@ namespace pe2d
         {
              return Vector2{ x / divider, y / divider};
         }
-        // returns perpendicular vector 
-        constexpr Vector2 perp() const
-        {
-            return Vector2{-y, x};
-        }
-        // returns normalized vector
-        constexpr Vector2 normalized() const
-        {
-            const float length = magnitude();
-            if(length == 0)
-            {
-                return Vector2(0.0f, 0.0f);
-            }
-            return Vector2 (x / length, y / length);
-        }
-        // returns dot product of two vectors;
-        constexpr float dot(const Vector2 &other) const
-        {
-            return x * other.x + y * other.y;
-        }
-        //returns length of vector
-        constexpr float magnitude() const
-        {
-            return std::hypot(x, y);
-        }
-        //return positvie value of vector
-        constexpr  Vector2 abs() const
-        {
-            return Vector2{ std::abs(x), std::abs(y)};
-        }
-
-        constexpr static Vector2 lerp(const Vector2 &x, const Vector2 &y, float t)
-        {
-            t = std::clamp(t, 0.0f, 1.0f);
-            return Vector2{x * (1.0f - t) + y * t};
-        }
-        
         std::string GetString() const
         {
             std::string name = std::to_string(x) + " " + std::to_string(y);

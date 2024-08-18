@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <limits>
+#include "Math.hpp"
 #include "CollisionPoints.hpp"
 #include "Transform.hpp"
 
@@ -17,19 +18,27 @@ namespace pe2d
         constexpr float MIN = std::numeric_limits<float>::min();
         // returns info about circle - circle collision 
         // returns empty CollisionPoints if collision doesn't occur
-        bool FindCircleCircleCollision(const CircleCollider *circleA, Transform transformCircleA, const CircleCollider *circleB, Transform transformCircleB, Vector2 &normal, float &depth);
+        CollisionPoints FindCircleCircleCollision(
+            const CircleCollider *circleA, Transform transformCircleA,
+            const CircleCollider *circleB, Transform transformCircleB);
 
         // returns info about circle - box collision
         // returns empty CollisionPoints if collision doesn't occur
-        bool FindCircleBoxCollision(const CircleCollider *circle, Transform transformCircle, const BoxCollider *box, Transform transformBox, Vector2 &normal, float &depth);
+        CollisionPoints FindCircleBoxCollision(
+            const CircleCollider *circle, Transform transformCircle,
+            const BoxCollider *box, Transform transformBox);
 
         // returns info about box - circle collision 
         // returns empty CollisionPoints if collision doesn't occur
-        bool FindBoxCircleCollision(const BoxCollider *box, Transform transformBox, const CircleCollider *circle, Transform transformCircle, Vector2 &normal, float &depth);
+        CollisionPoints FindBoxCircleCollision(
+            const BoxCollider *box, Transform transformBox,
+            const CircleCollider *circle, Transform transformCircle);
 
         // returns info about box - box collision 
         // returns empty CollisionPoints if collision doesn't occur
-        bool FindBoxBoxCollision(const BoxCollider *boxA, Transform transformBoxA, const BoxCollider *boxB, Transform transformBoxB, Vector2 &normal, float &depth);
+        CollisionPoints FindBoxBoxCollision(
+            const BoxCollider *boxA, Transform transformBoxA,
+            const BoxCollider *boxB, Transform transformBoxB);
         
         // angle in radians
         template <typename Container>
@@ -70,22 +79,22 @@ namespace pe2d
             return overlapEnd - overlapStart;
         }
         
-        // return perpendicular and normalized axes of an object's edges
+        // return perpendicular and Normalize axes of an object's edges
         std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices);
         
-        // return perpendicular and normalized axes of a box edges
+        // return perpendicular and Normalize axes of a box edges
         std::array<Vector2, 2> GetBoxAxes(const std::array<Vector2, 4> &vertices);
         
         // project an shape on axis 
         template<typename Container>
         Vector2 Project(const Container &vertices, Vector2 axis)
         {
-            float min = axis.dot(*vertices.begin());
+            float min = Dot(axis, *vertices.begin());
             float max = min;
 
             for(auto it = std::next(vertices.begin()); it != vertices.end(); it++)
             {
-                const float p = axis.dot(*it);
+                const float p = Dot(axis, *it);
                 if(p < min)
                 {
                     min = p;
@@ -101,7 +110,7 @@ namespace pe2d
         // project circle on axis
         Vector2 ProjectCircle(Vector2 circleCenter, float radius, Vector2 axis);
 
-        // return perpendicular and normalized axis to circle center
+        // return perpendicular and Normalize axis to circle center
         template <typename Container>
         Vector2 GetCircleAxis(const Container &vertices, Vector2 circleCenter)
         {
@@ -110,14 +119,14 @@ namespace pe2d
             for(auto it = vertices.begin(); it != vertices.end(); it++)
             {
                 const Vector2 edge = *it - circleCenter;
-                const float d = edge.magnitude();
+                const float d = Length(edge);
                 if(d < dist)
                 {
                     dist = d;
                     smallestAxis = edge;
                 }
             }
-            return smallestAxis.normalized();
+            return Normalize(smallestAxis);
         }
     }
 }

@@ -14,9 +14,9 @@ namespace pe2d
     class Collider 
     {
     public:
-        virtual bool TestCollision(Transform transform, const Collider *collider, Transform colliderTransform, Vector2 &normal, float &depth) const = 0;
-        virtual bool TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform, Vector2 &normal, float &depth) const = 0;
-        virtual bool TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform, Vector2 &normal, float &depth) const = 0;
+        virtual CollisionPoints TestCollision(Transform transform, const Collider *collider, Transform colliderTransform) const = 0;
+        virtual CollisionPoints TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform) const = 0;
+        virtual CollisionPoints TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const = 0;
     };
     
     // wraper class arround algo namespace that allows to retrive info about circle collisions
@@ -50,9 +50,9 @@ namespace pe2d
             return *this;
         }
     public:
-        bool TestCollision(Transform transform, const Collider *collider, Transform colliderTransform, Vector2 &normal, float &depth) const override;
-        bool TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform, Vector2 &normal, float &depth) const override;
-        bool TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform, Vector2 &normal, float &depth) const override;
+        CollisionPoints TestCollision(Transform transform, const Collider *collider, Transform colliderTransform) const override final;
+        CollisionPoints TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform) const override final;
+        CollisionPoints TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const override final;
         
         constexpr float GetRadius() const { return m_Radius; }
         constexpr void SetRadius(float radius)
@@ -106,9 +106,9 @@ namespace pe2d
             return *this;
         }
     public:
-        bool TestCollision(Transform transform, const Collider *collider, Transform colliderTransform, Vector2 &normal, float &depth) const override final;
-        bool TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform, Vector2 &normal, float &depth) const override final;
-        bool TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform, Vector2 &normal, float &depth) const override final;
+        CollisionPoints TestCollision(Transform transform, const Collider *collider, Transform colliderTransform) const override final;
+        CollisionPoints TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform) const override final;
+        CollisionPoints TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const override final;
         
         constexpr Vector2 GetSize() const { return m_Size; }
         constexpr void SetSize(const Vector2 &size) 

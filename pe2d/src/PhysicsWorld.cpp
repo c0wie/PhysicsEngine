@@ -4,7 +4,8 @@ namespace pe2d
 {
     void PhysicsWorld::Step(float deltaTime)
     {
-        const float subTime = deltaTime / (float)m_Substeps;
+        thingsToDraw.clear();
+        const float subTime = deltaTime / static_cast<float>(m_Substeps);
         for(unsigned int i = 0; i < m_Substeps; i++)
         {
             ApplyGravity();
@@ -106,32 +107,12 @@ namespace pe2d
         {
             return;
         }
-        Vector2 normal = Vector2(0.0f, 0.0f);
-        float depth = 0.0f;
 
         // check if objects are penetrating if so pull them apart
-        if(!A.GetCollider()->TestCollision(A.GetTransform(), B.GetCollider().get(), B.GetTransform(), normal, depth))
+        CollisionPoints points = A.GetCollider()->TestCollision(A.GetTransform(), B.GetCollider().get(), B.GetTransform());
+        if(points.HasCollision)
         {
-            Vector2 MTV = normal * depth;
-            if(MTV.dot(A.GetPosition() - B.GetPosition()) < 0.0f)
-            {
-                MTV *= -1.0f;
-            }
-            
-            if (A.IsStatic())
-            {
-                B.Move(-1.0f * MTV);
-            }
-            else if (B.IsStatic())
-            {
-                A.Move(MTV);
-            }
-            else
-            {
-                A.Move(MTV / 2.0f);
-                B.Move(MTV / -2.0f);
-            }
-            CollisionPoints points = A.GetCollider()->FindCollisionPoints(A.GetTransform(), B.GetCollider().get(), B.GetTransform(), normal, depth);
+            thingsToDraw.push_back(points.ContactPoint1);
             collisions.emplace_back(A, B, points);
         }
     }
@@ -174,20 +155,20 @@ namespace pe2d
                         (rigidObjectA.GetDynamicFriction() + rigidObjectB.GetDynamicFriction()) / 2.0f;
 
             // perpendicular to normal, represent direciton in which friction will act
-            Vector2 tangent = relativeVelocity - relativeVelocity.dot(points.Normal) * points.Normal;
+            Vector2 tangent = relativeVelocity - Dot(relativeVelocity, points.Normal) * points.Normal;
             if(tangent == pe2d::Vector2(0.0f, 0.0f))
             {
                 continue;
             }
             else
             {
-                tangent = tangent.normalized();
+                tangent = Normalize(tangent);
             }
-            float jt = relativeVelocity.dot(tangent);
+            float jt = Dot(relativeVelocity, tangent);
             jt /= (rigidObjectA.GetInvMass() + rigidObjectB.GetInvMass());
 
             Vector2 frictionImpulse;
-            const float j = relativeVelocity.dot(points.Normal);
+            const float j = Dot(relativeVelocity, points.Normal);
             if(abs(jt) <= j * coefficientOfStaticFriction)
             {
                 frictionImpulse = jt * tangent;

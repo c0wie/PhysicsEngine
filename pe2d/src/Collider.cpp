@@ -4,38 +4,38 @@ namespace pe2d
 {
 #pragma region Circle Collider
 
-    bool CircleCollider::TestCollision(Transform transform, const Collider *collider, Transform colliderTransform, Vector2 &normal, float &depth) const 
+    CollisionPoints CircleCollider::TestCollision(Transform transform, const Collider *collider, Transform colliderTransform) const 
     {
-        return collider->TestCollision(colliderTransform, this, transform, normal, depth);
+        return collider->TestCollision(colliderTransform, this, transform);
     }
     
-    bool CircleCollider::TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform, Vector2 &normal, float &depth) const 
+    CollisionPoints CircleCollider::TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform) const 
     {
-        return algo::FindCircleCircleCollision(this, transform, circle, circleTransform, normal, depth);
+        return algo::FindCircleCircleCollision(this, transform, circle, circleTransform);
     }
 
-    bool CircleCollider::TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform, Vector2 &normal, float &depth) const
+    CollisionPoints CircleCollider::TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const
     {
-        return algo::FindCircleBoxCollision(this, transform, box, boxTransform, normal, depth);
+        return algo::FindCircleBoxCollision(this, transform, box, boxTransform);
     }
 
 #pragma endregion
 
 #pragma region Box Collider
 
-    bool BoxCollider::TestCollision(Transform transform, const Collider *collider, Transform colliderTransform, Vector2 &normal, float &depth) const
+    CollisionPoints BoxCollider::TestCollision(Transform transform, const Collider *collider, Transform colliderTransform) const
     {
-        return collider->TestCollision(colliderTransform, this, transform, normal, depth);
+        return collider->TestCollision(colliderTransform, this, transform);
     }
 
-    bool BoxCollider::TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform, Vector2 &normal, float &depth) const
+    CollisionPoints BoxCollider::TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform) const
     {
-        return algo::FindBoxCircleCollision(this, transform, circle, circleTransform, normal, depth);
+        return algo::FindBoxCircleCollision(this, transform, circle, circleTransform);
     }
 
-    bool BoxCollider::TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform, Vector2 &normal, float &depth) const
+    CollisionPoints BoxCollider::TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const
     {
-        return algo::FindBoxBoxCollision(this, transform, box, boxTransform, normal, depth);
+        return algo::FindBoxBoxCollision(this, transform, box, boxTransform);
     }
 
 #pragma endregion

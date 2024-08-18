@@ -12,7 +12,7 @@ namespace test
         m_World.AddSolver(solver);
 
         AddBox(2217U, sf::Color::Green, pe2d::Vector2(800.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.75f, 0.75f, 1.0f);
+                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.75f, 0.75f, 0.0f);
         ResetVariables();        
     }
 
@@ -45,7 +45,7 @@ namespace test
 
     void CollisionArenaTest::OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io)
     {
-        if( ImGui::Button("Add Object") )
+     /*   if( ImGui::Button("Add Object") )
         {
             showObjectEditor = true;
         }
@@ -58,7 +58,6 @@ namespace test
         ImGui::Text("Velocity: %i, %i", (int)vel.x, (int)vel.y);
         ImGui::Text("Number of objects: %i", m_World.Size());
         ImGui::Text("Position: %i, %i", (int)pos.x, (int)pos.y);
-        ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
 
         if(showObjectEditor)
         {
@@ -73,7 +72,8 @@ namespace test
                 CreateObject();
             }
             ImGui::End();
-        }
+        }*/
+        ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
     }
 
     void CollisionArenaTest::CollisionObjectInput()
@@ -192,7 +192,7 @@ namespace test
         float radius = distribInt(gen);
         float staticFriction = distribFloat(gen);
         float dynamicFriction = distribFloat(gen);
-        float resistance = distribFloat(gen);
+        float resistance = 0.0f;
         std::shared_ptr<pe2d::CircleCollider> collider = std::make_shared<pe2d::CircleCollider>(radius);
         pe2d::RigidObject object(ID, collider, transform, mass,
                         pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), false,

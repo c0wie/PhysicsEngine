@@ -13,7 +13,7 @@ namespace pe2d
             const float invMassB = rigidObjectB.GetInvMass();
 
             Vector2 MTV = points.Normal * points.Depth;
-            if(MTV.dot(rigidObjectA.GetPosition() - rigidObjectB.GetPosition()) < 0.0f)
+            if(Dot(MTV, rigidObjectA.GetPosition() - rigidObjectB.GetPosition()) < 0.0f)
             {
                 MTV *= -1.0f;
             }
@@ -45,7 +45,7 @@ namespace pe2d
             const float invMassB = rigidObjectB.GetInvMass();
 
             Vector2 MTV = points.Normal * points.Depth;
-            if(MTV.dot(rigidObjectA.GetPosition() - rigidObjectB.GetPosition()) < 0.0f)
+            if(Dot(MTV, rigidObjectA.GetPosition() - rigidObjectB.GetPosition()) < 0.0f)
             {
                 MTV *= -1.0f;
             }
@@ -65,7 +65,7 @@ namespace pe2d
             }
 
             const Vector2 relativeVelocity = rigidObjectB.GetVelocity() - rigidObjectA.GetVelocity();
-            const float relativeVelocityAlongNormal = relativeVelocity.dot(points.Normal);
+            const float relativeVelocityAlongNormal = Dot(relativeVelocity, points.Normal);
             
             const float coefficientOfRestitution = (rigidObjectA.GetRestitution() + rigidObjectB.GetRestitution()) * 0.5f;
 

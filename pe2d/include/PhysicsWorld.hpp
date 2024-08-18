@@ -7,9 +7,11 @@
 #include "Collision.hpp"
 #include "Solver.hpp"
 #include "Grid.hpp"
+#include "Math.hpp"
 
 namespace pe2d
 {
+    inline std::vector<Vector2> thingsToDraw;
     // class that run all collision checks and own all items 
     // you call it to use physics engine
     class PhysicsWorld
