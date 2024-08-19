@@ -55,4 +55,14 @@ namespace pe2d
         time = std::clamp(time, 0.0f, 1.0f);
         return Vector2{a * (1.0f - time) + b * time};
     }
+
+    constexpr bool NearlyEquel(float a, float b, float absError)
+    {
+        return std::abs(a - b) <= absError;
+    }
+
+    constexpr bool NearlyEquel(Vector2 a, Vector2 b, float absError)
+    {
+        return NearlyEquel(a.x , b.x, absError) && NearlyEquel(a.y, b.y, absError);
+    }
 };

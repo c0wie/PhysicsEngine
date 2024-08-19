@@ -108,7 +108,15 @@ namespace pe2d
         CollisionPoints points = A.GetCollider()->TestCollision(A.GetTransform(), B.GetCollider().get(), B.GetTransform());
         if(points.HasCollision)
         {
-            thingsToDraw.push_back(points.ContactPoint1);
+            if(points.ContactCount == 1)
+            {
+                thingsToDraw.push_back(points.ContactPoint1);
+            }
+            else
+            {
+                thingsToDraw.push_back(points.ContactPoint1);
+                thingsToDraw.push_back(points.ContactPoint2);
+            }
             collisions.emplace_back(A, B, points);
         }
     }

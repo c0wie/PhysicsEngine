@@ -42,6 +42,8 @@ namespace pe2d
         
         Vector2 FindCircleBoxClosestPoint(const std::array<Vector2, 4> &boxVertices, Vector2 circleCenter);
         
+        std::pair<Vector2, Vector2> FindBoxBoxClosestPoint(const std::array<Vector2, 4> &boxVerticesA, const std::array<Vector2, 4> &boxVerticesB);
+
         void PointSegmentDistance(Vector2 point, Vector2 vertexA, Vector2 vertexB, float &distanceSquared, Vector2 &contactPoint);
 
         // angle in radians
