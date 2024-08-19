@@ -5,13 +5,9 @@ namespace pe2d
     void PhysicsWorld::Step(float deltaTime)
     {
         thingsToDraw.clear();
-        const float subTime = deltaTime / static_cast<float>(m_Substeps);
-        for(unsigned int i = 0; i < m_Substeps; i++)
-        {
-            ApplyGravity();
-            ResolveCollisions(subTime);
-            MoveObjects(subTime);
-        }   
+        ApplyGravity();
+        ResolveCollisions(deltaTime);
+        MoveObjects(deltaTime);
     }
 
     void PhysicsWorld::AddObject(const RigidObject &object)
@@ -77,7 +73,7 @@ namespace pe2d
                 }
             }
         }
-        ApplyFriction(collisions);
+        //ApplyFriction(collisions);
         SolveCollisions(collisions, deltaTime);
     }
     
@@ -188,7 +184,7 @@ namespace pe2d
         for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
         {
             RigidObject &object = it->second;
-            const Vector2 acceleration = object.GetForce() / object.GetMass();
+            const Vector2 acceleration = object.GetForce() * object.GetInvMass();
             Vector2 newVel = object.GetVelocity() + acceleration * deltaTime;
             object.Move(object.GetVelocity() * deltaTime + (acceleration * std::pow(deltaTime, 2) * 0.5));
             object.SetVelocity(newVel);

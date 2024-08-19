@@ -6,12 +6,26 @@ namespace pe2d
 {
     constexpr float Length(Vector2 a)
     {
-        return std::hypot(a.x, a.y);
+        return std::sqrt(a.x * a.x + a.y * a.y);
     }
 
     constexpr float SquaredLength(Vector2 a)
     {
-        return std::pow(Length(a), 2);
+        return a.x * a.x + a.y * a.y;
+    }
+
+    constexpr float Distance(Vector2 a, Vector2 b)
+    {
+        const float distanceX = a.x - b.x;
+        const float distanceY = a.y - b.y;
+        return std::sqrt(distanceX * distanceX + distanceY * distanceY);
+    }
+
+    constexpr float SquaredDistance(Vector2 a, Vector2 b)
+    {
+        const float distanceX = a.x - b.x;
+        const float distanceY = a.y - b.y;
+        return distanceX * distanceX + distanceY * distanceY;
     }
 
     constexpr Vector2 Perp(Vector2 a)

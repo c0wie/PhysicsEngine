@@ -40,6 +40,10 @@ namespace pe2d
             const BoxCollider *boxA, Transform transformBoxA,
             const BoxCollider *boxB, Transform transformBoxB);
         
+        Vector2 FindCircleBoxClosestPoint(const std::array<Vector2, 4> &boxVertices, Vector2 circleCenter);
+        
+        void PointSegmentDistance(Vector2 point, Vector2 vertexA, Vector2 vertexB, float &distanceSquared, Vector2 &contactPoint);
+
         // angle in radians
         template <typename Container>
         void RotateVertices(Container &vertices, Vector2 center, float angle)

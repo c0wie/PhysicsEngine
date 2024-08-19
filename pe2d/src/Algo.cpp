@@ -58,16 +58,8 @@ namespace pe2d
                     smallesAxis = &allAxes[i];
                 }
             }
-            Vector2 contactPoint;
-            for(int i = 0; i < boxVertices.size(); i++)
-            {
-                const Vector2 p1 = boxVertices[i];
-                const Vector2 p2 = boxVertices[(i + 1) % boxVertices.size()];
-                const Vector2 edge = p1 - p2;
-                const Vector2 ap = p1 - circleCenter;
-            }
-
-            return CollisionPoints(*smallesAxis, overlap, contactPoint, true);
+            const Vector2 closestPoint = FindCircleBoxClosestPoint(boxVertices, circleCenter);
+            return CollisionPoints(*smallesAxis, overlap, closestPoint, true);
         }
         
         CollisionPoints FindBoxCircleCollision(
@@ -123,6 +115,49 @@ namespace pe2d
                 }
             }
             return CollisionPoints(*smallestAxis, overlap, Vector2(0.0f, 0.0f), Vector2(0.0f, 0.0f), true);
+        }
+        
+        Vector2 FindCircleBoxClosestPoint(const std::array<Vector2, 4> &boxVertices, Vector2 circleCenter)
+        {
+            float minDistanceSquared = INF;
+            Vector2 closestPoint = Vector2(0.0f, 0.0f);
+            for(int i = 0; i < boxVertices.size(); i++)
+            {
+                float distanceToCircleCenterSquare = 0.0f;
+                Vector2 contactPoint = Vector2(0.0f, 0.0f);
+                const Vector2 p1 = boxVertices[i];
+                const Vector2 p2 = boxVertices[(i + 1) % boxVertices.size()];
+                PointSegmentDistance(circleCenter, p1, p2, distanceToCircleCenterSquare, contactPoint);
+                if(distanceToCircleCenterSquare < minDistanceSquared)
+                {
+                    minDistanceSquared = distanceToCircleCenterSquare;
+                    closestPoint = contactPoint;
+                }
+            }
+            return closestPoint;
+        }
+
+        void PointSegmentDistance(Vector2 point, Vector2 vertexA, Vector2 vertexB, float &distanceSquared, Vector2 &contactPoint)
+        {
+            const Vector2 ab = vertexB - vertexA;
+            const Vector2 ap = point - vertexA;
+            const float proj = Dot(ap, ab);
+            const float abLengthSquared = SquaredLength(ab);
+            const float d = proj / abLengthSquared;
+
+            if(d <= 0.0f)
+            {
+                contactPoint = vertexA;
+            }
+            else if(d >= 1.0f)
+            {
+                contactPoint = vertexB;
+            }
+            else
+            {
+                contactPoint = vertexA + ab * d;
+            }
+            distanceSquared = SquaredDistance(point, contactPoint);
         }
 
         std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform)
