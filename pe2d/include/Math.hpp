@@ -4,6 +4,10 @@
 
 namespace pe2d
 {
+    constexpr float INF = std::numeric_limits<float>::infinity();
+    constexpr float MIN = std::numeric_limits<float>::min();
+    constexpr float PI = 3.1415927;
+
     constexpr float Length(Vector2 a)
     {
         return std::sqrt(a.x * a.x + a.y * a.y);

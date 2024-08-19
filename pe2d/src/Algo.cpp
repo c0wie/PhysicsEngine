@@ -58,8 +58,8 @@ namespace pe2d
                     smallesAxis = &allAxes[i];
                 }
             }
-            const Vector2 closestPoint = FindCircleBoxClosestPoint(boxVertices, circleCenter);
-            return CollisionPoints(*smallesAxis, overlap, closestPoint, true);
+            const Vector2 contactPoint = FindCircleBoxContactPoint(boxVertices, circleCenter);
+            return CollisionPoints(*smallesAxis, overlap, contactPoint, true);
         }
         
         CollisionPoints FindBoxCircleCollision(
@@ -108,103 +108,110 @@ namespace pe2d
                     overlap = overlapA;
                     smallestAxis = &axesA[i];
                 }
+
                 if(overlapB < overlap)
                 {
                     overlap = overlapB;
                     smallestAxis = &axesB[i];
                 }
             }
-            std::pair<Vector2, Vector2> closestPoints = FindBoxBoxClosestPoint(verticesA, verticesB);
-            if(closestPoints.second == Vector2(-1.0f, -1.0f))
+            
+            std::pair<Vector2, Vector2> contactPoints = FindBoxBoxContactPoint(verticesA, verticesB);
+            if(contactPoints.second == Vector2(-1.0f, -1.0f))
             {
-                return CollisionPoints(*smallestAxis, overlap, closestPoints.first, true);
+                return CollisionPoints(*smallestAxis, overlap, contactPoints.first, true);
             }
-            return CollisionPoints(*smallestAxis, overlap, closestPoints.first, closestPoints.second, true);
+            return CollisionPoints(*smallestAxis, overlap, contactPoints.first, contactPoints.second, true);
         }
         
-        Vector2 FindCircleBoxClosestPoint(const std::array<Vector2, 4> &boxVertices, Vector2 circleCenter)
+        Vector2 FindCircleBoxContactPoint(const std::array<Vector2, 4> &boxVertices, Vector2 circleCenter)
         {
             float minDistanceSquared = INF;
-            Vector2 closestPoint = Vector2(0.0f, 0.0f);
+            Vector2 contactPoint = Vector2(0.0f, 0.0f);
             for(int i = 0; i < boxVertices.size(); i++)
             {
                 float distanceToCircleCenterSquared = 0.0f;
-                Vector2 contactPoint = Vector2(0.0f, 0.0f);
+                Vector2 cp = Vector2(0.0f, 0.0f);
                 const Vector2 p1 = boxVertices[i];
                 const Vector2 p2 = boxVertices[(i + 1) % boxVertices.size()];
-                PointSegmentDistance(circleCenter, p1, p2, distanceToCircleCenterSquared, contactPoint);
+                
+                PointSegmentDistance(circleCenter, p1, p2, distanceToCircleCenterSquared, cp);
                 if(distanceToCircleCenterSquared < minDistanceSquared)
                 {
                     minDistanceSquared = distanceToCircleCenterSquared;
-                    closestPoint = contactPoint;
+                    contactPoint = cp;
                 }
             }
-            return closestPoint;
+            return contactPoint;
         }
         
-        std::pair<Vector2, Vector2> FindBoxBoxClosestPoint(const std::array<Vector2, 4> &boxVerticesA, const std::array<Vector2, 4> &boxVerticesB)
+        std::pair<Vector2, Vector2> FindBoxBoxContactPoint(const std::array<Vector2, 4> &boxVerticesA, const std::array<Vector2, 4> &boxVerticesB)
         {
-            constexpr float error = 0.0f;
+            constexpr float error = 0.00005f;
             float minDistanceSquared = INF;
-            Vector2 closestPoint1 = Vector2(0.0f, 0.0f);
-            Vector2 closestPoint2 = Vector2(0.0f, 0.0f);
+            Vector2 contactPoint1 = Vector2(0.0f, 0.0f);
+            Vector2 contactPoint2 = Vector2(0.0f, 0.0f);
             int contactCount = 1;
+
             for(int i = 0; i < boxVerticesA.size(); i++)
             {
                 for(int j = 0; j < boxVerticesB.size(); j++)
                 {
                     float distanceFromVertexAToEdgeBSquared = 0.0f;
-                    Vector2 contactPoint = Vector2(0.0f, 0.0f);
+                    Vector2 cp = Vector2(0.0f, 0.0f);
                     const Vector2 p1 = boxVerticesB[j];
                     const Vector2 p2 = boxVerticesB[(j + 1) % boxVerticesB.size()];
-                    PointSegmentDistance(boxVerticesA[i], p1, p2, distanceFromVertexAToEdgeBSquared, contactPoint);
-                    
+
+                    PointSegmentDistance(boxVerticesA[i], p1, p2, distanceFromVertexAToEdgeBSquared, cp);
                     if(NearlyEquel(distanceFromVertexAToEdgeBSquared, minDistanceSquared, error))
                     {
-                        if(!NearlyEquel(contactPoint, closestPoint1, error))
+                        if(!NearlyEquel(cp, contactPoint1, error))
                         {
-                            closestPoint2 = contactPoint;
+                            contactPoint2 = cp;
                             contactCount = 2;
                         }
                     }
                     else if(distanceFromVertexAToEdgeBSquared < minDistanceSquared)
                     {
                         minDistanceSquared = distanceFromVertexAToEdgeBSquared;
-                        closestPoint1 = contactPoint;
+                        contactPoint1 = cp;
                         contactCount = 1;
                     }
                 }
             }
+
             for(int i = 0; i < boxVerticesB.size(); i++)
             {
                 for(int j = 0; j < boxVerticesA.size(); j++)
                 {
                     float distanceFromVertexBToEdgeASquared = 0.0f;
-                    Vector2 contactPoint = Vector2(0.0f, 0.0f);
+                    Vector2 cp = Vector2(0.0f, 0.0f);
                     const Vector2 p1 = boxVerticesA[j];
                     const Vector2 p2 = boxVerticesA[(j + 1) % boxVerticesA.size()];
-                    PointSegmentDistance(boxVerticesB[i], p1, p2, distanceFromVertexBToEdgeASquared, contactPoint);
+
+                    PointSegmentDistance(boxVerticesB[i], p1, p2, distanceFromVertexBToEdgeASquared, cp);
                     if(NearlyEquel(distanceFromVertexBToEdgeASquared, minDistanceSquared, error))
                     {
-                        if(!NearlyEquel(contactPoint, closestPoint1, error))
+                        if(!NearlyEquel(cp, contactPoint1, error))
                         {
-                            closestPoint2 = contactPoint;
+                            contactPoint2 = cp;
                             contactCount = 2;
                         }
                     }
                     else if(distanceFromVertexBToEdgeASquared < minDistanceSquared)
                     {
                         minDistanceSquared = distanceFromVertexBToEdgeASquared;
-                        closestPoint1 = contactPoint;
+                        contactPoint1 = cp;
                         contactCount = 1;
                     }
                 }
             }
+
             if(contactCount == 2)
             {
-                return std::make_pair(closestPoint1, closestPoint2);
+                return std::make_pair(contactPoint1, contactPoint2);
             }
-            return std::make_pair(closestPoint1, Vector2(-1.0f, -1.0f));
+            return std::make_pair(contactPoint1, Vector2(-1.0f, -1.0f));
         }
         
         void PointSegmentDistance(Vector2 point, Vector2 vertexA, Vector2 vertexB, float &distanceSquared, Vector2 &contactPoint)
@@ -213,6 +220,7 @@ namespace pe2d
             const Vector2 ap = point - vertexA;
             const float proj = Dot(ap, ab);
             const float abLengthSquared = SquaredLength(ab);
+            // relative position of the projection of the point onto the line segment
             const float d = proj / abLengthSquared;
 
             if(d <= 0.0f)

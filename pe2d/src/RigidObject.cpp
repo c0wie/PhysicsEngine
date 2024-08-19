@@ -11,13 +11,13 @@ namespace pe2d
         m_Transform(transform),
         m_Velocity(velocity),
         m_Gravity(gravity),
-        m_IsStatic(isStatic)
+        m_IsStatic(isStatic),
+        m_Force(Vector2(0.0f, 0.0f))
     {
         SetMass(mass);
         SetStaticFriction(staticFriction);
         SetDynamicFriction(dynamicFriction);
         SetRestitution(restitiution);
-        m_Force = Vector2(0.0f, 0.0f);
     }
 
     RigidObject::RigidObject(const RigidObject &other):
@@ -123,8 +123,8 @@ namespace pe2d
         }
         const std::array<Vector2, 4> vertices = algo::GetBoxVertices(boxCollider->GetSize(), m_Transform);
 
-        Vector2 topLeftCorner = Vector2(algo::INF, algo::INF);
-        Vector2 botRightCorner = Vector2(algo::MIN, algo::MIN);
+        Vector2 topLeftCorner = Vector2(INF, INF);
+        Vector2 botRightCorner = Vector2(MIN, MIN);
         for(const auto vertex : vertices)
         {
             topLeftCorner.x = std::min(topLeftCorner.x, vertex.x);
