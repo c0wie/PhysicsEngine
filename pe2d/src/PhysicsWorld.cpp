@@ -159,20 +159,20 @@ namespace pe2d
                         (rigidObjectA.GetDynamicFriction() + rigidObjectB.GetDynamicFriction()) / 2.0f;
 
             // perpendicular to normal, represent direciton in which friction will act
-            Vector2 tangent = relativeVelocity - Dot(relativeVelocity, points.Normal) * points.Normal;
+            Vector2 tangent = relativeVelocity - pe2dMath::Dot(relativeVelocity, points.Normal) * points.Normal;
             if(tangent == pe2d::Vector2(0.0f, 0.0f))
             {
                 continue;
             }
             else
             {
-                tangent = Normalize(tangent);
+                tangent = pe2dMath::Normalize(tangent);
             }
-            float jt = Dot(relativeVelocity, tangent);
+            float jt = pe2dMath::Dot(relativeVelocity, tangent);
             jt /= (rigidObjectA.GetInvMass() + rigidObjectB.GetInvMass());
 
             Vector2 frictionImpulse;
-            const float j = Dot(relativeVelocity, points.Normal);
+            const float j = pe2dMath::Dot(relativeVelocity, points.Normal);
             if(abs(jt) <= j * coefficientOfStaticFriction)
             {
                 frictionImpulse = jt * tangent;

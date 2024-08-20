@@ -131,8 +131,8 @@ namespace pe2d
         }
         const std::array<Vector2, 4> vertices = algo::GetBoxVertices(boxCollider->GetSize(), m_Transform);
 
-        Vector2 topLeftCorner = Vector2(INF, INF);
-        Vector2 botRightCorner = Vector2(MIN, MIN);
+        Vector2 topLeftCorner = Vector2(pe2dMath::INF, pe2dMath::INF);
+        Vector2 botRightCorner = Vector2(pe2dMath::MIN, pe2dMath::MIN);
         for(const auto vertex : vertices)
         {
             topLeftCorner.x = std::min(topLeftCorner.x, vertex.x);

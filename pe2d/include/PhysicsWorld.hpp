@@ -46,16 +46,11 @@ namespace pe2d
         PhysicsWorld operator = (const PhysicsWorld &other) = delete;
         PhysicsWorld operator = (PhysicsWorld &&other) = delete;
     public:
-        void Step(float deltaTime);
-        
+        void Step(float deltaTime);        
         void AddObject(const RigidObject &object);
         iterator RemoveObject(size_t ID);
-        
         iterator RemoveObject (iterator object) { return m_Objects.erase(object); }
-
-        iterator RemoveObjects (iterator firstObject, std::unordered_map<size_t, RigidObject>::iterator lastObject) 
-        { return m_Objects.erase(firstObject, lastObject); }
-             
+        iterator RemoveObjects (iterator firstObject, iterator lastObject) { return m_Objects.erase(firstObject, lastObject); } 
         void ClearObjects() { m_Objects.clear(); }
 
         void AddSolver(std::shared_ptr<Solver> &solver);

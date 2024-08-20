@@ -15,7 +15,7 @@ namespace pe2d
             const Vector2 centerB = transformCircleB.position;
 
             const Vector2 diff = centerA - centerB;
-            const float &length = Length(diff);
+            const float &length = pe2dMath::Length(diff);
             // with circle I scaled them based on x value of scale
             float sum = ( radiusA * transformCircleA.scale.x ) + ( radiusB * transformCircleB.scale.x );
 
@@ -25,7 +25,7 @@ namespace pe2d
             }
 
             const float overlap = sum - length;
-            Vector2 normal = Normalize(diff);
+            Vector2 normal = pe2dMath::Normalize(diff);
 
             const Vector2 contactPoint = centerA - normal * radiusA;
             return CollisionPoints(normal, overlap, contactPoint, true);
@@ -40,7 +40,7 @@ namespace pe2d
             const std::array<Vector2, 2> boxAxes = GetBoxAxes(boxVertices);
             const std::array<Vector2, 3> allAxes = { boxAxes[0], boxAxes[1], GetCircleAxis(boxVertices, circleCenter) };
             const Vector2 *smallesAxis = nullptr;
-            float overlap = INF;
+            float overlap = pe2dMath::INF;
 
             for(int i = 0; i < allAxes.size(); i++)
             {
@@ -80,7 +80,7 @@ namespace pe2d
             const std::array<Vector2, 2> axesA = GetBoxAxes(verticesA);
             const std::array<Vector2, 2> axesB = GetBoxAxes(verticesB);
             const Vector2 *smallestAxis = nullptr;
-            float overlap = INF;
+            float overlap = pe2dMath::INF;
 
             for(int i = 0; i < axesA.size(); i++)
             {
@@ -126,7 +126,7 @@ namespace pe2d
         
         Vector2 FindCircleBoxContactPoint(const std::array<Vector2, 4> &boxVertices, Vector2 circleCenter)
         {
-            float minDistanceSquared = INF;
+            float minDistanceSquared = pe2dMath::INF;
             Vector2 contactPoint = Vector2(0.0f, 0.0f);
             for(int i = 0; i < boxVertices.size(); i++)
             {
@@ -148,7 +148,7 @@ namespace pe2d
         std::pair<Vector2, Vector2> FindBoxBoxContactPoint(const std::array<Vector2, 4> &boxVerticesA, const std::array<Vector2, 4> &boxVerticesB)
         {
             constexpr float error = 0.00005f;
-            float minDistanceSquared = INF;
+            float minDistanceSquared = pe2dMath::INF;
             Vector2 contactPoint1 = Vector2(0.0f, 0.0f);
             Vector2 contactPoint2 = Vector2(0.0f, 0.0f);
             int contactCount = 1;
@@ -163,9 +163,9 @@ namespace pe2d
                     const Vector2 p2 = boxVerticesB[(j + 1) % boxVerticesB.size()];
 
                     PointSegmentDistance(boxVerticesA[i], p1, p2, distanceFromVertexAToEdgeBSquared, cp);
-                    if(NearlyEquel(distanceFromVertexAToEdgeBSquared, minDistanceSquared, error))
+                    if(pe2dMath::NearlyEquel(distanceFromVertexAToEdgeBSquared, minDistanceSquared, error))
                     {
-                        if(!NearlyEquel(cp, contactPoint1, error))
+                        if(!pe2dMath::NearlyEquel(cp, contactPoint1, error))
                         {
                             contactPoint2 = cp;
                             contactCount = 2;
@@ -190,9 +190,9 @@ namespace pe2d
                     const Vector2 p2 = boxVerticesA[(j + 1) % boxVerticesA.size()];
 
                     PointSegmentDistance(boxVerticesB[i], p1, p2, distanceFromVertexBToEdgeASquared, cp);
-                    if(NearlyEquel(distanceFromVertexBToEdgeASquared, minDistanceSquared, error))
+                    if(pe2dMath::NearlyEquel(distanceFromVertexBToEdgeASquared, minDistanceSquared, error))
                     {
-                        if(!NearlyEquel(cp, contactPoint1, error))
+                        if(!pe2dMath::NearlyEquel(cp, contactPoint1, error))
                         {
                             contactPoint2 = cp;
                             contactCount = 2;
@@ -218,8 +218,8 @@ namespace pe2d
         {
             const Vector2 ab = vertexB - vertexA;
             const Vector2 ap = point - vertexA;
-            const float proj = Dot(ap, ab);
-            const float abLengthSquared = SquaredLength(ab);
+            const float proj = pe2dMath::Dot(ap, ab);
+            const float abLengthSquared = pe2dMath::SquaredLength(ab);
             // relative position of the projection of the point onto the line segment
             const float d = proj / abLengthSquared;
 
@@ -235,7 +235,7 @@ namespace pe2d
             {
                 contactPoint = vertexA + ab * d;
             }
-            distanceSquared = SquaredDistance(point, contactPoint);
+            distanceSquared = pe2dMath::SquaredDistance(point, contactPoint);
         }
 
         std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform)
@@ -264,7 +264,7 @@ namespace pe2d
                 const Vector2 p1 = vertices[i];
                 const Vector2 p2 = vertices[(i + 1) % vertices.size()];
                 const Vector2 edge = p1 - p2;
-                const Vector2 normal = Normalize(Perp(edge));
+                const Vector2 normal = pe2dMath::Normalize(pe2dMath::Perp(edge));
                 axes.push_back(normal);
             }
             return axes;
@@ -279,7 +279,7 @@ namespace pe2d
                 const Vector2 p1 = vertices[i];
                 const Vector2 p2 = vertices[(i + 1) % vertices.size()];
                 const Vector2 edge = p1 - p2;
-                const Vector2 normal = Normalize(Perp(edge));
+                const Vector2 normal = pe2dMath::Normalize(pe2dMath::Perp(edge));
                 axes[i] = normal;
             }
             return axes;
@@ -292,8 +292,8 @@ namespace pe2d
             const Vector2 p1 = circleCenter + dir;
             const Vector2 p2 = circleCenter - dir;
 
-            float min = Dot(p1, axis);
-            float max = Dot(p2, axis);
+            float min = pe2dMath::Dot(p1, axis);
+            float max = pe2dMath::Dot(p2, axis);
 
             if(min > max)
             {

@@ -2,7 +2,8 @@
 #include <cmath>
 #include "Vector2.hpp"
 
-namespace pe2d
+using namespace pe2d;
+namespace pe2dMath
 {
     constexpr float INF = std::numeric_limits<float>::infinity();
     constexpr float MIN = std::numeric_limits<float>::min();

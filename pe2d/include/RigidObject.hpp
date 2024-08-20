@@ -78,7 +78,7 @@ namespace pe2d
             }
             if(m_IsStatic)
             {
-                m_Mass = INF;
+                m_Mass = pe2dMath::INF;
             }
             else
             {

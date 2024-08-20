@@ -122,31 +122,31 @@ namespace pe2d
         template <typename Container>
         Vector2 GetCircleAxis(const Container &vertices, Vector2 circleCenter)
         {
-            float dist = INF;
+            float dist = pe2dMath::INF;
             Vector2 smallestAxis = Vector2(0.0f, 0.0f);
             for(auto it = vertices.begin(); it != vertices.end(); it++)
             {
                 const Vector2 edge = *it - circleCenter;
-                const float d = Length(edge);
+                const float d = pe2dMath::Length(edge);
                 if(d < dist)
                 {
                     dist = d;
                     smallestAxis = edge;
                 }
             }
-            return Normalize(smallestAxis);
+            return pe2dMath::Normalize(smallestAxis);
         }
 
         // Returns a projection of object, represented by given vertices, onto a specified axis
         template<typename Container>
         Vector2 Project(const Container &vertices, Vector2 axis)
         {
-            float min = Dot(axis, *vertices.begin());
+            float min = pe2dMath::Dot(axis, *vertices.begin());
             float max = min;
 
             for(auto it = std::next(vertices.begin()); it != vertices.end(); it++)
             {
-                const float p = Dot(axis, *it);
+                const float p = pe2dMath::Dot(axis, *it);
                 if(p < min)
                 {
                     min = p;
