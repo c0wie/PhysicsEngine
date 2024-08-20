@@ -73,7 +73,7 @@ namespace pe2d
                 }
             }
         }
-        //ApplyFriction(collisions);
+        ApplyFriction(collisions);
         SolveCollisions(collisions, deltaTime);
     }
     

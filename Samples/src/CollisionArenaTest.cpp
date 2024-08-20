@@ -12,9 +12,9 @@ namespace test
         m_World.AddSolver(solver);
 
         AddBox(2217U, sf::Color::Green, pe2d::Vector2(800.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.75f, 0.75f, 0.0f);
+                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.0f, 0.0f, 0.0f);
         AddBox(2137U, sf::Color::Green, pe2d::Vector2(300.0f, 50.0f), pe2d::Transform(pe2d::Vector2(300.0f, 400.0f), pe2d::Vector2(1.0f, 1.0f), 30.0f),
-                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.75f, 0.75f, 0.0f);
+                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 0.0f, 0.0f, 0.0f);
         ResetVariables();        
     }
 
@@ -192,8 +192,8 @@ namespace test
         const pe2d::Transform transform = pe2d::Transform(pos, pe2d::Vector2(1.0f, 1.0f), 0.0f);
         float mass = distribInt(gen);
         float radius = distribInt(gen);
-        float staticFriction = distribFloat(gen);
-        float dynamicFriction = distribFloat(gen);
+        float staticFriction = 1.0f;
+        float dynamicFriction = 1.0f;
         float resistance = 0.0f;
         std::shared_ptr<pe2d::CircleCollider> collider = std::make_shared<pe2d::CircleCollider>(radius);
         pe2d::RigidObject object(ID, collider, transform, mass,

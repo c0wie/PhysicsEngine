@@ -4,16 +4,28 @@
 #include <memory>
 #include <algorithm>
 
-#include "Collision.hpp"
 #include "Solver.hpp"
 #include "Grid.hpp"
 #include "Math.hpp"
 
 namespace pe2d
 {
+    // temporary vector for debuging
     inline std::vector<Vector2> thingsToDraw;
-    // class that run all collision checks and own all items 
-    // you call it to use physics engine
+    
+    /*
+        The PhysicsWorld class is the central component of the pe2d physics engine library. It manages all physics objects 
+        and handles the entire physics simulation process. PhysicsWorld is designed to remind std::unordered_map, 
+        providing key-value operations and iterators for easy management of physics objects.
+
+        To use the PhysicsWorld class effectively, you must add a physics solver. The library provides two solvers, 
+        but custom solvers can be implemented by inheriting from the main Solver class. The solvers are responsible for 
+        resolving forces, collisions, and other physics interactions.
+
+        PhysicsWorld also supports broad-phase collision detection using a spatial partitioning technique called a Grid. 
+        The Grid can be activated by calling the appropriate function, and it helps to optimize collision detection
+        with bigger simulations by dividing the simulation space into smaller regions.
+    */
     class PhysicsWorld
     {
         using iterator = std::unordered_map<size_t, RigidObject>::iterator;
@@ -22,7 +34,7 @@ namespace pe2d
         PhysicsWorld() : 
             m_Grid(),
             m_IsGridOn(false),
-            m_Substeps(8)
+            m_Substeps(1)
         {}
         PhysicsWorld(unsigned int substeps) :
             m_Grid(),

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CollisionObject.hpp"
+#include "Collider.hpp"
 #include "Math.hpp"
 
 namespace pe2d

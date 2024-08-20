@@ -1,14 +1,13 @@
 #pragma once
 
-#include "CollisionObject.hpp"
 #include "RigidObject.hpp"
 
 namespace pe2d
 {
     /*
-        Struct holding detailed information about collision:
-        - objects involved in collision
-        - CollisionPoints struct
+        Struct holding general information about collision:
+        - `ObjectA` and `ObjectB`: objects involved in collision
+        - `Points`: sturct with detailed information obout collision
     */
     struct Collision
     {

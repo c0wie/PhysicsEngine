@@ -88,8 +88,8 @@ namespace pe2d
             {
                 continue;
             }
-            const Vector2 &objectMin = boundingBox[0];
-            const Vector2 &objectMax = boundingBox[2];
+            Vector2 objectMin = boundingBox[0];
+            Vector2 objectMax = boundingBox[2];
 
             // calculating position of vertices in grid 
             // decrese width and height because containers are 0 index based
