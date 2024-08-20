@@ -1,4 +1,6 @@
 /.vscode
 /build
-TODO.txt
+/out
+/Testing/Temporary
 imgui.ini
+TODO.txt
