@@ -6,9 +6,9 @@ namespace pe2d
     {
         for(size_t i = 0; i < collisions.size(); i++)
         {
-            RigidObject &rigidObjectA = collisions[i].GetObjectA();
-            RigidObject &rigidObjectB = collisions[i].GetObjectB();
-            const auto &points = collisions[i].GetPoints();
+            RigidObject &rigidObjectA = collisions[i].ObjectA;
+            RigidObject &rigidObjectB = collisions[i].ObjectB;
+            const auto &points = collisions[i].Points;
             const float invMassA = rigidObjectA.GetInvMass();
             const float invMassB = rigidObjectB.GetInvMass();
 
@@ -38,9 +38,9 @@ namespace pe2d
     {
         for(size_t i = 0; i < collisions.size(); i++)
         {
-            RigidObject &rigidObjectA = collisions[i].GetObjectA();
-            RigidObject &rigidObjectB = collisions[i].GetObjectB();
-            const auto &points = collisions[i].GetPoints();
+            RigidObject &rigidObjectA = collisions[i].ObjectA;
+            RigidObject &rigidObjectB = collisions[i].ObjectB;
+            const auto &points = collisions[i].Points;
             const float invMassA = rigidObjectA.GetInvMass();
             const float invMassB = rigidObjectB.GetInvMass();
 

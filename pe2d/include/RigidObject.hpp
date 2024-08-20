@@ -51,7 +51,7 @@ namespace pe2d
             }
             m_Transform.scale = scale; 
         } 
-        constexpr void SetRotation(float angle) { m_Transform.rotation = angle; }
+        constexpr void SetRotation(float angleDegrees) { m_Transform.rotation = angleDegrees; }
         void SetCollider(std::shared_ptr<Collider> collider)
         {
             if(!collider)
@@ -62,7 +62,7 @@ namespace pe2d
         }
         constexpr void SetTransform(Transform transform) { m_Transform = transform; }
         constexpr void Move(Vector2 offset) { m_Transform.Move(offset); }
-        constexpr void Rotate(float angle) { m_Transform.Rotate(angle); }
+        constexpr void Rotate(float angleDegrees) { m_Transform.Rotate(angleDegrees); }
         constexpr void SetMass(float mass)
         {
             if(mass <= 0.0f)
@@ -118,10 +118,10 @@ namespace pe2d
         float m_Mass;
         Vector2 m_Velocity;
         Vector2 m_Force;
-        Vector2 m_Gravity;          // Gravitional acceleration
+        Vector2 m_Gravity;          
         bool m_IsStatic;
-        float m_StaticFriction;     // Static friction coefficient wich value has to be form 0 to 1
-        float m_DynamicFriction;    // Dynamic friction coefficient wich value has to be form 0 to 1
-        float m_Restitution;        // Elasticy of collision
+        float m_StaticFriction;     // Static friction coefficient [in range 0 - 1] 
+        float m_DynamicFriction;    // Dynamic friction coefficient [in range 0 - 1]
+        float m_Restitution;        // Elasticy of collision [in range 0 - 1] 
     };
 }

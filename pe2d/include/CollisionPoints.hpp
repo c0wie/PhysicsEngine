@@ -4,7 +4,17 @@
 
 namespace pe2d
 {
-    // struct which holds info about collision
+    /*
+        Struct holding information about collision points:
+        - `Depth`: The depth of collison.
+        - `Normal`: The normal vector along which collision occured.
+        - `ContactPoint1`: The first contact point of the collison.
+        - `ContactPoint2`: The second contact point of the collision, if applicable.
+        - `ContactCount`: The count of valid contact pointss.
+        - `HasCollision`: A boolean indicating whether a collision actually occured.
+        The second contact point (`ContactPoint2`) may be invalid or unused in some cases,
+        so `contactCount` should be used to determine how many contact points are considered valid.
+    */
     struct CollisionPoints
     {
     public:
@@ -27,8 +37,8 @@ namespace pe2d
         CollisionPoints& operator=(const CollisionPoints &other) = default;
         CollisionPoints& operator=(CollisionPoints &&other)noexcept = default;
     public:
-        Vector2 Normal; // normalized length of vector B-A
         float Depth; // length of overlap beetwen two objects
+        Vector2 Normal; // normalized length of vector B-A
         Vector2 ContactPoint1;
         Vector2 ContactPoint2;
         int ContactCount;

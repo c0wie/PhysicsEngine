@@ -6,6 +6,7 @@
 
 namespace pe2d
 {
+    //Basic struct for manipulating 2-dimensional vectors
     struct Vector2
     {
     public:

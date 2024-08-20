@@ -4,6 +4,12 @@
 
 namespace pe2d
 {
+    /* 
+        Struct holding basic information about object like:
+        - position
+        - scale
+        - rotation in degrees
+    */
     struct Transform
     {
     public:
@@ -17,13 +23,11 @@ namespace pe2d
         constexpr Transform& operator=(Transform &&other) noexcept = default;
     public:
         constexpr void Move(const Vector2 &offset) { position += offset; }
-        constexpr void Rotate(float angle) { rotation += angle; }
+        constexpr void Rotate(float angleDegrees) { rotation += angleDegrees; }
         constexpr float GetRotationInRadians() const { return rotation * (PI / 180.0f); }
     public:
-        //center of object
         Vector2 position;
         Vector2 scale;
-        // in deegres
         float rotation;
     };
 }

@@ -74,8 +74,8 @@ namespace pe2d
         template <typename Container>
         void RotateVertices(Container &vertices, Vector2 center, float angleRadians)
         {
-            const float cosAngle = cosf(angle);
-            const float sinAngle = sinf(angle);
+            const float cosAngle = cosf(angleRadians);
+            const float sinAngle = sinf(angleRadians);
             for(auto it = vertices.begin(); it != vertices.end(); it++)
             {
                 const float relativeX = it->x - center.x;

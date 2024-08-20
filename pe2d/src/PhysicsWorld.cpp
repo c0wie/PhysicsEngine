@@ -147,9 +147,9 @@ namespace pe2d
         for(size_t i = 0; i < collisions.size(); i++)
         {
             Collision &collision = collisions[i];
-            RigidObject &rigidObjectA = collision.GetObjectA();
-            RigidObject &rigidObjectB = collision.GetObjectA();
-            const CollisionPoints &points = collision.GetPoints();
+            RigidObject &rigidObjectA = collision.ObjectA;
+            RigidObject &rigidObjectB = collision.ObjectB;
+            const CollisionPoints &points = collision.Points;
 
             const Vector2 relativeVelocity = rigidObjectB.GetVelocity() - rigidObjectA.GetVelocity();
             const float coefficientOfStaticFriction = FRICTION_SCALING_FACTOR * 

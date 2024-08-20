@@ -23,7 +23,7 @@ int main()
     testMenu->RegisterTest<test::FallingCirclesTest>("Falling Circles Test");
     testMenu->RegisterTest<test::CollisionArenaTest>("Collision Arena Test");
 
-
+    sf::Vector2f vec;
     sf::Clock DT_Clock;
     float deltaTime = 0.0f;
     DT_Clock.restart();

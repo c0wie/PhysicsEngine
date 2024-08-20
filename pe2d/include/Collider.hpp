@@ -10,7 +10,7 @@ namespace pe2d
     class CircleCollider;
     class BoxCollider;
     
-    // virtual wraper class for arround algo namespace that allows to retrive info about collisions
+    // Class Wraper class aroun 
     class Collider 
     {
     public:
