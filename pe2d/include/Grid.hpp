@@ -8,23 +8,39 @@
 
 namespace pe2d
 {
-    // class which devides space in smaller pieces to increse performence with large group of objects
+    /*
+        The Grid class handles broad-phase collision detection by dividing space into cells, 
+        each containing potential collision pairs of objects. It operates by updating the grid 
+        with object positions and retrieving a list of potential collision pairs for further, 
+        more detailed collision detection.
+    */
     class Grid
     {
     public:
         Grid();
+
+    /*
+        Constructor that sets up a grid covering a specified area, 
+        defined by the top-left and bottom-right corners, with each cell having the given size.
+    */
         Grid(Vector2 topLeftCorner, Vector2 botRightCorner, float cellSize);
         Grid(const Grid &other) = default;
         Grid(Grid &&other);
         Grid& operator=(const Grid &other) = default;
         Grid& operator=(Grid &&other);
     public:
-        // inserts objects id to grid in correct places 
+        /*
+            Updates the grid with the positions of the objects.
+            It places each object's ID in the appropriate grid cell based on its position.
+        */
         void Update(const std::unordered_map<size_t, RigidObject> &objects);
-        //returns list of unique id to collision pairs
+        /*
+            Retrieves a list of unique pairs of object IDs that are potential collision pairs.
+            This list is generated based on objects located within the same or neighboring cells.
+        */
         std::list<std::pair<size_t, size_t>> GetCollisionPairs() const;
     private:
-        // returns true if any of object boundingBox vertex is inside grid
+        // Checks if a vertex is inside the grid's bounds.
         constexpr bool Contains(Vector2 vertex)
         {
             if(vertex.x < m_TopLeftCorner.x || vertex.x > m_BotRightCorner.x 
@@ -34,7 +50,7 @@ namespace pe2d
             }
             return true;
         }
-        // returns true if pair already has been checked
+        // Checks if a pair of objects has already been checked for collisions.
         bool HasBeenChecked(std::unordered_multimap<size_t, size_t> &checkedPairs, std::pair<size_t, size_t> pair) const;
     private:
         Vector2 m_TopLeftCorner;

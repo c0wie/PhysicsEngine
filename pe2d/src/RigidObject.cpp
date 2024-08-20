@@ -13,11 +13,12 @@ namespace pe2d
         m_Gravity(gravity),
         m_IsStatic(isStatic),
         m_Force(Vector2(0.0f, 0.0f))
-    {
+    {  
         SetMass(mass);
         SetStaticFriction(staticFriction);
         SetDynamicFriction(dynamicFriction);
         SetRestitution(restitiution);
+        m_RotationalInertia = CalculateRotationalInertia();
     }
 
     RigidObject::RigidObject(const RigidObject &other):
@@ -28,10 +29,11 @@ namespace pe2d
         m_Velocity(other.m_Velocity),
         m_Force(other.m_Force),
         m_Gravity(other.m_Gravity),
+        m_RotationalInertia(other.m_RotationalInertia),
         m_IsStatic(other.m_IsStatic),
         m_StaticFriction(other.m_StaticFriction),
         m_DynamicFriction(other.m_DynamicFriction),
-        m_Restitution(other.m_Restitution) 
+        m_Restitution(other.m_Restitution)
     {}
 
     RigidObject::RigidObject(RigidObject &&other) :
@@ -42,6 +44,7 @@ namespace pe2d
         m_Velocity(other.m_Velocity),
         m_Force(other.m_Force),
         m_Gravity(other.m_Gravity),
+        m_RotationalInertia(other.m_RotationalInertia),
         m_StaticFriction(other.m_StaticFriction),
         m_DynamicFriction(other.m_DynamicFriction),
         m_Restitution(other.m_Restitution)
@@ -53,6 +56,7 @@ namespace pe2d
         other.m_Velocity = Vector2(0.0f, 0.0f);
         other.m_Force = Vector2(0.0f, 0.0f);
         other.m_Gravity = Vector2(0.0f, 0.0f);
+        other.m_RotationalInertia = 0.0f;
         other.m_IsStatic = false;
         other.m_StaticFriction = 0.0f;
         other.m_DynamicFriction = 0.0f;
@@ -72,6 +76,7 @@ namespace pe2d
         m_Velocity = other.m_Velocity;
         m_Force = other.m_Force;
         m_Gravity = other.m_Gravity;
+        m_RotationalInertia = other.m_RotationalInertia;
         m_IsStatic = other.m_IsStatic;
         m_StaticFriction = other.m_StaticFriction;
         m_DynamicFriction = other.m_DynamicFriction;
@@ -92,6 +97,7 @@ namespace pe2d
         m_Velocity = other.m_Velocity;
         m_Force = other.m_Force;
         m_Gravity = other.m_Gravity;
+        m_RotationalInertia = other.m_RotationalInertia;
         m_IsStatic = other.m_IsStatic;
         m_StaticFriction = other.m_StaticFriction;
         m_DynamicFriction = other.m_DynamicFriction;
@@ -104,6 +110,7 @@ namespace pe2d
         other.m_Velocity = Vector2(0.0f, 0.0f);
         other.m_Force = Vector2(0.0f, 0.0f);
         other.m_Gravity = Vector2(0.0f, 0.0f);
+        other.m_RotationalInertia = 0.0f;
         other.m_IsStatic = false;
         other.m_StaticFriction = 0.0f;
         other.m_DynamicFriction = 0.0f;
@@ -111,7 +118,8 @@ namespace pe2d
         return *this;
     }
 
-    std::array<Vector2, 4> RigidObject::GetBounadingBox() const
+    //Returns collection of four vertices representing corners of a non rotated bounding box  
+    std::array<Vector2, 4> RigidObject::GetAABB() const
     {
         std::shared_ptr<CircleCollider> circleCollider = std::dynamic_pointer_cast<CircleCollider>( m_Collider );
         std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );

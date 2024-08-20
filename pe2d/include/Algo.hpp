@@ -18,7 +18,7 @@ namespace pe2d
             Returns detailed information about a collision beetwen two circles:
             - The depth of penetration between the objects.
             - The normal vector along which the penetration occurred.
-            - The contact points where the collision took place.
+            - The contact point where the collision took place.
             - A boolean indicating whether a collision actually occured.
         */
         CollisionPoints FindCircleCircleCollision(
@@ -29,7 +29,7 @@ namespace pe2d
             Returns detailed information about a collision beetwen circle and box:
             - The depth of penetration between the objects.
             - The normal vector along which the penetration occurred.
-            - The contact points where the collision took place.
+            - The contact point where the collision took place.
             - A boolean indicating whether a collision actually occured.
         */
         CollisionPoints FindCircleBoxCollision(
@@ -40,7 +40,7 @@ namespace pe2d
             Returns detailed information about a collision beetwen box and circle:
             - The depth of penetration between the objects.
             - The normal vector along which the penetration occurred.
-            - The contact points where the collision took place.
+            - The contact point where the collision took place.
             - A boolean indicating whether a collision actually occured.
         */
         CollisionPoints FindBoxCircleCollision(
