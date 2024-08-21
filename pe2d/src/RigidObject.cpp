@@ -18,7 +18,6 @@ namespace pe2d
         SetStaticFriction(staticFriction);
         SetDynamicFriction(dynamicFriction);
         SetRestitution(restitiution);
-        m_RotationalInertia = CalculateRotationalInertia();
     }
 
     RigidObject::RigidObject(const RigidObject &other):
@@ -122,13 +121,14 @@ namespace pe2d
     std::array<Vector2, 4> RigidObject::GetAABB() const
     {
         std::shared_ptr<CircleCollider> circleCollider = std::dynamic_pointer_cast<CircleCollider>( m_Collider );
-        std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );
 
         if(circleCollider)
         {
             const float diameter = circleCollider->GetRadius() * 2;
             return algo::GetBoxVertices(Vector2(diameter, diameter), m_Transform);
         }
+        
+        std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );
         const std::array<Vector2, 4> vertices = algo::GetBoxVertices(boxCollider->GetSize(), m_Transform);
 
         Vector2 topLeftCorner = Vector2(pe2dMath::INF, pe2dMath::INF);

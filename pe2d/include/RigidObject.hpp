@@ -9,6 +9,7 @@ namespace pe2d
     class RigidObject
     {
     public:
+        RigidObject() = default;
         RigidObject(size_t ID, std::shared_ptr<Collider> collider, Transform transform, float mass,
                     Vector2 velocity, Vector2 gravity, bool isStatic, 
                     float staticFriction, float dynamicFriction, float restitiution);
@@ -16,7 +17,6 @@ namespace pe2d
         RigidObject(RigidObject &&other);
         RigidObject& operator=(const RigidObject &other);
         RigidObject& operator=(RigidObject &&other);
-        RigidObject() = default;
     public:
         constexpr unsigned int GetID() const { return m_ID; }
         std::shared_ptr<Collider> GetCollider() const { return m_Collider; }
@@ -126,9 +126,13 @@ namespace pe2d
         {
             m_Restitution = restitution;
         }
-    private:
+    protected:
         float CalculateRotationalInertia()
         {
+            if(m_IsStatic)
+            {
+                m_RotationalInertia = pe2dMath::INF;
+            }
             auto circleCollider = std::dynamic_pointer_cast<CircleCollider>(m_Collider);
             if(circleCollider)
             {
