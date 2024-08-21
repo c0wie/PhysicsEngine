@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vector2.hpp"
+#include "Math.hpp"
 
 namespace pe2d
 {
@@ -24,7 +25,7 @@ namespace pe2d
     public:
         constexpr void Move(Vector2 offset) { position += offset; }
         constexpr void Rotate(float angleDegrees) { rotation += angleDegrees; }
-        constexpr float GetRotationInRadians() const { return rotation * (PI / 180.0f); }
+        constexpr float GetRotationInRadians() const { return rotation * (pe2dMath::PI / 180.0f); }
     public:
         Vector2 position;
         Vector2 scale;

@@ -169,7 +169,7 @@ namespace test
         std::uniform_int_distribution<int> distribPos(200, 800);
         std::uniform_int_distribution<int> distribRotation(0, 180);
         float mass = distribInt(gen);
-        pe2d::Transform transform = pe2d::Transform(pos, pe2d::Vector2(1.0f, 1.0f), 0.0f);
+        pe2d::Transform transform = pe2d::Transform(pos, pe2d::Vector2(1.0f, 1.0f), 69.0f);
         pe2d::Vector2 size = pe2d::Vector2(distribInt(gen), distribInt(gen));
         float staticFriction = distribFloat(gen);
         float dynamicFriction = distribFloat(gen);

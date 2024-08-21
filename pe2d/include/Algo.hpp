@@ -93,27 +93,22 @@ namespace pe2d
         */
         std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform);
         
-        // Indicates whether overlap occurred between the two projections of two edges.
-        constexpr bool Overlap(Vector2 A, Vector2 B)
+        /* 
+            Indicates whether overlap occurred between the two projections of two edges and
+            gives depth of overlap by modifying value of overlap parameter
+        */
+        constexpr bool Overlap(Vector2 A, Vector2 B, float &overlap)
         {
             if(A.y >= B.x && B.y >= A.x)
             {
+                const float overlapStart = std::max(A.x, B.x);
+                const float overlapEnd = std::min(A.y, B.y);
+                overlap = overlapEnd - overlapStart;
                 return true;
             }
+            overlap = -1.0f;
             return false;
         }
-        
-        // Returns length of the overlap between the two projections of two edges.
-        constexpr float GetOverlap(Vector2 A,  Vector2 B)
-        {
-            const float overlapStart = std::max(A.x, B.x);
-            const float overlapEnd = std::min(A.y, B.y);
-
-            return overlapEnd - overlapStart;
-        }
-        
-        // Returns a collection of normalized direction vectors representing the edges created by the given vertices.
-        std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices);
         
         // Returns a collection of two normalized direction vectors representing the edges created by the given vertices.
         std::array<Vector2, 2> GetBoxAxes(const std::array<Vector2, 4> &vertices);

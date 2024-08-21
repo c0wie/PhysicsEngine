@@ -6,9 +6,10 @@
 #include <imgui-SFML.h>
 
 #include "PhysicsWorld.hpp"
-#include "Samples/include/FallingCirclesTest.hpp"
-#include "Samples/include/CollisionArenaTest.hpp"
-#include "Samples/include/TestMenu.hpp"
+#include "Algo.hpp"
+#include "FallingCirclesTest.hpp"
+#include "CollisionArenaTest.hpp"
+#include "TestMenu.hpp"
 
 
 int main()

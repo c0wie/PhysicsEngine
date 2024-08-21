@@ -47,11 +47,11 @@ namespace pe2d
                 const Vector2 p1 = ProjectCircle(circleCenter, circle->GetRadius() * transformCircle.scale.x, allAxes[i]);
                 const Vector2 p2 = Project(boxVertices, allAxes[i]);
 
-                if(!Overlap(p1, p2))
+                float o = 0.0f;
+                if(!Overlap(p1, p2, o))
                 {
                     return CollisionPoints();
                 }
-                const float o = GetOverlap(p1, p2);
                 if(o < overlap)
                 {
                     overlap = o;
@@ -87,7 +87,8 @@ namespace pe2d
                 const Vector2 pA1 = Project(verticesA, axesA[i]);
                 const Vector2 pA2 = Project(verticesB, axesA[i]);  
 
-                if(!Overlap(pA1, pA2))
+                float overlapA = 0.0f;
+                if(!Overlap(pA1, pA2, overlapA))
                 {
                     return CollisionPoints();
                 }
@@ -95,14 +96,12 @@ namespace pe2d
                 const Vector2 pB1 = Project(verticesA, axesB[i]);
                 const Vector2 pB2 = Project(verticesB, axesB[i]);
 
-                if(!Overlap(pB1, pB2))
+                float overlapB = 0.0f;
+                if(!Overlap(pB1, pB2, overlapB))
                 {
                     return CollisionPoints();
                 }
-
-                const float overlapA = GetOverlap(pA1, pA2);
-                const float overlapB = GetOverlap(pB1, pB2);
-
+                
                 if(overlapA < overlap)
                 {
                     overlap = overlapA;
@@ -240,8 +239,8 @@ namespace pe2d
 
         std::array<Vector2, 4> GetBoxVertices(Vector2 boxSize, Transform transform)
         {
-            Vector2 center = transform.position;
-            Vector2 scale = transform.scale;
+            const Vector2 center = transform.position;
+            const Vector2 scale = transform.scale;
             const float scaledHalfSizeX = (boxSize.x * scale.x) / 2.0f;
             const float scaledHalfSizeY = (boxSize.y * scale.y) / 2.0f;
             const float angle = transform.GetRotationInRadians();
@@ -254,20 +253,6 @@ namespace pe2d
             };
             RotateVertices<std::array<Vector2, 4>>(vertices, center, angle);
             return vertices;
-        }
-
-        std::vector<Vector2> GetAxes(const std::vector<Vector2> &vertices)
-        {
-            std::vector<Vector2> axes;
-            for(int i = 0; i < vertices.size(); i++)
-            {
-                const Vector2 p1 = vertices[i];
-                const Vector2 p2 = vertices[(i + 1) % vertices.size()];
-                const Vector2 edge = p1 - p2;
-                const Vector2 normal = pe2dMath::Normalize(pe2dMath::Perp(edge));
-                axes.push_back(normal);
-            }
-            return axes;
         }
 
         std::array<Vector2, 2> GetBoxAxes(const std::array<Vector2, 4> &vertices)
