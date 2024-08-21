@@ -9,10 +9,11 @@ namespace
         RigidObjectTemporary() : pe2d::RigidObject() {}
         RigidObjectTemporary& operator=(const RigidObject &other)
         {
-            if (this != &other) 
+            if (this == &other) 
             {
-                pe2d::RigidObject::operator=(other);
+                return *this;
             }
+            pe2d::RigidObject::operator=(other);
             return *this;
         }
     public:

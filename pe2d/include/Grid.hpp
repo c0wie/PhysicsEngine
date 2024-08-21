@@ -37,9 +37,10 @@ namespace pe2d
         /*
             Retrieves a list of unique pairs of object IDs that are potential collision pairs.
             This list is generated based on objects located within the same or neighboring cells.
+            The ID pairs that are beeing retrived always goes: `std::pair(lesser number, higher number)`.
         */
         std::list<std::pair<size_t, size_t>> GetCollisionPairs() const;
-    private:
+    protected:
         // Checks if a vertex is inside the grid's bounds.
         constexpr bool Contains(Vector2 vertex)
         {
@@ -52,7 +53,7 @@ namespace pe2d
         }
         // Checks if a pair of objects has already been checked for collisions.
         bool HasBeenChecked(std::unordered_multimap<size_t, size_t> &checkedPairs, std::pair<size_t, size_t> pair) const;
-    private:
+    protected:
         Vector2 m_TopLeftCorner;
         Vector2 m_BotRightCorner;
         float m_Width;
