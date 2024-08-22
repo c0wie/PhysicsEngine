@@ -9,9 +9,7 @@ namespace pe2d
             RigidObject &rigidObjectA = collisions[i].ObjectA;
             RigidObject &rigidObjectB = collisions[i].ObjectB;
             const auto &points = collisions[i].Points;
-            const float invMassA = rigidObjectA.GetInvMass();
-            const float invMassB = rigidObjectB.GetInvMass();
-
+            
             Vector2 MTV = points.Normal * points.Depth;
             if(pe2dMath::Dot(MTV, rigidObjectA.GetPosition() - rigidObjectB.GetPosition()) < 0.0f)
             {

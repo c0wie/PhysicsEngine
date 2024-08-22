@@ -37,7 +37,8 @@ namespace pe2d
         /*
             Retrieves a list of unique pairs of object IDs that are potential collision pairs.
             This list is generated based on objects located within the same or neighboring cells.
-            The ID pairs that are beeing retrived always goes: `std::pair(lesser number, higher number)`.
+            The ID of collision pairs which are beeing retrived always goes: `std::pair(lesser number, higher number)`.
+            This function will throw Segfault if not all off it's rows and columns are initialized.
         */
         std::list<std::pair<size_t, size_t>> GetCollisionPairs() const;
     protected:
