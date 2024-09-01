@@ -6,6 +6,15 @@ include(FetchContent)
 set(CMAKE_CXX_STANDARD 20)
 set(BUILD_SHARED_LIBS OFF)
 
+add_compile_options(-Wall
+    -Wextra
+    -Wpedantic
+    -Wshadow
+    -Wcast-align
+    -Wconversion
+    -Wsign-conversion
+    -Wnull-dereference)
+
 FetchContent_Declare( 
     SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git

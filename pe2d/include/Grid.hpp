@@ -17,17 +17,12 @@ namespace pe2d
     class Grid
     {
     public:
-        Grid();
-
+        Grid() = default;
     /*
         Constructor that sets up a grid covering a specified area, 
         defined by the top-left and bottom-right corners, with each cell having the given size.
     */
         Grid(Vector2 topLeftCorner, Vector2 botRightCorner, float cellSize);
-        Grid(const Grid &other) = default;
-        Grid(Grid &&other);
-        Grid& operator=(const Grid &other) = default;
-        Grid& operator=(Grid &&other);
     public:
         /*
             Updates the grid with the positions of the objects.
@@ -55,11 +50,11 @@ namespace pe2d
         // Checks if a pair of objects has already been checked for collisions.
         bool HasBeenChecked(std::unordered_multimap<size_t, size_t> &checkedPairs, std::pair<size_t, size_t> pair) const;
     protected:
-        Vector2 m_TopLeftCorner;
-        Vector2 m_BotRightCorner;
-        float m_Width;
-        float m_Height;
-        float m_CellSize;
+        Vector2 m_TopLeftCorner{0.0f, 0.0f};
+        Vector2 m_BotRightCorner{100.0f, 100.0f};
+        float m_CellSize{10.0f};
+        float m_Width{10};
+        float m_Height{10};
         std::vector<std::vector<std::vector<size_t>>> m_Grid;
     };
 }

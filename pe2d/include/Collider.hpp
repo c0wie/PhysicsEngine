@@ -10,49 +10,27 @@ namespace pe2d
     class CircleCollider;
     class BoxCollider;
     
-    // Class Wraper class aroun 
-    class Collider 
+    // Pure virtual class wraper around algo namespace.
+    class Collider
     {
     public:
-        virtual CollisionPoints TestCollision(Transform transform, const Collider *collider, Transform colliderTransform) const = 0;
-        virtual CollisionPoints TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform) const = 0;
-        virtual CollisionPoints TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const = 0;
+        virtual CollisionPoints TestCollision(Transform transform, std::shared_ptr<Collider> collider, Transform colliderTransform) = 0;
+        virtual CollisionPoints TestCollision(Transform transform, std::shared_ptr<CircleCollider> circle, Transform circleTransform) = 0;
+        virtual CollisionPoints TestCollision(Transform transform, std::shared_ptr< BoxCollider> box, Transform boxTransform) = 0;
     };
     
-    // wraper class arround algo namespace that allows to retrive info about circle collisions
-    class CircleCollider final : public Collider
+    // Wraper class arround algo namespace that allows to retrive information about circle collisions.
+    class CircleCollider final : public Collider, public std::enable_shared_from_this<CircleCollider>
     {
     public:
-        CircleCollider() = delete;
-        constexpr CircleCollider(float radius) :
-            m_Radius(radius)
+        constexpr CircleCollider(float radius)
         {
-            if(radius <= 0.0f)
-            {
-                ASSERT("Radius of circle has to be greater than 0");
-            }
-        }
-        CircleCollider(const CircleCollider &other) = default;
-        constexpr CircleCollider(CircleCollider &&other) noexcept :
-            m_Radius( other.m_Radius )
-        {
-            other.m_Radius = 0.0f;
-        }
-        CircleCollider& operator=(const CircleCollider &other) = default;
-        constexpr CircleCollider& operator=(CircleCollider &&other) noexcept
-        {
-            if(this == &other)
-            {
-                return *this;
-            }
-            m_Radius = other.m_Radius;
-            other.m_Radius = 0.0f;
-            return *this;
+            SetRadius(radius);
         }
     public:
-        CollisionPoints TestCollision(Transform transform, const Collider *collider, Transform colliderTransform) const override final;
-        CollisionPoints TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform) const override final;
-        CollisionPoints TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const override final;
+        CollisionPoints TestCollision(Transform transform, std::shared_ptr<Collider> collider, Transform colliderTransform) override final;
+        CollisionPoints TestCollision(Transform transform, std::shared_ptr<CircleCollider> circle, Transform circleTransform) override final;
+        CollisionPoints TestCollision(Transform transform, std::shared_ptr< BoxCollider> box, Transform boxTransform) override final;
         
         constexpr float GetRadius() const { return m_Radius; }
         constexpr void SetRadius(float radius)
@@ -64,51 +42,25 @@ namespace pe2d
             m_Radius = radius;
         }
     private:
-        float m_Radius;
+        float m_Radius{10.0f};
     };
 
-    // wraper class arround algo namespace that allows to retrive info about box collisions
-    class BoxCollider final : public Collider
+    // Wraper class arround algo namespace that allows to retrive information about box collisions.
+    class BoxCollider final : public Collider, public std::enable_shared_from_this<BoxCollider>
     {
     public:
-        BoxCollider() = delete;
-        constexpr BoxCollider(Vector2 size) : 
-            m_Size(size) 
+        explicit constexpr BoxCollider(Vector2 size)
         {
-            if(size.x <= 0.0f && size.y <= 0.0f)
-            {
-                ASSERT("Side of box has to be greater than 0");
-            }
+            SetSize(size);
         }
-        constexpr BoxCollider(float x, float y) :
-            m_Size(x, y)
+        BoxCollider(float x, float y)
         {
-            if(x <= 0.0f && y <= 0.0f)
-            {
-                ASSERT("Side of box has to be greater than 0");
-            }
-        }
-        BoxCollider(const BoxCollider &other) = default;
-        constexpr BoxCollider(BoxCollider &&other) :
-            m_Size(other.m_Size)
-        {
-            other.m_Size = Vector2{};
-        }
-        BoxCollider& operator=(const BoxCollider &other) = default;
-        constexpr BoxCollider& operator=(BoxCollider &&other)
-        {
-            if(this == &other)
-            {
-                return *this;
-            }
-            m_Size = other.m_Size;
-            other.m_Size = Vector2{};
-            return *this;
+            SetSize({x, y});
         }
     public:
-        CollisionPoints TestCollision(Transform transform, const Collider *collider, Transform colliderTransform) const override final;
-        CollisionPoints TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform) const override final;
-        CollisionPoints TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const override final;
+        CollisionPoints TestCollision(Transform transform, std::shared_ptr<Collider> collider, Transform colliderTransform) override final;
+        CollisionPoints TestCollision(Transform transform, std::shared_ptr<CircleCollider> circle, Transform circleTransform) override final;
+        CollisionPoints TestCollision(Transform transform, std::shared_ptr< BoxCollider> box, Transform boxTransform) override final;
         
         constexpr Vector2 GetSize() const { return m_Size; }
         constexpr void SetSize(const Vector2 &size) 
@@ -120,6 +72,6 @@ namespace pe2d
             m_Size = size;
         }
     private:
-        Vector2 m_Size;
+        Vector2 m_Size{10.0f, 10.0f};
     };
 }

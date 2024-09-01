@@ -6,8 +6,8 @@ namespace pe2d
     namespace algo
     {
         CollisionPoints FindCircleCircleCollision(
-            const CircleCollider *circleA, Transform transformCircleA,
-            const CircleCollider *circleB, Transform transformCircleB)
+            std::shared_ptr<CircleCollider> circleA, Transform transformCircleA,
+            std::shared_ptr<CircleCollider> circleB, Transform transformCircleB)
         {
             const float radiusA = circleA->GetRadius();
             const float radiusB =  circleB->GetRadius();
@@ -32,8 +32,8 @@ namespace pe2d
         }
 
         CollisionPoints FindCircleBoxCollision(
-            const CircleCollider *circle, Transform transformCircle,
-            const BoxCollider *box, Transform transformBox)
+            std::shared_ptr<CircleCollider> circle, Transform transformCircle,
+            std::shared_ptr<BoxCollider> box, Transform transformBox)
         {
             Vector2 circleCenter = transformCircle.position;
             const std::array<Vector2, 4> boxVertices = GetBoxVertices(box->GetSize(), transformBox);
@@ -63,8 +63,8 @@ namespace pe2d
         }
         
         CollisionPoints FindBoxCircleCollision(
-            const BoxCollider *box, Transform transformBox,
-            const CircleCollider *circle, Transform transformCircle)
+            std::shared_ptr<BoxCollider> box, Transform transformBox,
+            std::shared_ptr<CircleCollider> circle, Transform transformCircle)
         {
             CollisionPoints p = FindCircleBoxCollision(circle, transformCircle, box, transformBox);
             p.Normal *= -1.0f;
@@ -72,8 +72,8 @@ namespace pe2d
         }
 
         CollisionPoints FindBoxBoxCollision(
-            const BoxCollider *boxA, Transform transformBoxA,
-            const BoxCollider *boxB, Transform transformBoxB)
+            std::shared_ptr<BoxCollider> boxA, Transform transformBoxA,
+            std::shared_ptr<BoxCollider> boxB, Transform transformBoxB)
         {
             const std::array<Vector2, 4> verticesA = GetBoxVertices(boxA->GetSize(), transformBoxA);
             const std::array<Vector2, 4> verticesB = GetBoxVertices(boxB->GetSize(), transformBoxB);

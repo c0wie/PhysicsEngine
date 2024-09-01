@@ -47,7 +47,7 @@ namespace test
 
     void CollisionArenaTest::OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io)
     {
-     /*   if( ImGui::Button("Add Object") )
+        /*if( ImGui::Button("Add Object") )
         {
             showObjectEditor = true;
         }
@@ -75,6 +75,13 @@ namespace test
             }
             ImGui::End();
         }*/
+        if(m_World.Size() > 0)
+        {
+            const Vector2 linearVelocity = m_World.cBegin()->second.GetLinearVelocity();
+            const float angularVelocity = m_World.cBegin()->second.GetAngularVelocity();
+            ImGui::Text("Linear velocity: %i, %i", (int)(linearVelocity.x), (int)(linearVelocity.y));
+            ImGui::Text("Angular velocity: %i", (int)(angularVelocity * 200.0f));
+        }
         ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
     }
 
@@ -168,15 +175,14 @@ namespace test
         std::uniform_real_distribution<float> distribFloat(0.0f, 1.0f);
         std::uniform_int_distribution<int> distribPos(200, 800);
         std::uniform_int_distribution<int> distribRotation(0, 180);
-        float mass = distribInt(gen);
-        pe2d::Transform transform = pe2d::Transform(pos, pe2d::Vector2(1.0f, 1.0f), 69.0f);
+        float mass = 1.0f;
+        pe2d::Transform transform = pe2d::Transform(pos, pe2d::Vector2(1.0f, 1.0f), 0.0f);
         pe2d::Vector2 size = pe2d::Vector2(distribInt(gen), distribInt(gen));
         float staticFriction = distribFloat(gen);
         float dynamicFriction = distribFloat(gen);
         float resistance = 0.0f;
         std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
-        pe2d::RigidObject object(ID, collider, transform, mass,
-                        pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), false,
+        pe2d::RigidObject object(ID, collider, transform, mass, pe2d::Vector2(0.0f, 98.1f), false,
                         staticFriction, dynamicFriction, resistance);
         return object;
     }
@@ -190,14 +196,14 @@ namespace test
         std::uniform_int_distribution<int> distribPos(200, 800);
         std::uniform_int_distribution<int> distribRotation(0, 360);
         const pe2d::Transform transform = pe2d::Transform(pos, pe2d::Vector2(1.0f, 1.0f), 0.0f);
-        float mass = distribInt(gen);
+        float mass = 1.0f;
         float radius = distribInt(gen);
         float staticFriction = 1.0f;
         float dynamicFriction = 1.0f;
-        float resistance = 0.0f;
+        float angluarVelocity = 0.0f;
+        float resistance = 1.0f;
         std::shared_ptr<pe2d::CircleCollider> collider = std::make_shared<pe2d::CircleCollider>(radius);
-        pe2d::RigidObject object(ID, collider, transform, mass,
-                        pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 98.1f), false,
+        pe2d::RigidObject object(ID, collider, transform, mass, pe2d::Vector2(0.0f, 98.1f), false,
                         staticFriction, dynamicFriction, resistance);
         return object;
     }

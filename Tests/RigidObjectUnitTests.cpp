@@ -26,18 +26,8 @@ namespace
     protected:
         void CheckRotationalInertia(std::shared_ptr<pe2d::Collider> colliderType, float expectedRotationalInertia, bool isStatic)
         {
-            RigidObjectTemporary object;
-            if(isStatic)
-            {
-                object = pe2d::RigidObject(1, colliderType, pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f), 120.0f, pe2d::Vector2(),
-                pe2d::Vector2(0.0f, 98.1f), true, 0.0f, 0.0f, 0.0f);
-            }
-            else
-            {
-                object = pe2d::RigidObject(1, colliderType, pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f), 120.0f, pe2d::Vector2(),
-                pe2d::Vector2(0.0f, 98.1f), false, 0.0f, 0.0f, 0.0f);
-            }
-            object.CalculateRotationalInertia();
+            pe2d::RigidObject object(1, colliderType, pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f), 120.0f,
+                    pe2d::Vector2(0.0f, 98.1f), isStatic, 0.0f, 0.0f, 0.0f);
             EXPECT_EQ(object.GetRotationalInertia(), expectedRotationalInertia);
         }
     };
@@ -71,7 +61,7 @@ namespace
     protected:
         void CheckAABB(std::shared_ptr<pe2d::Collider> colliderType, pe2d::Transform transform, const std::array<pe2d::Vector2, 4> &expectedVertices)
         {
-            RigidObject object = RigidObject(1, colliderType, transform, 50.0f, pe2d::Vector2(), pe2d::Vector2(), false, 0.0f, 0.0f, 0.0f);
+            RigidObject object = RigidObject(1, colliderType, transform, 50.0f, pe2d::Vector2(), false, 0.0f, 0.0f, 0.0f);
             auto vertices = object.GetAABB();
             for(int i = 0; i < vertices.size(); i++)
             {

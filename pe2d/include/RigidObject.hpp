@@ -11,12 +11,10 @@ namespace pe2d
     public:
         RigidObject() = default;
         RigidObject(size_t ID, std::shared_ptr<Collider> collider, Transform transform, float mass,
-                    Vector2 velocity, Vector2 gravity, bool isStatic, 
-                    float staticFriction, float dynamicFriction, float restitiution);
-        RigidObject(const RigidObject &other);
-        RigidObject(RigidObject &&other);
-        RigidObject& operator=(const RigidObject &other);
-        RigidObject& operator=(RigidObject &&other);
+                    Vector2 linearVelocity,float angularVelocity, Vector2 gravity, bool isStatic, 
+                    float staticFriction, float dynamicFriction, float restitution);
+        RigidObject(size_t ID, std::shared_ptr<Collider> collider, Transform transform, float mass,
+                    Vector2 gravity, bool isStatic, float staticFriction, float dynamicFriction, float restitution);
     public:
         constexpr unsigned int GetID() const { return m_ID; }
         std::shared_ptr<Collider> GetCollider() const { return m_Collider; }
@@ -36,12 +34,17 @@ namespace pe2d
             }
             return (1.0f / m_Mass); 
         }
-        constexpr Vector2 GetVelocity() const { return m_Velocity; }
+        constexpr Vector2 GetLinearVelocity() const { return m_LinearVelocity; }
+        constexpr float GetAngularVelocity() const { return m_AngularVelocity; }
         constexpr Vector2 GetForce() const { return m_Force; }
         constexpr Vector2 GetGravity() const { return m_Gravity; }
         constexpr float GetRotationalInertia() const { return m_RotationalInertia; }
         constexpr float GetInvRotationalInertia() const 
         {
+            if(m_IsStatic)
+            {
+                return 0.0f;
+            }
             return 1.0f / m_RotationalInertia;            
         }
         constexpr bool IsStatic() const { return m_IsStatic; }
@@ -86,26 +89,13 @@ namespace pe2d
                 m_RotationalInertia = CalculateRotationalInertia();
             }
         }
-        constexpr void SetVelocity(Vector2 velocity)
-        {
-            m_Velocity = velocity;
-        }
-        constexpr void AddVelocity(Vector2 velocity)
-        {
-            m_Velocity += velocity;
-        }
-        constexpr void SetForce(Vector2 force)
-        {
-            m_Force = force;
-        }
-        constexpr void AddForce(Vector2 force)
-        {
-            m_Force += force;
-        }
-        constexpr void SetGravity(Vector2 gravity)
-        {
-            m_Gravity = gravity;
-        }
+        constexpr void SetLinearVelocity(Vector2 linearVelocity) { m_LinearVelocity = linearVelocity; }
+        constexpr void AddLinearVelocity(Vector2 linearVelocity) { m_LinearVelocity += linearVelocity; }
+        constexpr void SetAngularVelocity(float angluarVelocity) { m_AngularVelocity = angluarVelocity; }
+        constexpr void AddAngularVelocity(float angularVelocity) { m_AngularVelocity += angularVelocity; }
+        constexpr void SetForce(Vector2 force) { m_Force = force; }
+        constexpr void AddForce(Vector2 force) { m_Force += force; }
+        constexpr void SetGravity(Vector2 gravity) { m_Gravity = gravity; }
         constexpr void SetStaticFriction(float staticFriction)
         {
             if(staticFriction < 0.0f || staticFriction > 1.0f)
@@ -124,45 +114,27 @@ namespace pe2d
         }
         constexpr void SetRestitution(float restitution)
         {
+            if(restitution < 0.0f || restitution > 1.0f)
+            {
+                ASSERT("Value of restitution has to be beetwen 0 and 1");
+            }
             m_Restitution = restitution;
         }
     protected:
-        float CalculateRotationalInertia()
-        {
-            if(m_IsStatic)
-            {
-                m_RotationalInertia = pe2dMath::INF;
-            }
-            auto circleCollider = std::dynamic_pointer_cast<CircleCollider>(m_Collider);
-            if(circleCollider)
-            {
-                const float radius = circleCollider->GetRadius();
-                return 0.5f * m_Mass * radius * radius;
-            }
-            auto boxCollider = std::dynamic_pointer_cast<BoxCollider>(m_Collider);
-            if(boxCollider)
-            {
-                const float width = boxCollider->GetSize().x;
-                const float height = boxCollider->GetSize().y;
-                return (1.0f / 12.0f) * m_Mass * (width * width + height * height);
-            }
-            else
-            {
-                ASSERT("Unvalid type of collider\n");
-            }
-        }
+        float CalculateRotationalInertia();
     private:
-        size_t m_ID;
-        std::shared_ptr<Collider> m_Collider;
         Transform m_Transform;
-        float m_Mass;
-        Vector2 m_Velocity;
-        Vector2 m_Force;
-        Vector2 m_Gravity;       
-        float m_RotationalInertia;   
-        bool m_IsStatic;
-        float m_StaticFriction;     // Static friction coefficient [in range 0 - 1] 
-        float m_DynamicFriction;    // Dynamic friction coefficient [in range 0 - 1]
-        float m_Restitution;        // Elasticy of collision [in range 0 - 1] 
+        Vector2 m_LinearVelocity{0.0f, 0.0f};
+        Vector2 m_Force{0.0f, 0.0f};
+        Vector2 m_Gravity{0.0f, 0.0f};       
+        std::shared_ptr<Collider> m_Collider;
+        size_t m_ID {0U};
+        float m_Mass{10.0f};
+        float m_AngularVelocity{0.0f};
+        float m_RotationalInertia{0.0f};   
+        float m_StaticFriction{0.0f};     // Static friction coefficient [in range 0 - 1] 
+        float m_DynamicFriction{0.0f};    // Dynamic friction coefficient [in range 0 - 1]
+        float m_Restitution{0.0f};        // Elasticy of collision [in range 0 - 1] 
+        bool m_IsStatic{false};
     };
 }

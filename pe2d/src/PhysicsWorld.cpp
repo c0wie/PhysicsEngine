@@ -4,10 +4,14 @@ namespace pe2d
 {
     void PhysicsWorld::Step(float deltaTime)
     {
-        thingsToDraw.clear();
-        ApplyGravity();
-        ResolveCollisions(deltaTime);
-        MoveObjects(deltaTime);
+        for(int i = 0; i < m_Substeps; i++)
+        {
+            const float subtime = deltaTime / (float)m_Substeps;
+            thingsToDraw.clear();
+            ApplyGravity();
+            ResolveCollisions(subtime);
+            MoveObjects(subtime);
+        }
     }
 
     void PhysicsWorld::AddObject(const RigidObject &object)
@@ -73,7 +77,7 @@ namespace pe2d
                 }
             }
         }
-        ApplyFriction(collisions);
+        //ApplyFriction(collisions);
         SolveCollisions(collisions, deltaTime);
     }
     
@@ -105,7 +109,7 @@ namespace pe2d
         }
 
         // check if objects are penetrating if so pull them apart
-        CollisionPoints points = A.GetCollider()->TestCollision(A.GetTransform(), B.GetCollider().get(), B.GetTransform());
+        CollisionPoints points = A.GetCollider()->TestCollision(A.GetTransform(), B.GetCollider(), B.GetTransform());
         if(points.HasCollision)
         {
             if(points.ContactCount == 1)
@@ -117,6 +121,7 @@ namespace pe2d
                 thingsToDraw.push_back(points.ContactPoint1);
                 thingsToDraw.push_back(points.ContactPoint2);
             }
+
             collisions.emplace_back(A, B, points);
         }
     }
@@ -151,7 +156,7 @@ namespace pe2d
             RigidObject &rigidObjectB = collision.ObjectB;
             const CollisionPoints &points = collision.Points;
 
-            const Vector2 relativeVelocity = rigidObjectB.GetVelocity() - rigidObjectA.GetVelocity();
+            const Vector2 relativeVelocity = rigidObjectB.GetLinearVelocity() - rigidObjectA.GetLinearVelocity();
             const float coefficientOfStaticFriction = FRICTION_SCALING_FACTOR * 
                         (rigidObjectA.GetStaticFriction() + rigidObjectB.GetStaticFriction()) / 2.0f;
 
@@ -193,9 +198,10 @@ namespace pe2d
         {
             RigidObject &object = it->second;
             const Vector2 acceleration = object.GetForce() * object.GetInvMass();
-            Vector2 newVel = object.GetVelocity() + acceleration * deltaTime;
-            object.Move(object.GetVelocity() * deltaTime + (acceleration * std::pow(deltaTime, 2) * 0.5));
-            object.SetVelocity(newVel);
+            Vector2 newVel = object.GetLinearVelocity() + acceleration * deltaTime;
+            object.Move(object.GetLinearVelocity() * deltaTime + (acceleration * std::pow(deltaTime, 2) * 0.5));
+            object.Rotate(object.GetAngularVelocity() * deltaTime * 50.0f);
+            object.SetLinearVelocity(newVel);
             object.SetForce(Vector2(0.0f, 0.0f));
         }
     }

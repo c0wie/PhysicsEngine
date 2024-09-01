@@ -2,71 +2,19 @@
 
 namespace pe2d
 {
-    Grid::Grid() :
-        m_TopLeftCorner(Vector2(0.0f, 0.0f)),
-        m_BotRightCorner(Vector2(100.0f, 100.0f)),
-        m_CellSize(100.0f)
-    {   
-        m_Height = std::floor((m_BotRightCorner.y - m_TopLeftCorner.y) / m_CellSize);
-        m_Width = std::floor((m_BotRightCorner.x - m_TopLeftCorner.x) / m_CellSize);
-        m_Grid.reserve(m_Height);
-        for(auto row : m_Grid)
-        {
-            row.reserve(m_Width);
-        }
-    }
-    
     Grid::Grid(Vector2 topLeftCorner, Vector2 botRightCorner, float cellSize) :
         m_TopLeftCorner(topLeftCorner),
         m_BotRightCorner(botRightCorner),
-        m_CellSize(cellSize)
+        m_CellSize(cellSize),
+        m_Height(std::floor((m_BotRightCorner.y - m_TopLeftCorner.y) / m_CellSize)),
+        m_Width(std::floor((m_BotRightCorner.x - m_TopLeftCorner.x) / m_CellSize))
     {
         if(m_CellSize <= 0)
         {
             ASSERT("Cell of one size has to be grater than 0");
         }
-        m_Height = std::floor((m_BotRightCorner.y - m_TopLeftCorner.y) / m_CellSize);
-        m_Width = std::floor((m_BotRightCorner.x - m_TopLeftCorner.x) / m_CellSize);
     }
     
-    Grid::Grid(Grid &&other) :
-        m_TopLeftCorner(other.m_TopLeftCorner),
-        m_BotRightCorner(other.m_BotRightCorner),
-        m_CellSize(other.m_CellSize),
-        m_Height(other.m_Height),
-        m_Width(other.m_Width),
-        m_Grid(other.m_Grid)
-    {
-        other.m_TopLeftCorner = Vector2(0.0f, 0.0f);
-        other.m_BotRightCorner = Vector2(0.0f, 0.0f);
-        other.m_CellSize = 0.0f;
-        other.m_Height = 0.0f;
-        other.m_Width = 0.0f;
-        other.m_Grid.clear();
-    }
-    
-    Grid& Grid::operator=(Grid &&other)
-    {
-        if(this == &other)
-        {
-            return *this;
-        }
-        m_TopLeftCorner = other.m_TopLeftCorner;
-        m_BotRightCorner = other.m_BotRightCorner;
-        m_CellSize = other.m_CellSize;
-        m_Height = other.m_Height;
-        m_Width = other.m_Width;
-
-        other.m_TopLeftCorner = Vector2(0.0f, 0.0f);
-        other.m_BotRightCorner = Vector2(0.0f, 0.0f);
-        other.m_CellSize = 0.0f;
-        other.m_Height = 0.0f;
-        other.m_Width = 0.0f;
-        other.m_Grid.clear();
-
-        return *this;
-    }
-
     void Grid::Update(const std::unordered_map<size_t, RigidObject> &objects)
     {
         m_Grid.clear();

@@ -4,120 +4,40 @@
 namespace pe2d
 {
     RigidObject::RigidObject(size_t ID, std::shared_ptr<Collider> collider, Transform transform, float mass,
-                            Vector2 velocity, Vector2 gravity, bool isStatic, 
-                            float staticFriction, float dynamicFriction, float restitiution) :
-        m_ID(ID),
-        m_Collider(collider),
+                            Vector2 linearVelocity, float angularVelocity, Vector2 gravity, bool isStatic, 
+                            float staticFriction, float dynamicFriction, float restitution) :
         m_Transform(transform),
-        m_Velocity(velocity),
+        m_LinearVelocity(linearVelocity),
+        m_Force({0.0f, 0.0f}),
         m_Gravity(gravity),
-        m_IsStatic(isStatic),
-        m_Force(Vector2(0.0f, 0.0f))
+        m_Collider(collider),
+        m_ID(ID),
+        m_AngularVelocity(angularVelocity),
+        m_IsStatic(isStatic)
     {  
         SetMass(mass);
         SetStaticFriction(staticFriction);
         SetDynamicFriction(dynamicFriction);
-        SetRestitution(restitiution);
+        SetRestitution(restitution);
     }
 
-    RigidObject::RigidObject(const RigidObject &other):
-        m_ID(other.m_ID),
-        m_Collider(other.m_Collider),
-        m_Transform(other.m_Transform),
-        m_Mass(other.m_Mass),
-        m_Velocity(other.m_Velocity),
-        m_Force(other.m_Force),
-        m_Gravity(other.m_Gravity),
-        m_RotationalInertia(other.m_RotationalInertia),
-        m_IsStatic(other.m_IsStatic),
-        m_StaticFriction(other.m_StaticFriction),
-        m_DynamicFriction(other.m_DynamicFriction),
-        m_Restitution(other.m_Restitution)
-    {}
-
-    RigidObject::RigidObject(RigidObject &&other) :
-        m_ID(other.m_ID),
-        m_Collider(other.m_Collider),
-        m_Transform(other.m_Transform),
-        m_Mass(other.m_Mass),
-        m_Velocity(other.m_Velocity),
-        m_Force(other.m_Force),
-        m_Gravity(other.m_Gravity),
-        m_RotationalInertia(other.m_RotationalInertia),
-        m_StaticFriction(other.m_StaticFriction),
-        m_DynamicFriction(other.m_DynamicFriction),
-        m_Restitution(other.m_Restitution)
+    RigidObject::RigidObject(size_t ID, std::shared_ptr<Collider> collider, Transform transform, float mass,
+                            Vector2 gravity, bool isStatic, float staticFriction, float dynamicFriction, float restitution):
+        m_Transform(transform),
+        m_LinearVelocity({0.0f, 0.0f}),
+        m_Force({0.0f, 0.0f}),
+        m_Gravity(gravity),
+        m_Collider(collider),
+        m_ID(ID), 
+        m_AngularVelocity(0.0f),
+        m_IsStatic(isStatic)
     {
-        other.m_ID = 0;
-        other.m_Collider = nullptr;
-        other.m_Transform = Transform();
-        other.m_Mass = 0.0f;
-        other.m_Velocity = Vector2(0.0f, 0.0f);
-        other.m_Force = Vector2(0.0f, 0.0f);
-        other.m_Gravity = Vector2(0.0f, 0.0f);
-        other.m_RotationalInertia = 0.0f;
-        other.m_IsStatic = false;
-        other.m_StaticFriction = 0.0f;
-        other.m_DynamicFriction = 0.0f;
-        other.m_Restitution = 0.0f;
+        SetMass(mass);
+        SetStaticFriction(staticFriction);
+        SetDynamicFriction(dynamicFriction);
+        SetRestitution(restitution);
     }
 
-    RigidObject& RigidObject::operator=(const RigidObject &other) 
-    {
-        if(this == &other)
-        {
-            return *this;
-        }
-        m_ID = other.m_ID;
-        m_Collider = other.m_Collider;
-        m_Transform = other.m_Transform;
-        m_Mass = other.m_Mass;
-        m_Velocity = other.m_Velocity;
-        m_Force = other.m_Force;
-        m_Gravity = other.m_Gravity;
-        m_RotationalInertia = other.m_RotationalInertia;
-        m_IsStatic = other.m_IsStatic;
-        m_StaticFriction = other.m_StaticFriction;
-        m_DynamicFriction = other.m_DynamicFriction;
-        m_Restitution = other.m_Restitution;
-        return *this;
-    }
-
-    RigidObject& RigidObject::operator=(RigidObject &&other) 
-    {
-        if(this == &other)
-        {
-            return *this;
-        }
-        m_ID = other.m_ID;
-        m_Collider = other.m_Collider;
-        m_Transform = other.m_Transform;
-        m_Mass = other.m_Mass;
-        m_Velocity = other.m_Velocity;
-        m_Force = other.m_Force;
-        m_Gravity = other.m_Gravity;
-        m_RotationalInertia = other.m_RotationalInertia;
-        m_IsStatic = other.m_IsStatic;
-        m_StaticFriction = other.m_StaticFriction;
-        m_DynamicFriction = other.m_DynamicFriction;
-        m_Restitution = other.m_Restitution;
-
-        other.m_ID = 0;
-        other.m_Collider = nullptr;
-        other.m_Transform = Transform();
-        other.m_Mass = 0.0f;
-        other.m_Velocity = Vector2(0.0f, 0.0f);
-        other.m_Force = Vector2(0.0f, 0.0f);
-        other.m_Gravity = Vector2(0.0f, 0.0f);
-        other.m_RotationalInertia = 0.0f;
-        other.m_IsStatic = false;
-        other.m_StaticFriction = 0.0f;
-        other.m_DynamicFriction = 0.0f;
-        other.m_Restitution = 0.0f;
-        return *this;
-    }
-
-    //Returns collection of four vertices representing corners of a non rotated bounding box  
     std::array<Vector2, 4> RigidObject::GetAABB() const
     {
         std::shared_ptr<CircleCollider> circleCollider = std::dynamic_pointer_cast<CircleCollider>( m_Collider );
@@ -143,5 +63,30 @@ namespace pe2d
         const Vector2 topRightCorner = Vector2(botRightCorner.x, topLeftCorner.y);
         const Vector2 botLeftCorner = Vector2(topLeftCorner.x, botRightCorner.y);
         return std::array<Vector2, 4>{topLeftCorner, topRightCorner, botRightCorner, botLeftCorner};
+    }
+    
+    float RigidObject::CalculateRotationalInertia()
+    {
+        if(m_IsStatic)
+        {
+            return m_RotationalInertia = pe2dMath::INF;
+        }
+        auto circleCollider = std::dynamic_pointer_cast<CircleCollider>(m_Collider);
+        if(circleCollider)
+        {
+            const float radius = circleCollider->GetRadius();
+            return 0.5f * m_Mass * radius * radius;
+        }
+        auto boxCollider = std::dynamic_pointer_cast<BoxCollider>(m_Collider);
+        if(boxCollider)
+        {
+            const float width = boxCollider->GetSize().x;
+            const float height = boxCollider->GetSize().y;
+            return (1.0f / 12.0f) * m_Mass * (width * width + height * height);
+        }
+        else
+        {
+            ASSERT("Unvalid type of collider\n");
+        }
     }
 }

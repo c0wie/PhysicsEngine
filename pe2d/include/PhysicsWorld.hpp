@@ -31,20 +31,16 @@ namespace pe2d
         using iterator = std::unordered_map<size_t, RigidObject>::iterator;
         using const_iterator = std::unordered_map<size_t, RigidObject>::const_iterator;
     public:
-        PhysicsWorld() : 
-            m_Grid(),
-            m_IsGridOn(false),
-            m_Substeps(1)
-        {}
+        PhysicsWorld() = default;
         PhysicsWorld(unsigned int substeps) :
             m_Grid(),
-            m_IsGridOn(false),
-            m_Substeps(std::clamp(substeps, 1U, 64U))
+            m_Substeps(std::clamp(substeps, 1U, 64U)),
+            m_IsGridOn(false)
         {}
         PhysicsWorld(const PhysicsWorld &other) = delete;
-        PhysicsWorld(PhysicsWorld &&other) = delete;
-        PhysicsWorld operator = (const PhysicsWorld &other) = delete;
-        PhysicsWorld operator = (PhysicsWorld &&other) = delete;
+        PhysicsWorld& operator= (const PhysicsWorld &other) = delete;
+        PhysicsWorld(PhysicsWorld &&other) = default;
+        PhysicsWorld& operator= (PhysicsWorld &&other) = default;
     public:
         void Step(float deltaTime);        
         void AddObject(const RigidObject &object);
@@ -78,10 +74,10 @@ namespace pe2d
         void ApplyFriction(std::vector<Collision> &collisions);
         void MoveObjects(float deltaTime);
     private:
+        Grid m_Grid;
+        unsigned int m_Substeps{1U};
+        bool m_IsGridOn{false};
         std::vector<std::shared_ptr<Solver>> m_Solvers;
         std::unordered_map<size_t, RigidObject> m_Objects;
-        Grid m_Grid;
-        bool m_IsGridOn;
-        unsigned int m_Substeps;
     }; 
 }

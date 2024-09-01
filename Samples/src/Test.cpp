@@ -68,10 +68,11 @@ namespace test
     }
     
     void Test::AddCircle(size_t ID, const sf::Color &color, float radius, pe2d::Transform transform, bool isStatic,
-        float mass, pe2d::Vector2 velocity,pe2d::Vector2 gravity, float staticFriction, float dynamicFriction, float restitution)
+        float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity, float staticFriction, float dynamicFriction, float restitution)
     {
         std::shared_ptr<pe2d::CircleCollider> collider = std::make_shared<pe2d::CircleCollider>(radius);
-        pe2d::RigidObject object = pe2d::RigidObject(ID, collider, transform, mass, velocity, gravity, isStatic,
+        const float angluarVelocity = 0.0f;
+        pe2d::RigidObject object = pe2d::RigidObject(ID, collider, transform, mass, velocity, angluarVelocity, gravity, isStatic,
                                                     staticFriction, dynamicFriction, restitution);
         m_World.AddObject(object);
         m_Shapes.emplace_back(color, m_World.At(ID), DrawCircle);
@@ -87,7 +88,8 @@ namespace test
         float mass, pe2d::Vector2 velocity, pe2d::Vector2 gravity, float staticFriction, float dynamicFriction, float restitution)
     {
         std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
-        pe2d::RigidObject object = pe2d::RigidObject(ID, collider, transform, mass, velocity, gravity, isStatic,
+        const float angluarVelocity = 0.0f;
+        pe2d::RigidObject object = pe2d::RigidObject(ID, collider, transform, mass, velocity, angluarVelocity, gravity, isStatic,
                                                     staticFriction, dynamicFriction, restitution);
         m_World.AddObject(object);
         m_Shapes.emplace_back(color, m_World.At(ID), DrawBox);

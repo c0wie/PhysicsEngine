@@ -55,6 +55,11 @@ namespace pe2dMath
         return a.x * b.x + a.y * b.y;
     }
     
+    constexpr float Cross(Vector2 a, Vector2 b)
+    {
+        return a.x * b.y - a.y * b.x;
+    }
+
     constexpr Vector2 Lerp(Vector2 a, Vector2 b, float time)
     {
         time = std::clamp(time, 0.0f, 1.0f);

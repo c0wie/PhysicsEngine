@@ -73,7 +73,7 @@ namespace
         }
         RigidObject CreateObject(std::shared_ptr<pe2d::Collider> collider, pe2d::Transform transform, size_t ID)
         {
-            return RigidObject(ID, collider, transform, 50.0f, pe2d::Vector2(), pe2d::Vector2(), false, 0.0, 0.0f, 0.0f);
+            return RigidObject(ID, collider, transform, 50.0f, pe2d::Vector2(), false, 0.0, 0.0f, 0.0f);
         }
         void InsertID(int x, int y, size_t ID)
         {

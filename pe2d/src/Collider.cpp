@@ -4,38 +4,38 @@ namespace pe2d
 {
 #pragma region Circle Collider
 
-    CollisionPoints CircleCollider::TestCollision(Transform transform, const Collider *collider, Transform colliderTransform) const 
+    CollisionPoints CircleCollider::TestCollision(Transform transform, std::shared_ptr<Collider> collider, Transform colliderTransform)
     {
-        return collider->TestCollision(colliderTransform, this, transform);
+        return collider->TestCollision(colliderTransform, shared_from_this(), transform);
     }
     
-    CollisionPoints CircleCollider::TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform) const 
+    CollisionPoints CircleCollider::TestCollision(Transform transform, std::shared_ptr<CircleCollider> circle, Transform circleTransform)
     {
-        return algo::FindCircleCircleCollision(this, transform, circle, circleTransform);
+        return algo::FindCircleCircleCollision(shared_from_this(), transform, circle, circleTransform);
     }
 
-    CollisionPoints CircleCollider::TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const
+    CollisionPoints CircleCollider::TestCollision(Transform transform, std::shared_ptr< BoxCollider> box, Transform boxTransform)
     {
-        return algo::FindCircleBoxCollision(this, transform, box, boxTransform);
+        return algo::FindCircleBoxCollision(shared_from_this(), transform, box, boxTransform);
     }
 
 #pragma endregion
 
 #pragma region Box Collider
 
-    CollisionPoints BoxCollider::TestCollision(Transform transform, const Collider *collider, Transform colliderTransform) const
+    CollisionPoints BoxCollider::TestCollision(Transform transform, std::shared_ptr<Collider> collider, Transform colliderTransform)
     {
-        return collider->TestCollision(colliderTransform, this, transform);
+        return collider->TestCollision(colliderTransform, shared_from_this(), transform);
     }
 
-    CollisionPoints BoxCollider::TestCollision(Transform transform, const CircleCollider *circle, Transform circleTransform) const
+    CollisionPoints BoxCollider::TestCollision(Transform transform, std::shared_ptr<CircleCollider> circle, Transform circleTransform)
     {
-        return algo::FindBoxCircleCollision(this, transform, circle, circleTransform);
+        return algo::FindBoxCircleCollision(shared_from_this(), transform, circle, circleTransform);
     }
 
-    CollisionPoints BoxCollider::TestCollision(Transform transform, const BoxCollider *box, Transform boxTransform) const
+    CollisionPoints BoxCollider::TestCollision(Transform transform, std::shared_ptr<BoxCollider> box, Transform boxTransform)
     {
-        return algo::FindBoxBoxCollision(this, transform, box, boxTransform);
+        return algo::FindBoxBoxCollision(shared_from_this(), transform, box, boxTransform);
     }
 
 #pragma endregion

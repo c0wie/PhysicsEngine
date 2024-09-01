@@ -18,30 +18,21 @@ namespace pe2d
     struct CollisionPoints
     {
     public:
-        CollisionPoints() :
-            Normal(Vector2(0.0f, 0.0f)), Depth(0.0f), ContactPoint1(Vector2(0.0f, 0.0f)),
-            ContactPoint2(Vector2(0.0f, 0.0f)), ContactCount(0), HasCollision(false)
-        {}
-
+        CollisionPoints() = default;
         CollisionPoints(Vector2 normal, float depth, Vector2 contactPoint1, Vector2 contactPoint2, bool hasCollision) :
-            Normal(normal), Depth(depth), ContactPoint1(contactPoint1),
-            ContactPoint2(contactPoint2), ContactCount(2), HasCollision(hasCollision)
+            Normal(normal), ContactPoint1(contactPoint1), ContactPoint2(contactPoint2),
+            Depth(depth), ContactCount(2), HasCollision(hasCollision)
         {}
-
         CollisionPoints(Vector2 normal, float depth, Vector2 contactPoint1, bool hasCollision) :
-            Normal(normal), Depth(depth), ContactPoint1(contactPoint1),
-            ContactPoint2(Vector2(0.0f, 0.0f)), ContactCount(1), HasCollision(hasCollision)
+            Normal(normal), ContactPoint1(contactPoint1), ContactPoint2({0.0f, 0.0f}),
+            Depth(depth), ContactCount(1), HasCollision(hasCollision)
         {}
-        CollisionPoints(const CollisionPoints &other) = default;
-        CollisionPoints(CollisionPoints &&other) noexcept = default;
-        CollisionPoints& operator=(const CollisionPoints &other) = default;
-        CollisionPoints& operator=(CollisionPoints &&other)noexcept = default;
     public:
-        float Depth; // length of overlap beetwen two objects
-        Vector2 Normal; // normalized length of vector B-A
-        Vector2 ContactPoint1;
-        Vector2 ContactPoint2;
-        int ContactCount;
-        bool HasCollision;
+        Vector2 Normal{0.0f, 0.0f}; // normalized length of vector B-A
+        Vector2 ContactPoint1{0.0f, 0.0f};
+        Vector2 ContactPoint2{0.0f, 0.0f};
+        float Depth{0.0f}; // length of overlap beetwen two objects
+        int ContactCount{0};
+        bool HasCollision{false};
     };
 }

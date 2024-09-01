@@ -22,8 +22,8 @@ namespace pe2d
             - A boolean indicating whether a collision actually occured.
         */
         CollisionPoints FindCircleCircleCollision(
-            const CircleCollider *circleA, Transform transformCircleA,
-            const CircleCollider *circleB, Transform transformCircleB);
+            std::shared_ptr<CircleCollider> circleA, Transform transformCircleA,
+            std::shared_ptr<CircleCollider> circleB, Transform transformCircleB);
 
         /* 
             Returns detailed information about a collision beetwen circle and box:
@@ -33,8 +33,8 @@ namespace pe2d
             - A boolean indicating whether a collision actually occured.
         */
         CollisionPoints FindCircleBoxCollision(
-            const CircleCollider *circle, Transform transformCircle,
-            const BoxCollider *box, Transform transformBox);
+            std::shared_ptr<CircleCollider> circle, Transform transformCircle,
+            std::shared_ptr<BoxCollider> box, Transform transformBox);
 
         /* 
             Returns detailed information about a collision beetwen box and circle:
@@ -44,8 +44,8 @@ namespace pe2d
             - A boolean indicating whether a collision actually occured.
         */
         CollisionPoints FindBoxCircleCollision(
-            const BoxCollider *box, Transform transformBox,
-            const CircleCollider *circle, Transform transformCircle);
+            std::shared_ptr<BoxCollider> box, Transform transformBox,
+            std::shared_ptr<CircleCollider> circle, Transform transformCircle);
 
         /* 
             Returns detailed information about a collision beetwen two boxes:
@@ -55,8 +55,8 @@ namespace pe2d
             - A boolean indicating whether a collision actually occured.
         */
         CollisionPoints FindBoxBoxCollision(
-            const BoxCollider *boxA, Transform transformBoxA,
-            const BoxCollider *boxB, Transform transformBoxB);
+            std::shared_ptr<BoxCollider> boxA, Transform transformBoxA,
+            std::shared_ptr<BoxCollider> boxB, Transform transformBoxB);
         
         // Returns information about contact point in a collision beetwen box and circle
         Vector2 FindCircleBoxContactPoint(const std::array<Vector2, 4> &boxVertices, Vector2 circleCenter);

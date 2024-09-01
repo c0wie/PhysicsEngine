@@ -6,7 +6,7 @@ namespace
     pe2d::RigidObject CreateObject(std::shared_ptr<pe2d::Collider> collider, Vector2 position, bool isStatic)
     {
         return pe2d::RigidObject(0, collider, pe2d::Transform(position, pe2d::Vector2(1.0f, 1.0f), 0.0), 10.0f, pe2d::Vector2(),
-                                pe2d::Vector2(), isStatic, 0.0f, 0.0f, 0.0f);
+                                isStatic, 0.0f, 0.0f, 0.0f);
     }
     class SolverTest : public testing::Test
     {
