@@ -45,7 +45,7 @@ namespace pe2d
         if(circleCollider)
         {
             const float diameter = circleCollider->GetRadius() * 2;
-            return algo::GetBoxVertices(Vector2(diameter, diameter), m_Transform);
+            return algo::GetBoxVertices(Vector2(diameter, diameter), Transform{m_Transform.position, m_Transform.scale, 0.0f});
         }
         
         std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>( m_Collider );
