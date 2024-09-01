@@ -10,9 +10,6 @@
 
 namespace pe2d
 {
-    // temporary vector for debuging
-    inline std::vector<Vector2> thingsToDraw;
-    
     /*
         The PhysicsWorld class is the central component of the pe2d physics engine library. It manages all physics objects 
         and handles the entire physics simulation process. PhysicsWorld is designed to remind std::unordered_map, 

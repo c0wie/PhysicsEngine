@@ -62,14 +62,6 @@ int main()
         }            
         ImGui::End();
         ImGui::SFML::Render(window);
-        for(auto pos : pe2d::thingsToDraw)
-        {
-            sf::RectangleShape shape(sf::Vector2(10.0f, 10.0f));
-            shape.setOrigin(shape.getSize() / 2.0f);
-            shape.setPosition(pos.x, pos.y);
-            shape.setFillColor(sf::Color::Cyan);
-            window.draw(shape);
-        }
         window.display();
     }
     delete testMenu;

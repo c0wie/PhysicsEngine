@@ -42,6 +42,8 @@ namespace pe2d
             const CollisionPoints &points = collisions[i].GetCollisionPoints();
             const float invMassA = rigidObjectA.GetInvMass();
             const float invMassB = rigidObjectB.GetInvMass();
+            const float invInertiaA = rigidObjectA.GetInvRotationalInertia();
+            const float invInertiaB = rigidObjectB.GetInvRotationalInertia();
             const Vector2 normal = points.Normal;
 
             Vector2 MTV = normal * points.Depth;
@@ -93,8 +95,8 @@ namespace pe2d
                 const float rBperpNormal = pe2dMath::Dot(rBperp, normal);
 
                 const float denominator = invMassA + invMassB 
-                    + (rAperpNormal * rAperpNormal) * rigidObjectA.GetInvRotationalInertia()
-                    + (rBperpNormal * rBperpNormal) * rigidObjectB.GetInvRotationalInertia();
+                    + (rAperpNormal * rAperpNormal) * invInertiaA
+                    + (rBperpNormal * rBperpNormal) * invInertiaB;
 
                 float j = -(1.0f + coefficientOfRestitution) * relativeVelocityAlongNormal;
                 j /= denominator;
@@ -102,11 +104,10 @@ namespace pe2d
                 const Vector2 impulse = j * normal;
 
                 deltaLinearVelocityA += impulse * invMassA;
-                deltaAngularVelocityA += pe2dMath::Cross(rA, impulse) * rigidObjectA.GetInvRotationalInertia();
+                deltaAngularVelocityA += pe2dMath::Cross(rA, impulse) * invInertiaA;
                 deltaLinearVelocityB -= impulse * invMassB;
-                deltaAngularVelocityB -= pe2dMath::Cross(rB, impulse) * rigidObjectB.GetInvRotationalInertia();
+                deltaAngularVelocityB -= pe2dMath::Cross(rB, impulse) * invInertiaB;
             }   
-
             rigidObjectA.AddLinearVelocity(deltaLinearVelocityA);
             rigidObjectA.AddAngularVelocity(deltaAngularVelocityA);
             rigidObjectB.AddLinearVelocity(deltaLinearVelocityB);

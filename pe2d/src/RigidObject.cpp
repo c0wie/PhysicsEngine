@@ -75,14 +75,14 @@ namespace pe2d
         if(circleCollider)
         {
             const float radius = circleCollider->GetRadius();
-            return 0.5f * m_Mass * radius * radius;
+            return 0.05f * m_Mass * radius * radius;
         }
         auto boxCollider = std::dynamic_pointer_cast<BoxCollider>(m_Collider);
         if(boxCollider)
         {
             const float width = boxCollider->GetSize().x;
             const float height = boxCollider->GetSize().y;
-            return (1.0f / 12.0f) * m_Mass * (width * width + height * height);
+            return (1.0f / 120.0f) * m_Mass * (width * width + height * height);
         }
         else
         {
