@@ -11,11 +11,6 @@ namespace
     class SolverTest : public testing::Test
     {
     protected:
-        /*void TearDown() override
-        {
-            collisions.clear();
-        }*/
-
         void AddCollision(float depth, pe2d::Vector2 normal, pe2d::RigidObject &object1, pe2d::RigidObject &object2)
         {
             pe2d::CollisionPoints points = pe2d::CollisionPoints(normal, depth, Vector2(0.0f, 0.0f), true);

@@ -3,11 +3,11 @@
 
 namespace
 {
-    class GridTemporary : public pe2d::Grid
+    class GridTestable : public pe2d::Grid
     {
     public:
-        GridTemporary() : Grid() {}
-        GridTemporary& operator=(const Grid &other)
+        GridTestable() : Grid() {}
+        GridTestable& operator=(const Grid &other)
         {
             if(this == &other)
             {
@@ -34,12 +34,12 @@ namespace
                 m_Grid.m_Grid[i].resize(5);
             }
         }
-        void CheckIfContained(Vector2 point, bool expectedResult)
+        void Test_Contains(Vector2 point, bool expectedResult)
         {
             const bool result = m_Grid.Contains(point);
             EXPECT_EQ(result, expectedResult);
         }
-        void UpdateTest(const std::unordered_map<size_t, RigidObject> &objects, const std::vector<pe2d::Vector2> &expectedTakenCells)
+        void Test_Update(const std::unordered_map<size_t, RigidObject> &objects, const std::vector<pe2d::Vector2> &expectedTakenCells)
         {
             m_Grid.Update(objects);
             for(int i = 0 ; i< expectedTakenCells.size(); i++)
@@ -50,7 +50,7 @@ namespace
                 EXPECT_EQ(isEmpty, false) << x << " " << y << '\n';
             }
         }
-        void GetCollisionPairsTest(std::list<std::pair<size_t, size_t>> &expectedIDPairs)
+        void Test_GetCollisionPairs(std::list<std::pair<size_t, size_t>> &expectedIDPairs)
         {
             auto IDpairs = m_Grid.GetCollisionPairs();
             ASSERT_EQ(IDpairs.size(), expectedIDPairs.size());
@@ -66,48 +66,45 @@ namespace
             }
 
         }
-        void HasBeenCheckedTest(std::unordered_multimap<size_t, size_t> &checkedPairs, std::pair<size_t, size_t> pair, float expectedResult)
+        void Test_HasBeenChecked(std::unordered_multimap<size_t, size_t> &checkedPairs, std::pair<size_t, size_t> pair, float expectedResult)
         {
             const bool result = m_Grid.HasBeenChecked(checkedPairs, pair);
             EXPECT_EQ(result, expectedResult);
-        }
-        RigidObject CreateObject(std::shared_ptr<pe2d::Collider> collider, pe2d::Transform transform, size_t ID)
-        {
-            return RigidObject(ID, collider, transform, 50.0f, pe2d::Vector2(), false, 0.0, 0.0f, 0.0f);
         }
         void InsertID(int x, int y, size_t ID)
         {
             m_Grid.m_Grid[y][x].push_back(ID);
         }
     protected:
-        GridTemporary m_Grid;
+        GridTestable m_Grid;
     };
 
-    TEST_F(GridTest, contained)
+    TEST_F(GridTest, ContainsTrue)
     {
         const Vector2 point1 = pe2d::Vector2(50.0f, 50.0f);
         const Vector2 point2 = pe2d::Vector2(0.0f, 100.0f);
-        this->CheckIfContained(point1, true);
-        this->CheckIfContained(point2, true);
+        this->Test_Contains(point1, true);
+        this->Test_Contains(point2, true);
     }
 
-    TEST_F(GridTest, notContained)
+    TEST_F(GridTest, ContainsFalse)
     {
         const Vector2 point1 = pe2d::Vector2(-50.0f, 50.0f);
         const Vector2 point2 = pe2d::Vector2(-1.0f, 100.1f);
-        this->CheckIfContained(point1, false);
-        this->CheckIfContained(point2, false);
+        this->Test_Contains(point1, false);
+        this->Test_Contains(point2, false);
     }
 
-    TEST_F(GridTest, update)
+    TEST_F(GridTest, Update)
     {
         const std::unordered_map<size_t, RigidObject> objects = 
         {
-            {0, CreateObject(std::make_shared<pe2d::CircleCollider>(19.0f), pe2d::Transform(pe2d::Vector2(0.0f, 0.0f),
-                            pe2d::Vector2(1.0f, 1.0f), 0.0f), 0)},
-            {1, CreateObject(std::make_shared<pe2d::BoxCollider>(15.0f, 15.0f), pe2d::Transform(pe2d::Vector2(50.0f, 50.0f),
-                            pe2d::Vector2(1.0f, 1.0f), 45.0f), 1)}
+            { 0, RigidObject( 0, std::make_shared<pe2d::CircleCollider>(19.0f), pe2d::Transform({0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f), 50.0f, 
+                            {0.0f, 0.0f}, false, 0.0f, 0.0f, 0.0f) },
+            { 1, RigidObject( 1, std::make_shared<pe2d::BoxCollider>(15.0f, 15.0f), pe2d::Transform({50.0f, 50.0f}, {1.0f, 1.0f}, 45.0f), 50.0f,
+                            {0.0f, 0.0f}, false, 0.0f, 0.0f, 0.0f) }
         };
+
         const std::vector<pe2d::Vector2> expectedTakenCells = 
         {
             pe2d::Vector2(1.0f, 1.0f), pe2d::Vector2(2.0f, 1.0f), pe2d::Vector2(3.0f, 1.0f),
@@ -115,24 +112,25 @@ namespace
             pe2d::Vector2(1.0f, 3.0f), pe2d::Vector2(2.0f, 3.0f), pe2d::Vector2(3.0f, 3.0f),
             pe2d::Vector2(0.0f, 0.0f)
         };
-        this->UpdateTest(objects, expectedTakenCells);
+        this->Test_Update(objects, expectedTakenCells);
     }
 
-    TEST_F(GridTest, getCollisionPairs)
+    TEST_F(GridTest, GetCollisionPairs)
     {
         std::list<std::pair<size_t, size_t>> expectedIDPairs = 
         {
             std::make_pair(0, 2),
             std::make_pair(1, 2)
         };
+        // row | column | ID
         this->InsertID(0, 0, 0);
         this->InsertID(0, 0, 2);
         this->InsertID(1, 0, 1);
         this->InsertID(1, 0, 2);
-        this->GetCollisionPairsTest(expectedIDPairs);
+        this->Test_GetCollisionPairs(expectedIDPairs);
     }
 
-    TEST_F(GridTest, hasBeenChecked)
+    TEST_F(GridTest, HasBeenCheckedTrue)
     {
         std::unordered_multimap<size_t, size_t> checkedPairs = 
         {
@@ -141,10 +139,10 @@ namespace
             {0, 2},
             {6, 9}
         };
-        this->HasBeenCheckedTest(checkedPairs, std::make_pair(1, 2), true);
+        this->Test_HasBeenChecked(checkedPairs, std::make_pair(1, 2), true);
     }
 
-    TEST_F(GridTest, hasNotBeenChecked)
+    TEST_F(GridTest, HasBeenCheckedFalse)
     {
         std::unordered_multimap<size_t, size_t> checkedPairs = 
         {
@@ -153,6 +151,6 @@ namespace
             {0, 2},
             {6, 9}
         };
-        this->HasBeenCheckedTest(checkedPairs, std::make_pair(4, 8), false);
+        this->Test_HasBeenChecked(checkedPairs, std::make_pair(4, 8), false);
     }
 }

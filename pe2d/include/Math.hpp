@@ -66,6 +66,16 @@ namespace pe2dMath
         return Vector2{a * (1.0f - time) + b * time};
     }
 
+    constexpr float RadiansToDeegres(float angleRadians)
+    {
+        return angleRadians * (180.0f / PI);
+    }
+
+    constexpr float DeegresToRadians(float angleDeegres)
+    {
+        return angleDeegres * (PI / 180.0f);
+    }
+
     constexpr bool NearlyEquel(float a, float b, float absError)
     {
         return std::abs(a - b) <= absError;

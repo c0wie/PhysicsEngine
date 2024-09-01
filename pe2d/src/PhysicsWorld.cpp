@@ -234,7 +234,7 @@ namespace pe2d
             const Vector2 acceleration = object.GetForce() * object.GetInvMass();
             Vector2 newVel = object.GetLinearVelocity() + acceleration * deltaTime;
             object.Move(object.GetLinearVelocity() * deltaTime + (acceleration * deltaTime * deltaTime * 0.5));
-            object.Rotate(object.GetAngularVelocity() * deltaTime * (180.0f / pe2dMath::PI));
+            object.Rotate(pe2dMath::RadiansToDeegres(object.GetAngularVelocity() * deltaTime));
             object.SetLinearVelocity(newVel);
             object.SetForce({0.0f, 0.0f});
         }
