@@ -152,9 +152,9 @@ namespace pe2d
         for(size_t i = 0; i < collisions.size(); i++)
         {
             Collision &collision = collisions[i];
-            RigidObject &rigidObjectA = collision.ObjectA;
-            RigidObject &rigidObjectB = collision.ObjectB;
-            const CollisionPoints &points = collision.Points;
+            RigidObject &rigidObjectA = collision.GetObjectA();
+            RigidObject &rigidObjectB = collision.GetObjectB();
+            const CollisionPoints &points = collision.GetCollisionPoints();
 
             const Vector2 relativeVelocity = rigidObjectB.GetLinearVelocity() - rigidObjectA.GetLinearVelocity();
             const float coefficientOfStaticFriction = FRICTION_SCALING_FACTOR * 
@@ -200,7 +200,14 @@ namespace pe2d
             const Vector2 acceleration = object.GetForce() * object.GetInvMass();
             Vector2 newVel = object.GetLinearVelocity() + acceleration * deltaTime;
             object.Move(object.GetLinearVelocity() * deltaTime + (acceleration * std::pow(deltaTime, 2) * 0.5));
-            object.Rotate(object.GetAngularVelocity() * deltaTime * 50.0f);
+            if(std::dynamic_pointer_cast<BoxCollider>(it->second.GetCollider()))
+            {
+                object.Rotate(object.GetAngularVelocity() * deltaTime * 50.0f);
+            }
+            else 
+            {
+                object.Rotate(object.GetAngularVelocity() * deltaTime);
+            }
             object.SetLinearVelocity(newVel);
             object.SetForce(Vector2(0.0f, 0.0f));
         }

@@ -6,9 +6,9 @@ namespace pe2d
     {
         for(size_t i = 0; i < collisions.size(); i++)
         {
-            RigidObject &rigidObjectA = collisions[i].ObjectA;
-            RigidObject &rigidObjectB = collisions[i].ObjectB;
-            const auto &points = collisions[i].Points;
+            RigidObject &rigidObjectA = collisions[i].GetObjectA();
+            RigidObject &rigidObjectB = collisions[i].GetObjectB();
+            const auto &points = collisions[i].GetCollisionPoints();
             const Vector2 normal = points.Normal;
             
             Vector2 MTV = normal * points.Depth;
@@ -37,9 +37,9 @@ namespace pe2d
     {
         for(size_t i = 0; i < collisions.size(); i++)
         {
-            RigidObject &rigidObjectA = collisions[i].ObjectA;
-            RigidObject &rigidObjectB = collisions[i].ObjectB;
-            const CollisionPoints &points = collisions[i].Points;
+            RigidObject &rigidObjectA = collisions[i].GetObjectA();
+            RigidObject &rigidObjectB = collisions[i].GetObjectB();
+            const CollisionPoints &points = collisions[i].GetCollisionPoints();
             const float invMassA = rigidObjectA.GetInvMass();
             const float invMassB = rigidObjectB.GetInvMass();
             const Vector2 normal = points.Normal;

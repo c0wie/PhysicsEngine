@@ -12,6 +12,14 @@ namespace pe2d
     class CircleCollider;
     class BoxCollider;
 
+    template <typename T>
+    concept isContainer = requires (T c)
+    {
+        c.begin();
+        c.end();
+    };
+
+
     namespace algo
     {
         /* 
@@ -72,6 +80,7 @@ namespace pe2d
         void PointSegmentDistance(Vector2 point, Vector2 vertexA, Vector2 vertexB, float &distanceSquared, Vector2 &contactPoint);
 
         template <typename Container>
+        requires isContainer<Container>
         void RotateVertices(Container &vertices, Vector2 center, float angleRadians)
         {
             const float cosAngle = cosf(angleRadians);
@@ -115,6 +124,7 @@ namespace pe2d
         
         // Returns normalized direction vector representing edge created by closest vertex and circle center
         template <typename Container>
+        requires isContainer<Container>
         Vector2 GetCircleAxis(const Container &vertices, Vector2 circleCenter)
         {
             float dist = pe2dMath::INF;
@@ -134,6 +144,7 @@ namespace pe2d
 
         // Returns a projection of object, represented by given vertices, onto a specified axis
         template<typename Container>
+        requires isContainer<Container>
         Vector2 Project(const Container &vertices, Vector2 axis)
         {
             float min = pe2dMath::Dot(axis, *vertices.begin());

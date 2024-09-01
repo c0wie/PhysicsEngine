@@ -3,17 +3,10 @@ project(DEMO)
 
 include(CTest)
 include(FetchContent)
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 20)
 set(BUILD_SHARED_LIBS OFF)
 
-add_compile_options(-Wall
-    -Wextra
-    -Wpedantic
-    -Wshadow
-    -Wcast-align
-    -Wconversion
-    -Wsign-conversion
-    -Wnull-dereference)
 
 FetchContent_Declare( 
     SFML

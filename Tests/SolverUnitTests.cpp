@@ -29,8 +29,8 @@ namespace
             solver.Solve(m_Collisions, 0.0f);
             for(int i = 0; i < m_Collisions.size(); i++)
             {
-                const Vector2 position1 = m_Collisions[i].ObjectA.GetPosition();
-                const Vector2 position2 = m_Collisions[i].ObjectB.GetPosition();
+                const Vector2 position1 = m_Collisions[i].GetObjectA().GetPosition();
+                const Vector2 position2 = m_Collisions[i].GetObjectB().GetPosition();
                 EXPECT_EQ(expectedPositions[i].x, position1.x);
                 EXPECT_EQ(expectedPositions[i].y, position1.y);
                 EXPECT_EQ(expectedPositions[i + 1].x, position2.x);
