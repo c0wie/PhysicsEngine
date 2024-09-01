@@ -35,11 +35,11 @@ namespace pe2d
 
     void ImpulseSolver::Solve(std::vector<Collision> &collisions, float deltaTime)
     {
-        for(size_t i = 0; i < collisions.size(); i++)
+        for(auto &collision : collisions)
         {
-            RigidObject &rigidObjectA = collisions[i].GetObjectA();
-            RigidObject &rigidObjectB = collisions[i].GetObjectB();
-            const CollisionPoints &points = collisions[i].GetCollisionPoints();
+            RigidObject &rigidObjectA = collision.GetObjectA();
+            RigidObject &rigidObjectB = collision.GetObjectB();
+            const CollisionPoints &points = collision.GetCollisionPoints();
             const float invMassA = rigidObjectA.GetInvMass();
             const float invMassB = rigidObjectB.GetInvMass();
             const float invInertiaA = rigidObjectA.GetInvRotationalInertia();
@@ -69,25 +69,22 @@ namespace pe2d
             const float coefficientOfRestitution = (rigidObjectA.GetRestitution() + rigidObjectB.GetRestitution()) * 0.5f;
             const Vector2 contactList[2] = { points.ContactPoint1, points.ContactPoint2 };
 
-            Vector2 deltaLinearVelocityA = Vector2(0.0f, 0.0f);
-            float deltaAngularVelocityA = 0.0f;
-            Vector2 deltaLinearVelocityB = Vector2(0.0f, 0.0f);
-            float deltaAngularVelocityB = 0.0f;
+            Vector2 deltaLinearVelocityA{0.0f, 0.0f};
+            float deltaAngularVelocityA{0.0f};
+            Vector2 deltaLinearVelocityB{0.0f, 0.0f};
+            float deltaAngularVelocityB{0.0f};
 
-            for(int k = 0; k < contactCount; k++)
+            for(int i = 0; i < contactCount; i++)
             {
                 // vector pointing from center of mass of the objects to the contact points
-                const Vector2 rA = contactList[k] - rigidObjectA.GetPosition();
-                const Vector2 rB = contactList[k] - rigidObjectB.GetPosition();
+                const Vector2 rA = contactList[i] - rigidObjectA.GetPosition();
+                const Vector2 rB = contactList[i] - rigidObjectB.GetPosition();
                 
                 const Vector2 rAperp = pe2dMath::Perp(rA);
                 const Vector2 rBperp = pe2dMath::Perp(rB);
 
-                const Vector2 angularVelocityA = rAperp  * rigidObjectA.GetAngularVelocity();
-                const Vector2 angularVelocityB = rBperp  * rigidObjectB.GetAngularVelocity();
-
-                const Vector2 relativeVelocity = (rigidObjectA.GetLinearVelocity() + angularVelocityA) 
-                                            - (rigidObjectB.GetLinearVelocity() + angularVelocityB); 
+                const Vector2 relativeVelocity = (rigidObjectA.GetLinearVelocity() + rAperp * rigidObjectA.GetAngularVelocity()) 
+                                            - (rigidObjectB.GetLinearVelocity() + rBperp  * rigidObjectB.GetAngularVelocity()); 
 
                 const float relativeVelocityAlongNormal = pe2dMath::Dot(relativeVelocity, normal);
 
@@ -108,6 +105,7 @@ namespace pe2d
                 deltaLinearVelocityB -= impulse * invMassB;
                 deltaAngularVelocityB -= pe2dMath::Cross(rB, impulse) * invInertiaB;
             }   
+            
             rigidObjectA.AddLinearVelocity(deltaLinearVelocityA);
             rigidObjectA.AddAngularVelocity(deltaAngularVelocityA);
             rigidObjectB.AddLinearVelocity(deltaLinearVelocityB);
