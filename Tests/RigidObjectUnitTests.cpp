@@ -3,47 +3,30 @@
 
 namespace
 {
-    class RigidObjectTemporary : public pe2d::RigidObject
-    {
-    public:
-        RigidObjectTemporary() : pe2d::RigidObject() {}
-        RigidObjectTemporary& operator=(const RigidObject &other)
-        {
-            if (this == &other) 
-            {
-                return *this;
-            }
-            pe2d::RigidObject::operator=(other);
-            return *this;
-        }
-    public:
-        using RigidObject::CalculateRotationalInertia;
-        using RigidObject::GetAABB;
-    };
-
     class CalculateRotationalInertiaTest : public testing::Test
     {
     protected:
-        void CheckRotationalInertia(std::shared_ptr<pe2d::Collider> colliderType, float expectedRotationalInertia, bool isStatic)
+        void CheckRotationalInertia(std::shared_ptr<pe2d::Collider> collider, float mass, bool isStatic, float expectedInertia)
         {
-            pe2d::RigidObject object(1, colliderType, pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f), 120.0f,
-                    pe2d::Vector2(0.0f, 98.1f), isStatic, 0.0f, 0.0f, 0.0f);
-            EXPECT_EQ(object.GetRotationalInertia(), expectedRotationalInertia);
+            pe2d::RigidObject object(1, collider, pe2d::Transform({0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f), mass, {0.0f, 98.1f}, isStatic, 0.0f, 0.0f, 0.0f);
+            EXPECT_EQ(object.GetRotationalInertia(), expectedInertia);
         }
     };
 
     TEST_F(CalculateRotationalInertiaTest, circle)
     {
         std::shared_ptr<pe2d::CircleCollider> collider = std::make_shared<pe2d::CircleCollider>(100.0f);
+        const float mass = 120.0f;
         const float expectedInertia = 600000.0f;
-        this->CheckRotationalInertia(collider, expectedInertia, false);
+        this->CheckRotationalInertia(collider, mass, false, expectedInertia);
     }
 
     TEST_F(CalculateRotationalInertiaTest, box)
     {
         std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(100.0f, 100.0f);
+        const float mass = 120.0f;
         const float expectedInertia = 200000.0f;
-        this->CheckRotationalInertia(collider, expectedInertia, false);
+        this->CheckRotationalInertia(collider, mass, false, expectedInertia);
     }   
 
     TEST_F(CalculateRotationalInertiaTest, staticObject)
@@ -51,9 +34,10 @@ namespace
         std::shared_ptr<pe2d::CircleCollider> circleCollider = std::make_shared<pe2d::CircleCollider>(100.0f);
         std::shared_ptr<pe2d::BoxCollider> boxCollider = std::make_shared<pe2d::BoxCollider>(100.0f, 100.0f);
         const float expectedInertia = pe2dMath::INF;
+        const float mass = 120.0f;
         
-        this->CheckRotationalInertia(circleCollider, expectedInertia, true);
-        this->CheckRotationalInertia(boxCollider, expectedInertia, true);
+        this->CheckRotationalInertia(circleCollider, mass, true, expectedInertia);
+        this->CheckRotationalInertia(boxCollider, mass, true, expectedInertia);
     }
 
     class GetAABBTest : public testing::Test

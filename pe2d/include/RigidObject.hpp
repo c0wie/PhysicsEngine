@@ -73,21 +73,14 @@ namespace pe2d
             m_Collider = collider;
         }
         constexpr void SetTransform(Transform transform) { m_Transform = transform; }
-        constexpr void SetMass(float mass)
+        void SetMass(float mass)
         {
             if(mass <= 0.0f)
             {
                 ASSERT("Mass of object has to be greater than 0");
             }
-            if(m_IsStatic)
-            {
-                m_Mass = pe2dMath::INF;
-            }
-            else
-            {
-                m_Mass = mass;
-                m_RotationalInertia = CalculateRotationalInertia();
-            }
+            m_Mass = m_IsStatic? pe2dMath::INF : mass;
+            m_RotationalInertia = CalculateRotationalInertia();
         }
         constexpr void SetLinearVelocity(Vector2 linearVelocity) { m_LinearVelocity = linearVelocity; }
         constexpr void AddLinearVelocity(Vector2 linearVelocity) { m_LinearVelocity += linearVelocity; }

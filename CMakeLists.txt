@@ -29,7 +29,7 @@ enable_testing()
 
 add_subdirectory(pe2d)
 add_subdirectory(ImGui-SFML)
-# add_subdirectory(Tests)
+add_subdirectory(Tests)
 
 add_executable(${PROJECT_NAME} 
     Samples/src/Test.cpp
