@@ -243,7 +243,6 @@ namespace pe2d
             const Vector2 scale = transform.scale;
             const float scaledHalfSizeX = (boxSize.x * scale.x) / 2.0f;
             const float scaledHalfSizeY = (boxSize.y * scale.y) / 2.0f;
-            const float angle = pe2dMath::DeegresToRadians(transform.rotation);
             std::array<Vector2, 4> vertices = 
             {
                 Vector2( center.x - scaledHalfSizeX, center.y - scaledHalfSizeY ),
@@ -251,7 +250,7 @@ namespace pe2d
                 Vector2( center.x + scaledHalfSizeX, center.y + scaledHalfSizeY ),
                 Vector2( center.x - scaledHalfSizeX, center.y + scaledHalfSizeY )
             };
-            RotateVertices<std::array<Vector2, 4>>(vertices, center, angle);
+            RotateVertices(vertices, center, transform.rotation);
             return vertices;
         }
 

@@ -13,7 +13,7 @@ namespace test
 
         AddBox(2217U, sf::Color::Green, pe2d::Vector2(800.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
                 true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
-        AddBox(2137U, sf::Color::Green, pe2d::Vector2(300.0f, 50.0f), pe2d::Transform(pe2d::Vector2(300.0f, 400.0f), pe2d::Vector2(1.0f, 1.0f), 30.0f),
+        AddBox(2137U, sf::Color::Green, pe2d::Vector2(300.0f, 50.0f), pe2d::Transform(pe2d::Vector2(300.0f, 400.0f), pe2d::Vector2(1.0f, 1.0f), pe2dMath::DeegresToRadians(30.0f)),
                 true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
         ResetVariables();        
     }

@@ -23,7 +23,6 @@ namespace pe2d
         constexpr Vector2 GetPosition() const { return m_Transform.position; }
         constexpr Vector2 GetScale() const { return m_Transform.scale; }
         constexpr float GetRotation() const { return m_Transform.rotation; }
-        constexpr float GetRotationInRadians() const { return m_Transform.GetRotationInRadians(); }
         constexpr Transform GetTransform() const { return m_Transform; }
         constexpr float GetMass() const { return m_Mass; }
         constexpr float GetInvMass() const 
@@ -62,8 +61,8 @@ namespace pe2d
             }
             m_Transform.scale = scale; 
         } 
-        constexpr void SetRotation(float angleDegrees) { m_Transform.rotation = angleDegrees; }
-        constexpr void Rotate(float angleDegrees) { m_Transform.Rotate(angleDegrees); }
+        constexpr void SetRotation(float angleRadians) { m_Transform.rotation = angleRadians; }
+        constexpr void Rotate(float angleRadians) { m_Transform.Rotate(angleRadians); }
         void SetCollider(std::shared_ptr<Collider> collider)
         {
             if(!collider)
@@ -119,12 +118,12 @@ namespace pe2d
         Transform m_Transform;
         Vector2 m_LinearVelocity{0.0f, 0.0f};
         Vector2 m_Force{0.0f, 0.0f};
-        Vector2 m_Gravity{0.0f, 0.0f};       
+        Vector2 m_Gravity{0.0f, 0.0f};
         std::shared_ptr<Collider> m_Collider;
         size_t m_ID {0U};
         float m_Mass{10.0f};
         float m_AngularVelocity{0.0f};
-        float m_RotationalInertia{0.0f};   
+        float m_RotationalInertia{0.0f};
         float m_StaticFriction{0.0f};     // Static friction coefficient [in range 0 - 1] 
         float m_DynamicFriction{0.0f};    // Dynamic friction coefficient [in range 0 - 1]
         float m_Restitution{0.0f};        // Elasticy of collision [in range 0 - 1] 

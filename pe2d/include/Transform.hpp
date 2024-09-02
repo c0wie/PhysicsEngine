@@ -15,12 +15,11 @@ namespace pe2d
     {
     public:
         constexpr Transform() = default;
-        constexpr Transform(Vector2 position, Vector2 scale, float rotation) : 
-            position(position), scale(scale), rotation(rotation) {}
+        constexpr Transform(Vector2 position, Vector2 scale, float angleRadians) : 
+            position(position), scale(scale), rotation(angleRadians) {}
     public:
         constexpr void Move(Vector2 offset) { position += offset; }
-        constexpr void Rotate(float angleDegrees) { rotation += angleDegrees; }
-        constexpr float GetRotationInRadians() const { return pe2dMath::DeegresToRadians(rotation); }
+        constexpr void Rotate(float angleRadians) { rotation += angleRadians; }
     public:
         Vector2 position{0.0f, 0.0f};
         Vector2 scale{1.0f, 1.0f};

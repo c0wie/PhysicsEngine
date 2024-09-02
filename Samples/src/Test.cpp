@@ -14,6 +14,7 @@ namespace test
         sf::CircleShape circle(radius);
         circle.setFillColor(sf::Color::Transparent); 
         circle.setOutlineColor(color); 
+        circle.setRotation(pe2dMath::RadiansToDeegres(circle.getRotation()));
         circle.setOutlineThickness(1.0f);
 
         const pe2d::Vector2 position = body.GetPosition();
@@ -35,12 +36,13 @@ namespace test
         const pe2d::Vector2 size = collider->GetSize() * body.GetScale();
         const sf::Color color = shape.GetColor();
         const pe2d::Vector2 pos = body.GetPosition();
+        const float rotation = pe2dMath::RadiansToDeegres(body.GetRotation());
         
         sf::RectangleShape rec(sf::Vector2f(size.x, size.y));
         rec.setOrigin(rec.getSize() / 2.0f);
         rec.setPosition(sf::Vector2f(pos.x, pos.y));
         rec.setFillColor(sf::Color::Transparent);
-        rec.setRotation(body.GetRotation());
+        rec.setRotation(rotation);
         rec.setOutlineColor(color);
         rec.setOutlineThickness(1.0f);
         window.draw(rec);

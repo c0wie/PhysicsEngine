@@ -81,12 +81,20 @@ namespace pe2d
     
     void PhysicsWorld::AddGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float cellSize)
     {
+        if(m_IsGridOn)
+        {
+            return;
+        }
         m_Grid = Grid(topLeftCorner, bottomRightCorner, cellSize);
         m_IsGridOn = true;
     }
 
     void PhysicsWorld::RemoveGrid()
     {
+        if(!m_IsGridOn)
+        {
+            return;
+        }
         m_Grid = Grid();
         m_IsGridOn = false;
     }
@@ -232,9 +240,9 @@ namespace pe2d
         {
             RigidObject &object = it->second;
             const Vector2 acceleration = object.GetForce() * object.GetInvMass();
-            Vector2 newVel = object.GetLinearVelocity() + acceleration * deltaTime;
+            const Vector2 newVel = object.GetLinearVelocity() + acceleration * deltaTime;
             object.Move(object.GetLinearVelocity() * deltaTime + (acceleration * deltaTime * deltaTime * 0.5));
-            object.Rotate(pe2dMath::RadiansToDeegres(object.GetAngularVelocity() * deltaTime));
+            object.Rotate(object.GetAngularVelocity() * deltaTime);
             object.SetLinearVelocity(newVel);
             object.SetForce({0.0f, 0.0f});
         }

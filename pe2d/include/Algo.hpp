@@ -79,9 +79,7 @@ namespace pe2d
         */
         void PointSegmentDistance(Vector2 point, Vector2 vertexA, Vector2 vertexB, float &distanceSquared, Vector2 &contactPoint);
 
-        template <typename Container>
-        requires isContainer<Container>
-        void RotateVertices(Container &vertices, Vector2 center, float angleRadians)
+        void RotateVertices(isContainer auto &vertices, Vector2 center, float angleRadians)
         {
             const float cosAngle = cosf(angleRadians);
             const float sinAngle = sinf(angleRadians);
@@ -123,9 +121,7 @@ namespace pe2d
         std::array<Vector2, 2> GetBoxAxes(const std::array<Vector2, 4> &vertices);
         
         // Returns normalized direction vector representing edge created by closest vertex and circle center
-        template <typename Container>
-        requires isContainer<Container>
-        Vector2 GetCircleAxis(const Container &vertices, Vector2 circleCenter)
+        Vector2 GetCircleAxis(const isContainer auto &vertices, Vector2 circleCenter)
         {
             float dist = pe2dMath::INF;
             Vector2 smallestAxis = Vector2(0.0f, 0.0f);
@@ -143,9 +139,7 @@ namespace pe2d
         }
 
         // Returns a projection of object, represented by given vertices, onto a specified axis
-        template<typename Container>
-        requires isContainer<Container>
-        Vector2 Project(const Container &vertices, Vector2 axis)
+        Vector2 Project(const isContainer auto &vertices, Vector2 axis)
         {
             float min = pe2dMath::Dot(axis, *vertices.begin());
             float max = min;

@@ -62,7 +62,8 @@ namespace pe2d
         }
         const Vector2 topRightCorner = Vector2(botRightCorner.x, topLeftCorner.y);
         const Vector2 botLeftCorner = Vector2(topLeftCorner.x, botRightCorner.y);
-        return std::array<Vector2, 4>{topLeftCorner, topRightCorner, botRightCorner, botLeftCorner};
+        
+        return {topLeftCorner, topRightCorner, botRightCorner, botLeftCorner};
     }
     
     float RigidObject::CalculateRotationalInertia()
