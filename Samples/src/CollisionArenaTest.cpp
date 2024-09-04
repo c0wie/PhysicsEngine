@@ -8,7 +8,7 @@ namespace test
         showObjectEditor(false)
     {   
         m_World.AddGrid(pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 100.0f);
-        m_World.SetSolver(&ImpulseSolver);
+        m_World.SetSolver(&ImpulseSolverWithoutFriction);
 
         AddBox(2217U, sf::Color::Green, pe2d::Vector2(800.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
                 true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);

@@ -17,8 +17,7 @@ namespace pe2d
 
         To use the PhysicsWorld class effectively, you must add a physics solver. The library provides two solvers, 
         but custom solvers can be implemented by creating a function wich returns void and has to parameters 
-        std::vector<pe2d::Collision> &collisions and float deltaTime. The solvers are responsible for 
-        resolving forces, collisions, and other physics interactions.
+        std::vector<pe2d::Collision> &collisions and float deltaTime.
 
         PhysicsWorld also supports broad-phase collision detection using a spatial partitioning technique called a Grid. 
         The Grid can be activated by calling the appropriate function, and it helps to optimize collision detection
