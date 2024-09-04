@@ -69,7 +69,7 @@ namespace pe2d
         void MoveObjects(float deltaTime);
     private:
         Grid m_Grid;
-        unsigned int m_Substeps{1U};
+        unsigned int m_Substeps{8U};
         bool m_IsGridOn{false};
         std::function<void(std::vector<Collision> &collisions, float deltaTime)> m_Solver{&PositionSolver};
         std::unordered_map<size_t, RigidObject> m_Objects;

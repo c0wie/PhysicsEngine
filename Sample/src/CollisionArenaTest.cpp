@@ -1,4 +1,4 @@
-#include "CollisionArenaTest.hpp"
+#include "../include/CollisionArenaTest.hpp"
 #include "Algo.hpp"
 #include <random>
 namespace test

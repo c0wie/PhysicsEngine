@@ -32,9 +32,8 @@ add_subdirectory(ImGui-SFML)
 add_subdirectory(Tests)
 
 add_executable(${PROJECT_NAME} 
-    Samples/src/Test.cpp
-    Samples/src/FallingCirclesTest.cpp
-    Samples/src/CollisionArenaTest.cpp
+    Sample/src/Test.cpp
+    Sample/src/CollisionArenaTest.cpp
     Demo.cpp
 )
 

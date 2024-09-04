@@ -7,9 +7,8 @@
 
 #include "PhysicsWorld.hpp"
 #include "Algo.hpp"
-#include "FallingCirclesTest.hpp"
-#include "CollisionArenaTest.hpp"
-#include "TestMenu.hpp"
+#include "Sample/include/CollisionArenaTest.hpp"
+#include "Sample/include/TestMenu.hpp"
 
 
 int main()
@@ -21,7 +20,6 @@ int main()
     test::TestMenu *testMenu = new test::TestMenu(currentTest, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 1U);
     currentTest = testMenu;
 
-    testMenu->RegisterTest<test::FallingCirclesTest>("Falling Circles Test");
     testMenu->RegisterTest<test::CollisionArenaTest>("Collision Arena Test");
 
     sf::Vector2f vec;

@@ -1,4 +1,4 @@
-#include "Test.hpp"
+#include "../include/Test.hpp"
 #include "Algo.hpp"
 
 namespace test
