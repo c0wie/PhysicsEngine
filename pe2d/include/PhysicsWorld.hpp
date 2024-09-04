@@ -11,7 +11,7 @@
 namespace pe2d
 {
     /*
-        The PhysicsWorld class is the central component of the pe2d physics engine library. It manages all physics objects 
+        The PhysicsWorld class is the central component of the pe2d physics library. It manages all physics objects 
         and handles the entire physics simulation process. PhysicsWorld is designed to remind std::unordered_map, 
         providing key-value operations and iterators for easy management of physics objects.
 
