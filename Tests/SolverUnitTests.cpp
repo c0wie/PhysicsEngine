@@ -20,8 +20,7 @@ namespace
         void PositionSolverTest(const std::vector<pe2d::Vector2> &expectedPositions)
         {
             ASSERT_EQ(m_Collisions.size() * 2, expectedPositions.size());
-            PositionSolver solver;
-            solver.Solve(m_Collisions, 0.0f);
+            PositionSolver(m_Collisions, 0.0f);
             for(int i = 0; i < m_Collisions.size(); i++)
             {
                 const Vector2 position1 = m_Collisions[i].GetObjectA().GetPosition();

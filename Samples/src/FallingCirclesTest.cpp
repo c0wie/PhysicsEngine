@@ -6,9 +6,8 @@ namespace test
     FallingCirclesTest::FallingCirclesTest() :
         m_TimeSinceLastSpawn(0.0f)
     {
-        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
-        m_World.AddSolver(solver);
         m_World.AddGrid(pe2d::Vector2(-200.0f, -200.0f), pe2d::Vector2(1200.0f, 1200.0f), 200.0f);
+        m_World.SetSolver(&ImpulseSolver);
     }
 
     void FallingCirclesTest::OnUpdate(float deltaTime, sf::Vector2i mousePos)

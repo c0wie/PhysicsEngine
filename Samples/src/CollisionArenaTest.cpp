@@ -8,12 +8,11 @@ namespace test
         showObjectEditor(false)
     {   
         m_World.AddGrid(pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 100.0f);
-        std::shared_ptr<pe2d::Solver> solver = std::make_shared<pe2d::ImpulseSolver>();
-        m_World.AddSolver(solver);
+        m_World.SetSolver(&ImpulseSolver);
 
         AddBox(2217U, sf::Color::Green, pe2d::Vector2(800.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
                 true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
-        AddBox(2137U, sf::Color::Green, pe2d::Vector2(300.0f, 50.0f), pe2d::Transform(pe2d::Vector2(300.0f, 400.0f), pe2d::Vector2(1.0f, 1.0f), pe2dMath::DeegresToRadians(30.0f)),
+        AddBox(2137U, sf::Color::Green, pe2d::Vector2(300.0f, 50.0f), pe2d::Transform(pe2d::Vector2(300.0f, 400.0f), pe2d::Vector2(1.0f, 1.0f), pe2dMath::DeegresToRadians(45.0f)),
                 true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
         ResetVariables();        
     }

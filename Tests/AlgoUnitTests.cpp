@@ -209,7 +209,7 @@ namespace
     TEST(GetBoxVerticesTest, rotatedScaled)
     {
         const pe2d::Vector2 boxSize = pe2d::Vector2(100.0f, 100.0f);
-        const pe2d::Transform boxTransform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 2.0f), 45.0f);
+        const pe2d::Transform boxTransform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 2.0f),  pe2dMath::DeegresToRadians(45.0f));
         std::array<pe2d::Vector2, 4> expected = 
         {
             pe2d::Vector2(535.355347f, 393.93399f),

@@ -33,20 +33,6 @@ namespace pe2d
         return m_Objects.end(); 
     }
 
-    void PhysicsWorld::AddSolver(std::shared_ptr<Solver> &solver)
-    {
-        if(!solver )
-        {
-            ASSERT("Unvalid solver");
-        }
-        m_Solvers.push_back(solver);
-    }
-
-    void PhysicsWorld::RemoveSolver(std::shared_ptr<Solver> &solver)
-    {
-        m_Solvers.erase( std::remove(m_Solvers.begin(), m_Solvers.end(), solver) );
-    }
-
     void PhysicsWorld::ResolveCollisions(float deltaTime)
     {
         std::vector<Collision> collisions;
@@ -75,8 +61,7 @@ namespace pe2d
                 }
             }
         }
-        //ApplyFriction(collisions);
-        SolveCollisions(collisions, deltaTime);
+        m_Solver(collisions, deltaTime);
     }
     
     void PhysicsWorld::AddGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float cellSize)
@@ -122,14 +107,6 @@ namespace pe2d
         }
     }
 
-    void PhysicsWorld::SolveCollisions(std::vector<Collision> &collisions, float deltaTime)
-    {
-        for(int i = 0; i < m_Solvers.size(); i++)
-        {
-            m_Solvers[i]->Solve(collisions, deltaTime);
-        }
-    }
-
     void PhysicsWorld::ApplyGravity()
     {
         for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
@@ -139,98 +116,6 @@ namespace pe2d
             {
                 object.AddForce( object.GetGravity() * object.GetMass() );
             }
-        }
-    }
-
-    void PhysicsWorld::ApplyFriction(std::vector<Collision> &collisions)
-    {
-        constexpr float FRICTION_SCALING_FACTOR = 30.0f;
-        for(size_t i = 0; i < collisions.size(); i++)
-        {
-            Collision &collision = collisions[i];
-            RigidObject &rigidObjectA = collision.GetObjectA();
-            RigidObject &rigidObjectB = collision.GetObjectB();
-            const CollisionPoints &points = collision.GetCollisionPoints();
-            const Vector2 normal = points.Normal;
-            const float invMassA = rigidObjectA.GetInvMass();
-            const float invMassB = rigidObjectB.GetInvMass();
-
-            const int contactCount = points.ContactCount;
-            const float coefficientOfStaticFriction = (rigidObjectA.GetStaticFriction() + rigidObjectB.GetStaticFriction()) * 0.5f;
-            const float coefficientOfDynamicFriction = (rigidObjectA.GetDynamicFriction() + rigidObjectB.GetDynamicFriction()) * 0.5f;
-            const Vector2 contactList[2] = { points.ContactPoint1, points.ContactPoint2 };
-
-            Vector2 deltaLinearVelocityA = Vector2(0.0f, 0.0f);
-            float deltaAngularVelocityA = 0.0f;
-            Vector2 deltaLinearVelocityB = Vector2(0.0f, 0.0f);
-            float deltaAngularVelocityB = 0.0f;
-
-            for(int k = 0; k < contactCount; k++)
-            {
-                // vector pointing from center of mass of the objects to the contact points
-                const Vector2 rA = contactList[k] - rigidObjectA.GetPosition();
-                const Vector2 rB = contactList[k] - rigidObjectB.GetPosition();
-                
-                const Vector2 rAperp = pe2dMath::Perp(rA);
-                const Vector2 rBperp = pe2dMath::Perp(rB);
-
-                const Vector2 angularVelocityA = rAperp  * rigidObjectA.GetAngularVelocity();
-                const Vector2 angularVelocityB = rBperp  * rigidObjectB.GetAngularVelocity();
-
-                const Vector2 relativeVelocity = (rigidObjectA.GetLinearVelocity() + angularVelocityA) 
-                                            - (rigidObjectB.GetLinearVelocity() + angularVelocityB); 
-
-                Vector2 tangent = relativeVelocity - pe2dMath::Dot(relativeVelocity, normal) * normal;
-
-                if(pe2dMath::NearlyEquel(tangent, {0.0f, 0.0f}, 0.05f))
-                {
-                    continue;
-                }
-                else
-                {
-                    tangent = pe2dMath::Normalize(tangent);
-                }
-
-
-                const float relativeVelocityAlongTang = pe2dMath::Dot(relativeVelocity, tangent);
-
-                const float rAperpTang = pe2dMath::Dot(rAperp, tangent);
-                const float rBperpTang = pe2dMath::Dot(rBperp, tangent);
-
-                const float denominator = invMassA + invMassB 
-                    + (rAperpTang * rAperpTang) * rigidObjectA.GetInvRotationalInertia()
-                    + (rBperpTang * rBperpTang) * rigidObjectB.GetInvRotationalInertia();
-
-                float jt = -relativeVelocityAlongTang;
-                jt /= denominator;
-                jt /= (float)contactCount;
-                
-                float j = -(1.0f + (rigidObjectA.GetRestitution() + rigidObjectB.GetRestitution()) * 0.5f) * pe2dMath::Dot(relativeVelocity, normal);
-                j /= denominator;
-                j /= (float)contactCount;
-
-                Vector2 impulseFriction{0.0f, 0.0f};
-                
-                if(std::abs(jt) <= j * coefficientOfStaticFriction)
-                {
-                    impulseFriction = jt * tangent;
-                }
-                else
-                {
-                    impulseFriction = -j * tangent * coefficientOfDynamicFriction;
-                }
-
-
-                deltaLinearVelocityA += impulseFriction * invMassA;
-                deltaAngularVelocityA += pe2dMath::Cross(rA, impulseFriction) * rigidObjectA.GetInvRotationalInertia();
-                deltaLinearVelocityB -= impulseFriction * invMassB;
-                deltaAngularVelocityB -= pe2dMath::Cross(rB, impulseFriction) * rigidObjectB.GetInvRotationalInertia();
-            }   
-
-            rigidObjectA.AddLinearVelocity(deltaLinearVelocityA);
-            rigidObjectA.AddAngularVelocity(deltaAngularVelocityA);
-            rigidObjectB.AddLinearVelocity(deltaLinearVelocityB);
-            rigidObjectB.AddAngularVelocity(deltaAngularVelocityB);
         }
     }
 

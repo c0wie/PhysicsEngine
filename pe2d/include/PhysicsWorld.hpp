@@ -16,7 +16,8 @@ namespace pe2d
         providing key-value operations and iterators for easy management of physics objects.
 
         To use the PhysicsWorld class effectively, you must add a physics solver. The library provides two solvers, 
-        but custom solvers can be implemented by inheriting from the main Solver class. The solvers are responsible for 
+        but custom solvers can be implemented by creating a function wich returns void and has to parameters 
+        std::vector<pe2d::Collision> &collisions and float deltaTime. The solvers are responsible for 
         resolving forces, collisions, and other physics interactions.
 
         PhysicsWorld also supports broad-phase collision detection using a spatial partitioning technique called a Grid. 
@@ -46,8 +47,7 @@ namespace pe2d
         iterator RemoveObjects (iterator firstObject, iterator lastObject) { return m_Objects.erase(firstObject, lastObject); } 
         void ClearObjects() { m_Objects.clear(); }
 
-        void AddSolver(std::shared_ptr<Solver> &solver);
-        void RemoveSolver(std::shared_ptr<Solver> &solver);
+        void SetSolver(std::function<void(std::vector<Collision> &collisions, float deltaTime)> solver) { m_Solver = solver; }
         
         void AddGrid(Vector2 topLeftCorner, Vector2 bottomRightCorner, float cellSize);
         void RemoveGrid();
@@ -66,15 +66,13 @@ namespace pe2d
 
     private:
         void FindCollisions(size_t IDA, size_t IDB, std::vector<Collision> &collisions);
-        void SolveCollisions(std::vector<Collision> &collisions, float deltaTime);
         void ApplyGravity();
-        void ApplyFriction(std::vector<Collision> &collisions);
         void MoveObjects(float deltaTime);
     private:
         Grid m_Grid;
         unsigned int m_Substeps{1U};
         bool m_IsGridOn{false};
-        std::vector<std::shared_ptr<Solver>> m_Solvers;
+        std::function<void(std::vector<Collision> &collisions, float deltaTime)> m_Solver{&PositionSolver};
         std::unordered_map<size_t, RigidObject> m_Objects;
     }; 
 }

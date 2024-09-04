@@ -89,7 +89,7 @@ namespace
             pe2d::Vector2(429.289307f, 570.710693f)
         };
         std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(100.0f, 100.0f);
-        pe2d::Transform transform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), 45.0f);
+        pe2d::Transform transform = pe2d::Transform(pe2d::Vector2(500.0f, 500.0f), pe2d::Vector2(1.0f, 1.0f), pe2dMath::DeegresToRadians(45.0f));
         this->Test_GetAABB(collider, transform, expectedVertieces);
     }
     
