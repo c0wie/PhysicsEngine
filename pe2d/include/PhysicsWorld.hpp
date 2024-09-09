@@ -61,7 +61,7 @@ namespace pe2d
         iterator End() { return m_Objects.end(); }
         const_iterator cBegin() const { return m_Objects.cbegin(); }
         const_iterator cEnd() const { return m_Objects.cend(); }
-        RigidObject& At(unsigned int ID) { return m_Objects.at(ID); }
+        RigidObject& At(unsigned int ID); 
 
     private:
         void FindCollisions(size_t IDA, size_t IDB, std::vector<Collision> &collisions);

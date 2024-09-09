@@ -33,11 +33,19 @@ namespace pe2d
         return m_Objects.end(); 
     }
 
+    RigidObject& PhysicsWorld::At(unsigned int ID)
+    {
+        if(m_Objects.find(ID) == m_Objects.end())
+        {
+            ASSERT("Uvalid index acces");
+        }
+        return m_Objects.at(ID);
+    }
+
     void PhysicsWorld::ResolveCollisions(float deltaTime)
     {
         std::vector<Collision> collisions;
         collisions.reserve(m_Objects.size());
-        
         if(m_IsGridOn)
         {
             m_Grid.Update(m_Objects);
@@ -112,10 +120,11 @@ namespace pe2d
         for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
         {
             RigidObject &object = it->second;
-            if(!object.IsStatic())
+            if(object.IsStatic())
             {
-                object.AddForce( object.GetGravity() * object.GetMass() );
+                continue;
             }
+            object.AddForce( object.GetGravity() * object.GetMass() );
         }
     }
 
@@ -124,6 +133,10 @@ namespace pe2d
         for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
         {
             RigidObject &object = it->second;
+            if(object.IsStatic())
+            {
+                continue;
+            }
             const Vector2 acceleration = object.GetForce() * object.GetInvMass();
             const Vector2 newVel = object.GetLinearVelocity() + acceleration * deltaTime;
             object.Move(object.GetLinearVelocity() * deltaTime + (acceleration * deltaTime * deltaTime * 0.5));

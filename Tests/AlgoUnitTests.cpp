@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "Algo.hpp"
+#include "Math.hpp"
 
 namespace
 {
@@ -148,7 +149,7 @@ namespace
             pe2d::Vector2(500.0f, 570.710693f), 
             pe2d::Vector2(429.289307f, 500.0f) 
         };
-        this->CheckRotation(45.0f, expectedVertices1);
+        this->CheckRotation(pe2dMath::DeegresToRadians(45.0f), expectedVertices1);
 
         const TypeParam expectedVertices2
         {
@@ -157,7 +158,7 @@ namespace
             pe2d::Vector2(535.355347f, 561.237244f),
             pe2d::Vector2(438.762756f, 535.355347f)
         };
-        this->CheckRotation(15.0f, expectedVertices2);
+        this->CheckRotation(pe2dMath::DeegresToRadians(15.0f), expectedVertices2);
     }
 
     TYPED_TEST(RotateVerticesTest, rightAngle)
@@ -169,7 +170,7 @@ namespace
             pe2d::Vector2(450.0f, 550.0f),
             pe2d::Vector2(450.0f, 450.0f)
         };
-        this->CheckRotation(90.0f, expectedVertices);
+        this->CheckRotation(pe2dMath::DeegresToRadians(90.0f), expectedVertices);
     }
 
     TYPED_TEST(RotateVerticesTest, obtuseAngles)
@@ -181,7 +182,7 @@ namespace
             pe2d::Vector2(458.437317f, 442.793854f),
             pe2d::Vector2(557.206116f, 458.437317f)
         };
-        this->CheckRotation(189.0f, expectedVertices1);
+        this->CheckRotation(pe2dMath::DeegresToRadians(189.0f), expectedVertices1);
         const TypeParam expectedVertices2 = 
         {
             pe2d::Vector2(516.50708f, 568.756958f),
@@ -189,7 +190,7 @@ namespace
             pe2d::Vector2(483.49292f, 431.243042f),
             pe2d::Vector2(568.756958f, 483.49292f)
         };
-        this->CheckRotation(211.5f, expectedVertices2);
+        this->CheckRotation(pe2dMath::DeegresToRadians(211.5f), expectedVertices2);
     }
     
     TEST(GetBoxVerticesTest, notRotatednotScaled)

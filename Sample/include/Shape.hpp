@@ -20,7 +20,7 @@ namespace test
         }
     protected:
         pe2d::RigidObject *m_Body;
-        sf::Color m_Color{255.0f, 255.0f, 255.0f};
+        sf::Color m_Color{255, 255, 255};
         void (*m_Draw)(sf::RenderWindow &, const Shape &);
     };
 }

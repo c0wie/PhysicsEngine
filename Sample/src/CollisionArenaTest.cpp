@@ -8,12 +8,16 @@ namespace test
         showObjectEditor(false)
     {   
         m_World.AddGrid(pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(1000.0f, 1000.0f), 100.0f);
-        m_World.SetSolver(&ImpulseSolverWithoutFriction);
+        m_World.SetSolver(ImpulseSolverWithoutFriction);
 
-        AddBox(2217U, sf::Color::Green, pe2d::Vector2(800.0f, 100.0f), pe2d::Transform(pe2d::Vector2(500.0f, 800.0f), pe2d::Vector2(1.0f, 1.0f), 0.0f),
-                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
-        AddBox(2137U, sf::Color::Green, pe2d::Vector2(300.0f, 50.0f), pe2d::Transform(pe2d::Vector2(300.0f, 400.0f), pe2d::Vector2(1.0f, 1.0f), pe2dMath::DeegresToRadians(45.0f)),
-                true, 10.0f, pe2d::Vector2(0.0f, 0.0f), pe2d::Vector2(0.0f, 0.0f), 1.0f, 1.0f, 0.0f);
+        AddBox(2217U, sf::Color::Green, {800.0f, 100.0f}, pe2d::Transform({500.0f, 800.0f}, {1.0f, 1.0f}, pe2dMath::DeegresToRadians(0.0f)),
+                true, 10.0f, {0.0f, 0.0f}, {0.0f, 0.0f}, 1.0f, 1.0f, 0.0f);
+        AddBox(2137U, sf::Color::Green, {300.0f, 50.0f}, pe2d::Transform({300.0f, 400.0f}, {1.0f, 1.0f}, pe2dMath::DeegresToRadians(45.0f)),
+                true, 10.0f, {0.0f, 0.0f}, {0.0f, 0.0f}, 1.0f, 1.0f, 0.0f);
+        AddBox(3U, sf::Color::Blue, {100.0f, 100.0f}, pe2d::Transform({700.0f, 500.0f}, {1.0f, 1.0f}, pe2dMath::DeegresToRadians(0.0f)),
+                false, 100.0f, {0.0f, 0.0f}, {0.0f, 98.1f}, 1.0f, 1.0f, 0.0f);
+        AddBox(2U, sf::Color::Blue, {100.0f, 100.0f}, pe2d::Transform({760.0f, 100.0f}, {1.0f, 1.0f}, pe2dMath::DeegresToRadians(0.0f)),
+                false, 100.0f, {0.0f, 0.0f}, {0.0f, 98.1f}, 1.0f, 1.0f, 0.0f);
         ResetVariables();        
     }
 
@@ -46,40 +50,16 @@ namespace test
 
     void CollisionArenaTest::OnImGuiRender(sf::RenderWindow &window, const ImGuiIO &io)
     {
-        /*if( ImGui::Button("Add Object") )
-        {
-            showObjectEditor = true;
-        }
-        if( ImGui::Button("Clear Objects") )
-        {
-            ClearObjects();
-        }
-        const pe2d::Vector2 vel = m_World.At(2217).GetVelocity();
-        const pe2d::Vector2 pos = m_World.At(2217).GetPosition();
-        ImGui::Text("Velocity: %i, %i", (int)vel.x, (int)vel.y);
-        ImGui::Text("Number of objects: %i", m_World.Size());
-        ImGui::Text("Position: %i, %i", (int)pos.x, (int)pos.y);
-
-        if(showObjectEditor)
-        {
-            ImGui::Begin("Object Editor");
-            CollisionObjectInput();
-            if( ImGui::Button("Reset Variables") )
-            {
-                ResetVariables();
-            }
-            if( ImGui::Button("Create") )
-            {
-                CreateObject();
-            }
-            ImGui::End();
-        }*/
         if(m_World.Size() > 0)
         {
-            const Vector2 linearVelocity = m_World.cBegin()->second.GetLinearVelocity();
-            const float angularVelocity = m_World.cBegin()->second.GetAngularVelocity();
-            ImGui::Text("Linear velocity: %i, %i", (int)(linearVelocity.x), (int)(linearVelocity.y));
-            ImGui::Text("Angular velocity: %i", (int)(angularVelocity));
+            const Vector2 linearVelocityA = m_World.At(3).GetLinearVelocity();
+            const float angularVelocityA = m_World.At(3).GetAngularVelocity();
+            const Vector2 linearVelocityB = m_World.At(2).GetLinearVelocity();
+            const float angularVelocityB = m_World.At(2).GetAngularVelocity();
+            ImGui::Text("Linear velocityA: %i, %i", (int)(linearVelocityA.x), (int)(linearVelocityA.y));
+            ImGui::Text("Angular velocityA: %i", (int)(angularVelocityA));
+            ImGui::Text("Linear velocityA: %i, %i", (int)(linearVelocityB.x), (int)(linearVelocityB.y));
+            ImGui::Text("Angular velocityA: %i", (int)(angularVelocityB));
         }
         ImGui::Text("Application average %i ms/frame (%i FPS)", (int)(1000.0f / io.Framerate), (int)io.Framerate);
     }
@@ -180,8 +160,7 @@ namespace test
         float staticFriction = 1.0f;
         float dynamicFriction = 1.0f;
         float resistance = 0.0f;
-        std::shared_ptr<pe2d::BoxCollider> collider = std::make_shared<pe2d::BoxCollider>(size);
-        pe2d::RigidObject object(ID, collider, transform, mass, pe2d::Vector2(0.0f, 98.1f), false,
+        pe2d::RigidObject object(ID, std::make_shared<pe2d::BoxCollider>(size), transform, mass, {0.0f, 98.1f}, false,
                         staticFriction, dynamicFriction, resistance);
         return object;
     }

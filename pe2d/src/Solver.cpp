@@ -88,6 +88,7 @@ namespace pe2d
                                             - (rigidObjectB.GetLinearVelocity() + (rBperp * rigidObjectB.GetAngularVelocity()) ); 
 
                 const float relativeVelocityAlongNormal = pe2dMath::Dot(relativeVelocity, normal);
+
                 const float rAperpNormal = pe2dMath::Dot(rAperp, normal);
                 const float rBperpNormal = pe2dMath::Dot(rBperp, normal);
 
@@ -98,7 +99,6 @@ namespace pe2d
                 float j = -(1.0f + coefficientOfRestitution) * relativeVelocityAlongNormal;
                 j /= denominator;
                 j /= (float)contactCount;
-                jList[i] = j;
 
                 impulseList[i] = j * normal;
             }   
@@ -168,6 +168,12 @@ namespace pe2d
                                             - (rigidObjectB.GetLinearVelocity() + (rBperp * rigidObjectB.GetAngularVelocity()) ); 
 
                 const float relativeVelocityAlongNormal = pe2dMath::Dot(relativeVelocity, normal);
+
+                if(relativeVelocityAlongNormal > 0.0f)
+                {
+                    continue;
+                }
+                
                 const float rAperpNormal = pe2dMath::Dot(rAperp, normal);
                 const float rBperpNormal = pe2dMath::Dot(rBperp, normal);
 
@@ -184,7 +190,7 @@ namespace pe2d
             }   
             for(int i = 0; i < contactCount; i++)
             {
-                auto impulse = impulseList[i];
+                const Vector2 impulse = impulseList[i];
                 rigidObjectA.AddLinearVelocity(impulse * invMassA);
                 rigidObjectA.AddAngularVelocity(pe2dMath::Cross(rAList[i], impulse) * invInertiaA);
                 rigidObjectB.AddLinearVelocity(impulse * -invMassB);
@@ -198,12 +204,15 @@ namespace pe2d
                 const Vector2 rAperp = pe2dMath::Perp(rAList[i]);
                 const Vector2 rBperp = pe2dMath::Perp(rBList[i]);
 
-                const Vector2 relativeVelocity = (rigidObjectA.GetLinearVelocity() + (rAperp * rigidObjectA.GetAngularVelocity()) ) 
-                                            - (rigidObjectB.GetLinearVelocity() + (rBperp * rigidObjectB.GetAngularVelocity()) ); 
+                const auto angVelA = rAperp * rigidObjectA.GetAngularVelocity();
+                const auto angVelB = rBperp * rigidObjectB.GetAngularVelocity();
+
+                const Vector2 relativeVelocity = (rigidObjectA.GetLinearVelocity() + angVelA) 
+                                            - (rigidObjectB.GetLinearVelocity() + angVelB); 
                 
                 Vector2 tangent = relativeVelocity - pe2dMath::Dot(relativeVelocity, normal) * normal;
 
-                if(pe2dMath::NearlyEquel(tangent, {0.0f, 0.0f}, 0.005f))
+                if(pe2dMath::NearlyEquel(tangent, {0.0f, 0.0f}, 0.0005f))
                 {
                     continue;
                 }
@@ -224,18 +233,18 @@ namespace pe2d
                 jt /= (float)contactCount;
                 
                 const float j = jList[i];
-                frictionImpulseList[i] = std::abs(jt) <= j * coefficientOfStaticFriction ?
-                        frictionImpulseList[i] = jt * tangent :
-                        frictionImpulseList[i] = -j * tangent * coefficientOfDynamicFriction;
+                frictionImpulseList[i] = std::abs(jt) <= (j * coefficientOfStaticFriction) ?
+                        jt * tangent : -j * tangent * coefficientOfDynamicFriction;
             }
             
             for(int i = 0; i < contactCount; i++)
             {
-                auto impulse = frictionImpulseList[i];
-                rigidObjectA.AddLinearVelocity(impulse * invMassA);
-                rigidObjectA.AddAngularVelocity(pe2dMath::Cross(rAList[i], impulse) * invInertiaA);
-                rigidObjectB.AddLinearVelocity(impulse * -invMassB);
-                rigidObjectB.AddAngularVelocity(pe2dMath::Cross(rBList[i], impulse) * -invInertiaB);
+                const Vector2 ftictionImpulse = frictionImpulseList[i];
+
+                rigidObjectA.AddLinearVelocity(ftictionImpulse * invMassA);
+                rigidObjectA.AddAngularVelocity(pe2dMath::Cross(rAList[i], ftictionImpulse) * invInertiaA);
+                rigidObjectB.AddLinearVelocity(ftictionImpulse * -invMassB);
+                rigidObjectB.AddAngularVelocity(pe2dMath::Cross(rBList[i], ftictionImpulse) * -invInertiaB);
             }
 #pragma endregion
         }

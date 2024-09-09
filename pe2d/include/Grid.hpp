@@ -3,6 +3,8 @@
 #include <vector>
 #include <list>
 #include <set>
+#include <thread>
+#include <mutex>
 #include "Vector2.hpp"
 #include "RigidObject.hpp"
 

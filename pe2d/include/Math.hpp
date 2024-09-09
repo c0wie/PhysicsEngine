@@ -83,6 +83,6 @@ namespace pe2dMath
 
     constexpr bool NearlyEquel(Vector2 a, Vector2 b, float absError)
     {
-        return NearlyEquel(a.x , b.x, absError) && NearlyEquel(a.y, b.y, absError);
+        return SquaredDistance(a, b) < absError * absError;
     }
 };

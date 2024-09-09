@@ -1,12 +1,9 @@
 #include <chrono>
 
-#include <SFML/Graphics.hpp>
-
 #include <imgui.h>
 #include <imgui-SFML.h>
 
 #include "PhysicsWorld.hpp"
-#include "Algo.hpp"
 #include "Sample/include/CollisionArenaTest.hpp"
 #include "Sample/include/TestMenu.hpp"
 
