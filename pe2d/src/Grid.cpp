@@ -6,8 +6,8 @@ namespace pe2d
         m_TopLeftCorner(topLeftCorner),
         m_BotRightCorner(botRightCorner),
         m_CellSize(cellSize),
-        m_Height(std::floor((m_BotRightCorner.y - m_TopLeftCorner.y) / m_CellSize)),
-        m_Width(std::floor((m_BotRightCorner.x - m_TopLeftCorner.x) / m_CellSize))
+        m_Height((m_BotRightCorner.y - m_TopLeftCorner.y) / m_CellSize),
+        m_Width((m_BotRightCorner.x - m_TopLeftCorner.x) / m_CellSize)
     {
         if(m_CellSize <= 0)
         {

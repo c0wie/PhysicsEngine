@@ -55,8 +55,8 @@ namespace pe2d
         Vector2 m_TopLeftCorner{0.0f, 0.0f};
         Vector2 m_BotRightCorner{100.0f, 100.0f};
         float m_CellSize{10.0f};
-        float m_Width{10};
-        float m_Height{10};
+        int m_Width{10};
+        int m_Height{10};
         std::vector<std::vector<std::vector<size_t>>> m_Grid;
     };
 }

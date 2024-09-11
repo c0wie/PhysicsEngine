@@ -55,29 +55,16 @@ namespace pe2d
         constexpr void Move(Vector2 offset) { m_Transform.Move(offset); }
         constexpr void SetScale(Vector2 scale) 
         { 
-            if(scale.x < 0.0f || scale.y < 0.0f)
-            {
-                ASSERT("HOW SCALE COULD BE NEGATIVE NUMBER");
-            }
+            scale.x = scale.x <= 0.0f ? m_Transform.scale.x : scale.x;
+            scale.y = scale.y <= 0.0f ? m_Transform.scale.x : scale.y;
             m_Transform.scale = scale; 
         } 
         constexpr void SetRotation(float angleRadians) { m_Transform.rotation = angleRadians; }
         constexpr void Rotate(float angleRadians) { m_Transform.Rotate(angleRadians); }
-        void SetCollider(std::shared_ptr<Collider> collider)
-        {
-            if(!collider)
-            {
-                ASSERT("Unvalid collider");
-            }
-            m_Collider = collider;
-        }
         constexpr void SetTransform(Transform transform) { m_Transform = transform; }
         void SetMass(float mass)
         {
-            if(mass <= 0.0f)
-            {
-                ASSERT("Mass of object has to be greater than 0");
-            }
+            mass = mass <= 0.0f? 0.1f : mass;
             m_Mass = m_IsStatic? pe2dMath::INF : mass;
             m_RotationalInertia = CalculateRotationalInertia();
         }
@@ -90,26 +77,17 @@ namespace pe2d
         constexpr void SetGravity(Vector2 gravity) { m_Gravity = gravity; }
         constexpr void SetStaticFriction(float staticFriction)
         {
-            if(staticFriction < 0.0f || staticFriction > 1.0f)
-            {
-                ASSERT("Value of static friction have to be beetwen 0 and 1");
-            }
+            std::clamp(staticFriction, 0.0f, 1.0f);
             m_StaticFriction = staticFriction;
         }
         constexpr void SetDynamicFriction(float dynamicFriction)
         {  
-            if(dynamicFriction < 0.0f || dynamicFriction > 1.0f)
-            {
-                ASSERT("Value of dynamic friction has to be beetwen 0 and 1");
-            }
+            std::clamp(dynamicFriction, 0.0f, 1.0f);
             m_DynamicFriction = dynamicFriction;
         }
         constexpr void SetRestitution(float restitution)
         {
-            if(restitution < 0.0f || restitution > 1.0f)
-            {
-                ASSERT("Value of restitution has to be beetwen 0 and 1");
-            }
+            std::clamp(restitution, 0.0f, 1.0f);
             m_Restitution = restitution;
         }
     protected:
@@ -119,10 +97,10 @@ namespace pe2d
         Vector2 m_LinearVelocity{0.0f, 0.0f};
         Vector2 m_Force{0.0f, 0.0f};
         Vector2 m_Gravity{0.0f, 0.0f};
-        std::shared_ptr<Collider> m_Collider;
+        std::shared_ptr<Collider> m_Collider{nullptr};
         size_t m_ID {0U};
         float m_Mass{10.0f};
-        float m_AngularVelocity{0.0f};
+        float m_AngularVelocity{0.0f}; 
         float m_RotationalInertia{0.0f};
         float m_StaticFriction{0.0f};     // Static friction coefficient [in range 0 - 1] 
         float m_DynamicFriction{0.0f};    // Dynamic friction coefficient [in range 0 - 1]

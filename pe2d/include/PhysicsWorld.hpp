@@ -5,7 +5,6 @@
 #include <algorithm>
 
 #include "Solver.hpp"
-#include "ThreadPool.hpp"
 #include "Grid.hpp"
 #include "Math.hpp"
 
@@ -30,9 +29,8 @@ namespace pe2d
         using const_iterator = std::unordered_map<size_t, RigidObject>::const_iterator;
     public:
         PhysicsWorld() = default;
-        PhysicsWorld(unsigned int substeps, ThreadPool &threadPool) :
+        PhysicsWorld(unsigned int substeps) :
             m_Grid(),
-            m_ThreadPool(&threadPool),
             m_Substeps(std::clamp(substeps, 1U, 64U)),
             m_IsGridOn(false)
         {}
@@ -72,10 +70,8 @@ namespace pe2d
     private:
         Grid m_Grid;
         std::function<void(std::vector<Collision> &collisions, float deltaTime)> m_Solver{PositionSolver};
-        ThreadPool* m_ThreadPool{nullptr};
         unsigned int m_Substeps{8U};
         bool m_IsGridOn{false};
         std::unordered_map<size_t, RigidObject> m_Objects;
-        std::vector<RigidObject> m_Objects;
     }; 
 }
