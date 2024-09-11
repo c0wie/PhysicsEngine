@@ -19,7 +19,6 @@ namespace pe2d
             m_Tasks.push(std::forward(callback));
             m_RemainingTasks++;
         }
-
         void GetTask(std::function<void()> &targetCallback)
         {
             std::lock_guard lck{m_Mutex};
@@ -30,9 +29,7 @@ namespace pe2d
             targetCallback = std::move(m_Tasks.front());
             m_Tasks.pop();
         }
-
         static void Wait() { std::this_thread::yield(); }
-
         void WaitForCompletition() const
         {
             while(m_RemainingTasks > 0)
@@ -40,9 +37,7 @@ namespace pe2d
                 Wait();
             }
         }
-
         void WorkDone() { m_RemainingTasks--; }
-
     private:
         std::atomic<int> m_RemainingTasks{0};
         std::mutex m_Mutex;

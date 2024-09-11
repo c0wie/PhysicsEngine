@@ -39,14 +39,14 @@ namespace pe2d
         }
 
         template<typename TCallback>
-        void dispatch(int elementCount, TCallback && callback)
+        void Dispatch(int elementCount, TCallback &&callback)
         {
             const int batchSize = elementCount / m_ThreadCount;
             for(int i = 0; i < m_ThreadCount; i++)
             {
                 const int start = batchSize * i;
                 const int end = start + batchSize;
-                AddTask([start, end, callback](){ callback(start, end, callback)}); 
+                AddTask([start, end, &callback](){ callback(start, end); }); 
             }
 
             if(batchSize * m_ThreadCount < elementCount)

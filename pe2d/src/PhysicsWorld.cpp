@@ -130,19 +130,21 @@ namespace pe2d
 
     void PhysicsWorld::MoveObjects(float deltaTime)
     {
-        for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
-        {
-            RigidObject &object = it->second;
-            if(object.IsStatic())
+        m_ThreadPool->Dispatch(m_Objects.size(), [&](int start, int end){
+            for(auto it = m_Objects.begin(); it != m_Objects.end(); it++)
             {
-                continue;
+                RigidObject &object = it->second;
+                if(object.IsStatic())
+                {
+                    continue;
+                }
+                const Vector2 acceleration = object.GetForce() * object.GetInvMass();
+                const Vector2 newVel = object.GetLinearVelocity() + acceleration * deltaTime;
+                object.Move(object.GetLinearVelocity() * deltaTime + (acceleration * deltaTime * deltaTime * 0.5));
+                object.Rotate(object.GetAngularVelocity() * deltaTime);
+                object.SetLinearVelocity(newVel);
+                object.SetForce({0.0f, 0.0f});
             }
-            const Vector2 acceleration = object.GetForce() * object.GetInvMass();
-            const Vector2 newVel = object.GetLinearVelocity() + acceleration * deltaTime;
-            object.Move(object.GetLinearVelocity() * deltaTime + (acceleration * deltaTime * deltaTime * 0.5));
-            object.Rotate(object.GetAngularVelocity() * deltaTime);
-            object.SetLinearVelocity(newVel);
-            object.SetForce({0.0f, 0.0f});
-        }
+        });
     }
 }
