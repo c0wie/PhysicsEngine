@@ -1,7 +1,5 @@
 /.vscode
 /build
-/out
-/Testing
 imgui.ini
-TODO.txt
-CMakePresets.json
+.clang-format
+.cache

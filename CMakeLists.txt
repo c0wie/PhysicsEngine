@@ -1,41 +1,74 @@
-cmake_minimum_required(VERSION 3.28)
-project(DEMO)
+cmake_minimum_required(VERSION 3.14)
+project(demo)
 
-include(CTest)
+# Option to build the demo with or without tests
+option(BUILD_TESTS "Build tests for the demo" ON)
 include(FetchContent)
-set(CMAKE_BUILD_TYPE Debug)
+
 set(CMAKE_CXX_STANDARD 20)
 set(BUILD_SHARED_LIBS OFF)
 
-
-FetchContent_Declare( 
-    SFML
+#SFML
+FetchContent_Declare(SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 2.6.x
-)
-set(SFML_BUILD_AUDIO FALSE)
-set(SFML_BUILD_NETWORK FALSE)
+    GIT_TAG 3.0.0
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+    SYSTEM)
+set(SFML_BUILD_AUDIO OFF)
 FetchContent_MakeAvailable(SFML)
 
-FetchContent_Declare(
+#ImGui
+FetchContent_Declare(ImGui
+    GIT_REPOSITORY https://github.com/ocornut/imgui
+    GIT_TAG v1.91.1
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+    SYSTEM)
+FetchContent_MakeAvailable(ImGui)
+FetchContent_GetProperties(ImGui SOURCE_DIR IMGUI_DIR)
+
+#ImGui-SFML
+set(IMGUI_SFML_FIND_SFML OFF)
+FetchContent_Declare(ImGui-SFML
+    GIT_REPOSITORY https://github.com/SFML/imgui-sfml
+    GIT_TAG v3.0
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+    SYSTEM)
+FetchContent_MakeAvailable(ImGui-SFML)
+
+#tests
+if(BUILD_TESTS)
+  include(CTest)
+  FetchContent_Declare(
     googletest
     URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-    
-    
-enable_testing()
+  )
+  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+  FetchContent_MakeAvailable(googletest)
+  add_subdirectory(tests)
+  message(STATUS "Building demo with tests")
+else()
+  message(STATUS "Building demo without tests")
+endif()
 
+#pe2d
 add_subdirectory(pe2d)
-add_subdirectory(ImGui-SFML)
-add_subdirectory(Tests)
 
 add_executable(${PROJECT_NAME} 
-    Sample/src/Test.cpp
-    Sample/src/CollisionArenaTest.cpp
-    Demo.cpp
+  demo/demo.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Samples/include")
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics pe2d ImGui-SFML)
+add_compile_options(
+  -Wall
+  -Wextra
+  -Wpedantic
+  -Wshadow
+  -Wcast-align
+  -Wconversion
+  -Wsign-conversion
+  -Wnull-dereference
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE pe2d SFML::Graphics SFML::Window SFML::System ImGui-SFML::ImGui-SFML)
