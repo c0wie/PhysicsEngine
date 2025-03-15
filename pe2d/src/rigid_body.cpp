@@ -17,8 +17,8 @@ RigidBody::RigidBody(std::size_t id, RigidBodyType type, Size2d size,
       m_Gravity(gravity) {
   SetSize(size);
   if (m_IsStatic) {
-    m_Mass = pe2d::math::INF;
-    m_RotationalInertia = pe2d::math::INF;
+    m_Mass = math::INF;
+    m_RotationalInertia = math::INF;
   } else {
     SetMass(mass);
   }
@@ -33,8 +33,8 @@ RigidBody::RigidBody(std::size_t id, RigidBodyType type, Size2d size,
       m_LinearVelocity(linear_velocity), m_AngularVelocity(angular_velocity) {
   SetSize(size);
   if (m_IsStatic) {
-    m_Mass = pe2d::math::INF;
-    m_RotationalInertia = pe2d::math::INF;
+    m_Mass = math::INF;
+    m_RotationalInertia = math::INF;
   } else {
     SetMass(mass);
   }
@@ -50,8 +50,8 @@ RigidBody::RigidBody(std::size_t id, RigidBodyType type, Size2d size,
       m_AngularVelocity(angular_velocity) {
   SetSize(size);
   if (m_IsStatic) {
-    m_Mass = pe2d::math::INF;
-    m_RotationalInertia = pe2d::math::INF;
+    m_Mass = math::INF;
+    m_RotationalInertia = math::INF;
   } else {
     SetMass(mass);
   }
@@ -67,12 +67,12 @@ std::array<Pos2d, 4> RigidBody::GetBoundingBox() const {
     const double diameter = m_Size.x * 2;
     return algo::GetBoxVertices(
         Size2d(diameter, diameter),
-        Transform{m_Transform.position, pe2d::Angle(), m_Transform.scale});
+        Transform{m_Transform.position, Angle(), m_Transform.scale});
   }
   const std::array<Pos2d, 4> vertices =
       algo::GetBoxVertices(m_Size, m_Transform);
-  Pos2d top_left_corner = Pos2d(pe2d::math::INF, pe2d::math::INF);
-  Pos2d bot_right_corner = Pos2d(-pe2d::math::INF, -pe2d::math::INF);
+  Pos2d top_left_corner = Pos2d(math::INF, math::INF);
+  Pos2d bot_right_corner = Pos2d(-math::INF, -math::INF);
   for (const auto vertex : vertices) {
     top_left_corner.x = std::min(top_left_corner.x, vertex.x);
     top_left_corner.y = std::min(top_left_corner.y, vertex.y);

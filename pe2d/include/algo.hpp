@@ -79,26 +79,26 @@ std::array<Vec2d, 2> GetBoxAxes(const std::array<Pos2d, 4> &vertices);
 // Returns normalized direction vector representing edge created by closest
 // vertex and circle center
 Vec2d GetCircleAxis(const isContainer auto &vertices, Pos2d circle_center) {
-  double dist = pe2d::math::INF;
+  double dist = math::INF;
   Vec2d smallestAxis;
   for (auto it = vertices.begin(); it != vertices.end(); it++) {
     const Vec2d edge = *it - circle_center;
-    const double d = pe2d::math::Length(edge);
+    const double d = math::Length(edge);
     if (d < dist) {
       dist = d;
       smallestAxis = edge;
     }
   }
-  return pe2d::math::Normalize(smallestAxis);
+  return math::Normalize(smallestAxis);
 }
 // Returns a projection of object, represented by given vertices, onto a
 // specified axis
 Vec2d Project(const isContainer auto &vertices, Vec2d axis) {
-  double min = pe2d::math::Dot(axis, *vertices.begin());
+  double min = math::Dot(axis, *vertices.begin());
   double max = min;
 
   for (auto it = std::next(vertices.begin()); it != vertices.end(); it++) {
-    const double p = pe2d::math::Dot(axis, *it);
+    const double p = math::Dot(axis, *it);
     if (p < min) {
       min = p;
     } else if (p > max) {

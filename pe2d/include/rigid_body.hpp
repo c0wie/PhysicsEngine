@@ -91,7 +91,7 @@ public:
     if (m_Type == Box) {
       m_Transform.scale = scale;
     } else if (m_Type == Circle) {
-      m_Transform.scale = pe2d::Vec2d(scale.x, scale.x);
+      m_Transform.scale = Vec2d(scale.x, scale.x);
     }
   }
   constexpr void SetAngle(Angle angle) { m_Transform.angle = angle; }

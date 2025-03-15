@@ -43,7 +43,7 @@ CollisionPoints FindCircleCircleCollision(double radiusA,
   const Vector2 centerA = circle_transformA.position;
   const Vector2 centerB = cricle_transformB.position;
   const Vector2 diff = centerA - centerB;
-  const double &length = pe2d::math::Length(diff);
+  const double &length = math::Length(diff);
   // with circle I scaled them based on x value of scale
   double sum = (radiusA * circle_transformA.scale.x) +
                (radiusB * cricle_transformB.scale.x);
@@ -51,7 +51,7 @@ CollisionPoints FindCircleCircleCollision(double radiusA,
     return {};
   }
   const double overlap = sum - length;
-  Vector2 normal = pe2d::math::Normalize(diff);
+  Vector2 normal = math::Normalize(diff);
   const Vector2 contact_point = centerA - normal * radiusA;
   return CollisionPoints(normal, overlap, contact_point, true);
 }
@@ -78,7 +78,7 @@ CollisionPoints FindCircleBoxCollision(double radius,
       box_axes[0], box_axes[1],
       algo::GetCircleAxis(box_vertices, circleCenter)};
   const Vec2d *smallesAxis = nullptr;
-  double overlap = pe2d::math::INF;
+  double overlap = math::INF;
   for (std::size_t i = 0; i < all_axes.size(); i++) {
     const Vec2d p1 = algo::ProjectCircle(
         circleCenter, radius * circle_transform.scale.x, all_axes[i]);
@@ -134,7 +134,7 @@ CollisionPoints FindBoxBoxCollision(Size2d box_sizeA, Transform box_transformA,
   const std::array<Vec2d, 2> axesA = algo::GetBoxAxes(verticesA);
   const std::array<Vec2d, 2> axesB = algo::GetBoxAxes(verticesB);
   const Vec2d *smallest_axis = nullptr;
-  double overlap = pe2d::math::INF;
+  double overlap = math::INF;
   for (int i = 0; i < axesA.size(); i++) {
     const Vector2 pA1 = algo::Project(verticesA, axesA[i]);
     const Vector2 pA2 = algo::Project(verticesB, axesA[i]);

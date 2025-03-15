@@ -1,6 +1,5 @@
 // pe2d
 #include "angle.hpp"
-#include "math.hpp"
 #include "physics_world.hpp"
 #include "vector2.hpp"
 

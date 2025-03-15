@@ -7,7 +7,7 @@
 #include "vector2.hpp"
 
 // std
-#include <algorithm>
+#include <functional>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>

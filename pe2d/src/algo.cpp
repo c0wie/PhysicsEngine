@@ -10,7 +10,7 @@
 namespace pe2d::algo {
 Pos2d FindCircleBoxContactPoint(const std::array<Pos2d, 4> &box_vertices,
                                 Pos2d circle_center) {
-  double min_distance_squared = pe2d::math::INF;
+  double min_distance_squared = math::INF;
   Pos2d contact_point;
   for (std::size_t i = 0; i < box_vertices.size(); i++) {
     double distance_to_circle_center_squared = 0.0f;
@@ -30,7 +30,7 @@ std::pair<Pos2d, Pos2d>
 FindBoxBoxContactPoint(const std::array<Pos2d, 4> &box_verticesA,
                        const std::array<Pos2d, 4> &box_verticesB) {
   constexpr double error = 0.00005f;
-  double min_distance_squared = pe2d::math::INF;
+  double min_distance_squared = math::INF;
   Pos2d contact_point1, contact_point2;
   unsigned int contact_count = 1;
   for (std::size_t i = 0; i < box_verticesA.size(); i++) {
@@ -41,9 +41,9 @@ FindBoxBoxContactPoint(const std::array<Pos2d, 4> &box_verticesA,
       const Pos2d p2 = box_verticesB[(j + 1) % box_verticesB.size()];
       PointSegmentDistance(box_verticesA[i], p1, p2,
                            distanceFromVertexAToEdgeBSquared, cp);
-      if (pe2d::math::NearlyEquel(distanceFromVertexAToEdgeBSquared,
-                                  min_distance_squared, error)) {
-        if (!pe2d::math::NearlyEquel(cp, contact_point1, error)) {
+      if (math::NearlyEquel(distanceFromVertexAToEdgeBSquared,
+                            min_distance_squared, error)) {
+        if (!math::NearlyEquel(cp, contact_point1, error)) {
           contact_point2 = cp;
           contact_count = 2;
         }
@@ -62,9 +62,9 @@ FindBoxBoxContactPoint(const std::array<Pos2d, 4> &box_verticesA,
       const Pos2d p2 = box_verticesA[(j + 1) % box_verticesA.size()];
       PointSegmentDistance(box_verticesB[i], p1, p2,
                            vertexB_edgeA_distance_squared, cp);
-      if (pe2d::math::NearlyEquel(vertexB_edgeA_distance_squared,
-                                  min_distance_squared, error)) {
-        if (!pe2d::math::NearlyEquel(cp, contact_point1, error)) {
+      if (math::NearlyEquel(vertexB_edgeA_distance_squared,
+                            min_distance_squared, error)) {
+        if (!math::NearlyEquel(cp, contact_point1, error)) {
           contact_point2 = cp;
           contact_count = 2;
         }
@@ -90,8 +90,8 @@ void PointSegmentDistance(Pos2d point, Pos2d vertexA, Pos2d vertexB,
   }
   const Vec2d ab = vertexB - vertexA;
   const Vec2d ap = point - vertexA;
-  const double proj = pe2d::math::Dot(ap, ab);
-  const double ab_length_squared = pe2d::math::SquaredLength(ab);
+  const double proj = math::Dot(ap, ab);
+  const double ab_length_squared = math::SquaredLength(ab);
   // relative point's projection onto the line segment
   const double d = proj / ab_length_squared;
   if (d <= 0.0f) {
@@ -101,7 +101,7 @@ void PointSegmentDistance(Pos2d point, Pos2d vertexA, Pos2d vertexB,
   } else {
     contact_point = vertexA + ab * d;
   }
-  distance_squared = pe2d::math::SquaredDistance(point, contact_point);
+  distance_squared = math::SquaredDistance(point, contact_point);
 }
 
 std::array<Pos2d, 4> GetBoxVertices(Size2d box_size, Transform transform) {
@@ -129,7 +129,7 @@ std::array<Vec2d, 2> GetBoxAxes(const std::array<Pos2d, 4> &vertices) {
     const Pos2d p1 = vertices[i];
     const Pos2d p2 = vertices[(i + 1) % vertices.size()];
     const Vec2d edge = p1 - p2;
-    const Vec2d normal = pe2d::math::Normalize(pe2d::math::Perp(edge));
+    const Vec2d normal = math::Normalize(math::Perp(edge));
     axes[i] = normal;
   }
   return axes;
@@ -143,8 +143,8 @@ Vec2d ProjectCircle(Pos2d circle_center, double radius, Vec2d axis) {
   const Vector2 dir = axis * radius;
   const Pos2d p1 = circle_center + dir;
   const Pos2d p2 = circle_center - dir;
-  double min = pe2d::math::Dot(p1, axis);
-  double max = pe2d::math::Dot(p2, axis);
+  double min = math::Dot(p1, axis);
+  double max = math::Dot(p2, axis);
   if (min > max) {
     std::swap(min, max);
   }

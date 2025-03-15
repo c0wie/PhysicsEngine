@@ -21,8 +21,8 @@ void PositionSolver(std::vector<Collision> &collisions, float delta_time) {
     const Vector2 normal = points.Normal;
 
     Vector2 minimal_translation_vector = normal * points.Depth;
-    if (pe2d::math::Dot(minimal_translation_vector,
-                        rigid_bodyA.GetPosition() - rigid_bodyB.GetPosition()) <
+    if (math::Dot(minimal_translation_vector,
+                  rigid_bodyA.GetPosition() - rigid_bodyB.GetPosition()) <
         0.0) {
       minimal_translation_vector *= -1.0;
     }
@@ -43,7 +43,7 @@ void ImpulseSolverWithoutFriction(std::vector<Collision> &collisions,
   for (std::size_t i = 0; i < collisions.size(); i++) {
     RigidBody &rigid_bodyA = collisions[i].GetObjectA();
     RigidBody &rigid_bodyB = collisions[i].GetObjectB();
-    
+
     const CollisionPoints &points = collisions[i].GetCollisionPoints();
     const double inv_massA = rigid_bodyA.GetInvMass();
     const double inv_massB = rigid_bodyB.GetInvMass();
@@ -65,8 +65,8 @@ void ImpulseSolverWithoutFriction(std::vector<Collision> &collisions,
     std::array<Vec2d, 2> impulse_list;
 
     Vector2 minimal_translation_vector = normal * points.Depth;
-    if (pe2d::math::Dot(minimal_translation_vector,
-                        rigid_bodyA.GetPosition() - rigid_bodyB.GetPosition()) <
+    if (math::Dot(minimal_translation_vector,
+                  rigid_bodyA.GetPosition() - rigid_bodyB.GetPosition()) <
         0.0f) {
       minimal_translation_vector *= -1.0f;
     }
@@ -83,8 +83,8 @@ void ImpulseSolverWithoutFriction(std::vector<Collision> &collisions,
       rA_list[i] = contact_list[i] - rigid_bodyA.GetPosition();
       rB_list[i] = contact_list[i] - rigid_bodyB.GetPosition();
 
-      const Vector2 rA_perp = pe2d::math::Perp(rA_list[i]);
-      const Vector2 rB_perp = pe2d::math::Perp(rB_list[i]);
+      const Vector2 rA_perp = math::Perp(rA_list[i]);
+      const Vector2 rB_perp = math::Perp(rB_list[i]);
 
       const Vector2 relative_velocity =
           (rigid_bodyA.GetLinearVelocity() +
@@ -93,10 +93,10 @@ void ImpulseSolverWithoutFriction(std::vector<Collision> &collisions,
            (rB_perp * rigid_bodyB.GetAngularVelocity()));
 
       const double relative_velocity_along_normal =
-          pe2d::math::Dot(relative_velocity, normal);
+          math::Dot(relative_velocity, normal);
 
-      const double rA_perp_normal = pe2d::math::Dot(rA_perp, normal);
-      const double rB_perp_normal = pe2d::math::Dot(rB_perp, normal);
+      const double rA_perp_normal = math::Dot(rA_perp, normal);
+      const double rB_perp_normal = math::Dot(rB_perp, normal);
 
       const double denominator =
           inv_massA + inv_massB +
@@ -114,10 +114,10 @@ void ImpulseSolverWithoutFriction(std::vector<Collision> &collisions,
     for (std::size_t i = 0; i < contact_count; i++) {
       const Vector2 impulse = impulse_list[i];
       rigid_bodyA.AddLinearVelocity(impulse * inv_massA);
-      rigid_bodyA.AddAngularVelocity(pe2d::math::Cross(rA_list[i], impulse) *
+      rigid_bodyA.AddAngularVelocity(math::Cross(rA_list[i], impulse) *
                                      inv_inertiaA);
       rigid_bodyB.AddLinearVelocity(impulse * -inv_massB);
-      rigid_bodyB.AddAngularVelocity(pe2d::math::Cross(rB_list[i], impulse) *
+      rigid_bodyB.AddAngularVelocity(math::Cross(rB_list[i], impulse) *
                                      -inv_inertiaB);
     }
   }
@@ -157,8 +157,8 @@ void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
     std::array<double, 2> j_list;
     Vector2 minimal_translation_vector = normal * points.Depth;
 
-    if (pe2d::math::Dot(minimal_translation_vector,
-                        rigid_bodyA.GetPosition() - rigid_bodyB.GetPosition()) <
+    if (math::Dot(minimal_translation_vector,
+                  rigid_bodyA.GetPosition() - rigid_bodyB.GetPosition()) <
         0.0) {
       minimal_translation_vector *= -1.0;
     }
@@ -177,8 +177,8 @@ void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
       rA_list[i] = contact_list[i] - rigid_bodyA.GetPosition();
       rB_list[i] = contact_list[i] - rigid_bodyB.GetPosition();
 
-      const Vector2 rA_perp = pe2d::math::Perp(rA_list[i]);
-      const Vector2 rB_perp = pe2d::math::Perp(rB_list[i]);
+      const Vector2 rA_perp = math::Perp(rA_list[i]);
+      const Vector2 rB_perp = math::Perp(rB_list[i]);
 
       const Vector2 relative_velocity =
           (rigid_bodyA.GetLinearVelocity() +
@@ -187,14 +187,14 @@ void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
            (rB_perp * rigid_bodyB.GetAngularVelocity()));
 
       const float relative_velocity_along_normal =
-          pe2d::math::Dot(relative_velocity, normal);
+          math::Dot(relative_velocity, normal);
 
       if (relative_velocity_along_normal > 0.0f) {
         continue;
       }
 
-      const float rA_perp_normal = pe2d::math::Dot(rA_perp, normal);
-      const float rB_perp_normal = pe2d::math::Dot(rB_perp, normal);
+      const float rA_perp_normal = math::Dot(rA_perp, normal);
+      const float rB_perp_normal = math::Dot(rB_perp, normal);
 
       const float denominator =
           inv_massA + inv_massB +
@@ -212,16 +212,16 @@ void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
     for (int i = 0; i < contact_count; i++) {
       const Vector2 impulse = impulse_list[i];
       rigid_bodyA.AddLinearVelocity(impulse * inv_massA);
-      rigid_bodyA.AddAngularVelocity(pe2d::math::Cross(rA_list[i], impulse) *
+      rigid_bodyA.AddAngularVelocity(math::Cross(rA_list[i], impulse) *
                                      inv_inertiaA);
       rigid_bodyB.AddLinearVelocity(impulse * -inv_massB);
-      rigid_bodyB.AddAngularVelocity(pe2d::math::Cross(rB_list[i], impulse) *
+      rigid_bodyB.AddAngularVelocity(math::Cross(rB_list[i], impulse) *
                                      -inv_inertiaB);
     }
 
     for (int i = 0; i < contact_count; i++) {
-      const Vector2 rA_perp = pe2d::math::Perp(rA_list[i]);
-      const Vector2 rB_perp = pe2d::math::Perp(rB_list[i]);
+      const Vector2 rA_perp = math::Perp(rA_list[i]);
+      const Vector2 rB_perp = math::Perp(rB_list[i]);
 
       const auto angVelA = rA_perp * rigid_bodyA.GetAngularVelocity();
       const auto angVelB = rB_perp * rigid_bodyB.GetAngularVelocity();
@@ -230,23 +230,23 @@ void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
           (rigid_bodyA.GetLinearVelocity() + angVelA) -
           (rigid_bodyB.GetLinearVelocity() + angVelB);
 
-      Vector2 tangent = relative_velocity -
-                        pe2d::math::Dot(relative_velocity, normal) * normal;
+      Vector2 tangent =
+          relative_velocity - math::Dot(relative_velocity, normal) * normal;
 
-      if (pe2d::math::NearlyEquel(tangent, {0.0f, 0.0f}, 0.0005f)) {
+      if (math::NearlyEquel(tangent, {0.0f, 0.0f}, 0.0005f)) {
         continue;
       } else {
-        tangent = pe2d::math::Normalize(tangent);
+        tangent = math::Normalize(tangent);
       }
 
-      const float rA_perpTang = pe2d::math::Dot(rA_perp, tangent);
-      const float rB_perpTang = pe2d::math::Dot(rB_perp, tangent);
+      const float rA_perpTang = math::Dot(rA_perp, tangent);
+      const float rB_perpTang = math::Dot(rB_perp, tangent);
 
       const float frictionDenominator =
           inv_massA + inv_massB + (rA_perpTang * rA_perpTang) * inv_inertiaA +
           (rB_perpTang * rB_perpTang) * inv_inertiaB;
 
-      float jt = -pe2d::math::Dot(relative_velocity, tangent);
+      float jt = -math::Dot(relative_velocity, tangent);
       jt /= frictionDenominator;
       jt /= (float)contact_count;
 
@@ -262,11 +262,11 @@ void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
       const Vector2 friction_impulse = friction_impulse_list[i];
 
       rigid_bodyA.AddLinearVelocity(friction_impulse * inv_massA);
-      rigid_bodyA.AddAngularVelocity(
-          pe2d::math::Cross(rA_list[i], friction_impulse) * inv_inertiaA);
+      rigid_bodyA.AddAngularVelocity(math::Cross(rA_list[i], friction_impulse) *
+                                     inv_inertiaA);
       rigid_bodyB.AddLinearVelocity(friction_impulse * -inv_massB);
-      rigid_bodyB.AddAngularVelocity(
-          pe2d::math::Cross(rB_list[i], friction_impulse) * -inv_inertiaB);
+      rigid_bodyB.AddAngularVelocity(math::Cross(rB_list[i], friction_impulse) *
+                                     -inv_inertiaB);
     }
   }
 }
