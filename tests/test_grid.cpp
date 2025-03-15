@@ -1,3 +1,4 @@
+#include "angle.hpp"
 #include "grid.hpp"
 #include "rigid_body.hpp"
 #include "transform.hpp"
@@ -89,9 +90,10 @@ TEST_F(GridTest, Update) {
   const std::unordered_map<size_t, pe2d::RigidBody> objects = {
       {0, pe2d::RigidBody(0, pe2d::Circle, pe2d::Size2d(19.0, 19.0),
                           pe2d::Transform(), 0, false, {})},
-      {1, pe2d::RigidBody(1, pe2d::Box, pe2d::Size2d(15.0f, 15.0f),
-                          pe2d::Transform({50.0f, 50.0f}, 45.0f), 0.0, false,
-                          {})}};
+      {1, pe2d::RigidBody(
+              1, pe2d::Box, pe2d::Size2d(15.0f, 15.0f),
+              pe2d::Transform({50.0f, 50.0f}, pe2d::Angle::FromDegrees(45.0)),
+              0.0, false, {})}};
 
   const std::vector<pe2d::Vec2i> expected_taken_cells = {
       pe2d::Vec2i(1.0, 1.0), pe2d::Vec2i(2.0, 1.0), pe2d::Vec2i(3.0, 1.0),

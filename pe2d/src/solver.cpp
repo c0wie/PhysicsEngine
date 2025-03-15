@@ -16,6 +16,7 @@ void PositionSolver(std::vector<Collision> &collisions, float delta_time) {
   for (std::size_t i = 0; i < collisions.size(); i++) {
     RigidBody &rigid_bodyA = collisions[i].GetObjectA();
     RigidBody &rigid_bodyB = collisions[i].GetObjectB();
+
     const CollisionPoints &points = collisions[i].GetCollisionPoints();
     const Vector2 normal = points.Normal;
 
@@ -42,6 +43,7 @@ void ImpulseSolverWithoutFriction(std::vector<Collision> &collisions,
   for (std::size_t i = 0; i < collisions.size(); i++) {
     RigidBody &rigid_bodyA = collisions[i].GetObjectA();
     RigidBody &rigid_bodyB = collisions[i].GetObjectB();
+    
     const CollisionPoints &points = collisions[i].GetCollisionPoints();
     const double inv_massA = rigid_bodyA.GetInvMass();
     const double inv_massB = rigid_bodyB.GetInvMass();

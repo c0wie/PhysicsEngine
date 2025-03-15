@@ -12,9 +12,21 @@ public:
 
   double AsRadians() const {return math::DegreesToRadians(degrees);}
   double AsDegrees() const {return degrees;}
+
+  constexpr Angle operator+(Angle other) const {
+    return FromDegrees(degrees + other.degrees);
+  }
+  constexpr Angle &operator+=(Angle other) { return *this = *this + other; }
+  constexpr Angle operator-(Angle other) const {
+    return FromDegrees(degrees - other.degrees);
+  }
+  constexpr Angle &operator-=(Angle other) { return *this = *this - other; }
+  constexpr bool operator==(Angle other) const {
+    return degrees == other.degrees;
+  }
+
 private:
-  constexpr Angle(double angle_degrees) :
-   degrees(angle_degrees) {}
+  explicit constexpr Angle(double angle_degrees) : degrees(angle_degrees) {}
   double degrees{0.0};
 };
 

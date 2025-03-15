@@ -119,7 +119,7 @@ std::array<Pos2d, 4> GetBoxVertices(Size2d box_size, Transform transform) {
       Pos2d(center.x + scaled_half_sizeX, center.y - scaled_half_sizeY),
       Pos2d(center.x + scaled_half_sizeX, center.y + scaled_half_sizeY),
       Pos2d(center.x - scaled_half_sizeX, center.y + scaled_half_sizeY)};
-  RotateVertices(vertices, center, transform.rotation);
+  RotateVertices(vertices, center, transform.angle);
   return vertices;
 }
 std::array<Vec2d, 2> GetBoxAxes(const std::array<Pos2d, 4> &vertices) {

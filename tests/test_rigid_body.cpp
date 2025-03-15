@@ -1,3 +1,4 @@
+#include "angle.hpp"
 #include "math.hpp"
 #include "rigid_body.hpp"
 #include "transform.hpp"
@@ -23,7 +24,7 @@ TEST(RigidBodyTest, DefaultConstructor) {
   EXPECT_EQ(rigid_body.GetForce(), zero_vec);
   EXPECT_EQ(rigid_body.GetGravity(), zero_vec);
   EXPECT_EQ(rigid_body.GetPosition(), zero_vec);
-  EXPECT_DOUBLE_EQ(rigid_body.GetRotation(), 0.0);
+  EXPECT_DOUBLE_EQ(rigid_body.GetAngle().AsRadians(), 0.0);
   EXPECT_EQ(rigid_body.GetScale(), pe2d::Vec2d(1.0, 1.0));
 }
 
@@ -33,7 +34,7 @@ TEST(RigidBodyTest, FullConstructor) {
   const std::size_t id = 1;
   const pe2d::Size2d size(10.0, 10.0);
   const pe2d::Vec2d pos(10.0, 10.0);
-  const double rotation(pe2d::math::DeegresToRadians(45.0));
+  const pe2d::Angle angle = pe2d::Angle::FromDegrees(45.0);
   const pe2d::Vec2d scale(2.0, 0.5);
   const double mass = 100.0;
   const bool is_static = true;
@@ -43,10 +44,11 @@ TEST(RigidBodyTest, FullConstructor) {
   const double static_friction = 0.5;
   const double dynamic_friction = 0.37;
   const double restitution = 0.2;
-  pe2d::RigidBody rigid_body(
-      id, type, size, pe2d::Transform(pos, rotation, scale), mass, is_static,
-      gravity, linear_velocity, angular_velocity, static_friction,
-      dynamic_friction, restitution);
+
+  pe2d::RigidBody rigid_body(id, type, size, pe2d::Transform(pos, angle, scale),
+                             mass, is_static, gravity, linear_velocity,
+                             angular_velocity, static_friction,
+                             dynamic_friction, restitution);
   EXPECT_EQ(rigid_body.GetType(), type);
   EXPECT_EQ(rigid_body.GetID(), id);
   EXPECT_TRUE(rigid_body.IsStatic());
@@ -60,7 +62,7 @@ TEST(RigidBodyTest, FullConstructor) {
   EXPECT_EQ(rigid_body.GetForce(), zero_vec);
   EXPECT_EQ(rigid_body.GetGravity(), gravity);
   EXPECT_EQ(rigid_body.GetPosition(), pos);
-  EXPECT_DOUBLE_EQ(rigid_body.GetRotation(), rotation);
+  EXPECT_EQ(rigid_body.GetAngle(), angle);
   EXPECT_EQ(rigid_body.GetScale(), scale);
 }
 
@@ -70,14 +72,13 @@ TEST(RigidBodyTest, NoMotionNoFrictionConstructor) {
   const std::size_t id = 1;
   const pe2d::Size2d size(10.0, 10.0);
   const pe2d::Vec2d pos(10.0, 10.0);
-  const double rotation(pe2d::math::DeegresToRadians(45.0));
+  const pe2d::Angle angle = pe2d::Angle::FromDegrees(45.0);
   const pe2d::Vec2d scale(2.0, 0.5);
   const double mass = 100.0;
   const bool is_static = false;
   const pe2d::Vec2d gravity(0.0, 9.81);
-  pe2d::RigidBody rigid_body(id, type, size,
-                             pe2d::Transform(pos, rotation, scale), mass,
-                             is_static, gravity);
+  pe2d::RigidBody rigid_body(id, type, size, pe2d::Transform(pos, angle, scale),
+                             mass, is_static, gravity);
   EXPECT_EQ(rigid_body.GetType(), type);
   EXPECT_EQ(rigid_body.GetID(), id);
   EXPECT_FALSE(rigid_body.IsStatic());
@@ -91,7 +92,7 @@ TEST(RigidBodyTest, NoMotionNoFrictionConstructor) {
   EXPECT_EQ(rigid_body.GetForce(), zero_vec);
   EXPECT_EQ(rigid_body.GetGravity(), gravity);
   EXPECT_EQ(rigid_body.GetPosition(), pos);
-  EXPECT_DOUBLE_EQ(rigid_body.GetRotation(), rotation);
+  EXPECT_EQ(rigid_body.GetAngle(), angle);
   EXPECT_EQ(rigid_body.GetScale(), scale);
 }
 
@@ -101,16 +102,16 @@ TEST(RigidBodyTest, NoFrictionConstructor) {
   const std::size_t id = 1;
   const pe2d::Size2d size(10.0, 10.0);
   const pe2d::Vec2d pos(10.0, 10.0);
-  const double rotation(pe2d::math::DeegresToRadians(45.0));
+  const pe2d::Angle angle = pe2d::Angle::FromDegrees(45.0);
   const pe2d::Vec2d scale(2.0, 0.5);
   const double mass = 100.0;
   const bool is_static = false;
   const pe2d::Vec2d gravity(0.0, 9.81);
   const pe2d::Vec2d linear_velocity(100.0, 0.0);
   const double angular_velocity = 2.0;
-  pe2d::RigidBody rigid_body(
-      id, type, size, pe2d::Transform(pos, rotation, scale), mass, is_static,
-      gravity, linear_velocity, angular_velocity);
+  pe2d::RigidBody rigid_body(id, type, size, pe2d::Transform(pos, angle, scale),
+                             mass, is_static, gravity, linear_velocity,
+                             angular_velocity);
   EXPECT_EQ(rigid_body.GetType(), type);
   EXPECT_EQ(rigid_body.GetID(), id);
   EXPECT_FALSE(rigid_body.IsStatic());
@@ -124,7 +125,7 @@ TEST(RigidBodyTest, NoFrictionConstructor) {
   EXPECT_EQ(rigid_body.GetForce(), zero_vec);
   EXPECT_EQ(rigid_body.GetGravity(), gravity);
   EXPECT_EQ(rigid_body.GetPosition(), pos);
-  EXPECT_DOUBLE_EQ(rigid_body.GetRotation(), rotation);
+  EXPECT_EQ(rigid_body.GetAngle(), angle);
   EXPECT_EQ(rigid_body.GetScale(), scale);
 }
 
@@ -211,9 +212,11 @@ TEST(RigigObjectTest, BoxGetBoundingBox) {
 }
 
 TEST(RigigObjectTest, RotatedBoxGetBoundingBox) {
-  const pe2d::RigidBody box_rigid_body(
-      2, pe2d::RigidBodyType::Box, pe2d::Size2d(10.0, 10.0),
-      {{0.0, 0.0}, pe2d::math::DeegresToRadians(45.0)}, 10.0, false, {});
+  const pe2d::Transform transform =
+      pe2d::Transform(pe2d::Pos2d(), pe2d::Angle::FromDegrees(45.0));
+  const pe2d::RigidBody box_rigid_body(2, pe2d::RigidBodyType::Box,
+                                       pe2d::Size2d(10.0, 10.0), transform,
+                                       10.0, false, {});
 
   const std::array<pe2d::Pos2d, 4> expected_vertieces = {
       pe2d::Pos2d(-7.0710676908493042, -7.0710676908493042), pe2d::Pos2d(7.0710676908493042, -7.0710676908493042),

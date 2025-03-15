@@ -1,6 +1,7 @@
 #pragma once
 
 // local
+#include "angle.hpp"
 #include "assert.hpp"
 #include "transform.hpp"
 #include "vector2.hpp"
@@ -39,7 +40,7 @@ public:
   std::array<Pos2d, 4> GetBoundingBox() const;
   constexpr Pos2d GetPosition() const { return m_Transform.position; }
   constexpr Vec2d GetScale() const { return m_Transform.scale; }
-  constexpr double GetRotation() const { return m_Transform.rotation; }
+  constexpr Angle GetAngle() const { return m_Transform.angle; }
   constexpr Transform GetTransform() const { return m_Transform; }
   constexpr double GetMass() const { return m_Mass; }
   constexpr double GetInvMass() const {
@@ -93,15 +94,11 @@ public:
       m_Transform.scale = pe2d::Vec2d(scale.x, scale.x);
     }
   }
-  constexpr void SetRotation(double angle_radians) {
-    m_Transform.rotation = angle_radians;
-  }
-  constexpr void Rotate(double angle_radians) {
-    m_Transform.Rotate(angle_radians);
-  }
+  constexpr void SetAngle(Angle angle) { m_Transform.angle = angle; }
+  constexpr void Rotate(Angle angle) { m_Transform.Rotate(angle); }
   constexpr void SetTransform(Transform transform) {
     SetPosition(transform.position);
-    SetRotation(transform.rotation);
+    SetAngle(transform.angle);
     SetScale(transform.scale);
   }
   void SetMass(double mass) {

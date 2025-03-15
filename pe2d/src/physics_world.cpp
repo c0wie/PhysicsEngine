@@ -1,5 +1,6 @@
 // header
 #include "physics_world.hpp"
+#include "angle.hpp"
 #include "collider.hpp"
 #include "collision_points.hpp"
 #include "rigid_body.hpp"
@@ -121,7 +122,8 @@ void PhysicsWorld::MoveObjects(float delta_time) {
         object.GetLinearVelocity() + acceleration * delta_time;
     object.Move(object.GetLinearVelocity() * delta_time +
                 (acceleration * delta_time * delta_time * 0.5));
-    object.Rotate(object.GetAngularVelocity() * delta_time);
+    object.Rotate(
+        pe2d::Angle::FromRadians(object.GetAngularVelocity() * delta_time));
     object.SetLinearVelocity(new_vel);
     object.SetForce(Vector2(0.0, 0.0));
   }

@@ -3,6 +3,7 @@
 
 // local
 #include "algo.hpp"
+#include "angle.hpp"
 #include "assert.hpp"
 #include "math.hpp"
 #include "vector2.hpp"
@@ -66,7 +67,7 @@ std::array<Pos2d, 4> RigidBody::GetBoundingBox() const {
     const double diameter = m_Size.x * 2;
     return algo::GetBoxVertices(
         Size2d(diameter, diameter),
-        Transform{m_Transform.position, 0.0, m_Transform.scale});
+        Transform{m_Transform.position, pe2d::Angle(), m_Transform.scale});
   }
   const std::array<Pos2d, 4> vertices =
       algo::GetBoxVertices(m_Size, m_Transform);

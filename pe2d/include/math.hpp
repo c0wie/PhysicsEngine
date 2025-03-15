@@ -57,11 +57,11 @@ template <typename T> constexpr double Cross(Vector2<T> a, Vector2<T> b) {
   return a.x * b.y - a.y * b.x;
 }
 
-constexpr double RadiansToDeegres(double angle_radians) {
+constexpr double RadiansToDegrees(double angle_radians) {
   return angle_radians * RADIANS_TO_DEGREES_SCALAR;
 }
 
-constexpr double DeegresToRadians(double angle_deegres) {
+constexpr double DegreesToRadians(double angle_deegres) {
   return angle_deegres * DEGREES_TO_RADIANS_SCALAR;
 }
 

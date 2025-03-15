@@ -1,6 +1,7 @@
 #pragma once
 
 // local
+#include "angle.hpp"
 #include "math.hpp"
 #include "transform.hpp"
 #include "vector2.hpp"
@@ -37,16 +38,15 @@ FindBoxBoxContactPoint(const std::array<Pos2d, 4> &box_verticesA,
 void PointSegmentDistance(Pos2d point, Pos2d vertexA, Pos2d vertexB,
                           double &distance_squared, Pos2d &contact_point);
 
-void RotateVertices(isContainer auto &vertices, Pos2d center,
-                    double angle_radians) {
-  const double cosAngle = cosf(angle_radians);
-  const double sinAngle = sinf(angle_radians);
+void RotateVertices(isContainer auto &vertices, Pos2d center, Angle angle) {
+  const double cos_angle = cosf(angle.AsRadians());
+  const double sin_angle = sinf(angle.AsRadians());
   for (auto &vertex : vertices) {
     const double relativeX = vertex.x - center.x;
     const double relativeY = vertex.y - center.y;
 
-    double rotatedX = (relativeX * cosAngle) - (relativeY * sinAngle);
-    double rotatedY = (relativeX * sinAngle) + (relativeY * cosAngle);
+    double rotatedX = (relativeX * cos_angle) - (relativeY * sin_angle);
+    double rotatedY = (relativeX * sin_angle) + (relativeY * cos_angle);
     vertex = Pos2d(rotatedX + center.x, rotatedY + center.y);
   }
 }

@@ -1,5 +1,5 @@
 #include "algo.hpp"
-#include "math.hpp"
+#include "angle.hpp"
 #include "vector2.hpp"
 #include <gtest/gtest.h>
 
@@ -104,9 +104,9 @@ protected:
   }
   void CheckRotation(const std::array<pe2d::Pos2d, 4> &expected_vertices,
                      double angle_deegres) {
-    const double angle_radians = pe2d::math::DeegresToRadians(angle_deegres);
+    const pe2d::Angle angle = pe2d::Angle::FromDegrees(angle_deegres);
     std::array<pe2d::Pos2d, 4> rotated_vertices = m_TestVertices;
-    pe2d::algo::RotateVertices(rotated_vertices, m_Center, angle_radians);
+    pe2d::algo::RotateVertices(rotated_vertices, m_Center, angle);
     for (int i = 0; i < expected_vertices.size(); i++) {
       EXPECT_NEAR(rotated_vertices[i].x, expected_vertices[i].x,
                   DOUBLE_INACCURACY);
@@ -141,7 +141,7 @@ TEST_F(RotateVertices, PositiveAngle) {
 TEST(GetBoxVerticesTest, notRotatednotScaled) {
   const pe2d::Size2d box_size = pe2d::Size2d(100.0, 100.0);
   const pe2d::Transform box_transform = pe2d::Transform(
-      pe2d::Vector2(500.0, 500.0), 0.0, pe2d::Vector2(1.0, 1.0));
+      pe2d::Vector2(500.0, 500.0), pe2d::Angle(), pe2d::Vector2(1.0, 1.0));
   std::array<pe2d::Pos2d, 4> expected_vertices = {
       pe2d::Vector2(450.0, 450.0), pe2d::Vector2(550.0, 450.0),
       pe2d::Vector2(550.0, 550.0), pe2d::Vector2(450.0, 550.0)};
@@ -151,9 +151,9 @@ TEST(GetBoxVerticesTest, notRotatednotScaled) {
 
 TEST(GetBoxVerticesTest, rotatedScaled) {
   const pe2d::Vector2 box_size = pe2d::Vector2(100.0, 100.0);
-  const pe2d::Transform box_transform = pe2d::Transform(
-      pe2d::Vector2(500.0, 500.0), pe2d::math::DeegresToRadians(45.0),
-      pe2d::Vector2(1.0, 2.0));
+  const pe2d::Transform box_transform =
+      pe2d::Transform(pe2d::Vector2(500.0, 500.0),
+                      pe2d::Angle::FromDegrees(45.0), pe2d::Vector2(1.0, 2.0));
   std::array<pe2d::Pos2d, 4> expected = {
       pe2d::Pos2d(535.355347, 393.93399), pe2d::Pos2d(606.06604, 464.644653),
       pe2d::Pos2d(464.644653, 606.06604), pe2d::Pos2d(393.93399, 535.355347)};

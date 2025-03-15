@@ -1,5 +1,5 @@
 // pe2d
-#include "algo.hpp"
+#include "angle.hpp"
 #include "math.hpp"
 #include "physics_world.hpp"
 #include "vector2.hpp"
@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 
 // imgui
+#include <SFML/System/Angle.hpp>
 #include <SFML/Window/Event.hpp>
 #include <array>
 #include <imgui-SFML.h>
@@ -28,7 +29,8 @@ pe2d::RigidBody GetRandomBox(size_t id, sf::Vector2i pos) {
   std::uniform_int_distribution<int> distribPos(200, 800);
   std::uniform_int_distribution<int> distribRotation(0, 180);
   float mass = 100.f;
-  pe2d::Transform transform = pe2d::Transform(pe2d::Pos2d(pos.x, pos.y), 0.0);
+  pe2d::Transform transform =
+      pe2d::Transform(pe2d::Pos2d(pos.x, pos.y), pe2d::Angle());
   pe2d::Size2d size = pe2d::Size2d(100.0, 100.0);
   float staticFriction = 1.0;
   float dynamicFriction = 1.0;
@@ -46,7 +48,7 @@ pe2d::RigidBody GetRandomCircle(size_t id, sf::Vector2i pos) {
   std::uniform_int_distribution<int> distribPos(200, 800);
   std::uniform_int_distribution<int> distribRotation(0, 360);
   const pe2d::Transform transform =
-      pe2d::Transform(pe2d::Pos2d(pos.x, pos.y), 0.0);
+      pe2d::Transform(pe2d::Pos2d(pos.x, pos.y), pe2d::Angle());
   const float mass = 1.0;
   const float radius = 50.0;
   const float staticFriction = 1.0;
@@ -67,7 +69,7 @@ void DrawRigidBody(const pe2d::RigidBody body, const sf::Color &color,
     rec.setOrigin(rec.getSize() / 2.0f);
     rec.setPosition(sf::Vector2f(pos.x, pos.y));
     rec.setFillColor(sf::Color::Transparent);
-    rec.setRotation(sf::Angle(sf::radians(body.GetRotation())));
+    rec.setRotation(sf::Angle(sf::radians(body.GetAngle().AsRadians())));
     rec.setOutlineColor(color);
     rec.setOutlineThickness(1.0f);
     window.draw(rec);
@@ -124,11 +126,11 @@ int main() {
                                           true, {}));
   physics_world.AddObject(pe2d::RigidBody(
       2, pe2d::Box, pe2d::Size2d(300.0, 50.0),
-      pe2d::Transform({300.0, 400.0}, pe2d::math::DeegresToRadians(45.0)), 0.0,
+      pe2d::Transform({300.0, 400.0}, pe2d::Angle::FromDegrees(45.0)), 0.0,
       true, {}));
   physics_world.AddObject(pe2d::RigidBody(
       3, pe2d::Box, pe2d::Size2d(300, 50),
-      pe2d::Transform({700.0, 500.0}, pe2d::math::DeegresToRadians(75)), 0.0,
+      pe2d::Transform({700.0, 500.0}, pe2d::Angle::FromDegrees(75.0)), 0.0,
       true, {}));
 
   sf::Clock DT_Clock;
@@ -206,26 +208,4 @@ int main() {
     }
     std::cout << '\n';
   };
-
-  pe2d::Pos2d m_Center = pe2d::Pos2d(500.0, 500.0);
-  std::array<pe2d::Pos2d, 4> m_TestVertices = {
-      pe2d::Pos2d(450.0, 450.0), pe2d::Pos2d(550.0, 450.0),
-      pe2d::Pos2d(550.0, 550.0), pe2d::Pos2d(450.0, 550.0)};
-  auto ver45 = m_TestVertices;
-  pe2d::algo::RotateVertices(ver45, m_Center,
-                             pe2d::math::DeegresToRadians(45.0));
-  std::cout << "45 deegres\n";
-  print_arr(ver45);
-
-  auto ver90 = m_TestVertices;
-  pe2d::algo::RotateVertices(ver45, m_Center,
-                             pe2d::math::DeegresToRadians(90.0));
-  std::cout << "90 deegres\n";
-  print_arr(ver90);
-
-  auto ver189 = m_TestVertices;
-  pe2d::algo::RotateVertices(ver189, m_Center,
-                             pe2d::math::DeegresToRadians(189.0));
-  std::cout << "189 deegres\n";
-  print_arr(ver189);
 }

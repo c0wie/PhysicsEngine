@@ -1,5 +1,5 @@
 // local
-#include "math.hpp"
+#include "angle.hpp"
 #include "transform.hpp"
 
 // lib
@@ -7,30 +7,31 @@
 #include <gtest/gtest.h>
 
 namespace {
+constexpr double DOUBLE_INACCURACY = 1e-12;
 TEST(TansformTest, DefaultConstructor) {
   pe2d::Transform transform;
   EXPECT_EQ(transform.position, pe2d::Vec2d(0.0, 0.0));
   EXPECT_EQ(transform.scale, pe2d::Vec2d(1.0, 1.0));
-  EXPECT_DOUBLE_EQ(transform.rotation, 0.0);
+  EXPECT_EQ(transform.angle, pe2d::Angle());
 }
 
 TEST(TransformTest, FullConstructor) {
   const pe2d::Vec2d position = pe2d::Vec2d(10.0, 10.0);
   const pe2d::Vec2d scale = pe2d::Vec2d(2.0, 1.5);
-  const double rotation = pe2d::math::DeegresToRadians(45.0);
-  pe2d::Transform transform(position, rotation, scale);
+  const pe2d::Angle angle = pe2d::Angle::FromDegrees(45.0);
+  pe2d::Transform transform(position, angle, scale);
   EXPECT_EQ(transform.position, position);
   EXPECT_EQ(transform.scale, scale);
-  EXPECT_DOUBLE_EQ(transform.rotation, rotation);
+  EXPECT_EQ(transform.angle, pe2d::Angle::FromDegrees(45.0));
 }
 
 TEST(TransformTest, PosRotationConstructor) {
   const pe2d::Vec2d position = pe2d::Vec2d(10.0, 10.0);
-  const double rotation = pe2d::math::DeegresToRadians(45.0);
-  pe2d::Transform transform(position, rotation);
+  const pe2d::Angle angle = pe2d::Angle::FromDegrees(45.0);
+  pe2d::Transform transform(position, angle);
   EXPECT_EQ(transform.position, position);
   EXPECT_EQ(transform.scale, pe2d::Vec2d(1.0, 1.0));
-  EXPECT_DOUBLE_EQ(transform.rotation, rotation);
+  EXPECT_EQ(transform.angle, pe2d::Angle::FromDegrees(45.0));
 }
 
 TEST(TransformTest, PosConstructor) {
@@ -38,7 +39,7 @@ TEST(TransformTest, PosConstructor) {
   pe2d::Transform transform(position);
   EXPECT_EQ(transform.position, position);
   EXPECT_EQ(transform.scale, pe2d::Vec2d(1.0, 1.0));
-  EXPECT_DOUBLE_EQ(transform.rotation, 0.0);
+  EXPECT_EQ(transform.angle, pe2d::Angle());
 }
 
 TEST(TransformTest, Move) {
@@ -54,8 +55,8 @@ TEST(TransformTest, Move) {
 TEST(TransformTest, Rotate) {
   const pe2d::Vec2d position = pe2d::Vec2d(10.0, 10.0);
   pe2d::Transform transform(position);
-  const double rotation = pe2d::math::DeegresToRadians(45.0);
-  transform.Rotate(rotation);
-  EXPECT_EQ(transform.rotation, rotation);
+  const pe2d::Angle angle = pe2d::Angle::FromDegrees(45.0);
+  transform.Rotate(angle);
+  EXPECT_EQ(transform.angle, pe2d::Angle::FromDegrees(45.0));
 }
 } // namespace

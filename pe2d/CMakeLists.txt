@@ -9,7 +9,7 @@ add_library(pe2d STATIC)
 target_sources(pe2d PRIVATE 
   src/algo.cpp src/collider.cpp
   src/physics_world.cpp src/grid.cpp
-  src/rigid_body.cpp src/solver.cpp)
+  src/rigid_body.cpp src/solver.cpp src/algo.cpp)
 
 target_compile_definitions(pe2d PRIVATE $<$<CONFIG:Debug>:DEBUG_MODE>)
 
