@@ -36,7 +36,7 @@ constexpr double SquaredDistance(Pos2d a, Pos2d b) {
 }
 
 template <typename T> constexpr Vector2<T> Perp(Vector2<T> a) {
-  return Vector2(-a.y, a.x);
+  return Vector2<T>(-a.y, a.x);
 }
 
 template <typename T> constexpr Vector2<T> Normalize(Vector2<T> a) {

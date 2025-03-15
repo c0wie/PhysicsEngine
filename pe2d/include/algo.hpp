@@ -45,8 +45,8 @@ void RotateVertices(isContainer auto &vertices, Pos2d center, Angle angle) {
     const double relativeX = vertex.x - center.x;
     const double relativeY = vertex.y - center.y;
 
-    double rotatedX = (relativeX * cos_angle) - (relativeY * sin_angle);
-    double rotatedY = (relativeX * sin_angle) + (relativeY * cos_angle);
+    const double rotatedX = (relativeX * cos_angle) - (relativeY * sin_angle);
+    const double rotatedY = (relativeX * sin_angle) + (relativeY * cos_angle);
     vertex = Pos2d(rotatedX + center.x, rotatedY + center.y);
   }
 }

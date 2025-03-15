@@ -11,6 +11,4 @@ target_sources(pe2d PRIVATE
   src/physics_world.cpp src/grid.cpp
   src/rigid_body.cpp src/solver.cpp src/algo.cpp)
 
-target_compile_definitions(pe2d PRIVATE $<$<CONFIG:Debug>:DEBUG_MODE>)
-
 target_include_directories(pe2d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

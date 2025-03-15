@@ -8,7 +8,6 @@
 
 // std
 #include <array>
-#include <cstddef>
 #include <stdexcept>
 #include <string>
 

@@ -15,13 +15,6 @@ void PositionSolver(std::vector<Collision> &collisions, float delta_time);
 
 /*
     Function responsible for calculating collisions between rigidObjects.
-    The solver take into account the torque, their velocity, and bounciness.
-*/
-void ImpulseSolverWithoutFriction(std::vector<Collision> &collisions,
-                                  float delta_time);
-
-/*
-    Function responsible for calculating collisions between rigidObjects.
     The solver take into account the torque, their velocity, bounciness, and
    both static and dynamic friction.
 */

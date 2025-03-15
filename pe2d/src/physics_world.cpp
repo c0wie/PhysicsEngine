@@ -43,7 +43,7 @@ PhysicsWorld::RemoveObject(size_t id) {
 RigidBody &PhysicsWorld::At(unsigned int id) {
   if (m_Objects.find(id) == m_Objects.end()) {
     throw std::invalid_argument("[PhysicsWorld::At()] Error: object with given "
-                                "id doesn't exist (received" +
+                                "id doesn't exist (received " +
                                 std::to_string(id) + ")");
   }
   return m_Objects.at(id);

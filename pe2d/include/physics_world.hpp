@@ -35,7 +35,7 @@ class PhysicsWorld {
 
 public:
   PhysicsWorld() = default;
-  PhysicsWorld(unsigned int substeps)
+  explicit PhysicsWorld(unsigned int substeps)
       : m_Grid(), m_Substeps(substeps), m_IsGridOn(false) {
     if (m_Substeps <= 0 || m_Substeps > 64) {
       std::invalid_argument("[PhysicsWorld::PhysicsWorld()] Error: substeps "
