@@ -1,20 +1,52 @@
-# pe2d physics engine written in cpp 
+# pe2d
+### Physics Engine written in C++
 
-## Engine contains:
-* broad phase collision detection implemented by dividing space into grid
-* narrow phase collision detection implemented by SAT algorithm 
-* many solvers to deal with collision
-* easy to use interface
+# What pe2d can do?
+-   **Broad-phase collision detection**
 
-![image](https://github.com/user-attachments/assets/a3ead6a8-1d6a-4589-a9ef-c87c507674ab)
+-   **Square and circle collision resolution**
 
+-   **Rotational physics simulation**
 
-# What this repo contains?
-* In `Tests` file there are unit test to engine
-* In `Sample` file there is simple use case of pe2d
-* In `pe2d` file there is engine itself
+-   **Kinematics simulation** 
 
-# How to build it?
-You need to have installed `CMake` on your machine.
-Then you can copy `pe2d file` to your project and add it as `static library`
-to your `CMakeLists.txt`. From now every thing should work just fine but I only tested it on gcc compiler.
+![image_2025-03-16_200228234](https://github.com/user-attachments/assets/cbe79c0d-cfda-4bb0-87a7-169bfde287b4)
+
+# Build
+Install CMake at least version 3.14
+Tested only on Linux Ubuntu
+
+* ### Building whole project
+	1. Download whole project
+		* `git clone https://github.com/c0wie/PhysicsEngine`
+		*  `cd PhysicsEngine`
+	
+	2. Configure the build
+		* `cmake -B build -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release` 
+	
+	3. Build and run 
+		*  `cmake --build build`
+		* `./build/demo`
+ * ### Building only pe2d library
+	 1. Download the library
+		 * download the [.zip](https://github.com/c0wie/PhysicsEngine/archive/refs/heads/master.zip)
+		 * extract **pe2d** folder 
+	
+	2. Include it in your CMake project 
+		 * add it to your project as any other static library in CMake 
+
+# Testing
+To run Unit Tests you  have to build [whole project](#building-whole-project) and set the ***BUILD_TESTS*** flag to ***ON***.
+
+1. Go to project directory 
+	
+	* `cd path/to/project/repo/PhysicsEngine`
+
+2. Run commands
+	
+	*  `cd build`
+	*  `ctest`
+
+# Any problems?
+
+Please create an issue and I'll try to help you with your problem
