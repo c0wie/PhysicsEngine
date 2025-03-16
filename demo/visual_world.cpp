@@ -306,19 +306,26 @@ VisualWorld::VisualWorld(unsigned int substeps) : m_PhysicsWorld(substeps) {
 
 void VisualWorld::SetUp() {
   m_PhysicsWorld.AddObject(pe2d::RigidBody(
-      1, pe2d::Box, pe2d::Size2d(800, 100), pe2d::Transform({500.0, 850.0}),
+      1, pe2d::Box, pe2d::Size2d(950, 100), pe2d::Transform({500.0, 850.0}),
       0.0, true, {}, pe2d::Vec2d(), 0.0, 0.8, 1.0, 0.0));
+
   m_PhysicsWorld.AddObject(pe2d::RigidBody(
       2, pe2d::Box, pe2d::Size2d(300.0, 50.0),
-      pe2d::Transform({300.0, 650.0}, pe2d::Angle::FromDegrees(90.0)), 0.0,
+      pe2d::Transform({700.0, 650.0}, pe2d::Angle::FromDegrees(90.0)), 0.0,
       true, {}, pe2d::Vec2d(), 0.0, 0.8, 1.0, 0.0));
 
   m_PhysicsWorld.AddObject(pe2d::RigidBody(
       3, pe2d::Box, pe2d::Size2d(300, 50),
-      pe2d::Transform({700.0, 650.0}, pe2d::Angle::FromDegrees(90.0)), 0.0,
+      pe2d::Transform({950.0, 650.0}, pe2d::Angle::FromDegrees(90.0)), 0.0,
       true, {}, pe2d::Vec2d(), 0.0, 0.8, 1.0, 0.0));
-  m_LastId = 3;
-  ASSERT(m_LastId == m_PysicsWorld.At(3).GetIndex(),
+
+  m_PhysicsWorld.AddObject(pe2d::RigidBody(
+      4, pe2d::Box, pe2d::Size2d(350, 50),
+      pe2d::Transform({250.0, 450.0}, pe2d::Angle::FromDegrees(45.0)), 0.0,
+      true, {}, pe2d::Vec2d(), 0.0, 0.8, 1.0, 0.0));
+  
+  m_LastId = 4;
+  ASSERT(m_LastId == m_PysicsWorld.At(4).GetIndex(),
          "m_LastId have to match the id of last rigid body in m_PhysicsWorld");
 }
 
