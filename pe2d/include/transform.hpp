@@ -18,7 +18,7 @@ struct Transform {
 public:
   constexpr Transform() = default;
   constexpr Transform(Pos2d position, Angle angle, Vec2d scale)
-      : position(position), angle(), scale(scale) {
+      : position(position), angle(angle), scale(scale) {
     if (scale.x <= 0.0 || scale.y <= 0.0) {
       throw std::invalid_argument(
           "[Transform::Transform()] Error: scale must be positive (received: " +
