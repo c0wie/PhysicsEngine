@@ -57,7 +57,7 @@ endif()
 add_subdirectory(pe2d)
 
 add_executable(${PROJECT_NAME} 
-  demo/demo.cpp
+  demo/demo.cpp demo/visual_world.cpp
 )
 
 add_compile_options(
