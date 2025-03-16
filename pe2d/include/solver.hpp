@@ -18,6 +18,5 @@ void PositionSolver(std::vector<Collision> &collisions, float delta_time);
     The solver take into account the torque, their velocity, bounciness, and
    both static and dynamic friction.
 */
-void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
-                               float delta_time);
+void ImpulseSolver(std::vector<Collision> &collisions, float delta_time);
 } // namespace pe2d

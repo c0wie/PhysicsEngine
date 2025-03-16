@@ -38,8 +38,7 @@ void PositionSolver(std::vector<Collision> &collisions, float delta_time) {
   }
 }
 
-void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
-                               float delta_time) {
+void ImpulseSolver(std::vector<Collision> &collisions, float delta_time) {
   for (auto &collision : collisions) {
     RigidBody &rigid_bodyA = collision.GetObjectA();
     RigidBody &rigid_bodyB = collision.GetObjectB();
@@ -69,12 +68,12 @@ void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
     // list of vectors pointing from object A's center of mass to the contact
     // points
     std::array<Vec2d, 2> rB_list;
+    std::array<double, 2> impulse_scalars;
     // collision impulses along normal
     std::array<Vec2d, 2> impulses;
     // friction impulses along normal
     std::array<Vec2d, 2> friction_impulses;
 
-    std::array<double, 2> j_list;
 
     if (rigid_bodyA.IsStatic()) {
       rigid_bodyB.Move(-1.0f * minimal_translation_vector);
@@ -107,13 +106,13 @@ void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
           (rA_perp_normal * rA_perp_normal) * inv_inertiaA +
           (rB_perp_normal * rB_perp_normal) * inv_inertiaB;
 
-      double j = -(1.0 + restitution_coefficient) *
-                 math::Dot(relative_velocity, normal);
-      j /= denominator;
-      j /= (double)contact_count;
-      j_list[i] = j;
+      double impulse_scalar = -(1.0 + restitution_coefficient) *
+                              math::Dot(relative_velocity, normal);
+      impulse_scalar /= denominator;
+      impulse_scalar /= (double)contact_count;
+      impulse_scalars[i] = impulse_scalar;
 
-      impulses[i] = j * normal;
+      impulses[i] = impulse_scalar * normal;
     }
 
     // apply collision impulses
@@ -154,7 +153,6 @@ void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
         continue;
       } else {
         tangent = pe2d::math::Normalize(tangent);
-        std::cout << "Relative velocity: " << relative_velocity.GetString() << '\n';
       }
 
       const float rA_perp_tangent = math::Dot(rA_perp, tangent);
@@ -165,26 +163,23 @@ void ImpulseSolverWithFriction(std::vector<Collision> &collisions,
           (rA_perp_tangent * rA_perp_tangent) * inv_inertiaA +
           (rB_perp_tangent * rB_perp_tangent) * inv_inertiaB;
 
-      float jt = -math::Dot(relative_velocity, tangent);
-      jt /= denominator;
-      jt /= (double)contact_count;
+      float friction_impulse_scalar = -math::Dot(relative_velocity, tangent);
+      friction_impulse_scalar /= denominator;
+      friction_impulse_scalar /= (double)contact_count;
 
-      const float j = j_list[i];
-      if (std::abs(jt) <= j * static_friction_coefficient) {
-        friction_impulses[i] = jt * tangent;
+      const float impulse_scalar = impulse_scalars[i];
+      if (std::abs(friction_impulse_scalar) <=
+          impulse_scalar * static_friction_coefficient) {
+        friction_impulses[i] = friction_impulse_scalar * tangent;
       } else {
-        friction_impulses[i] = j * tangent * dynamic_friction_coefficient;
+        friction_impulses[i] =
+            impulse_scalar * tangent * dynamic_friction_coefficient;
       }
     }
+
+    // apply friction impulses
     for (int i = 0; i < contact_count; i++) {
       Vector2 friction_impulse = friction_impulses[i];
-      if(math::Length(friction_impulse) > math::Length(impulses[i])) {
-        // Normalize the friction impulse to get its direction
-        const Vector2 friction_direction = math::Normalize(friction_impulse);
-
-        // Scale the direction by the magnitude of the collision impulse
-        friction_impulse = friction_direction * math::Length(impulses[i]);
-      }
       rigid_bodyA.AddLinearVelocity(friction_impulse * inv_massA);
       rigid_bodyA.AddAngularVelocity(math::Cross(rA_list[i], friction_impulse) *
                                      inv_inertiaA);

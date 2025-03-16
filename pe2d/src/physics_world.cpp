@@ -117,13 +117,13 @@ void PhysicsWorld::MoveObjects(float delta_time) {
     if (object.IsStatic()) {
       continue;
     }
+    // linear integration
     const Vector2 acceleration = object.GetForce() * object.GetInvMass();
-    const Vector2 new_vel =
-        object.GetLinearVelocity() + acceleration * delta_time;
-    object.Move(object.GetLinearVelocity() * delta_time +
-                (acceleration * delta_time * delta_time * 0.5));
+    object.AddLinearVelocity(acceleration * delta_time * 0.5);
+    object.Move(object.GetLinearVelocity() * delta_time);
+    object.AddLinearVelocity(acceleration * delta_time * 0.5);
+
     object.Rotate(Angle::FromRadians(object.GetAngularVelocity() * delta_time));
-    object.SetLinearVelocity(new_vel);
     object.SetForce(Vector2(0.0, 0.0));
   }
 }
