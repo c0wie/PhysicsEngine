@@ -19,6 +19,16 @@ void PhysicsWorld::Step(float delta_time) {
   for (std::size_t i = 0; i < m_Substeps; i++) {
     const float subtime = delta_time / (float)m_Substeps;
     ApplyGravity();
+    for (auto it = Begin(); it != End(); it++) {
+      RigidBody &object = it->second;
+      if (object.IsStatic() || object.sleep) {
+        continue;
+      }
+      // linear integration
+      // działa znacznie lepiej z prędkością aktualizowaną dwukrotnie przy kolizjach 
+      const Vector2 acceleration = object.GetForce() * object.GetInvMass();
+      object.AddLinearVelocity(acceleration * subtime);
+    }
     ResolveCollisions(subtime);
     MoveObjects(subtime);
   }
@@ -105,7 +115,7 @@ void PhysicsWorld::FindCollisions(size_t idA, size_t idB,
 void PhysicsWorld::ApplyGravity() {
   for (auto it = m_Objects.begin(); it != m_Objects.end(); it++) {
     RigidBody &object = it->second;
-    if (object.IsStatic()) {
+    if (object.IsStatic() || object.sleep) {
       continue;
     }
     object.AddForce(object.GetGravity() * object.GetMass());
@@ -114,7 +124,7 @@ void PhysicsWorld::ApplyGravity() {
 void PhysicsWorld::MoveObjects(float delta_time) {
   for (auto it = Begin(); it != End(); it++) {
     RigidBody &object = it->second;
-    if (object.IsStatic()) {
+    if (object.IsStatic() || object.sleep) {
       continue;
     }
     // linear integration
@@ -124,6 +134,7 @@ void PhysicsWorld::MoveObjects(float delta_time) {
     object.AddLinearVelocity(acceleration * delta_time * 0.5);
 
     object.Rotate(Angle::FromRadians(object.GetAngularVelocity() * delta_time));
+    // I don't have torque
     object.SetForce(Vector2(0.0, 0.0));
   }
 }

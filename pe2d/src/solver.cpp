@@ -11,6 +11,7 @@
 #include <array>
 #include <cstddef>
 #include <iostream>
+
 namespace pe2d {
 void PositionSolver(std::vector<Collision> &collisions, float delta_time) {
   for (std::size_t i = 0; i < collisions.size(); i++) {
@@ -42,6 +43,27 @@ void ImpulseSolver(std::vector<Collision> &collisions, float delta_time) {
   for (auto &collision : collisions) {
     RigidBody &rigid_bodyA = collision.GetObjectA();
     RigidBody &rigid_bodyB = collision.GetObjectB();
+
+    const double velocityA_magnitude = pe2d::math::Length(rigid_bodyA.GetLinearVelocity());
+    const double velocityB_magnitude = pe2d::math::Length(rigid_bodyB.GetLinearVelocity());
+    const double angleA = std::fmod(rigid_bodyA.GetAngle().AsDegrees(), 90.0);
+    const double angleB = std::fmod(rigid_bodyB.GetAngle().AsDegrees(), 90.0);
+    if(pe2d::math::NearlyEquel(velocityA_magnitude, 0.0, 1.5) &&
+      pe2d::math::NearlyEquel(angleA, 0.0, 0.5) == true &&
+      pe2d::math::NearlyEquel(velocityB_magnitude, 0.0, 1.5) && 
+      pe2d::math::NearlyEquel(angleB, 0.0, 0.5) == true) {
+        rigid_bodyA.sleep = true;
+        rigid_bodyB.sleep = true;
+        const double a = std::fmod(rigid_bodyA.GetAngle().AsDegrees(), 90.0);
+        const double b = std::fmod(rigid_bodyA.GetAngle().AsDegrees(), 90.0);
+        continue;
+    }
+    if(rigid_bodyA.sleep) {
+      rigid_bodyA.sleep = false;
+    }
+    if(rigid_bodyB.sleep) {
+      rigid_bodyB.sleep = false;
+    }
 
     const CollisionPoints &points = collision.GetCollisionPoints();
     const double inv_massA = rigid_bodyA.GetInvMass();
@@ -76,7 +98,7 @@ void ImpulseSolver(std::vector<Collision> &collisions, float delta_time) {
 
 
     if (rigid_bodyA.IsStatic()) {
-      rigid_bodyB.Move(-1.0f * minimal_translation_vector);
+      rigid_bodyB.Move(-1.0 * minimal_translation_vector);
     } else if (rigid_bodyB.IsStatic()) {
       rigid_bodyA.Move(minimal_translation_vector);
     } else {
@@ -95,8 +117,8 @@ void ImpulseSolver(std::vector<Collision> &collisions, float delta_time) {
       const Vector2 relative_velocity =
           (rigid_bodyA.GetLinearVelocity() +
            (rA_perp * rigid_bodyA.GetAngularVelocity())) -
-          (rigid_bodyB.GetLinearVelocity() +
-           (rB_perp * rigid_bodyB.GetAngularVelocity()));
+          rigid_bodyB.GetLinearVelocity() -
+          (rB_perp * rigid_bodyB.GetAngularVelocity());
 
       const double rA_perp_normal = math::Dot(rA_perp, normal);
       const double rB_perp_normal = math::Dot(rB_perp, normal);
@@ -113,6 +135,7 @@ void ImpulseSolver(std::vector<Collision> &collisions, float delta_time) {
       impulse_scalars[i] = impulse_scalar;
 
       impulses[i] = impulse_scalar * normal;
+      // std::cout << impulses[i].GetString() << std::endl;
     }
 
     // apply collision impulses
@@ -148,12 +171,9 @@ void ImpulseSolver(std::vector<Collision> &collisions, float delta_time) {
           (rigid_bodyB.GetLinearVelocity() +
            (rB_perp * rigid_bodyB.GetAngularVelocity()));
 
-      Vector2 tangent  = relative_velocity * math::Dot(relative_velocity, normal) * normal;
-      if(math::NearlyEquel(tangent, pe2d::Vec2d(), 0.00000025)) {
-        continue;
-      } else {
-        tangent = pe2d::math::Normalize(tangent);
-      }
+      Vector2 tangent =
+          relative_velocity - math::Dot(relative_velocity, normal) * normal;
+          tangent = pe2d::math::Normalize(tangent);
 
       const float rA_perp_tangent = math::Dot(rA_perp, tangent);
       const float rB_perp_tangent = math::Dot(rB_perp, tangent);
@@ -163,7 +183,8 @@ void ImpulseSolver(std::vector<Collision> &collisions, float delta_time) {
           (rA_perp_tangent * rA_perp_tangent) * inv_inertiaA +
           (rB_perp_tangent * rB_perp_tangent) * inv_inertiaB;
 
-      float friction_impulse_scalar = -math::Dot(relative_velocity, tangent);
+      float friction_impulse_scalar =
+          math::Dot(relative_velocity, tangent) /* * -1.0*/;
       friction_impulse_scalar /= denominator;
       friction_impulse_scalar /= (double)contact_count;
 
@@ -175,10 +196,13 @@ void ImpulseSolver(std::vector<Collision> &collisions, float delta_time) {
         friction_impulses[i] =
             impulse_scalar * tangent * dynamic_friction_coefficient;
       }
+      if (std::abs(friction_impulses[i].y) < 35.0) {
+        friction_impulses[i] = Vec2d(friction_impulses[i].x, 0.0);
+      }
     }
 
     // apply friction impulses
-    for (int i = 0; i < contact_count; i++) {
+    for (std::size_t i = 0; i < contact_count; i++) {
       Vector2 friction_impulse = friction_impulses[i];
       rigid_bodyA.AddLinearVelocity(friction_impulse * inv_massA);
       rigid_bodyA.AddAngularVelocity(math::Cross(rA_list[i], friction_impulse) *

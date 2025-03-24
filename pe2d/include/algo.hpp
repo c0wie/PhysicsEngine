@@ -81,8 +81,9 @@ std::array<Vec2d, 2> GetBoxAxes(const std::array<Pos2d, 4> &vertices);
 Vec2d GetCircleAxis(const isContainer auto &vertices, Pos2d circle_center) {
   double dist = math::INF;
   Vec2d smallestAxis;
-  for (auto it = vertices.begin(); it != vertices.end(); it++) {
-    const Vec2d edge = *it - circle_center;
+  for (const auto &vertex : vertices) {
+    const Vec2d edge = vertex - circle_center;
+    // const Vec2d edge2 = circle_center - vertex;
     const double d = math::Length(edge);
     if (d < dist) {
       dist = d;

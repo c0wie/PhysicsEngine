@@ -1,6 +1,10 @@
+// local
 #include "rigid_body.hpp"
 #include "solver.hpp"
 #include "vector2.hpp"
+
+// lib
+// gtest
 #include <gtest/gtest.h>
 
 namespace {

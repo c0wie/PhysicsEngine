@@ -121,9 +121,19 @@ public:
   }
   constexpr void SetAngularVelocity(double angular_velocity) {
     m_AngularVelocity = angular_velocity;
+    if (m_AngularVelocity > 10.0) {
+      m_AngularVelocity = 10;
+    } else if (m_AngularVelocity < -10.0) {
+      m_AngularVelocity = -10.0;
+    }
   }
   constexpr void AddAngularVelocity(double angular_velocity) {
     m_AngularVelocity += angular_velocity;
+    if (m_AngularVelocity > 10.0) {
+      m_AngularVelocity = 10.0;
+    } else if (m_AngularVelocity < -10.0) {
+      m_AngularVelocity = -10.0;
+    }
   }
   constexpr void SetForce(Vec2d force) { m_Force = force; }
   constexpr void AddForce(Vec2d force) { m_Force += force; }
@@ -156,6 +166,7 @@ public:
     m_Restitution = restitution;
   }
 
+  bool sleep{false};
 private:
   double CalculateRotationalInertia();
 
@@ -165,11 +176,11 @@ private:
   double m_Mass{0.0};
   double m_AngularVelocity{0.0};
   double m_RotationalInertia{0.0};
-  // Static friction coefficient [in range 0 - 1]
+  // Static friction coefficient [in range 0.0 - 1.0]
   double m_StaticFriction{0.0};
-  // Dynamic friction coefficient [in range 0 - 1]
+  // Dynamic friction coefficient [in range 0.0 - 1.0]
   double m_DynamicFriction{0.0};
-  // Elasticy of collision [in range 0 - 1]
+  // Elasticy of collision [in range 0.0 - 1.0]
   double m_Restitution{0.0};
   Size2d m_Size{0.0, 0.0};
   RigidBodyType m_Type{0};

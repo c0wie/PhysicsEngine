@@ -126,14 +126,15 @@ std::array<Vec2d, 2> GetBoxAxes(const std::array<Pos2d, 4> &vertices) {
   std::array<Vec2d, 2> axes;
   // is has two parrarel edges so I don't have to check other two
   for (int i = 0; i < 2; i++) {
-    const Pos2d p1 = vertices[i];
-    const Pos2d p2 = vertices[(i + 1) % vertices.size()];
-    const Vec2d edge = p1 - p2;
+    const Pos2d vertex1 = vertices[i];
+    const Pos2d vertex2 = vertices[(i + 1) % vertices.size()];
+    const Vec2d edge = vertex1 - vertex2;
     const Vec2d normal = math::Normalize(math::Perp(edge));
     axes[i] = normal;
   }
   return axes;
 }
+
 Vec2d ProjectCircle(Pos2d circle_center, double radius, Vec2d axis) {
   if (radius <= 0) {
     throw std::invalid_argument("[FindCircleCircleCollision] Error: radius "

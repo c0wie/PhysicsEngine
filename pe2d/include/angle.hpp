@@ -18,7 +18,7 @@ public:
   }
   constexpr Angle &operator+=(Angle other) { return *this = *this + other; }
   constexpr Angle operator-(Angle other) const {
-    return FromDegrees(degrees - other.degrees);
+    return FromDegrees(degrees + other.degrees);
   }
   constexpr Angle &operator-=(Angle other) { return *this = *this - other; }
   constexpr bool operator==(Angle other) const {
