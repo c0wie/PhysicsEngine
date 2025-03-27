@@ -28,13 +28,9 @@ std::pair<Pos2d, Pos2d>
 FindBoxBoxContactPoint(const std::array<Pos2d, 4> &box_verticesA,
                        const std::array<Pos2d, 4> &box_verticesB);
 
-/*
-    Modifies values of two output parameters: distanceSqured and contactPoint.
-    - contactPoint - The point on the edge between vertexA and vertexB that is
-   nearest to the given point.
-    - distanceSquared - The squared distance between the given point and the
-   nearest contactPoint.
-*/
+// point - point to which distance is calculated
+// vertexA, vertexB - vertices forming segment,
+// contact point
 void PointSegmentDistance(Pos2d point, Pos2d vertexA, Pos2d vertexB,
                           double &distance_squared, Pos2d &contact_point);
 
@@ -51,10 +47,8 @@ void RotateVertices(isContainer auto &vertices, Pos2d center, Angle angle) {
   }
 }
 
-/*
-    Returns a collection of four vertices representing the corners of a box
-    in clockwise order, based on the given box size and transform.
-*/
+// Returns vertices in counterclockwise direction starting at top right box
+// corner
 std::array<Pos2d, 4> GetBoxVertices(Pos2d box_size, Transform transform);
 
 /*
@@ -63,9 +57,9 @@ std::array<Pos2d, 4> GetBoxVertices(Pos2d box_size, Transform transform);
 */
 constexpr bool Overlap(Pos2d A, Pos2d B, double &overlap) {
   if (A.y >= B.x && B.y >= A.x) {
-    const double overlapStart = std::max(A.x, B.x);
-    const double overlapEnd = std::min(A.y, B.y);
-    overlap = overlapEnd - overlapStart;
+    const double overlap_start = std::max(A.x, B.x);
+    const double overlap_end = std::min(A.y, B.y);
+    overlap = overlap_end - overlap_start;
     return true;
   }
   overlap = -1.0;
@@ -82,8 +76,7 @@ Vec2d GetCircleAxis(const isContainer auto &vertices, Pos2d circle_center) {
   double dist = math::INF;
   Vec2d smallestAxis;
   for (const auto &vertex : vertices) {
-    const Vec2d edge = vertex - circle_center;
-    // const Vec2d edge2 = circle_center - vertex;
+    const Vec2d edge = circle_center - vertex;
     const double d = math::Length(edge);
     if (d < dist) {
       dist = d;
@@ -95,7 +88,7 @@ Vec2d GetCircleAxis(const isContainer auto &vertices, Pos2d circle_center) {
 // Returns a projection of object, represented by given vertices, onto a
 // specified axis
 Vec2d Project(const isContainer auto &vertices, Vec2d axis) {
-  double min = math::Dot(axis, *vertices.begin());
+  double min = math::Dot(axis, vertices[0]);
   double max = min;
 
   for (auto it = std::next(vertices.begin()); it != vertices.end(); it++) {

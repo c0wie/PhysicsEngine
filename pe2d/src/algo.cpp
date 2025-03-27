@@ -35,20 +35,21 @@ FindBoxBoxContactPoint(const std::array<Pos2d, 4> &box_verticesA,
   unsigned int contact_count = 1;
   for (std::size_t i = 0; i < box_verticesA.size(); i++) {
     for (std::size_t j = 0; j < box_verticesB.size(); j++) {
-      double distanceFromVertexAToEdgeBSquared = 0.0f;
+      double vertexA_edgeB_distance = 0.0f;
       Pos2d cp;
       const Pos2d p1 = box_verticesB[j];
       const Pos2d p2 = box_verticesB[(j + 1) % box_verticesB.size()];
-      PointSegmentDistance(box_verticesA[i], p1, p2,
-                           distanceFromVertexAToEdgeBSquared, cp);
-      if (math::NearlyEquel(distanceFromVertexAToEdgeBSquared,
-                            min_distance_squared, error)) {
+      PointSegmentDistance(box_verticesA[i], p1, p2, vertexA_edgeB_distance,
+                           cp);
+
+      if (math::NearlyEquel(vertexA_edgeB_distance, min_distance_squared,
+                            error)) {
         if (!math::NearlyEquel(cp, contact_point1, error)) {
           contact_point2 = cp;
           contact_count = 2;
         }
-      } else if (distanceFromVertexAToEdgeBSquared < min_distance_squared) {
-        min_distance_squared = distanceFromVertexAToEdgeBSquared;
+      } else if (vertexA_edgeB_distance < min_distance_squared) {
+        min_distance_squared = vertexA_edgeB_distance;
         contact_point1 = cp;
         contact_count = 1;
       }
@@ -91,12 +92,11 @@ void PointSegmentDistance(Pos2d point, Pos2d vertexA, Pos2d vertexB,
   const Vec2d ab = vertexB - vertexA;
   const Vec2d ap = point - vertexA;
   const double proj = math::Dot(ap, ab);
-  const double ab_length_squared = math::SquaredLength(ab);
   // relative point's projection onto the line segment
-  const double d = proj / ab_length_squared;
-  if (d <= 0.0f) {
+  const double d = proj / math::SquaredLength(ab);
+  if (d <= 0.0) {
     contact_point = vertexA;
-  } else if (d >= 1.0f) {
+  } else if (d >= 1.0) {
     contact_point = vertexB;
   } else {
     contact_point = vertexA + ab * d;
@@ -115,13 +115,14 @@ std::array<Pos2d, 4> GetBoxVertices(Size2d box_size, Transform transform) {
   const double scaled_half_sizeX = (box_size.x * scale.x) / 2.0;
   const double scaled_half_sizeY = (box_size.y * scale.y) / 2.0;
   std::array<Pos2d, 4> vertices = {
-      Pos2d(center.x - scaled_half_sizeX, center.y - scaled_half_sizeY),
       Pos2d(center.x + scaled_half_sizeX, center.y - scaled_half_sizeY),
-      Pos2d(center.x + scaled_half_sizeX, center.y + scaled_half_sizeY),
-      Pos2d(center.x - scaled_half_sizeX, center.y + scaled_half_sizeY)};
+      Pos2d(center.x - scaled_half_sizeX, center.y - scaled_half_sizeY),
+      Pos2d(center.x - scaled_half_sizeX, center.y + scaled_half_sizeY),
+      Pos2d(center.x + scaled_half_sizeX, center.y + scaled_half_sizeY)};
   RotateVertices(vertices, center, transform.angle);
   return vertices;
 }
+
 std::array<Vec2d, 2> GetBoxAxes(const std::array<Pos2d, 4> &vertices) {
   std::array<Vec2d, 2> axes;
   // is has two parrarel edges so I don't have to check other two

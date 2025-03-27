@@ -24,18 +24,18 @@ void Grid::Update(const std::unordered_map<size_t, RigidBody> &objects) {
   m_Grid.resize(m_Size.y);
   for (const auto &object : objects) {
     const std::array<Pos2d, 4> boundingBox = object.second.GetBoundingBox();
-    bool isInsideGrid = false;
+    bool inside_grid = false;
     for (int i = 0; i < 4; i++) {
       if (Contains(boundingBox[i])) {
-        isInsideGrid = true;
+        inside_grid = true;
         break;
       }
     }
-    if (!isInsideGrid) {
+    if (!inside_grid) {
       continue;
     }
-    Vector2 object_min = boundingBox[0];
-    Vector2 object_max = boundingBox[2];
+    Vector2 object_min = boundingBox[1];
+    Vector2 object_max = boundingBox[3];
 
     // calculate object's coordinates in grid
     int body_coord_minX = static_cast<int>(

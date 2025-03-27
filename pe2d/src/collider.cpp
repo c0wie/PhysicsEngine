@@ -53,7 +53,7 @@ CollisionPoints FindCircleCircleCollision(double radiusA,
   const double overlap = sum - length;
   Vector2 normal = math::Normalize(diff);
   const Pos2d contact_point = centerA - normal * radiusA;
-  return CollisionPoints({-normal.x, -normal.y}, overlap, contact_point, true);
+  return CollisionPoints(normal, overlap, contact_point, true);
 }
 
 CollisionPoints FindCircleBoxCollision(double radius,
@@ -96,9 +96,8 @@ CollisionPoints FindCircleBoxCollision(double radius,
 
   const Vector2 contact_point =
       algo::FindCircleBoxContactPoint(box_vertices, circle_center);
-  
-  return CollisionPoints({smallest_axis.x, smallest_axis.y}, overlap,
-                     contact_point, true);
+
+  return CollisionPoints(-1.0 * smallest_axis, overlap, contact_point, true);
 }
 CollisionPoints FindBoxCircleCollision(Size2d box_size, Transform box_transform,
                                        double radius,
@@ -137,12 +136,13 @@ CollisionPoints FindBoxBoxCollision(Size2d box_sizeA, Transform box_transformA,
       algo::GetBoxVertices(box_sizeB, box_transformB);
   const std::array<Vec2d, 2> axesA = algo::GetBoxAxes(verticesA);
   const std::array<Vec2d, 2> axesB = algo::GetBoxAxes(verticesB);
-  const Vec2d *smallest_axis = nullptr;
+  Vec2d smallest_axis;
   double overlap = math::INF;
+
   for (int i = 0; i < axesA.size(); i++) {
     const Vector2 pA1 = algo::Project(verticesA, axesA[i]);
     const Vector2 pA2 = algo::Project(verticesB, axesA[i]);
-    double overlapA = 0.0f;
+    double overlapA = 0.0;
     if (!algo::Overlap(pA1, pA2, overlapA)) {
       return CollisionPoints();
     }
@@ -154,19 +154,19 @@ CollisionPoints FindBoxBoxCollision(Size2d box_sizeA, Transform box_transformA,
     }
     if (overlapA < overlap) {
       overlap = overlapA;
-      smallest_axis = &axesA[i];
+      smallest_axis = axesA[i];
     }
     if (overlapB < overlap) {
       overlap = overlapB;
-      smallest_axis = &axesB[i];
+      smallest_axis = axesB[i];
     }
   }
   std::pair<Pos2d, Pos2d> contactPoints =
       algo::FindBoxBoxContactPoint(verticesA, verticesB);
   if (contactPoints.second == Pos2d(-1.0f, -1.0f)) {
-    return CollisionPoints(*smallest_axis, overlap, contactPoints.first, true);
+    return CollisionPoints(smallest_axis, overlap, contactPoints.first, true);
   }
-  return CollisionPoints(*smallest_axis, overlap, contactPoints.first,
+  return CollisionPoints(smallest_axis, overlap, contactPoints.first,
                          contactPoints.second, true);
 }
 } // namespace pe2d

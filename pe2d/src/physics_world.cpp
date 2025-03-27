@@ -19,16 +19,16 @@ void PhysicsWorld::Step(float delta_time) {
   for (std::size_t i = 0; i < m_Substeps; i++) {
     const float subtime = delta_time / (float)m_Substeps;
     ApplyGravity();
-    for (auto it = Begin(); it != End(); it++) {
-      RigidBody &object = it->second;
-      if (object.IsStatic() || object.sleep) {
-        continue;
-      }
-      // linear integration
-      // działa znacznie lepiej z prędkością aktualizowaną dwukrotnie przy kolizjach 
-      const Vector2 acceleration = object.GetForce() * object.GetInvMass();
-      object.AddLinearVelocity(acceleration * subtime);
-    }
+    // for (auto it = Begin(); it != End(); it++) {
+    //   RigidBody &object = it->second;
+    //   if (object.IsStatic() || object.sleep) {
+    //     continue;
+    //   }
+    //   // linear integration
+    //   // działa znacznie lepiej z prędkością aktualizowaną dwukrotnie przy
+    //   kolizjach const Vector2 acceleration = object.GetForce() *
+    //   object.GetInvMass(); object.AddLinearVelocity(acceleration * subtime);
+    // }
     ResolveCollisions(subtime);
     MoveObjects(subtime);
   }

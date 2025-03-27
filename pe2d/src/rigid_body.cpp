@@ -7,6 +7,7 @@
 #include "assert.hpp"
 #include "math.hpp"
 #include "vector2.hpp"
+#include <cmath>
 
 namespace pe2d {
 
@@ -82,7 +83,7 @@ std::array<Pos2d, 4> RigidBody::GetBoundingBox() const {
   const Pos2d top_right_corner = Pos2d(bot_right_corner.x, top_left_corner.y);
   const Pos2d bot_left_corner = Pos2d(top_left_corner.x, bot_right_corner.y);
 
-  return {top_left_corner, top_right_corner, bot_right_corner, bot_left_corner};
+  return {top_right_corner, top_left_corner, bot_left_corner, bot_right_corner};
 }
 
 double RigidBody::CalculateRotationalInertia() {
@@ -95,6 +96,6 @@ double RigidBody::CalculateRotationalInertia() {
   }
   const double width = m_Size.x;
   const double height = m_Size.y;
-  return 0.083 * m_Mass * (width * width + height * height);
+  return 0.083 * m_Mass * (std::pow(width, 2) + std::pow(height, 2));
 }
 } // namespace pe2d
