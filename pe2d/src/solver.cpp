@@ -2,7 +2,6 @@
 #include "solver.hpp"
 
 // local
-#include "assert.hpp"
 #include "collision_points.hpp"
 #include "math.hpp"
 #include "rigid_body.hpp"
@@ -14,7 +13,7 @@
 #include <cstddef>
 
 namespace pe2d {
-void PositionSolver(std::vector<Collision> &collisions, float delta_time) {
+void PositionSolver(std::vector<Collision> &collisions) {
   for (std::size_t i = 0; i < collisions.size(); i++) {
     RigidBody &rigid_bodyA = collisions[i].GetObjectA();
     RigidBody &rigid_bodyB = collisions[i].GetObjectB();
@@ -35,12 +34,12 @@ void PositionSolver(std::vector<Collision> &collisions, float delta_time) {
       rigid_bodyA.Move(minimal_translation_vector);
     } else {
       rigid_bodyA.Move(minimal_translation_vector / 2.0);
-      rigid_bodyB.Move(minimal_translation_vector / -2.0);
+      rigid_bodyB.Move(-1.0 * minimal_translation_vector / 2.0);
     }
   }
 }
 
-void ImpulseSolver(std::vector<Collision> &collisions, float delta_time) {
+void ImpulseSolver(std::vector<Collision> &collisions) {
   for (auto &collision : collisions) {
     RigidBody &rigid_bodyA = collision.GetObjectA();
     RigidBody &rigid_bodyB = collision.GetObjectB();

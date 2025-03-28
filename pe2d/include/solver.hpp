@@ -11,12 +11,12 @@ namespace pe2d {
     Function responsible for calculating collisions between rigidObjects.
     The solver only pulls them apart to prevent penetration.
 */
-void PositionSolver(std::vector<Collision> &collisions, float delta_time);
+void PositionSolver(std::vector<Collision> &collisions);
 
 /*
     Function responsible for calculating collisions between rigidObjects.
     The solver take into account the torque, their velocity, bounciness, and
    both static and dynamic friction.
 */
-void ImpulseSolver(std::vector<Collision> &collisions, float delta_time);
+void ImpulseSolver(std::vector<Collision> &collisions);
 } // namespace pe2d

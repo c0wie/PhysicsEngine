@@ -58,9 +58,7 @@ public:
   }
   void ClearObjects() { m_Objects.clear(); }
 
-  void SetSolver(
-      std::function<void(std::vector<Collision> &collisions, float delta_time)>
-          solver) {
+  void SetSolver(std::function<void(std::vector<Collision> &collisions)> solver) {
     m_Solver = solver;
   }
 
@@ -86,7 +84,7 @@ private:
 
 private:
   Grid m_Grid;
-  std::function<void(std::vector<Collision> &collisions, float delta_time)>
+  std::function<void(std::vector<Collision> &collisions)>
       m_Solver{PositionSolver};
   unsigned int m_Substeps{8U};
   bool m_IsGridOn{false};
