@@ -98,7 +98,7 @@ void PhysicsWorld::FindCollisions(size_t idA, size_t idB,
   }
   // check if objects are penetrating if so pull them apart
   const CollisionPoints points = TestCollison(a, b);
-  if (points.HasCollision) {
+  if (points.contact_count != 0) {
     collisions.emplace_back(a, b, points);
   }
 }

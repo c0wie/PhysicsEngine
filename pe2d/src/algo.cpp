@@ -36,42 +36,44 @@ FindBoxBoxContactPoint(const std::array<Pos2d, 4> &box_verticesA,
   for (std::size_t i = 0; i < box_verticesA.size(); i++) {
     for (std::size_t j = 0; j < box_verticesB.size(); j++) {
       double vertexA_edgeB_distance = 0.0f;
-      Pos2d cp;
+      Pos2d contact_point;
       const Pos2d p1 = box_verticesB[j];
       const Pos2d p2 = box_verticesB[(j + 1) % box_verticesB.size()];
       PointSegmentDistance(box_verticesA[i], p1, p2, vertexA_edgeB_distance,
-                           cp);
+                           contact_point);
 
       if (math::NearlyEquel(vertexA_edgeB_distance, min_distance_squared,
                             error)) {
-        if (!math::NearlyEquel(cp, contact_point1, error)) {
-          contact_point2 = cp;
+        if (!math::NearlyEquel(contact_point, contact_point1, error)) {
+          contact_point2 = contact_point;
           contact_count = 2;
         }
       } else if (vertexA_edgeB_distance < min_distance_squared) {
         min_distance_squared = vertexA_edgeB_distance;
-        contact_point1 = cp;
+        contact_point1 = contact_point;
         contact_count = 1;
       }
     }
   }
+
   for (std::size_t i = 0; i < box_verticesB.size(); i++) {
     for (std::size_t j = 0; j < box_verticesA.size(); j++) {
       double vertexB_edgeA_distance_squared = 0.0;
-      Pos2d cp;
+      Pos2d contact_point;
       const Pos2d p1 = box_verticesA[j];
       const Pos2d p2 = box_verticesA[(j + 1) % box_verticesA.size()];
       PointSegmentDistance(box_verticesB[i], p1, p2,
-                           vertexB_edgeA_distance_squared, cp);
+                           vertexB_edgeA_distance_squared, contact_point);
+
       if (math::NearlyEquel(vertexB_edgeA_distance_squared,
                             min_distance_squared, error)) {
-        if (!math::NearlyEquel(cp, contact_point1, error)) {
-          contact_point2 = cp;
+        if (!math::NearlyEquel(contact_point, contact_point1, error)) {
+          contact_point2 = contact_point;
           contact_count = 2;
         }
       } else if (vertexB_edgeA_distance_squared < min_distance_squared) {
         min_distance_squared = vertexB_edgeA_distance_squared;
-        contact_point1 = cp;
+        contact_point1 = contact_point;
         contact_count = 1;
       }
     }

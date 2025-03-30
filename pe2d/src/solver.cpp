@@ -19,9 +19,9 @@ void PositionSolver(std::vector<Collision> &collisions) {
     RigidBody &rigid_bodyB = collisions[i].GetObjectB();
 
     const CollisionPoints &points = collisions[i].GetCollisionPoints();
-    const Vector2 normal = points.Normal;
+    const Vector2 normal = points.normal;
 
-    Vector2 minimal_translation_vector = normal * points.Depth;
+    Vector2 minimal_translation_vector = normal * points.depth;
     if (math::Dot(minimal_translation_vector,
                   rigid_bodyA.GetPosition() - rigid_bodyB.GetPosition()) <
         0.0) {
@@ -49,7 +49,7 @@ void ImpulseSolver(std::vector<Collision> &collisions) {
     const double inv_massB = rigid_bodyB.GetInvMass();
     const double inv_inertiaA = rigid_bodyA.GetInvRotationalInertia();
     const double inv_inertiaB = rigid_bodyB.GetInvRotationalInertia();
-    const unsigned int contact_count = points.ContactCount;
+    const unsigned int contact_count = points.contact_count;
     const double restitution_coefficient =
         (rigid_bodyA.GetRestitution() + rigid_bodyB.GetRestitution()) * 0.5;
     const double static_friction_coefficient =
@@ -59,17 +59,16 @@ void ImpulseSolver(std::vector<Collision> &collisions) {
         (rigid_bodyA.GetDynamicFriction() + rigid_bodyB.GetDynamicFriction()) *
         0.5;
 
-    const std::array<Pos2d, 2> contact_list = {points.ContactPoint1,
-                                               points.ContactPoint2};
+    const std::array<Pos2d, 2> contact_list = points.GetContactPoints();
 
-    Vector2 minimal_translation_vector = points.Normal * points.Depth;
+    Vector2 minimal_translation_vector = points.normal * points.depth;
     if (math::Dot(minimal_translation_vector,
                   rigid_bodyA.GetPosition() - rigid_bodyB.GetPosition()) <
         0.0) {
       minimal_translation_vector *= -1.0;
-      points.Normal *= -1.0;
+      points.normal *= -1.0;
     }
-    const Vec2d normal = points.Normal;
+    const Vec2d normal = points.normal;
 
     // list of vectors pointing from object A's center of mass to the contact
     // points

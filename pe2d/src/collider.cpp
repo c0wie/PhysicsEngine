@@ -3,7 +3,6 @@
 
 // local
 #include "algo.hpp"
-#include "assert.hpp"
 #include "rigid_body.hpp"
 #include "vector2.hpp"
 
@@ -53,7 +52,7 @@ CollisionPoints FindCircleCircleCollision(double radiusA,
   const double overlap = sum - length;
   Vector2 normal = math::Normalize(diff);
   const Pos2d contact_point = centerA - normal * radiusA;
-  return CollisionPoints(normal, overlap, contact_point, true);
+  return CollisionPoints(normal, overlap, contact_point);
 }
 
 CollisionPoints FindCircleBoxCollision(double radius,
@@ -97,7 +96,7 @@ CollisionPoints FindCircleBoxCollision(double radius,
   const Vector2 contact_point =
       algo::FindCircleBoxContactPoint(box_vertices, circle_center);
 
-  return CollisionPoints(-1.0 * smallest_axis, overlap, contact_point, true);
+  return CollisionPoints(-1.0 * smallest_axis, overlap, contact_point);
 }
 CollisionPoints FindBoxCircleCollision(Size2d box_size, Transform box_transform,
                                        double radius,
@@ -114,7 +113,7 @@ CollisionPoints FindBoxCircleCollision(Size2d box_size, Transform box_transform,
   }
   CollisionPoints p =
       FindCircleBoxCollision(radius, circle_transform, box_size, box_transform);
-  p.Normal *= -1.0f;
+  p.normal *= -1.0f;
   return p;
 }
 CollisionPoints FindBoxBoxCollision(Size2d box_sizeA, Transform box_transformA,
@@ -161,12 +160,12 @@ CollisionPoints FindBoxBoxCollision(Size2d box_sizeA, Transform box_transformA,
       smallest_axis = axesB[i];
     }
   }
-  std::pair<Pos2d, Pos2d> contactPoints =
+  const std::pair<Pos2d, Pos2d> contact_points =
       algo::FindBoxBoxContactPoint(verticesA, verticesB);
-  if (contactPoints.second == Pos2d(-1.0f, -1.0f)) {
-    return CollisionPoints(smallest_axis, overlap, contactPoints.first, true);
+  if (contact_points.second == Pos2d(-1.0, -1.0)) {
+    return CollisionPoints(smallest_axis, overlap, contact_points.first);
   }
-  return CollisionPoints(smallest_axis, overlap, contactPoints.first,
-                         contactPoints.second, true);
+  return CollisionPoints(smallest_axis, overlap, contact_points.first,
+                         contact_points.second);
 }
 } // namespace pe2d

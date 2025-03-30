@@ -2,6 +2,7 @@
 
 // local
 #include "vector2.hpp"
+#include <array>
 
 namespace pe2d {
 /*
@@ -19,22 +20,25 @@ namespace pe2d {
 struct CollisionPoints {
 public:
   CollisionPoints() = default;
-  CollisionPoints(Vec2d normal, float depth, Pos2d contact_point1,
-                  Pos2d contact_point2, bool has_collision)
-      : Normal(normal), ContactPoint1(contact_point1),
-        ContactPoint2(contact_point2), Depth(depth), ContactCount(2),
-        HasCollision(has_collision) {}
-  CollisionPoints(Vec2d normal, float depth, Pos2d contact_point1,
-                  bool has_collision)
-      : Normal(normal), ContactPoint1(contact_point1), Depth(depth),
-        ContactCount(1), HasCollision(has_collision) {}
 
+  CollisionPoints(Vec2d normal, float depth, Pos2d contact_point1,
+                  Pos2d contact_point2)
+      : normal(normal), contact_point1(contact_point1), contact_point2(contact_point2),
+        depth(depth), contact_count(2) {}
+
+  CollisionPoints(Vec2d normal, float depth, Pos2d contact_point1)
+      : normal(normal), contact_point1(contact_point1), depth(depth),
+        contact_count(1) {}
+  
+  std::array<Pos2d, 2> GetContactPoints() const {return {contact_point1, contact_point2};}
 public:
-  Vec2d Normal{0.0, 0.0}; // normalized length of vector B-A
-  Pos2d ContactPoint1{0.0, 0.0};
-  Pos2d ContactPoint2{0.0, 0.0};
-  float Depth{0.0}; // length of overlap beetwen two objects
-  unsigned int ContactCount{0};
-  bool HasCollision{false};
+  // normalized length of vector B-A
+  Vec2d normal{0.0, 0.0};
+  // penetration length
+  float depth{0.0};
+  // contact points count
+  unsigned int contact_count{0};
+  Pos2d contact_point1;
+  Pos2d contact_point2;
 };
 } // namespace pe2d

@@ -1,6 +1,7 @@
 #pragma once
 
 // local
+#include "rigid_body.hpp"
 #include "scene_settings.hpp"
 
 // lib
@@ -25,6 +26,7 @@ public:
   void Update(sf::Vector2i position, float delta_time);
   pe2d::PhysicsWorld &GetPhysicsWorld() { return m_PhysicsWorld; }
   std::vector<pe2d::Collision> GetCollisions() const { return m_Collisions; }
+  pe2d::RigidBody GetLastObject() { return m_PhysicsWorld.At(m_LastId); }
 
 private:
   constexpr static float SPAWN_COOLDOWN = 0.1f;

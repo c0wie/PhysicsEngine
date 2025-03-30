@@ -1,4 +1,5 @@
 // local
+#include "rigid_body.hpp"
 #include "scene_settings.hpp"
 #include "solver.hpp"
 #include "vector2.hpp"
@@ -29,7 +30,7 @@ int main() {
 
   float delta_time = 0.0f;
   bool draw_bounding_boxes = false;
-  
+
   sf::Clock DT_Clock;
   while (window.isOpen()) {
     sf::Time delta_time = DT_Clock.restart();
@@ -44,7 +45,7 @@ int main() {
     visual_world.Step(delta_time.asSeconds());
     
     ImGui::SFML::Update(window, delta_time);
-    
+
     if(ImGui::Begin("Scene settings")) {
       if (scene_settings.IsGridOn) {
         if (ImGui::Button("Grid: ON")) {
@@ -85,6 +86,15 @@ int main() {
           scene_settings.DrawTangentLines = true;
         }
       }
+      if (scene_settings.DrawContactPoints) {
+        if (ImGui::Button("Draw Contact Points: ON")) {
+          scene_settings.DrawContactPoints = false;
+        }
+      } else {
+        if (ImGui::Button("Draw Contact Points: OFF")) {
+          scene_settings.DrawContactPoints = true;
+        }
+      }
       if(scene_settings.Solver == SolverType::POSITION_SOLVER) {
         if(ImGui::Button("Solver type: POSITION_SOLVER")) {
           scene_settings.Solver = SolverType::IMPULSE_SOLVER;
@@ -100,7 +110,33 @@ int main() {
         visual_world.GetPhysicsWorld().ClearObjects();
         visual_world.SetUp();
       }
-      ImGui::Text("Number of rigid bodies: %zu", visual_world.GetPhysicsWorld().Size());
+      if (ImGui::CollapsingHeader("Last object information")) {
+        const pe2d::RigidBody last_object = visual_world.GetLastObject();
+        ImGui::Text("ID: %zu", last_object.GetID());
+        if (last_object.IsStatic()) {
+          ImGui::Text("Static object");
+        } else {
+          ImGui::Text("Non static object");
+        }
+        ImGui::Text("Position: %f, %f", last_object.GetPosition().x,
+                    last_object.GetPosition().y);
+        ImGui::Text("Rotation(degrees): %f",
+                    last_object.GetAngle().AsDegrees());
+        ImGui::Text("Mass: %f", last_object.GetMass());
+        ImGui::Text("Rotational inertia: %f",
+                    last_object.GetRotationalInertia());
+        ImGui::Text("Angular velocity: %f", last_object.GetAngularVelocity());
+        ImGui::Text("Linear velocity: %f, %f",
+                    last_object.GetLinearVelocity().x,
+                    last_object.GetLinearVelocity().y);
+        ImGui::Text("Static friction: %f", last_object.GetStaticFriction());
+        ImGui::Text("Dynamic friction %f", last_object.GetDynamicFriction());
+        ImGui::Text("Restitution %f", last_object.GetRestitution());
+        ImGui::Text("Force: %f, %f", last_object.GetForce().x,
+                    last_object.GetForce().y);
+      }
+      ImGui::Text("Number of rigid bodies: %zu",
+                  visual_world.GetPhysicsWorld().Size());
       ImGui::Text("FPS %i", (int)ImGui::GetIO().Framerate);
     }
     ImGui::End();

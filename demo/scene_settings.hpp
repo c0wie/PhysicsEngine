@@ -6,5 +6,6 @@ struct SceneSettings {
   bool DrawTangentLines{false};
   bool DrawNormalLines{false};
   bool DrawImpulses{false};
+  bool DrawContactPoints{false};
   SolverType Solver{IMPULSE_SOLVER};
 };

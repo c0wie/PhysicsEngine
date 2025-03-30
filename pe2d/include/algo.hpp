@@ -8,6 +8,7 @@
 
 // std
 #include <array>
+#include <cmath>
 
 namespace pe2d {
 class CircleCollider;
@@ -35,8 +36,8 @@ void PointSegmentDistance(Pos2d point, Pos2d vertexA, Pos2d vertexB,
                           double &distance_squared, Pos2d &contact_point);
 
 void RotateVertices(isContainer auto &vertices, Pos2d center, Angle angle) {
-  const double cos_angle = cosf(angle.AsRadians());
-  const double sin_angle = sinf(angle.AsRadians());
+  const double cos_angle = std::cos(angle.AsRadians());
+  const double sin_angle = std::sin(angle.AsRadians());
   for (auto &vertex : vertices) {
     const double relativeX = vertex.x - center.x;
     const double relativeY = vertex.y - center.y;
