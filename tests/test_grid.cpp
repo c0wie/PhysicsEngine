@@ -6,38 +6,41 @@
 #include <gtest/gtest.h>
 
 namespace {
-class GridTestable : public pe2d::Grid {
+using namespace pe2d;
+class GridTestable : public Grid {
 public:
   GridTestable() : Grid() {}
   GridTestable &operator=(const Grid &other) {
     if (this == &other) {
       return *this;
     }
-    pe2d::Grid::operator=(other);
+    Grid::operator=(other);
     return *this;
   }
 
 public:
-  using pe2d::Grid::Contains;
-  using pe2d::Grid::HasBeenChecked;
-  using pe2d::Grid::m_Grid;
+  using Grid::Contains;
+  using Grid::HasBeenChecked;
+  using Grid::m_Grid;
 };
 
 class GridTest : public testing::Test {
 protected:
   void SetUp() override {
-    m_Grid = pe2d::Grid(pe2d::Vec2d(0.0f, 0.0f), pe2d::Size2i(5, 5), 20.0f);
+    m_Grid = Grid(Vec2d(0.0f, 0.0f), Size2i(5, 5), 20.0f);
     m_Grid.m_Grid.resize(5);
     for (int i = 0; i < 5; i++) {
       m_Grid.m_Grid[i].resize(5);
     }
   }
-  void Test_Contains(pe2d::Pos2d point, bool expected_result) {
+  void Test_Contains(Pos2d point, bool expected_result) {
     const bool result = m_Grid.Contains(point);
     EXPECT_EQ(result, expected_result);
   }
-  void Test_Update(const std::unordered_map<size_t, pe2d::RigidBody> &objects,
-                   const std::vector<pe2d::Vec2i> &expected_taken_cells) {
+
+  void Test_Update(const std::unordered_map<size_t, RigidBody> &objects,
+                   const std::vector<Vec2i> &expected_taken_cells) {
+
     m_Grid.Update(objects);
     for (int i = 0; i < expected_taken_cells.size(); i++) {
       const int x = expected_taken_cells[i].x;
@@ -46,6 +49,7 @@ protected:
       EXPECT_EQ(isEmpty, false) << x << " " << y << '\n';
     }
   }
+
   void Test_GetCollisionPairs(
       std::list<std::pair<size_t, size_t>> &expectedIDPairs) {
     auto IDpairs = m_Grid.GetCollisionPairs();
@@ -72,34 +76,32 @@ protected:
   GridTestable m_Grid;
 };
 
-TEST_F(GridTest, ContainsTrue) {
-  const pe2d::Pos2d point1 = pe2d::Pos2d(50.0, 50.0);
-  const pe2d::Pos2d point2 = pe2d::Pos2d(0.0, 100.0);
+TEST_F(GridTest, ContainsPoint) {
+  const Pos2d point1 = Pos2d(50.0, 50.0);
+  const Pos2d point2 = Pos2d(0.0, 100.0);
   this->Test_Contains(point1, true);
   this->Test_Contains(point2, true);
 }
 
-TEST_F(GridTest, ContainsFalse) {
-  const pe2d::Pos2d point1 = pe2d::Pos2d(-50.0, 50.0);
-  const pe2d::Pos2d point2 = pe2d::Pos2d(-1.0, 100.1);
+TEST_F(GridTest, NotContainsPoint) {
+  const Pos2d point1 = Pos2d(-50.0, 50.0);
+  const Pos2d point2 = Pos2d(-1.0, 100.1);
   this->Test_Contains(point1, false);
   this->Test_Contains(point2, false);
 }
 
 TEST_F(GridTest, Update) {
-  const std::unordered_map<size_t, pe2d::RigidBody> objects = {
-      {0, pe2d::RigidBody(0, pe2d::Circle, pe2d::Size2d(19.0, 19.0),
-                          pe2d::Transform(), 0, false, {})},
-      {1, pe2d::RigidBody(
-              1, pe2d::Box, pe2d::Size2d(15.0f, 15.0f),
-              pe2d::Transform({50.0f, 50.0f}, pe2d::Angle::FromDegrees(45.0)),
-              0.0, false, {})}};
+  const std::unordered_map<size_t, RigidBody> objects = {
+      {0,
+       RigidBody(0, Circle, Size2d(19.0, 19.0), Transform(), 10.0, false, {})},
+      {1, RigidBody(1, Box, Size2d(15.0f, 15.0f),
+                    Transform({50.0f, 50.0f}, Angle::FromDegrees(45.0)), 10.0,
+                    false, {})}};
 
-  const std::vector<pe2d::Vec2i> expected_taken_cells = {
-      pe2d::Vec2i(1.0, 1.0), pe2d::Vec2i(2.0, 1.0), pe2d::Vec2i(3.0, 1.0),
-      pe2d::Vec2i(1.0, 2.0), pe2d::Vec2i(2.0, 2.0), pe2d::Vec2i(3.0, 2.0),
-      pe2d::Vec2i(1.0, 3.0), pe2d::Vec2i(2.0, 3.0), pe2d::Vec2i(3.0, 3.0),
-      pe2d::Vec2i(0.0, 0.0)};
+  const std::vector<Vec2i> expected_taken_cells = {
+      Vec2i(1.0, 1.0), Vec2i(2.0, 1.0), Vec2i(3.0, 1.0), Vec2i(1.0, 2.0),
+      Vec2i(2.0, 2.0), Vec2i(3.0, 2.0), Vec2i(1.0, 3.0), Vec2i(2.0, 3.0),
+      Vec2i(3.0, 3.0), Vec2i(0.0, 0.0)};
   this->Test_Update(objects, expected_taken_cells);
 }
 
@@ -114,13 +116,13 @@ TEST_F(GridTest, GetCollisionPairs) {
   this->Test_GetCollisionPairs(expectedIDPairs);
 }
 
-TEST_F(GridTest, HasBeenCheckedTrue) {
+TEST_F(GridTest, HasBeenChecked) {
   std::unordered_multimap<size_t, size_t> checkedPairs = {
       {1, 2}, {4, 6}, {0, 2}, {6, 9}};
   this->Test_HasBeenChecked(checkedPairs, std::make_pair(1, 2), true);
 }
 
-TEST_F(GridTest, HasBeenCheckedFalse) {
+TEST_F(GridTest, HasNotBeenChecked) {
   std::unordered_multimap<size_t, size_t> checkedPairs = {
       {1, 2}, {4, 6}, {0, 2}, {6, 9}};
   this->Test_HasBeenChecked(checkedPairs, std::make_pair(4, 8), false);
