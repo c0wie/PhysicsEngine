@@ -16,6 +16,7 @@ namespace pe2d {
    by updating the grid with object positions and retrieving a list of potential
    collision pairs for further, more detailed collision detection.
 */
+/// @brief nigga
 class Grid {
 public:
   Grid() = default;

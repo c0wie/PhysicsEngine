@@ -38,6 +38,22 @@ FetchContent_Declare(ImGui-SFML
     SYSTEM)
 FetchContent_MakeAvailable(ImGui-SFML)
 
+#doxygen
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+  set(DOXYGEN_INPUT ${PROJECT_SOURCE_DIR}/pe2d/include ${PROJECT_SOURCE_DIR}/pe2d/src ${PROJECT_SOURCE_DIR}/docs/examples)
+  set(DOXYGEN_EXAMPLE_PATH ${PROJECT_SOURCE_DIR}/docs/examples)
+  
+  set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/docs/output)
+  set(DOXYGEN_GENERATE_HTML YES)
+  set(DOXYGEN_PROJECT_NAME "pe2d - c++ 2d Physics Engine")
+
+  doxygen_add_docs(docs
+    ${DOXYGEN_INPUT}
+    COMMENT "Generating API documentation with Doxygen"
+  )
+endif()
+
 #tests
 if(BUILD_TESTS)
   include(CTest)

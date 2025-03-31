@@ -29,7 +29,7 @@ TEST(Vector2Test, EqualityCheck) {
 TEST(Vector2Test, InequalityCheck) {
   Vector2<double> v1(1.0, 1.0);
   Vector2<double> v2(1.0, 1.0);
-  Vector2<double> v3(4.0, 4.0);
+  Vector2<double> v3(1.0, 4.0);
   EXPECT_FALSE(v1 != v2);
   EXPECT_TRUE(v1 != v3);
 }
