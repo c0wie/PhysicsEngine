@@ -15,7 +15,7 @@ constexpr double RADIANS_TO_DEGREES_SCALAR = 57.295779513082300;
 // (PI / 180.0)
 constexpr double DEGREES_TO_RADIANS_SCALAR = 0.017453292519943;
 
-template <typename T> constexpr double Length(Vector2<T> a) {
+template <typename T> constexpr T Length(Vector2<T> a) {
   return std::hypot(a.x, a.y);
 }
 
@@ -65,11 +65,12 @@ constexpr double DegreesToRadians(double angle_deegres) {
   return angle_deegres * DEGREES_TO_RADIANS_SCALAR;
 }
 
-constexpr bool NearlyEquel(double a, double b, double absError) {
-  return std::abs(a - b) <= absError;
+template <typename T>
+constexpr bool NearlyEquel(T a, T b, double abs_error = 0.01) {
+  return std::abs(a - b) <= abs_error;
 }
 
-template <typename T>
+template <typename T> 
 constexpr bool NearlyEquel(Vector2<T> a, Vector2<T> b, double absError) {
   return SquaredDistance(a, b) < absError * absError;
 }

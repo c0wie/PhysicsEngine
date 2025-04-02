@@ -38,7 +38,7 @@ FetchContent_Declare(ImGui-SFML
     SYSTEM)
 FetchContent_MakeAvailable(ImGui-SFML)
 
-#doxygen
+#Doxygen
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
   set(DOXYGEN_INPUT ${PROJECT_SOURCE_DIR}/pe2d/include ${PROJECT_SOURCE_DIR}/pe2d/src ${PROJECT_SOURCE_DIR}/docs/examples)
