@@ -45,21 +45,21 @@ void ImpulseSolver(std::vector<Collision> &collisions) {
     RigidBody &rigid_bodyB = collision.GetObjectB();
 
     CollisionPoints &points = collision.GetCollisionPoints();
-    const double inv_massA = rigid_bodyA.GetInvMass();
-    const double inv_massB = rigid_bodyB.GetInvMass();
-    const double inv_inertiaA = rigid_bodyA.GetInvRotationalInertia();
-    const double inv_inertiaB = rigid_bodyB.GetInvRotationalInertia();
+    const float inv_massA = rigid_bodyA.GetInvMass();
+    const float inv_massB = rigid_bodyB.GetInvMass();
+    const float inv_inertiaA = rigid_bodyA.GetInvRotationalInertia();
+    const float inv_inertiaB = rigid_bodyB.GetInvRotationalInertia();
     const unsigned int contact_count = points.contact_count;
-    const double restitution_coefficient =
+    const float restitution_coefficient =
         (rigid_bodyA.GetRestitution() + rigid_bodyB.GetRestitution()) * 0.5;
-    const double static_friction_coefficient =
+    const float static_friction_coefficient =
         (rigid_bodyA.GetStaticFriction() + rigid_bodyB.GetStaticFriction()) *
         0.5;
-    const double dynamic_friction_coefficient =
+    const float dynamic_friction_coefficient =
         (rigid_bodyA.GetDynamicFriction() + rigid_bodyB.GetDynamicFriction()) *
         0.5;
 
-    const std::array<Pos2d, 2> contact_list = points.GetContactPoints();
+    const std::array<Vec2f, 2> contact_list = points.GetContactPoints();
 
     Vector2 minimal_translation_vector = points.normal * points.depth;
     if (math::Dot(minimal_translation_vector,
@@ -68,16 +68,16 @@ void ImpulseSolver(std::vector<Collision> &collisions) {
       minimal_translation_vector *= -1.0;
       points.normal *= -1.0;
     }
-    const Vec2d normal = points.normal;
+    const Vec2f normal = points.normal;
 
     // list of vectors pointing from object A's center of mass to the contact
     // points
-    std::array<Vec2d, 2> rA_list;
+    std::array<Vec2f, 2> rA_list;
     // list of vectors pointing from object A's center of mass to the contact
     // points
-    std::array<Vec2d, 2> rB_list;
-    std::array<double, 2> impulse_scalars;
-    std::array<Vec2d, 2> friction_impulses;
+    std::array<Vec2f, 2> rB_list;
+    std::array<float, 2> impulse_scalars;
+    std::array<Vec2f, 2> friction_impulses;
 
 
     if (rigid_bodyA.IsStatic()) {
@@ -103,26 +103,26 @@ void ImpulseSolver(std::vector<Collision> &collisions) {
           rigid_bodyB.GetLinearVelocity() -
           (rB_perp * rigid_bodyB.GetAngularVelocity());
 
-      const double rA_perp_normal = math::Dot(rA_perp, normal);
-      const double rB_perp_normal = math::Dot(rB_perp, normal);
+      const float rA_perp_normal = math::Dot(rA_perp, normal);
+      const float rB_perp_normal = math::Dot(rB_perp, normal);
 
-      const double denominator =
+      const float denominator =
           (inv_massA + inv_massB) +
           std::pow(rA_perp_normal, 2) * inv_inertiaA +
           std::pow(rB_perp_normal, 2) * inv_inertiaB;
 
-      double impulse_scalar = -(1.0 + restitution_coefficient) *
+      float impulse_scalar = -(1.0 + restitution_coefficient) *
                               math::Dot(relative_velocity, normal);
       impulse_scalar /= denominator;
-      impulse_scalar /= (double)contact_count;
+      impulse_scalar /= (float)contact_count;
       impulse_scalars[i] = impulse_scalar;
     }
 
     // apply collision impulses
     for (std::size_t i = 0; i < contact_count; i++) {
       const Vector2 impulse = impulse_scalars[i] * normal;
-      const double torqueA = math::Cross(rA_list[i], impulse);
-      const double torqueB = math::Cross(rB_list[i], impulse);
+      const float torqueA = math::Cross(rA_list[i], impulse);
+      const float torqueB = math::Cross(rB_list[i], impulse);
 
       rigid_bodyA.AddLinearVelocity(impulse * inv_massA);
       rigid_bodyA.AddAngularVelocity(torqueA * inv_inertiaA);
@@ -148,13 +148,13 @@ void ImpulseSolver(std::vector<Collision> &collisions) {
       const float rA_perp_tangent = math::Dot(rA_perp, tangent);
       const float rB_perp_tangent = math::Dot(rB_perp, tangent);
 
-      const double denominator = inv_massA + inv_massB +
+      const float denominator = inv_massA + inv_massB +
                                  std::pow(rA_perp_tangent, 2) * inv_inertiaA +
                                  std::pow(rB_perp_tangent, 2) * inv_inertiaB;
 
       float friction_impulse_scalar = math::Dot(relative_velocity, tangent);
       friction_impulse_scalar /= denominator;
-      friction_impulse_scalar /= (double)contact_count;
+      friction_impulse_scalar /= (float)contact_count;
 
       const float impulse_scalar = impulse_scalars[i];
 
@@ -170,8 +170,8 @@ void ImpulseSolver(std::vector<Collision> &collisions) {
     // apply friction impulses
     for (std::size_t i = 0; i < contact_count; i++) {
       const Vector2 friction_impulse = friction_impulses[i];
-      const double friction_torqueA = math::Cross(rA_list[i], friction_impulse);
-      const double friction_torqueB = math::Cross(rB_list[i], friction_impulse);
+      const float friction_torqueA = math::Cross(rA_list[i], friction_impulse);
+      const float friction_torqueB = math::Cross(rB_list[i], friction_impulse);
 
       rigid_bodyA.AddLinearVelocity(-1.0 * friction_impulse * inv_massA);
       rigid_bodyA.AddAngularVelocity(-1.0 * friction_torqueA * inv_inertiaA);

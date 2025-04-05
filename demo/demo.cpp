@@ -56,7 +56,7 @@ int main() {
         if (ImGui::Button("Grid: OFF")) {
           scene_settings.IsGridOn = true;
           visual_world.GetPhysicsWorld().AddGrid({-100, -100},
-                                                 pe2d::Size2i(1000, 1000), 50);
+                                                 pe2d::Vec2i(1000, 1000), 50);
         }
       }
       if (scene_settings.DrawImpulses) {

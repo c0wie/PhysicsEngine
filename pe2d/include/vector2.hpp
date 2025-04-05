@@ -3,7 +3,6 @@
 // std
 #include <cmath>
 #include <ostream>
-#include <stdexcept>
 #include <string>
 #include <type_traits>
 
@@ -213,7 +212,6 @@ inline std::ostream &operator<<(std::ostream &os, const Vector2<Y> &v) {
 }
 using Vec2i = Vector2<int>;
 using Vec2d = Vector2<double>;
-using Pos2d = Vector2<double>;
-using Size2d = Vector2<double>;
-using Size2i = Vector2<int>;
+using Vec2f = Vector2<float>;
+
 } // namespace pe2d

@@ -6,7 +6,7 @@
 #include <string>
 
 namespace pe2d {
-Grid::Grid(Pos2d top_left_corner, Size2i size, float cell_size)
+Grid::Grid(Vec2f top_left_corner, Vec2i size, float cell_size)
     : m_TopLeftCorner(top_left_corner), m_Size(size), m_CellSize(cell_size) {
   if (m_CellSize <= 0.0f) {
     throw std::invalid_argument(
@@ -23,7 +23,7 @@ void Grid::Update(const std::unordered_map<size_t, RigidBody> &objects) {
   m_Grid.clear();
   m_Grid.resize(m_Size.y);
   for (const auto &object : objects) {
-    const std::array<Pos2d, 4> boundingBox = object.second.GetBoundingBox();
+    const std::array<Vec2f, 4> boundingBox = object.second.GetBoundingBox();
     bool inside_grid = false;
     for (int i = 0; i < 4; i++) {
       if (Contains(boundingBox[i])) {

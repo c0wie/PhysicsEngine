@@ -37,8 +37,8 @@ public:
   /// @throw std::invalid_argument if depth is negative.
   /// @throw std::invalid_argument if normal is not a unit vector.
   /////////////////////////////////////////////////////////////////////
-  CollisionPoints(Vec2d normal, float depth, Pos2d contact_point1,
-                  Pos2d contact_point2)
+  CollisionPoints(Vec2f normal, float depth, Vec2f contact_point1,
+                  Vec2f contact_point2)
       : normal(normal), contact_point1(contact_point1),
         contact_point2(contact_point2), depth(depth), contact_count(2) {
     if (depth < 0.0) {
@@ -47,7 +47,7 @@ public:
                                   "(received: " +
                                   std::to_string(depth) + ")");
     }
-    if (!math::NearlyEquel(math::Length(normal), 1.0) ) {
+    if (!math::NearlyEquel(math::Length(normal), 1.0f) ) {
       throw std::invalid_argument("[CollisionPoints::CollisionPoints()] Error: "
                                   "normal must be unit length vector"
                                   "(received: " +
@@ -66,7 +66,7 @@ public:
   /// @throw std::invalid_argument if depth is negative.
   /// @throw std::invalid_argument if normal is not a unit vector.
   /////////////////////////////////////////////////////////////////////
-  CollisionPoints(Vec2d normal, float depth, Pos2d contact_point1)
+  CollisionPoints(Vec2f normal, float depth, Vec2f contact_point1)
       : normal(normal), contact_point1(contact_point1), depth(depth),
         contact_count(1) {
     if (depth < 0.0) {
@@ -75,7 +75,7 @@ public:
                                   "(received: " +
                                   std::to_string(depth) + ")");
     }
-    if (!math::NearlyEquel(math::Length(normal), 1.0)) {
+    if (!math::NearlyEquel(math::Length(normal), 1.0f)) {
       throw std::invalid_argument("[CollisionPoints::CollisionPoints()] Error: "
                                   "normal must be unit length vector"
                                   "(received: " +
@@ -89,17 +89,17 @@ public:
   ///          1, the second point is set to default value.
   /// @return Array containing both contact points.
   /////////////////////////////////////////////////////////////////////
-  std::array<Pos2d, 2> GetContactPoints() const {return {contact_point1, contact_point2};}
+  std::array<Vec2f, 2> GetContactPoints() const {return {contact_point1, contact_point2};}
 public:
   /////////////////////////////////////////////////////////////////////
   /// @brief Unit length vector representing direction of collision
   /////////////////////////////////////////////////////////////////////
-  Vec2d normal{0.0, 0.0};
+  Vec2f normal{0.0f, 0.0f};
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Scalar informating how much objects are intersecting along normal
   /////////////////////////////////////////////////////////////////////
-  float depth{0.0};
+  float depth{0.0f};
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Number of valid contact points
@@ -109,12 +109,12 @@ public:
   /////////////////////////////////////////////////////////////////////
   /// @brief Primary contact point
   /////////////////////////////////////////////////////////////////////
-  Pos2d contact_point1;
+  Vec2f contact_point1;
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Secondary contact point
   /// @details Only valid when contact_count == 2.
   /////////////////////////////////////////////////////////////////////
-  Pos2d contact_point2;
+  Vec2f contact_point2;
 };
 } // namespace pe2d

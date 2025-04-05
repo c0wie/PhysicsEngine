@@ -62,9 +62,9 @@ public:
     m_Solver = solver;
   }
 
-  void AddGrid(Vec2d top_left_corner, Size2i size, float cell_size);
+  void AddGrid(Vec2f top_left_corner, Vec2i size, float cell_size);
   void RemoveGrid();
-  void ResizeGrid(Vec2d top_left_corner, Size2i size, float cell_size);
+  void ResizeGrid(Vec2f top_left_corner, Vec2i size, float cell_size);
 
   bool IsGridOn() const { return m_IsGridOn; }
   size_t Size() const { return m_Objects.size(); }

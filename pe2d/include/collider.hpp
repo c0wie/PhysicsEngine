@@ -3,6 +3,7 @@
 // local
 #include "collision_points.hpp"
 #include "rigid_body.hpp"
+#include "vector2.hpp"
 
 // std
 #include <cassert>
@@ -16,9 +17,9 @@ CollisionPoints TestCollison(const RigidBody &a, const RigidBody &b);
     - The contact point where the collision took place.
     - A boolean indicating whether a collision actually occured.
 */
-CollisionPoints FindCircleCircleCollision(double radiusA,
+CollisionPoints FindCircleCircleCollision(float radiusA,
                                           Transform circle_transformA,
-                                          double radiusB,
+                                          float radiusB,
                                           Transform circle_transformB);
 
 /*
@@ -28,13 +29,13 @@ Returns detailed information about a collision beetwen circle and box:
 - The contact point where the collision took place.
 - A boolean indicating whether a collision actually occured.
 */
-CollisionPoints FindCircleBoxCollision(double radius,
+CollisionPoints FindCircleBoxCollision(float radius,
                                        Transform circle_transform,
-                                       Size2d box_size,
+                                       Vec2f box_size,
                                        Transform box_transform);
 
-CollisionPoints FindBoxCircleCollision(Size2d box_size, Transform box_transform,
-                                       double radius,
+CollisionPoints FindBoxCircleCollision(Vec2f box_size, Transform box_transform,
+                                       float radius,
                                        Transform circle_transform);
 
 /*
@@ -44,7 +45,7 @@ Returns detailed information about a collision beetwen two boxes:
 - The contact points where the collision took place.
 - A boolean indicating whether a collision actually occured.
 */
-CollisionPoints FindBoxBoxCollision(Size2d box_sizeA, Transform box_transformA,
-                                    Size2d box_sizeB, Transform box_transformB);
+CollisionPoints FindBoxBoxCollision(Vec2f box_sizeA, Transform box_transformA,
+                                    Vec2f box_sizeB, Transform box_transformB);
 
 } // namespace pe2d

@@ -1,3 +1,4 @@
+/// @file
 #pragma once
 
 // local
@@ -7,10 +8,8 @@
 #include <vector>
 
 namespace pe2d {
-/*
-    Function responsible for calculating collisions between rigidObjects.
-    The solver only pulls them apart to prevent penetration.
-*/
+
+/// @brief Function correcting position of RigidBodies
 void PositionSolver(std::vector<Collision> &collisions);
 
 /*

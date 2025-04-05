@@ -21,7 +21,7 @@ class Grid {
 public:
   Grid() = default;
   // size - number of cells in row (x) and columns (y)
-  Grid(Pos2d top_left_corner, Size2i size, float cell_size);
+  Grid(Vec2f top_left_corner, Vec2i size, float cell_size);
 
 public:
   /*
@@ -42,9 +42,9 @@ public:
 
 protected:
   // Checks if a vertex is inside the grid's bounds.
-  constexpr bool Contains(Pos2d vertex) {
-    const Pos2d bot_right_corner =
-        m_TopLeftCorner + (Size2d(m_Size.x, m_Size.y) * m_CellSize);
+  constexpr bool Contains(Vec2f vertex) {
+    const Vec2f bot_right_corner =
+        m_TopLeftCorner + (Vec2f(m_Size.x, m_Size.y) * m_CellSize);
     return vertex.x >= m_TopLeftCorner.x && vertex.x <= bot_right_corner.x &&
            vertex.y >= m_TopLeftCorner.y && vertex.y <= bot_right_corner.y;
   }
@@ -53,8 +53,8 @@ protected:
                       std::pair<size_t, size_t> pair) const;
 
 protected:
-  Pos2d m_TopLeftCorner{0.0, 0.0};
-  Size2i m_Size{0, 0};
+  Vec2f m_TopLeftCorner{0.0, 0.0};
+  Vec2i m_Size{0, 0};
   float m_CellSize{0.0f};
   std::vector<std::vector<std::vector<size_t>>> m_Grid;
 };

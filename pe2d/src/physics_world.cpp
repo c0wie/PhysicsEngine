@@ -70,7 +70,7 @@ void PhysicsWorld::ResolveCollisions(float delta_time) {
   m_Solver(collisions);
 }
 
-void PhysicsWorld::AddGrid(Vec2d top_left_corner, Size2i size,
+void PhysicsWorld::AddGrid(Vec2f top_left_corner, Vec2i size,
                            float cell_size) {
   if (m_IsGridOn) {
     return;
@@ -85,7 +85,7 @@ void PhysicsWorld::RemoveGrid() {
   m_Grid = Grid();
   m_IsGridOn = false;
 }
-void PhysicsWorld::ResizeGrid(Vec2d top_left_corner, Size2i size,
+void PhysicsWorld::ResizeGrid(Vec2f top_left_corner, Vec2i size,
                               float cell_size) {
   m_Grid = Grid(top_left_corner, size, cell_size);
 }
@@ -105,7 +105,7 @@ void PhysicsWorld::FindCollisions(size_t idA, size_t idB,
 void PhysicsWorld::ApplyGravity() {
   for (auto it = m_Objects.begin(); it != m_Objects.end(); it++) {
     RigidBody &object = it->second;
-    if (object.IsStatic() || object.sleep) {
+    if (object.IsStatic()) {
       continue;
     }
     object.AddForce(object.GetGravity() * object.GetMass());
@@ -114,7 +114,7 @@ void PhysicsWorld::ApplyGravity() {
 void PhysicsWorld::MoveObjects(float delta_time) {
   for (auto it = Begin(); it != End(); it++) {
     RigidBody &object = it->second;
-    if (object.IsStatic() || object.sleep) {
+    if (object.IsStatic()) {
       continue;
     }
     // linear integration
@@ -124,7 +124,7 @@ void PhysicsWorld::MoveObjects(float delta_time) {
     object.AddLinearVelocity(acceleration * delta_time * 0.5);
 
     object.Rotate(Angle::FromRadians(object.GetAngularVelocity() * delta_time));
-    object.SetForce(Vector2(0.0, 0.0));
+    object.SetForce(Vec2f(0.0f, 0.0f));
   }
 }
 } // namespace pe2d

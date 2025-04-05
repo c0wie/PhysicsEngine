@@ -23,14 +23,14 @@ public:
   /// @param angle - angle value in degrees
   /// @return Angle instance initialized with the given degrees.
   /////////////////////////////////////////////////////////////////////
-  static constexpr Angle FromDegrees(double angle) { return Angle(angle); }
+  static constexpr Angle FromDegrees(float angle) { return Angle(angle); }
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Static constructor creating an Angle from radians.
   /// @param angle - angle value in radians
   /// @return Angle instance initialized with the given radians.
   /////////////////////////////////////////////////////////////////////
-  static constexpr Angle FromRadians(double angle) { return Angle(math::RadiansToDegrees(angle)); }
+  static constexpr Angle FromRadians(float angle) { return Angle(math::RadiansToDegrees(angle)); }
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Returns angle as degrees.
@@ -38,13 +38,13 @@ public:
   /// (π/180).
   /// @return Angle as radians.
   /////////////////////////////////////////////////////////////////////
-  double AsRadians() const { return math::DegreesToRadians(m_Degrees); }
+  float AsRadians() const { return math::DegreesToRadians(m_Degrees); }
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Returns angle as degrees.
   /// @return Angle as degrees.
   /////////////////////////////////////////////////////////////////////
-  double AsDegrees() const { return m_Degrees; }
+  float AsDegrees() const { return m_Degrees; }
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Adds two angles.
@@ -92,8 +92,8 @@ private:
   /// @brief Private constructor to enforce use of factory methods.
   /// @param angle_degrees - angle in degrees
   /////////////////////////////////////////////////////////////////////
-  explicit constexpr Angle(double angle_degrees) : m_Degrees(angle_degrees) {}
-  float m_Degrees{0.0};
+  explicit constexpr Angle(float angle_degrees) : m_Degrees(angle_degrees) {}
+  float m_Degrees{0.0f};
 };
 
 }

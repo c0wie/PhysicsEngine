@@ -17,7 +17,7 @@ struct Transform {
 public:
   /////////////////////////////////////////////////////////////////////
   /// @brief Default constructor, sets position to (0.0, 0.0), scale to
-  /// (1.0, 1.0) and angle to 0.
+  /// (1.0f, 1.0f) and angle to 0.
   /////////////////////////////////////////////////////////////////////
   constexpr Transform() = default;
 
@@ -29,9 +29,9 @@ public:
   /// @throws std::invalid_argument when any of scale components is less or
   /// equel to 0.0.
   /////////////////////////////////////////////////////////////////////
-  constexpr Transform(Pos2d position, Angle angle, Vec2d scale)
+  constexpr Transform(Vec2f position, Angle angle, Vec2f scale)
       : position(position), angle(angle), scale(scale) {
-    if (scale.x <= 0.0 || scale.y <= 0.0) {
+    if (scale.x <= 0.0f || scale.y <= 0.0f) {
       throw std::invalid_argument(
           "[Transform::Transform()] Error: scale must be positive (received: " +
           scale.GetString() + ")");
@@ -43,7 +43,7 @@ public:
   /// @param position - 2D position of the Transform
   /// @param angle - The rotation angle the Transform
   /////////////////////////////////////////////////////////////////////
-  constexpr Transform(Pos2d position, Angle angle)
+  constexpr Transform(Vec2f position, Angle angle)
       : position(position), angle(angle) {}
 
   /////////////////////////////////////////////////////////////////////
@@ -51,14 +51,14 @@ public:
   /// default values.
   /// @param position - 2D position of the Transform
   /////////////////////////////////////////////////////////////////////
-  constexpr Transform(Pos2d position) : position(position) {}
+  constexpr Transform(Vec2f position) : position(position) {}
 
 public:
   /////////////////////////////////////////////////////////////////////
   /// @brief Adds offset to position.
   /// @param offset - Change of position
   /////////////////////////////////////////////////////////////////////
-  constexpr void Move(Vec2d offset) { position += offset; }
+  constexpr void Move(Vec2f offset) { position += offset; }
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Adds angle_offset to angle.
@@ -70,11 +70,11 @@ public:
   /////////////////////////////////////////////////////////////////////
   /// @brief Position in 2D space.
   /////////////////////////////////////////////////////////////////////
-  Pos2d position{0.0, 0.0};
+  Vec2f position{0.0f, 0.0f};
   /////////////////////////////////////////////////////////////////////
   /// @brief Scaling factors in x and y dimensions (must be positive).
   /////////////////////////////////////////////////////////////////////
-  Vec2d scale{1.0, 1.0};
+  Vec2f scale{1.0f, 1.0f};
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Rotation angle.

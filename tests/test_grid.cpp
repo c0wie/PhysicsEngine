@@ -27,13 +27,13 @@ public:
 class GridTest : public testing::Test {
 protected:
   void SetUp() override {
-    m_Grid = Grid(Vec2d(0.0f, 0.0f), Size2i(5, 5), 20.0f);
+    m_Grid = Grid(Vec2f(0.0f, 0.0f), Vec2i(5, 5), 20.0f);
     m_Grid.m_Grid.resize(5);
     for (int i = 0; i < 5; i++) {
       m_Grid.m_Grid[i].resize(5);
     }
   }
-  void Test_Contains(Pos2d point, bool expected_result) {
+  void Test_Contains(Vec2f point, bool expected_result) {
     const bool result = m_Grid.Contains(point);
     EXPECT_EQ(result, expected_result);
   }
@@ -46,7 +46,7 @@ protected:
       const int x = expected_taken_cells[i].x;
       const int y = expected_taken_cells[i].y;
       const bool isEmpty = m_Grid.m_Grid[x][y].empty();
-      EXPECT_EQ(isEmpty, false) << x << " " << y << '\n';
+      EXPECT_EQ(isEmpty, false);
     }
   }
 
@@ -77,15 +77,15 @@ protected:
 };
 
 TEST_F(GridTest, ContainsPoint) {
-  const Pos2d point1 = Pos2d(50.0, 50.0);
-  const Pos2d point2 = Pos2d(0.0, 100.0);
+  const Vec2f point1 = Vec2f(50.0, 50.0);
+  const Vec2f point2 = Vec2f(0.0, 100.0);
   this->Test_Contains(point1, true);
   this->Test_Contains(point2, true);
 }
 
 TEST_F(GridTest, NotContainsPoint) {
-  const Pos2d point1 = Pos2d(-50.0, 50.0);
-  const Pos2d point2 = Pos2d(-1.0, 100.1);
+  const Vec2f point1 = Vec2f(-50.0, 50.0);
+  const Vec2f point2 = Vec2f(-1.0, 100.1);
   this->Test_Contains(point1, false);
   this->Test_Contains(point2, false);
 }
@@ -93,8 +93,8 @@ TEST_F(GridTest, NotContainsPoint) {
 TEST_F(GridTest, Update) {
   const std::unordered_map<size_t, RigidBody> objects = {
       {0,
-       RigidBody(0, Circle, Size2d(19.0, 19.0), Transform(), 10.0, false, {})},
-      {1, RigidBody(1, Box, Size2d(15.0f, 15.0f),
+       RigidBody(0, Circle, Vec2f(19.0, 19.0), Transform(), 10.0, false, {})},
+      {1, RigidBody(1, Box, Vec2f(15.0f, 15.0f),
                     Transform({50.0f, 50.0f}, Angle::FromDegrees(45.0)), 10.0,
                     false, {})}};
 
