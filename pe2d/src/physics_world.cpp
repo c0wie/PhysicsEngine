@@ -23,8 +23,8 @@ void PhysicsWorld::Step(float delta_time) {
     MoveObjects(subtime);
   }
 }
-void PhysicsWorld::AddObject(const RigidBody &object) {
-  const std::size_t id = object.GetID();
+
+void PhysicsWorld::AddObject(RigidBody *object, std::size_t id) {
   if (m_Objects.find(id) != m_Objects.end()) {
     throw std::invalid_argument("[PhysicsWorld::AddObject()] Error: object's "
                                 "id must be unique (received:" +
@@ -32,7 +32,8 @@ void PhysicsWorld::AddObject(const RigidBody &object) {
   }
   m_Objects[id] = object;
 }
-std::unordered_map<size_t, RigidBody>::iterator
+
+std::unordered_map<size_t, RigidBody *>::iterator
 PhysicsWorld::RemoveObject(size_t id) {
   iterator it = m_Objects.find(id);
   if (it != m_Objects.end()) {
@@ -40,7 +41,8 @@ PhysicsWorld::RemoveObject(size_t id) {
   }
   return m_Objects.end();
 }
-RigidBody &PhysicsWorld::At(unsigned int id) {
+
+RigidBody *PhysicsWorld::At(unsigned int id) {
   if (m_Objects.find(id) == m_Objects.end()) {
     throw std::invalid_argument("[PhysicsWorld::At()] Error: object with given "
                                 "id doesn't exist (received " +
@@ -48,6 +50,7 @@ RigidBody &PhysicsWorld::At(unsigned int id) {
   }
   return m_Objects.at(id);
 }
+
 void PhysicsWorld::ResolveCollisions(float delta_time) {
   std::vector<Collision> collisions;
   collisions.reserve(m_Objects.size());
@@ -70,14 +73,15 @@ void PhysicsWorld::ResolveCollisions(float delta_time) {
   m_Solver(collisions);
 }
 
-void PhysicsWorld::AddGrid(Vec2f top_left_corner, Vec2i size,
+void PhysicsWorld::AddGrid(Vec2f top_left_corner, int rows, int columns,
                            float cell_size) {
   if (m_IsGridOn) {
     return;
   }
-  m_Grid = Grid(top_left_corner, size, cell_size);
+  m_Grid = Grid(top_left_corner, rows, columns, cell_size);
   m_IsGridOn = true;
 }
+
 void PhysicsWorld::RemoveGrid() {
   if (!m_IsGridOn) {
     return;
@@ -85,15 +89,17 @@ void PhysicsWorld::RemoveGrid() {
   m_Grid = Grid();
   m_IsGridOn = false;
 }
-void PhysicsWorld::ResizeGrid(Vec2f top_left_corner, Vec2i size,
+
+void PhysicsWorld::ResizeGrid(Vec2f top_left_corner, int rows, int columns,
                               float cell_size) {
-  m_Grid = Grid(top_left_corner, size, cell_size);
+  m_Grid = Grid(top_left_corner, rows, columns, cell_size);
 }
+
 void PhysicsWorld::FindCollisions(size_t idA, size_t idB,
                                   std::vector<Collision> &collisions) {
-  RigidBody &a = m_Objects.at(idA);
-  RigidBody &b = m_Objects.at(idB);
-  if (a.IsStatic() && b.IsStatic()) {
+  RigidBody *a = m_Objects.at(idA);
+  RigidBody *b = m_Objects.at(idB);
+  if (a->IsStatic() && b->IsStatic()) {
     return;
   }
   // check if objects are penetrating if so pull them apart
@@ -102,29 +108,32 @@ void PhysicsWorld::FindCollisions(size_t idA, size_t idB,
     collisions.emplace_back(a, b, points);
   }
 }
+
 void PhysicsWorld::ApplyGravity() {
   for (auto it = m_Objects.begin(); it != m_Objects.end(); it++) {
-    RigidBody &object = it->second;
-    if (object.IsStatic()) {
+    RigidBody *object = it->second;
+    if (object->IsStatic()) {
       continue;
     }
-    object.AddForce(object.GetGravity() * object.GetMass());
+    object->AddForce(object->GetGravity() * object->GetMass());
   }
 }
+
 void PhysicsWorld::MoveObjects(float delta_time) {
   for (auto it = Begin(); it != End(); it++) {
-    RigidBody &object = it->second;
-    if (object.IsStatic()) {
+    RigidBody *object = it->second;
+    if (object->IsStatic()) {
       continue;
     }
     // linear integration
-    const Vector2 acceleration = object.GetForce() * object.GetInvMass();
-    object.AddLinearVelocity(acceleration * delta_time * 0.5);
-    object.Move(object.GetLinearVelocity() * delta_time);
-    object.AddLinearVelocity(acceleration * delta_time * 0.5);
+    const Vector2 acceleration = object->GetForce() * object->GetInvMass();
+    object->AddLinearVelocity(acceleration * delta_time * 0.5f);
+    object->Move(object->GetLinearVelocity() * delta_time);
+    object->AddLinearVelocity(acceleration * delta_time * 0.5f);
 
-    object.Rotate(Angle::FromRadians(object.GetAngularVelocity() * delta_time));
-    object.SetForce(Vec2f(0.0f, 0.0f));
+    object->Rotate(
+        Angle::FromRadians(object->GetAngularVelocity() * delta_time));
+    object->SetForce(Vec2f(0.0f, 0.0f));
   }
 }
 } // namespace pe2d

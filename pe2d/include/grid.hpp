@@ -10,51 +10,73 @@
 #include <vector>
 
 namespace pe2d {
-/*
-    The Grid class handles broad-phase collision detection by dividing space
-   into cells, each containing potential collision pairs of objects. It operates
-   by updating the grid with object positions and retrieving a list of potential
-   collision pairs for further, more detailed collision detection.
-*/
-/// @brief nigga
+/////////////////////////////////////////////////////////////////////
+/// @class Grid
+/// @brief 2D array-like structure, performing broad-phase collision detection,
+///        which seperates given area into smaller chunks and look for potential
+///        collisions paris in one chunk at a time.
+/// @details Grid only stores rigid body ID and IS NOT RESPONISBLE for
+///          keeping rigid object with ID it stores alive. The rigid object
+///          belong to the cell if any of its bounding box vertices overlap
+///          with cell area. One rigid body CAN be assinged to multiple cells.
+/////////////////////////////////////////////////////////////////////
 class Grid {
 public:
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Default constructor initializing Grid into state where it
+  ///        has zero area.
+  /////////////////////////////////////////////////////////////////////
   Grid() = default;
-  // size - number of cells in row (x) and columns (y)
-  Grid(Vec2f top_left_corner, Vec2i size, float cell_size);
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Constructor creating Grid with given parameters. From this
+  ///        point Grid is working normally.
+  /// @param top_left_corner - Position of the grid, unlike rest of the
+  ///        classed Grid's postion is in top left corner
+  /// @param rows - number of rows
+  /// @param columns - number of columns
+  /// @param cell_size - size of single cell, cell must be squared
+  /// @throws std::invalid_argument if rows is non positive.
+  /// @throws std::invalid_argument if columns is non positive.
+  /// @throws std::invalid_argument if cell_size is non positive.
+  /////////////////////////////////////////////////////////////////////
+  Grid(Vec2f top_left_corner, int rows, int columns, float cell_size);
 
 public:
-  /*
-      Updates the grid with the positions of the objects.
-      It places each object's ID in the appropriate grid cell based on its
-     position.
-  */
-  void Update(const std::unordered_map<size_t, RigidBody> &objects);
-  /*
-      Retrieves a list of unique pairs of object IDs that are potential
-     collision pairs. This list is generated based on objects located within the
-     same or neighboring cells. The ID of collision pairs which are beeing
-     retrived always goes: `std::pair(lesser number, higher number)`. This
-     function will throw Segfault if not all off it's rows and columns are
-     initialized.
-  */
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Place rigid body IDs in appropriate cells.
+  /// @details Clears m_Grid information from previous Update call before
+  ///          inserting new info to it.
+  /// @param objects - data structure containing rigid_bodies
+  /////////////////////////////////////////////////////////////////////
+  void Update(const std::unordered_map<size_t, RigidBody *> &objects);
+
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Group all possible collisions into collision pairs. Collision pairs
+  ///        are be formed only inside the same grid cell.
+  /// @details Collision pair format is std::pair(lesser id, higher id).
+  /// @return List of potential collision pairs.
+  /////////////////////////////////////////////////////////////////////
   std::list<std::pair<size_t, size_t>> GetCollisionPairs() const;
 
-protected:
-  // Checks if a vertex is inside the grid's bounds.
-  constexpr bool Contains(Vec2f vertex) {
-    const Vec2f bot_right_corner =
-        m_TopLeftCorner + (Vec2f(m_Size.x, m_Size.y) * m_CellSize);
-    return vertex.x >= m_TopLeftCorner.x && vertex.x <= bot_right_corner.x &&
-           vertex.y >= m_TopLeftCorner.y && vertex.y <= bot_right_corner.y;
-  }
-  // Checks if a pair of objects has already been checked for collisions.
-  bool HasBeenChecked(std::unordered_multimap<size_t, size_t> &checkedPairs,
+private:
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Checks whether pair already has been formed to avoid
+  ///        doubling the same potentatial collision pair.
+  /// @param checked_pairs - all previously created paris
+  /// @param pair - new pair 
+  /// @return True if the pair (or its reverse) already exists in `checked_pairs`,
+  ///         False otherwise.
+  /// @note Pairs are internally normalized (sorted) before checking to ensure
+  ///       order-insensitive comparison.
+  /// @warning Modifies `checked_pairs` if the new pair is inserted.
+  /////////////////////////////////////////////////////////////////////
+  bool HasBeenChecked(std::unordered_multimap<size_t, size_t> &checked_pairs,
                       std::pair<size_t, size_t> pair) const;
 
-protected:
+private:
   Vec2f m_TopLeftCorner{0.0, 0.0};
-  Vec2i m_Size{0, 0};
+  unsigned int m_Rows{0};
+  unsigned int m_Columns{0};
   float m_CellSize{0.0f};
   std::vector<std::vector<std::vector<size_t>>> m_Grid;
 };
