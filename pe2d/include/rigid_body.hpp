@@ -3,24 +3,17 @@
 // local
 #include "algo.hpp"
 #include "angle.hpp"
-#include "assert.hpp"
-#include "transform.hpp"
-#include "vector2.hpp"
-
+#include "collision_body.hpp"
 // std
-#include <array>
 #include <stdexcept>
 #include <string>
 
 namespace pe2d {
 
-enum RigidBodyType : int { Box = 1, Circle = 2 };
-
 /////////////////////////////////////////////////////////////////////
 /// @brief Object which can't be deformated with 3 degrees of freedom and basic physcis properties.
-/// @details The uniqness of rigid body ID is not handled internaly in class.
 /////////////////////////////////////////////////////////////////////
-class RigidBody {
+class RigidBody : public CollisionBody {
 public:
   /////////////////////////////////////////////////////////////////////
   /// @brief Default constructor sets all members to 0.
@@ -29,7 +22,6 @@ public:
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Constructor of object without friction and initial velocity set to 0.
-  /// @param id - Object identifier
   /// @param type - Geometry type (circle or box)
   /// @param size - Object dimensions (must be positive)
   /// @param transform - Object size, angle and scale
@@ -40,12 +32,11 @@ public:
   /// @throw std::invalid_argument if mass is non positive (only for non-static objects)
   /// @note For static objects, mass and velocity parameters are ignored.
   /////////////////////////////////////////////////////////////////////
-  RigidBody(std::size_t id, RigidBodyType type, Vec2f size,
-            Transform transform, float mass, bool is_static, Vec2f gravity);
+  RigidBody(BodyType type, Vec2f size, Transform transform, float mass,
+            bool is_static, Vec2f gravity);
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Constructor of object without friction and with initial velocity set.
-  /// @param id - Object identifier
   /// @param type - Geometry type (circle or box)
   /// @param size - Object dimensions (must be positive)
   /// @param transform - Object size, angle and scale
@@ -60,13 +51,12 @@ public:
   /// @see RigidBodyType
   /// @see Transform
   /////////////////////////////////////////////////////////////////////
-  RigidBody(std::size_t id, RigidBodyType type, Vec2f size,
-            Transform transform, float mass, bool is_static, Vec2f gravity,
-            Vec2f linear_velocity, float angular_velocity);
+  RigidBody(BodyType type, Vec2f size, Transform transform, float mass,
+            bool is_static, Vec2f gravity, Vec2f linear_velocity,
+            float angular_velocity);
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Constructor of object with friction and with initial velocity set.
-  /// @param id - Object identifier
   /// @param type - Geometry type (circle or box)
   /// @param size - Object dimensions (must be positive)
   /// @param transform - Object size, angle and scale
@@ -87,45 +77,12 @@ public:
   /// @see RigidBodyType
   /// @see Transform
   /////////////////////////////////////////////////////////////////////
-  RigidBody(std::size_t id, RigidBodyType type, Vec2f size,
-            Transform transform, float mass, bool is_static, Vec2f gravity,
-            Vec2f linear_velocity, float angular_velocity,
-            float static_friction, float dynamic_friction,
-            float restitution);
+  RigidBody(BodyType type, Vec2f size, Transform transform, float mass,
+            bool is_static, Vec2f gravity, Vec2f linear_velocity,
+            float angular_velocity, float static_friction,
+            float dynamic_friction, float restitution);
+
 public:
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the ID of the rigid body.
-  /// @return The ID value.
-  /////////////////////////////////////////////////////////////////////
-  constexpr std::size_t GetID() const { return m_ID; }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the body type of the rigid body.
-  /// @return The body type.
-  /// @retval circle 
-  /// @retval box
-  /////////////////////////////////////////////////////////////////////
-  constexpr RigidBodyType GetType() const { return m_Type; }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the size of the rigid body.
-  /// @details When rigid body type is circle the x and y components are the same.
-  /// @return The size vector(x - size in x axis, y - size in y axis).
-  /////////////////////////////////////////////////////////////////////
-  constexpr Vec2f GetSize() const { return m_Size; }
-
-  /////////////////////////////////////////////////////////////////////
-
-  /////////////////////////////////////////////////////////////////////
-  std::array<Vec2f, 4> GetBoundingBox() const;
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the position of the rigid body.
-  /// @return The position vector.
-  /// @note Position is defined in geometrical center of rigid body.
-  /////////////////////////////////////////////////////////////////////
-  constexpr Vec2f GetPosition() const { return m_Transform.position; }
-
   /////////////////////////////////////////////////////////////////////
   /// @brief Gets the scale of the rigid body.
   /// @return The scale vector(x - scale in x axis, y - scale in y axis).
@@ -167,30 +124,12 @@ public:
   }
 
   /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the linear velocity of rigid body.
-  /// @return The linear velocity vector.
-  /////////////////////////////////////////////////////////////////////
-  constexpr Vec2f GetLinearVelocity() const { return m_LinearVelocity; }
-
-  /////////////////////////////////////////////////////////////////////
   /// @brief Gets the angular velocity of rigid body.
   /// @return The angular velocity value.
   /// @note In 2D angular velocity is not a vector because its direction is
   ///       going into third dimension.
   /////////////////////////////////////////////////////////////////////
   constexpr float GetAngularVelocity() const { return m_AngularVelocity; }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the force acting on rigid body.
-  /// @return The force vector.
-  /////////////////////////////////////////////////////////////////////
-  constexpr Vec2f GetForce() const { return m_Force; }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the gravity assigned to rigid body.
-  /// @return The gravity vector.
-  /////////////////////////////////////////////////////////////////////
-  constexpr Vec2f GetGravity() const { return m_Gravity; }
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Gets the rotational inertia of rigid body.
@@ -212,12 +151,6 @@ public:
   }
 
   /////////////////////////////////////////////////////////////////////
-  /// @brief Checks if the body is static.
-  /// @return True if the body is static, false if dynamic.
-  /////////////////////////////////////////////////////////////////////
-  constexpr bool IsStatic() const { return m_IsStatic; }
-
-  /////////////////////////////////////////////////////////////////////
   /// @brief Gets the static friction of rigid body.
   /// @return Static friction value.
   /////////////////////////////////////////////////////////////////////
@@ -237,19 +170,26 @@ public:
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Sets size of rigid body.
-  /// @details When rigid body type is circle, size.x is assigned to both components.
-  ///          Resizing the rigid body affects its rotational inertia. 
+  /// @details When rigid body type is circle, size.x is assigned to both
+  /// components.
+  ///          Resizing the rigid body affects its rotational inertia.
   /// @param size - new size of rigid body
-  /// @throw std::invalid_argument if any of size components is not positive.
+  /// @throw std::invalid_argument for BOX if any component is non positive
+  ///        for CIRCLE if x component is non positive.
   /////////////////////////////////////////////////////////////////////
   void SetSize(Vec2f size) {
     ASSERT(m_Type == Box || m_Type == Circle, "m_Type isn't defined");
-    if (size.x <= 0 || size.y <= 0) {
+    if (size.x <= 0) {
       throw std::invalid_argument(
-          "[RigidBody::SetSize()] Error: size must be positive (received: " +
+          "[RigidBody::SetSize()] Error: size.x must be positive (received: " +
           size.GetString() + ")");
     }
     if (m_Type == Box) {
+      if (size.y <= 0) {
+        throw std::invalid_argument("[RigidBody::SetSize()] Error: size.y must "
+                                    "be positive (received: " +
+                                    size.GetString() + ")");
+      }
       m_Size = size;
     } else if (m_Type == Circle) {
       // radius
@@ -259,32 +199,27 @@ public:
   }
 
   /////////////////////////////////////////////////////////////////////
-  /// @brief Sets position of rigid body.
-  /// @param pos - new position of rigid body
-  /////////////////////////////////////////////////////////////////////
-  constexpr void SetPosition(Vec2f pos) { m_Transform.position = pos; }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Adds offset to current rigid body position. 
-  /// @param offset - distance rigid body is be moved 
-  /////////////////////////////////////////////////////////////////////
-  constexpr void Move(Vec2f offset) { m_Transform.Move(offset); }
-
-  /////////////////////////////////////////////////////////////////////
   /// @brief Sets scale of rigid body.
-  /// @details When rigid body type is circle, scale.x is assigned to both components.
+  /// @details When rigid body type is circle, scale.x is assigned to both
+  /// components.
   ///          Rescaling the rigid body does not affect its rotational inertia.
   /// @param scale - new scale of the rigid body
-  /// @throw std::invalid_argument if any of scale components is non positive. 
+  /// @throw std::invalid_argument for BOX if any component is non positive
+  ///        for CIRCLE if x component is non positive.
   /////////////////////////////////////////////////////////////////////
   constexpr void SetScale(Vec2f scale) {
     ASSERT(m_Type == Box || m_Type == Circle, "m_Type isn't defined");
-    if (scale.x <= 0.0 || scale.y <= 0.0) {
-      throw std::invalid_argument(
-          "[RigidBody::SetScale()] Error: scale must be positive (received: " +
-          scale.GetString() + ")");
+    if (scale.x <= 0.0) {
+      throw std::invalid_argument("[RigidBody::SetScale()] Error: scale.x must "
+                                  "be positive (received: " +
+                                  scale.GetString() + ")");
     }
     if (m_Type == Box) {
+      if (scale.y <= 0.0) {
+        throw std::invalid_argument("[RigidBody::SetScale()] Error: scale.y "
+                                    "must be positive (received: " +
+                                    scale.GetString() + ")");
+      }
       m_Transform.scale = scale;
     } else if (m_Type == Circle) {
       m_Transform.scale = Vec2f(scale.x, scale.x);
@@ -340,22 +275,6 @@ public:
   }
 
   /////////////////////////////////////////////////////////////////////
-  /// @brief Sets linear velocity of rigid body.
-  /// @param linear_velocity- new linear velocity of rigid body
-  /////////////////////////////////////////////////////////////////////
-  constexpr void SetLinearVelocity(Vec2f linear_velocity) {
-    m_LinearVelocity = linear_velocity;
-  }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Adds linear velocity to currnet rigid body linear velocity.
-  /// @param linear_veloctiy - linear velocity added to rigid body 
-  /////////////////////////////////////////////////////////////////////
-  constexpr void AddLinearVelocity(Vec2f linear_velocity) {
-    m_LinearVelocity += linear_velocity;
-  }
-
-  /////////////////////////////////////////////////////////////////////
   /// @brief Sets angular velocity of rigid body.
   /// @param angular_velocity - new angular velocity of rigid body
   /////////////////////////////////////////////////////////////////////
@@ -380,24 +299,6 @@ public:
       m_AngularVelocity = -10.0;
     }
   }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Sets force acting on rigid body.
-  /// @param force - new force acting on rigid body
-  /////////////////////////////////////////////////////////////////////
-  constexpr void SetForce(Vec2f force) { m_Force = force; }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Adds force acting on rigid body.
-  /// @param force - force added to act on rigid body 
-  /////////////////////////////////////////////////////////////////////
-  constexpr void AddForce(Vec2f force) { m_Force += force; }
-  
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Sets gravity assigned to rigid body.
-  /// @param gravity - new gravity assigned to rigid body
-  /////////////////////////////////////////////////////////////////////
-  constexpr void SetGravity(Vec2f gravity) { m_Gravity = gravity; }
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Sets static friction of rigid body.
@@ -444,8 +345,6 @@ public:
     m_Restitution = restitution;
   }
 private:
-  bool m_IsStatic{false};
-  std::size_t m_ID{0U};
   float m_Mass{0.0f};
   float m_AngularVelocity{0.0f};
   float m_RotationalInertia{0.0f};
@@ -455,11 +354,5 @@ private:
   float m_DynamicFriction{0.0f};
   // Elasticy of collision [in range 0.0 - 1.0]
   float m_Restitution{0.0f};
-  Vec2f m_Size{0.0f, 0.0f};
-  RigidBodyType m_Type{0};
-  Vec2f m_LinearVelocity{0.0f, 0.0f};
-  Vec2f m_Force{0.0f, 0.0f};
-  Vec2f m_Gravity{0.0f, 0.0f};
-  Transform m_Transform;
 };
 } // namespace pe2d

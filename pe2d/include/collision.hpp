@@ -27,8 +27,8 @@ public:
   /// @param b - Second colliding RigidBody (must remain valid)
   /// @param points - CollisionPoints specifing how object a and b are colliding
   /////////////////////////////////////////////////////////////////////
-  Collision(RigidBody &a, RigidBody &b, const CollisionPoints &points)
-      : m_Points(points), m_ObjectA(&a), m_ObjectB(&b) {}
+  Collision(RigidBody *a, RigidBody *b, const CollisionPoints &points)
+      : m_Points(points), m_ObjectA(a), m_ObjectB(b) {}
 
 public:
   /////////////////////////////////////////////////////////////////////

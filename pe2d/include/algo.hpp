@@ -106,5 +106,6 @@ Vec2f ProjectCircle(Vec2f circle_center, float radius, Vec2f axis);
 
 float CalculateRotationalInertia(int type, Vec2f size, float mass);
 
+bool PointInsideRect(Vec2f top_left_corner, Vec2f bottom_right_corner, Vec2f point);
 } // namespace algo
 } // namespace pe2d

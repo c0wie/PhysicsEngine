@@ -13,7 +13,7 @@ constexpr float PI = std::numbers::pi;
 constexpr float RADIANS_TO_DEGREES_SCALAR = 180.0f / PI;
 constexpr float DEGREES_TO_RADIANS_SCALAR = PI / 180.0f;
 
-template <typename T> constexpr T Length(Vector2<T> a) {
+template <typename T> constexpr float Length(Vector2<T> a) {
   return std::hypot(a.x, a.y);
 }
 
@@ -40,18 +40,18 @@ template <typename T> constexpr Vector2<T> Perp(Vector2<T> a) {
 template <typename T> constexpr Vector2<T> Normalize(Vector2<T> a) {
   const float length = Length(a);
 
-  if (length == 0.0) {
+  if (length == 0.0f) {
     return {};
   }
 
-  return {a.x / length, a.y / length};
+  return a / length;
 }
 
-template <typename T> constexpr float Dot(Vector2<T> a, Vector2<T> b) {
+template <typename T> constexpr T Dot(Vector2<T> a, Vector2<T> b) {
   return a.x * b.x + a.y * b.y;
 }
 
-template <typename T> constexpr float Cross(Vector2<T> a, Vector2<T> b) {
+template <typename T> constexpr T Cross(Vector2<T> a, Vector2<T> b) {
   return a.x * b.y - a.y * b.x;
 }
 

@@ -9,7 +9,7 @@
 #include <cassert>
 
 namespace pe2d {
-CollisionPoints TestCollison(const RigidBody &a, const RigidBody &b);
+CollisionPoints TestCollison(const RigidBody *a, const RigidBody *b);
 /*
     Returns detailed information about a collision beetwen two circles:
     - The depth of penetration between the objects.

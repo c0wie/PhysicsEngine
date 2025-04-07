@@ -7,19 +7,19 @@
 #include "vector2.hpp"
 
 namespace pe2d {
-CollisionPoints TestCollison(const RigidBody &a, const RigidBody &b) {
-  if (a.GetType() == Circle && b.GetType() == Circle) {
-    return FindCircleCircleCollision(a.GetSize().x, a.GetTransform(),
-                                     b.GetSize().x, b.GetTransform());
-  } else if (a.GetType() == Circle && b.GetType() == Box) {
-    return FindCircleBoxCollision(a.GetSize().x, a.GetTransform(), b.GetSize(),
-                                  b.GetTransform());
-  } else if (a.GetType() == Box && b.GetType() == Circle) {
-    return FindBoxCircleCollision(a.GetSize(), a.GetTransform(), b.GetSize().x,
-                                  b.GetTransform());
-  } else if (a.GetType() == Box && b.GetType() == Box) {
-    return FindBoxBoxCollision(a.GetSize(), a.GetTransform(), b.GetSize(),
-                               b.GetTransform());
+CollisionPoints TestCollison(const RigidBody *a, const RigidBody *b) {
+  if (a->GetType() == Circle && b->GetType() == Circle) {
+    return FindCircleCircleCollision(a->GetSize().x, a->GetTransform(),
+                                     b->GetSize().x, b->GetTransform());
+  } else if (a->GetType() == Circle && b->GetType() == Box) {
+    return FindCircleBoxCollision(a->GetSize().x, a->GetTransform(),
+                                  b->GetSize(), b->GetTransform());
+  } else if (a->GetType() == Box && b->GetType() == Circle) {
+    return FindBoxCircleCollision(a->GetSize(), a->GetTransform(),
+                                  b->GetSize().x, b->GetTransform());
+  } else if (a->GetType() == Box && b->GetType() == Box) {
+    return FindBoxBoxCollision(a->GetSize(), a->GetTransform(), b->GetSize(),
+                               b->GetTransform());
   }
   return {};
 }

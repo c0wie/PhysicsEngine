@@ -2,7 +2,7 @@
 #include "algo.hpp"
 
 // local
-#include "rigid_body.hpp"
+#include "collision_body.hpp"
 #include "vector2.hpp"
 #include <cstddef>
 #include <stdexcept>
@@ -168,5 +168,9 @@ float CalculateRotationalInertia(int type, Vec2f size, float mass) {
   return 0.0;
 }
 
+bool PointInsideRect(Vec2f top_left_corner, Vec2f bottom_right_corner, Vec2f point) {
+  return (point.x >= top_left_corner.x && point.x <= bottom_right_corner.x &&
+    point.y >= top_left_corner.y && point.y <= bottom_right_corner.y);
+}
 
 } // namespace pe2d::algo
