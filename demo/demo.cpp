@@ -1,9 +1,6 @@
 // local
-// #include "rigid_body.hpp"
-// #include "scene_settings.hpp"
-// #include "solver.hpp"
-// #include "vector2.hpp"
-// #include "visual_world.hpp"
+#include "game_world.hpp"
+#include "rigid_body.hpp"
 
 // lib
 //SFML
@@ -16,8 +13,6 @@
 #include <cstdlib>
 #include <iostream>
 
-int main() { std::cout << "olleh\n"; }
-/*
 int main() {
   sf::RenderWindow window(sf::VideoMode({1000, 1000}), "DEMO",
                           sf::Style::Titlebar | sf::Style::Close);
@@ -27,8 +22,7 @@ int main() {
   }
 
   SceneSettings scene_settings;
-  VisualWorld visual_world(8);
-  visual_world.SetUp();
+  GameWorld game_world(64);
 
   float delta_time = 0.0f;
   bool draw_bounding_boxes = false;
@@ -43,8 +37,7 @@ int main() {
         window.close();
       }
     }
-    visual_world.Update(sf::Mouse::getPosition(window), delta_time.asSeconds());
-    visual_world.Step(delta_time.asSeconds());
+    game_world.Update(sf::Mouse::getPosition(window), delta_time.asSeconds());
 
     ImGui::SFML::Update(window, delta_time);
 
@@ -52,13 +45,12 @@ int main() {
       if (scene_settings.IsGridOn) {
         if (ImGui::Button("Grid: ON")) {
           scene_settings.IsGridOn = false;
-          visual_world.GetPhysicsWorld().RemoveGrid();
+          game_world.RemoveGrid();
         }
       } else {
         if (ImGui::Button("Grid: OFF")) {
           scene_settings.IsGridOn = true;
-          visual_world.GetPhysicsWorld().AddGrid({-100, -100},
-                                                 100, 100, 100);
+          game_world.AddGrid({-100, -100}, 100, 100, 100);
         }
       }
       if (scene_settings.DrawImpulses) {
@@ -100,54 +92,52 @@ int main() {
       if(scene_settings.Solver == SolverType::POSITION_SOLVER) {
         if(ImGui::Button("Solver type: POSITION_SOLVER")) {
           scene_settings.Solver = SolverType::IMPULSE_SOLVER;
-          visual_world.GetPhysicsWorld().SetSolver(pe2d::ImpulseSolver);
+          game_world.SetSolver(pe2d::ImpulseSolver);
         }
       } else if(scene_settings.Solver == SolverType::IMPULSE_SOLVER) {
         if(ImGui::Button("Solver type: IMPULSE_SOLVER")) {
           scene_settings.Solver = SolverType::POSITION_SOLVER;
-          visual_world.GetPhysicsWorld().SetSolver(pe2d::PositionSolver);
+          game_world.SetSolver(pe2d::PositionSolver);
         }
       }
       if(ImGui::Button("Clear objects")) {
-        visual_world.GetPhysicsWorld().ClearObjects();
-        visual_world.SetUp();
+        game_world.Clear();
       }
       if (ImGui::CollapsingHeader("Last object information")) {
-        const pe2d::RigidBody * last_object = visual_world.GetLastObject();
-        ImGui::Text("ID: %zu", visual_world.GetLastID());
-        if (last_object->IsStatic()) {
+        const Entity entity = game_world.GetLastEntity();
+        const pe2d::RigidBody &rigid_object = entity.core;
+        ImGui::Text("ID: %zu", game_world.Size() - 1);
+        if (rigid_object.IsStatic()) {
           ImGui::Text("Static object");
         } else {
           ImGui::Text("Non static object");
         }
-        ImGui::Text("Position: %f, %f", last_object->GetPosition().x,
-                    last_object->GetPosition().y);
+        ImGui::Text("Position: %f, %f", rigid_object.GetPosition().x,
+                    rigid_object.GetPosition().y);
         ImGui::Text("Rotation(degrees): %f",
-                    last_object->GetAngle().AsDegrees());
-        ImGui::Text("Mass: %f", last_object->GetMass());
+                    rigid_object.GetAngle().AsDegrees());
+        ImGui::Text("Mass: %f", rigid_object.GetMass());
         ImGui::Text("Rotational inertia: %f",
-                    last_object->GetRotationalInertia());
-        ImGui::Text("Angular velocity: %f", last_object->GetAngularVelocity());
+                    rigid_object.GetRotationalInertia());
+        ImGui::Text("Angular velocity: %f", rigid_object.GetAngularVelocity());
         ImGui::Text("Linear velocity: %f, %f",
-                    last_object->GetLinearVelocity().x,
-                    last_object->GetLinearVelocity().y);
-        ImGui::Text("Static friction: %f", last_object->GetStaticFriction());
-        ImGui::Text("Dynamic friction %f", last_object->GetDynamicFriction());
-        ImGui::Text("Restitution %f", last_object->GetRestitution());
-        ImGui::Text("Force: %f, %f", last_object->GetForce().x,
-                    last_object->GetForce().y);
+                    rigid_object.GetLinearVelocity().x,
+                    rigid_object.GetLinearVelocity().y);
+        ImGui::Text("Static friction: %f", rigid_object.GetStaticFriction());
+        ImGui::Text("Dynamic friction %f", rigid_object.GetDynamicFriction());
+        ImGui::Text("Restitution %f", rigid_object.GetRestitution());
+        ImGui::Text("Force: %f, %f", rigid_object.GetForce().x,
+                    rigid_object.GetForce().y);
       }
-      ImGui::Text("Number of rigid bodies: %zu",
-                  visual_world.GetPhysicsWorld().Size());
+      ImGui::Text("Number of rigid bodies: %zu", game_world.Size());
       ImGui::Text("FPS %i", (int)ImGui::GetIO().Framerate);
     }
     ImGui::End();
 
     window.clear();
-    visual_world.Draw(window, scene_settings);
+    game_world.Draw(window, scene_settings);
     ImGui::SFML::Render(window);
     window.display();
   }
   ImGui::SFML::Shutdown();
 }
-*/

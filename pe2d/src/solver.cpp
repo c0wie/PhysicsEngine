@@ -18,14 +18,15 @@ void PositionSolver(std::vector<Collision> &collisions) {
     RigidBody &rigid_bodyA = collisions[i].GetObjectA();
     RigidBody &rigid_bodyB = collisions[i].GetObjectB();
 
-    const CollisionPoints &points = collisions[i].GetCollisionPoints();
-    const Vector2 normal = points.normal;
+    CollisionPoints &points = collisions[i].GetCollisionPoints();
+    Vec2f &normal = points.normal;
 
     Vector2 minimal_translation_vector = normal * points.depth;
     if (math::Dot(minimal_translation_vector,
                   rigid_bodyA.GetPosition() - rigid_bodyB.GetPosition()) <
         0.0) {
-      minimal_translation_vector *= -1.0;
+      minimal_translation_vector *= -1.0f;
+      normal *= -1.0f;
     }
 
     if (rigid_bodyA.IsStatic()) {

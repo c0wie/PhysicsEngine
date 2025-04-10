@@ -15,7 +15,7 @@
 
 namespace pe2d {
 void PhysicsWorld::Step(float delta_time) {
-  if (delta_time <= 0.0f) {
+  if (delta_time < 0.0f) {
     throw std::invalid_argument("[PhysicsWorld::Step()] Error: delta_time must "
                                 "be positive (received: " +
                                 std::to_string(delta_time) + ")");

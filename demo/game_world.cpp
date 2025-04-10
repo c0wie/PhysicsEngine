@@ -1,62 +1,45 @@
 // header
-#include "visual_world.hpp"
+#include "game_world.hpp"
 
 // local
-#include "assert.hpp"
+#include "angle.hpp"
 #include "collision.hpp"
+#include "collision_body.hpp"
 #include "collision_points.hpp"
+#include "rigid_body.hpp"
 #include "scene_settings.hpp"
 #include "solver.hpp"
 #include "vector2.hpp"
 
 // lib
 // sfml
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/PrimitiveType.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics.hpp>
 
 // std
-#include <random>
+#include <SFML/Graphics/Color.hpp>
 
-// returns box with randomized parameters excluding frictions and restitution
-pe2d::RigidBody GetRandomBox(size_t id, sf::Vector2i pos) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<int> distribInt(30, 150);
-  std::uniform_real_distribution<float> distribFloat(0.0, 1.0);
-  std::uniform_int_distribution<int> distribPos(200, 800);
-  std::uniform_int_distribution<int> distribRotation(0, 180);
-  float mass = 1000.f;
-  pe2d::Transform transform =
-      pe2d::Transform(pe2d::Vec2f(pos.x, pos.y), pe2d::Angle());
-  pe2d::Vec2f size = pe2d::Vec2f(50.0, 50.0);
-  float staticFriction = 0.8;
-  float dynamicFriction = 0.7;
-  float restitution = 0.0;
-  return pe2d::RigidBody(id, pe2d::Box, size, transform, mass, false,
+pe2d::RigidBody GetBox(sf::Vector2i pos) {
+  const float mass = 1000.f;
+  const pe2d::Transform transform =
+      pe2d::Transform(pe2d::Vec2f(pos.x, pos.y));
+  const pe2d::Vec2f size = pe2d::Vec2f(50.0, 50.0);
+  const float staticFriction = 0.8;
+  const float dynamicFriction = 0.7;
+  const float restitution = 0.0;
+  return pe2d::RigidBody(Box, size, transform, mass, false,
                          pe2d::Vector2(0.0f, 98.1f), {}, 0.0, staticFriction,
                          dynamicFriction, restitution);
 }
 
-// returns circle with randomized parameters excluding frictions and restitution
-pe2d::RigidBody GetRandomCircle(size_t id, sf::Vector2i pos) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<int> distribInt(30, 70);
-  std::uniform_real_distribution<float> distribFloat(0.0, 1.0);
-  std::uniform_int_distribution<int> distribPos(200, 800);
-  std::uniform_int_distribution<int> distribRotation(0, 360);
+pe2d::RigidBody GetCircle(sf::Vector2i pos) {
   const pe2d::Transform transform =
-      pe2d::Transform(pe2d::Vec2f(pos.x, pos.y), pe2d::Angle());
+      pe2d::Transform(pe2d::Vec2f(pos.x, pos.y));
   const float mass = 1000.0;
   const float radius = 20.0;
   const float staticFriction = 0.8;
   const float dynamicFriction = 0.7;
   const float resistance = 0.0;
-  return pe2d::RigidBody(id, pe2d::Circle, pe2d::Vec2f(radius, radius),
+  return pe2d::RigidBody(Circle, pe2d::Vec2f(radius, radius),
                          transform, mass, false, pe2d::Vector2(0.0f, 98.1f), {},
                          0.0, staticFriction, dynamicFriction, resistance);
 }
@@ -75,7 +58,7 @@ sf::Vector2f RotatePoint(const sf::Vector2f &point, const sf::Vector2f &center,
 
 void DrawRigidBody(const pe2d::RigidBody body, const sf::Color &color,
                    sf::RenderWindow &window, bool draw_bounding_boxes = false) {
-  if (body.GetType() == pe2d::Box) {
+  if (body.GetType() == Box) {
     const pe2d::Vector2 size = body.GetSize() * body.GetScale();
     const pe2d::Vector2 pos = body.GetPosition();
 
@@ -88,7 +71,7 @@ void DrawRigidBody(const pe2d::RigidBody body, const sf::Color &color,
     rec.setOutlineThickness(1.0f);
     window.draw(rec);
 
-  } else if (body.GetType() == pe2d::Circle) {
+  } else if (body.GetType() == Circle) {
     const float radius = body.GetSize().x;
 
     sf::CircleShape circle(radius);
@@ -317,73 +300,64 @@ void DrawContactPoints(pe2d::Collision &collision, sf::RenderWindow &window) {
   }
 }
 
-VisualWorld::VisualWorld(unsigned int substeps) : m_PhysicsWorld(substeps) {
+GameWorld::GameWorld(unsigned int substeps) : m_PhysicsWorld(substeps) {
   m_PhysicsWorld.AddGrid({0, 0}, 100, 100, 100);
+  SetUp();
   m_PhysicsWorld.SetSolver(pe2d::ImpulseSolver);
 }
 
-void VisualWorld::SetUp() {
-  m_PhysicsWorld.AddObject(pe2d::RigidBody(
-      1, pe2d::Box, pe2d::Vec2f(950, 100), pe2d::Transform({500.0, 850.0}),
-      0.0, true, {}, pe2d::Vec2f(), 0.0, 0.8, 1.0, 0.0));
-
-  m_PhysicsWorld.AddObject(pe2d::RigidBody(
-      2, pe2d::Box, pe2d::Vec2f(300.0, 50.0),
-      pe2d::Transform({700.0, 650.0}, pe2d::Angle::FromDegrees(90.0)), 0.0,
-      true, {}, pe2d::Vec2f(), 0.0, 0.8, 1.0, 0.0));
-
-  m_PhysicsWorld.AddObject(pe2d::RigidBody(
-      3, pe2d::Box, pe2d::Vec2f(300, 50),
-      pe2d::Transform({950.0, 650.0}, pe2d::Angle::FromDegrees(90.0)), 0.0,
-      true, {}, pe2d::Vec2f(), 0.0, 0.8, 1.0, 0.0));
-
-  m_PhysicsWorld.AddObject(pe2d::RigidBody(
-      4, pe2d::Box, pe2d::Vec2f(250, 50),
-      pe2d::Transform({825.0, 500.0}, pe2d::Angle::FromDegrees(0.0)), 0.0, true,
-      {}, pe2d::Vec2f(), 0.0, 0.8, 1.0, 0.0));
-
-  m_PhysicsWorld.AddObject(pe2d::RigidBody(
-      5, pe2d::Box, pe2d::Vec2f(350, 50),
-      pe2d::Transform({250.0, 450.0}, pe2d::Angle::FromDegrees(45.0)), 0.0,
-      true, {}, pe2d::Vec2f(), 0.0, 0.8, 1.0, 0.0));
-
-  m_LastId = 5;
-  ASSERT(m_LastId == m_PysicsWorld.At(5).GetIndex(),
-         "m_LastId have to match the id of last rigid body in m_PhysicsWorld");
+void GameWorld::AddEntity(const Entity &entity) {
+  m_Entities.reserve(100);
+  m_Entities.push_back(entity);
+  m_PhysicsWorld.AddObject(&m_Entities.back().core, m_Entities.size() - 1);
 }
 
-void VisualWorld::Update(sf::Vector2i position, float delta_time) {
+void GameWorld::SetUp() {
+  AddEntity(Entity(sf::Color::Blue, pe2d::RigidBody(Box, {950.0f, 100.0f},
+  {pe2d::Vec2f(500.0f, 800.0f)}, 10.0f, true, {}, {}, 0.0f, 0.8f, 1.0f, 0.0f)));
+
+  AddEntity(Entity(sf::Color::Blue, pe2d::RigidBody(Box, {300.0f, 50.0f},
+    {pe2d::Vec2f(700.0f, 650.0f), pe2d::Angle::FromDegrees(90.0f)}, 10.0f, true, {}, {}, 0.0f, 0.8f, 1.0f, 0.0f)));
+
+  AddEntity(Entity(sf::Color::Blue, pe2d::RigidBody(Box, {300.0f, 50.0f},
+    {pe2d::Vec2f(825.0f, 500.0f), pe2d::Angle::FromDegrees(90.0f)}, 10.0f, true, {}, {}, 0.0f, 0.8f, 1.0f, 0.0f)));
+
+  AddEntity(Entity(sf::Color::Blue, pe2d::RigidBody(Box, {250.0f, 50.0f},
+    {pe2d::Vec2f(825.0f, 500.0f)}, 10.0f, true, {}, {}, 0.0f, 0.8f, 1.0f, 0.0f)));
+  
+  AddEntity(Entity(sf::Color::Blue, pe2d::RigidBody(Box, {350.0f, 50.0f},
+    {pe2d::Vec2f(250.0f, 450.0f), pe2d::Angle::FromDegrees(45.0f)}, 10.0f, true, {}, {}, 0.0f, 0.8f, 1.0f, 0.0f)));
+}
+
+void GameWorld::Clear() {
+  m_PhysicsWorld.ClearObjects();
+  m_Entities.clear();
+  SetUp();
+}
+
+void GameWorld::Update(sf::Vector2i position, float delta_time) {
   m_LastSpawnTime += delta_time;
   if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) &&
       m_LastSpawnTime >= SPAWN_COOLDOWN) {
-    m_LastId += 1;
-    const pe2d::RigidBody box = GetRandomBox(m_LastId, position);
-    m_PhysicsWorld.AddObject(box);
+    AddEntity(Entity(sf::Color::White, GetBox(position)));
     m_LastSpawnTime = 0.0f;
   } else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right) &&
              m_LastSpawnTime >= SPAWN_COOLDOWN) {
-    m_LastId += 1;
-    const pe2d::RigidBody circle = GetRandomCircle(m_LastId, position);
-    m_PhysicsWorld.AddObject(circle, m_LastId);
+    AddEntity(Entity(sf::Color::White, GetCircle(position)));
     m_LastSpawnTime = 0.0f;
   }
+  m_Collisions.clear();
+  m_PhysicsWorld.Step(delta_time);
+  std::list<std::pair<size_t, size_t>> pairs =
+      m_PhysicsWorld.m_Grid.GetCollisionPairs();
+  for (auto it = pairs.begin(); it != pairs.end(); it++) {
+    m_PhysicsWorld.FindCollisions(it->first, it->second, m_Collisions);
+  } 
 }
 
-void VisualWorld::Draw(sf::RenderWindow &window, const SceneSettings &scene_settings) {
-  for (auto it = m_PhysicsWorld.cBegin(); it != m_PhysicsWorld.cEnd(); it++) {
-    if (it->second->GetType() == Box) {
-      if (it->second->IsStatic() == false) {
-        DrawRigidBody(*it->second, sf::Color::White, window, false);
-      } else {
-        DrawRigidBody(*it->second, sf::Color::Blue, window, false);
-      }
-    } else {
-      if (it->second->IsStatic() == false) {
-        DrawRigidBody(*it->second, sf::Color::White, window, false);
-      } else {
-        DrawRigidBody(*it->second, sf::Color::Red, window, false);
-      }
-    }
+void GameWorld::Draw(sf::RenderWindow &window, const SceneSettings &scene_settings) {
+  for (const auto &entity : m_Entities) {
+    DrawRigidBody(entity.core, entity.color, window);
   }
   if(scene_settings.DrawImpulses) {
     for(auto &collision : m_Collisions ) {
@@ -405,14 +379,4 @@ void VisualWorld::Draw(sf::RenderWindow &window, const SceneSettings &scene_sett
       DrawContactPoints(collison, window);
     }
   }
-}
-
-void VisualWorld::Step(float delta_time) { 
-  m_Collisions.clear();
-  m_PhysicsWorld.Step(delta_time);
-  std::list<std::pair<size_t, size_t>> pairs =
-      m_PhysicsWorld.m_Grid.GetCollisionPairs();
-  for (auto it = pairs.begin(); it != pairs.end(); it++) {
-    m_PhysicsWorld.FindCollisions(it->first, it->second, m_Collisions);
-  } 
 }
