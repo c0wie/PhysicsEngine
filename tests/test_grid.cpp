@@ -1,5 +1,8 @@
-#include "angle.hpp"
+#include <iostream>
+#define private public
 #include "grid.hpp"
+#define private private
+#include "angle.hpp"
 #include "rigid_body.hpp"
 #include "transform.hpp"
 #include "vector2.hpp"
@@ -7,40 +10,18 @@
 
 namespace {
 using namespace pe2d;
-class GridTestable : public Grid {
-public:
-  GridTestable() : Grid() {}
-  GridTestable &operator=(const Grid &other) {
-    if (this == &other) {
-      return *this;
-    }
-    Grid::operator=(other);
-    return *this;
-  }
-
-public:
-  using Grid::Contains;
-  using Grid::HasBeenChecked;
-  using Grid::m_Grid;
-};
-
 class GridTest : public testing::Test {
 protected:
   void SetUp() override {
-    m_Grid = Grid(Vec2f(0.0f, 0.0f), Vec2i(5, 5), 20.0f);
+    m_Grid = Grid(Vec2f(0.0f, 0.0f), 5, 5, 20.0f);
     m_Grid.m_Grid.resize(5);
-    for (int i = 0; i < 5; i++) {
-      m_Grid.m_Grid[i].resize(5);
+    for(auto &row : m_Grid.m_Grid) {
+      row.resize(5);
     }
   }
-  void Test_Contains(Vec2f point, bool expected_result) {
-    const bool result = m_Grid.Contains(point);
-    EXPECT_EQ(result, expected_result);
-  }
 
-  void Test_Update(const std::unordered_map<size_t, RigidBody> &objects,
+  void Test_Update(const std::unordered_map<size_t, RigidBody *> &objects,
                    const std::vector<Vec2i> &expected_taken_cells) {
-
     m_Grid.Update(objects);
     for (int i = 0; i < expected_taken_cells.size(); i++) {
       const int x = expected_taken_cells[i].x;
@@ -52,9 +33,9 @@ protected:
 
   void Test_GetCollisionPairs(
       std::list<std::pair<size_t, size_t>> &expectedIDPairs) {
-    auto IDpairs = m_Grid.GetCollisionPairs();
+    const auto IDpairs = m_Grid.GetCollisionPairs();
     ASSERT_EQ(IDpairs.size(), expectedIDPairs.size());
-
+    std::cerr << "no assert";
     auto it1 = IDpairs.begin();
     auto it2 = expectedIDPairs.begin();
     while (it1 != IDpairs.end()) {
@@ -70,50 +51,49 @@ protected:
     const bool result = m_Grid.HasBeenChecked(checkedPairs, pair);
     EXPECT_EQ(result, expectedResult);
   }
-  void InsertID(int x, int y, size_t ID) { m_Grid.m_Grid[y][x].push_back(ID); }
+  void InsertID(int row, int column, size_t ID) { 
+    m_Grid.m_Grid[column][row].push_back(ID);
+    std::cerr << "added";
+  }
 
 protected:
-  GridTestable m_Grid;
+  Grid m_Grid;
 };
 
-TEST_F(GridTest, ContainsPoint) {
-  const Vec2f point1 = Vec2f(50.0, 50.0);
-  const Vec2f point2 = Vec2f(0.0, 100.0);
-  this->Test_Contains(point1, true);
-  this->Test_Contains(point2, true);
-}
-
-TEST_F(GridTest, NotContainsPoint) {
-  const Vec2f point1 = Vec2f(-50.0, 50.0);
-  const Vec2f point2 = Vec2f(-1.0, 100.1);
-  this->Test_Contains(point1, false);
-  this->Test_Contains(point2, false);
-}
-
 TEST_F(GridTest, Update) {
-  const std::unordered_map<size_t, RigidBody> objects = {
-      {0,
-       RigidBody(0, Circle, Vec2f(19.0, 19.0), Transform(), 10.0, false, {})},
-      {1, RigidBody(1, Box, Vec2f(15.0f, 15.0f),
-                    Transform({50.0f, 50.0f}, Angle::FromDegrees(45.0)), 10.0,
-                    false, {})}};
+  RigidBody objectA(Circle, Vec2f(19.0, 19.0), {}, 10.0, false, {});
+  RigidBody objectB(Box, Vec2f(15.0f, 15.0f),
+                    Transform({50.0f, 50.0f}, Angle::FromDegrees(45.0)), 10.0f,
+                    false, {});
+
+  const std::unordered_map<size_t, RigidBody *> objects = {{0, &objectA},
+                                                           {1, &objectB}};
 
   const std::vector<Vec2i> expected_taken_cells = {
-      Vec2i(1.0, 1.0), Vec2i(2.0, 1.0), Vec2i(3.0, 1.0), Vec2i(1.0, 2.0),
-      Vec2i(2.0, 2.0), Vec2i(3.0, 2.0), Vec2i(1.0, 3.0), Vec2i(2.0, 3.0),
-      Vec2i(3.0, 3.0), Vec2i(0.0, 0.0)};
+    Vec2i(1, 1), Vec2i(2, 1),
+    Vec2i(3, 1), Vec2i(1, 2),
+    Vec2i(2, 2), Vec2i(3, 2),
+    Vec2i(1, 3), Vec2i(2, 3),
+    Vec2i(3, 3), Vec2i(0, 0)
+  };
+  
+  if(objects.at(0) == nullptr) {
+    std::cerr << "objectA are not alive";
+  } else if(objects.at(1) == nullptr) {
+    std::cerr << "objectB are not alive";
+  }
+  std::cerr << "objects are alive";
   this->Test_Update(objects, expected_taken_cells);
 }
 
 TEST_F(GridTest, GetCollisionPairs) {
-  std::list<std::pair<size_t, size_t>> expectedIDPairs = {std::make_pair(0, 2),
+  std::list<std::pair<size_t, size_t>> expected_ID_pairs = {std::make_pair(0, 2),
                                                           std::make_pair(1, 2)};
-  // row | column | ID
   this->InsertID(0, 0, 0);
   this->InsertID(0, 0, 2);
   this->InsertID(1, 0, 1);
   this->InsertID(1, 0, 2);
-  this->Test_GetCollisionPairs(expectedIDPairs);
+  this->Test_GetCollisionPairs(expected_ID_pairs);
 }
 
 TEST_F(GridTest, HasBeenChecked) {

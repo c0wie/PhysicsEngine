@@ -118,9 +118,9 @@ public:
   /////////////////////////////////////////////////////////////////////
   constexpr float GetInvMass() const {
     if (m_IsStatic) {
-      return 0.0;
+      return 0.0f;
     }
-    return (1.0 / m_Mass);
+    return (1.0f / m_Mass);
   }
 
   /////////////////////////////////////////////////////////////////////
@@ -145,9 +145,9 @@ public:
   /////////////////////////////////////////////////////////////////////
   constexpr float GetInvRotationalInertia() const {
     if (m_IsStatic) {
-      return 0.0;
+      return 0.0f;
     }
-    return 1.0 / m_RotationalInertia;
+    return 1.0f / m_RotationalInertia;
   }
 
   /////////////////////////////////////////////////////////////////////
@@ -280,11 +280,6 @@ public:
   /////////////////////////////////////////////////////////////////////
   constexpr void SetAngularVelocity(float angular_velocity) {
     m_AngularVelocity = angular_velocity;
-    if (m_AngularVelocity > 10.0) {
-      m_AngularVelocity = 10;
-    } else if (m_AngularVelocity < -10.0) {
-      m_AngularVelocity = -10.0;
-    }
   }
 
   /////////////////////////////////////////////////////////////////////
@@ -293,11 +288,6 @@ public:
   /////////////////////////////////////////////////////////////////////
   constexpr void AddAngularVelocity(float angular_velocity) {
     m_AngularVelocity += angular_velocity;
-    if (m_AngularVelocity > 10.0) {
-      m_AngularVelocity = 10.0;
-    } else if (m_AngularVelocity < -10.0) {
-      m_AngularVelocity = -10.0;
-    }
   }
 
   /////////////////////////////////////////////////////////////////////

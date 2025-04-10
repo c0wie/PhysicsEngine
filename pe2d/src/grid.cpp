@@ -38,6 +38,7 @@ void Grid::Update(const std::unordered_map<size_t, RigidBody *> &objects) {
   for (const auto &object : objects) {
     const std::array<Vec2f, 4> bounding_box = object.second->GetBoundingBox();
     bool inside_grid = false;
+    
     for (std::size_t i = 0; i < bounding_box.size(); i++) {
       if(algo::PointInsideRect(m_TopLeftCorner,
         bot_right_corner, bounding_box[i])) {

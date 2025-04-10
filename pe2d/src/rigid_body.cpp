@@ -6,6 +6,8 @@ namespace pe2d {
 RigidBody::RigidBody(BodyType type, Vec2f size, Transform transform,
                      float mass, bool is_static, Vec2f gravity)
     : CollisionBody(type, size, transform.position, gravity, is_static) {
+  SetScale(transform.scale);
+  SetAngle(transform.angle);
   if (m_IsStatic) {
     m_Mass = math::INF;
     m_RotationalInertia = math::INF;

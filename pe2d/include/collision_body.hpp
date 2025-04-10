@@ -21,6 +21,7 @@ namespace pe2d {
     }
     CollisionBody(BodyType type, Vec2f size, Vec2f position, Vec2f gravity, bool is_static) :
       m_Type(type), m_Transform(position), m_Gravity(gravity), m_IsStatic(is_static) {
+      SetSize(size);
     }
   public:
   /////////////////////////////////////////////////////////////////////
@@ -174,7 +175,7 @@ namespace pe2d {
   constexpr void SetGravity(Vec2f gravity) { m_Gravity = gravity; }
 
   protected:
-    bool m_IsStatic;
+    bool m_IsStatic{false};
     Vec2f m_Size{0.0f, 0.0f};
     BodyType m_Type{0};
     Vec2f m_LinearVelocity{0.0f, 0.0f};
