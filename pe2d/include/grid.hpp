@@ -1,6 +1,7 @@
 #pragma once
 
 // local
+#include "collision_body.hpp"
 #include "rigid_body.hpp"
 #include "vector2.hpp"
 
@@ -42,6 +43,14 @@ public:
   Grid(Vec2f top_left_corner, int rows, int columns, float cell_size);
 
 public:
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Place rigid body IDs in appropriate cells.
+  /// @details Clears m_Grid information from previous Update call before
+  ///          inserting new info to it.
+  /// @param objects - data structure containing rigid_bodies
+  /////////////////////////////////////////////////////////////////////
+  void Update(const std::unordered_map<size_t, CollisionBody *> &objects);
+
   /////////////////////////////////////////////////////////////////////
   /// @brief Place rigid body IDs in appropriate cells.
   /// @details Clears m_Grid information from previous Update call before

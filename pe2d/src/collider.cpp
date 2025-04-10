@@ -3,10 +3,30 @@
 
 // local
 #include "algo.hpp"
+#include "collision_body.hpp"
 #include "rigid_body.hpp"
+#include "transform.hpp"
 #include "vector2.hpp"
 
 namespace pe2d {
+
+CollisionPoints TestCollison(const CollisionBody *a, const CollisionBody *b) {
+  if (a->GetType() == Circle && b->GetType() == Circle) {
+    return FindCircleCircleCollision(a->GetSize().x, Transform{a->GetPosition()},
+                                     b->GetSize().x, Transform{b->GetPosition()});
+  } else if (a->GetType() == Circle && b->GetType() == Box) {
+    return FindCircleBoxCollision(a->GetSize().x, Transform{a->GetPosition()},
+                                  b->GetSize(), Transform{b->GetPosition()});
+  } else if (a->GetType() == Box && b->GetType() == Circle) {
+    return FindBoxCircleCollision(a->GetSize(), Transform{a->GetPosition()},
+                                  b->GetSize().x, Transform{b->GetPosition()});
+  } else if (a->GetType() == Box && b->GetType() == Box) {
+    return FindBoxBoxCollision(a->GetSize(), Transform{a->GetPosition()}, b->GetSize(),
+                               Transform{b->GetPosition()});
+  }
+  return {};
+}
+
 CollisionPoints TestCollison(const RigidBody *a, const RigidBody *b) {
   if (a->GetType() == Circle && b->GetType() == Circle) {
     return FindCircleCircleCollision(a->GetSize().x, a->GetTransform(),

@@ -1,9 +1,9 @@
 // local
-#include "rigid_body.hpp"
-#include "scene_settings.hpp"
-#include "solver.hpp"
-#include "vector2.hpp"
-#include "visual_world.hpp"
+// #include "rigid_body.hpp"
+// #include "scene_settings.hpp"
+// #include "solver.hpp"
+// #include "vector2.hpp"
+// #include "visual_world.hpp"
 
 // lib
 //SFML
@@ -16,6 +16,8 @@
 #include <cstdlib>
 #include <iostream>
 
+int main() { std::cout << "olleh\n"; }
+/*
 int main() {
   sf::RenderWindow window(sf::VideoMode({1000, 1000}), "DEMO",
                           sf::Style::Titlebar | sf::Style::Close);
@@ -34,7 +36,7 @@ int main() {
   sf::Clock DT_Clock;
   while (window.isOpen()) {
     sf::Time delta_time = DT_Clock.restart();
-    
+
     while (const std::optional event = window.pollEvent()) {
       ImGui::SFML::ProcessEvent(window, *event);
       if (event->is<sf::Event::Closed>()) {
@@ -43,7 +45,7 @@ int main() {
     }
     visual_world.Update(sf::Mouse::getPosition(window), delta_time.asSeconds());
     visual_world.Step(delta_time.asSeconds());
-    
+
     ImGui::SFML::Update(window, delta_time);
 
     if(ImGui::Begin("Scene settings")) {
@@ -56,7 +58,7 @@ int main() {
         if (ImGui::Button("Grid: OFF")) {
           scene_settings.IsGridOn = true;
           visual_world.GetPhysicsWorld().AddGrid({-100, -100},
-                                                 pe2d::Vec2i(1000, 1000), 50);
+                                                 100, 100, 100);
         }
       }
       if (scene_settings.DrawImpulses) {
@@ -111,29 +113,29 @@ int main() {
         visual_world.SetUp();
       }
       if (ImGui::CollapsingHeader("Last object information")) {
-        const pe2d::RigidBody last_object = visual_world.GetLastObject();
-        ImGui::Text("ID: %zu", last_object.GetID());
-        if (last_object.IsStatic()) {
+        const pe2d::RigidBody * last_object = visual_world.GetLastObject();
+        ImGui::Text("ID: %zu", visual_world.GetLastID());
+        if (last_object->IsStatic()) {
           ImGui::Text("Static object");
         } else {
           ImGui::Text("Non static object");
         }
-        ImGui::Text("Position: %f, %f", last_object.GetPosition().x,
-                    last_object.GetPosition().y);
+        ImGui::Text("Position: %f, %f", last_object->GetPosition().x,
+                    last_object->GetPosition().y);
         ImGui::Text("Rotation(degrees): %f",
-                    last_object.GetAngle().AsDegrees());
-        ImGui::Text("Mass: %f", last_object.GetMass());
+                    last_object->GetAngle().AsDegrees());
+        ImGui::Text("Mass: %f", last_object->GetMass());
         ImGui::Text("Rotational inertia: %f",
-                    last_object.GetRotationalInertia());
-        ImGui::Text("Angular velocity: %f", last_object.GetAngularVelocity());
+                    last_object->GetRotationalInertia());
+        ImGui::Text("Angular velocity: %f", last_object->GetAngularVelocity());
         ImGui::Text("Linear velocity: %f, %f",
-                    last_object.GetLinearVelocity().x,
-                    last_object.GetLinearVelocity().y);
-        ImGui::Text("Static friction: %f", last_object.GetStaticFriction());
-        ImGui::Text("Dynamic friction %f", last_object.GetDynamicFriction());
-        ImGui::Text("Restitution %f", last_object.GetRestitution());
-        ImGui::Text("Force: %f, %f", last_object.GetForce().x,
-                    last_object.GetForce().y);
+                    last_object->GetLinearVelocity().x,
+                    last_object->GetLinearVelocity().y);
+        ImGui::Text("Static friction: %f", last_object->GetStaticFriction());
+        ImGui::Text("Dynamic friction %f", last_object->GetDynamicFriction());
+        ImGui::Text("Restitution %f", last_object->GetRestitution());
+        ImGui::Text("Force: %f, %f", last_object->GetForce().x,
+                    last_object->GetForce().y);
       }
       ImGui::Text("Number of rigid bodies: %zu",
                   visual_world.GetPhysicsWorld().Size());
@@ -148,3 +150,4 @@ int main() {
   }
   ImGui::SFML::Shutdown();
 }
+*/

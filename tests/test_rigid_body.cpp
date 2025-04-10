@@ -304,6 +304,29 @@ TEST(RigidBodyTest, SetScale_Circle_InvalidScale) {
   EXPECT_THROW(a.SetScale(new_scale), std::invalid_argument);
 }
 
+TEST(RigidBodyTest, SetForce) {
+    RigidBody a(BodyType::Circle, {10.0f, 10.0f}, {}, 10.0f, false, {});
+    const Vec2f force(100.0f, 0.0f);
+    a.SetForce(force);
+    EXPECT_EQ(force, a.GetForce());
+  }
+
+  TEST(RigidBodyTest, AddForce) {
+    RigidBody a(BodyType::Circle, {10.0f, 10.0f}, {}, 10.0f, false, {});
+    const Vec2f force(100.0f, 0.0f);
+    a.SetForce(force);
+    const Vec2f force_offset(69.0f, 0.0f);;
+    a.AddForce(force_offset);
+    EXPECT_EQ(force + force_offset, a.GetForce());
+  }
+
+  TEST(RigidBodyTest, SetGravity) {
+    RigidBody a(BodyType::Circle, {10.0f, 10.0f}, {}, 10.0f, false, {});
+    const Vec2f gravity(0.0f, 98.1f);
+    a.SetGravity(gravity);
+    EXPECT_EQ(gravity, a.GetGravity());
+  }
+
 TEST(RigidBodyTest, SetStaticFriction_Invalid) {
   RigidBody a(BodyType::Box, {10.0f, 10.0f}, {}, 10.0f, false, {});
   EXPECT_THROW(a.SetStaticFriction(1.1f), std::invalid_argument);

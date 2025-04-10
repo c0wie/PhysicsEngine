@@ -318,8 +318,7 @@ void DrawContactPoints(pe2d::Collision &collision, sf::RenderWindow &window) {
 }
 
 VisualWorld::VisualWorld(unsigned int substeps) : m_PhysicsWorld(substeps) {
-  m_PhysicsWorld.AddGrid({0, 0},
-    pe2d::Vec2i(1000, 1000), 100);
+  m_PhysicsWorld.AddGrid({0, 0}, 100, 100, 100);
   m_PhysicsWorld.SetSolver(pe2d::ImpulseSolver);
 }
 
@@ -365,24 +364,24 @@ void VisualWorld::Update(sf::Vector2i position, float delta_time) {
              m_LastSpawnTime >= SPAWN_COOLDOWN) {
     m_LastId += 1;
     const pe2d::RigidBody circle = GetRandomCircle(m_LastId, position);
-    m_PhysicsWorld.AddObject(circle);
+    m_PhysicsWorld.AddObject(circle, m_LastId);
     m_LastSpawnTime = 0.0f;
   }
 }
 
 void VisualWorld::Draw(sf::RenderWindow &window, const SceneSettings &scene_settings) {
   for (auto it = m_PhysicsWorld.cBegin(); it != m_PhysicsWorld.cEnd(); it++) {
-    if (it->second.GetType() == pe2d::Box) {
-      if (it->second.IsStatic() == false) {
-        DrawRigidBody(it->second, sf::Color::White, window, false);
+    if (it->second->GetType() == Box) {
+      if (it->second->IsStatic() == false) {
+        DrawRigidBody(*it->second, sf::Color::White, window, false);
       } else {
-        DrawRigidBody(it->second, sf::Color::Blue, window, false);
+        DrawRigidBody(*it->second, sf::Color::Blue, window, false);
       }
     } else {
-      if (it->second.IsStatic() == false) {
-        DrawRigidBody(it->second, sf::Color::White, window, false);
+      if (it->second->IsStatic() == false) {
+        DrawRigidBody(*it->second, sf::Color::White, window, false);
       } else {
-        DrawRigidBody(it->second, sf::Color::Red, window, false);
+        DrawRigidBody(*it->second, sf::Color::Red, window, false);
       }
     }
   }

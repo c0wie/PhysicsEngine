@@ -7,6 +7,7 @@
 // lib
 // pe2d
 #include "collision.hpp"
+#include <cstddef>
 #define private public
 #include "physics_world.hpp"
 #define private private
@@ -26,7 +27,8 @@ public:
   void Update(sf::Vector2i position, float delta_time);
   pe2d::PhysicsWorld &GetPhysicsWorld() { return m_PhysicsWorld; }
   std::vector<pe2d::Collision> GetCollisions() const { return m_Collisions; }
-  pe2d::RigidBody GetLastObject() { return m_PhysicsWorld.At(m_LastId); }
+  pe2d::RigidBody *GetLastObject() { return m_PhysicsWorld.At(m_LastId); }
+  std::size_t GetLastID() const { return m_LastId; }
 
 private:
   constexpr static float SPAWN_COOLDOWN = 0.1f;

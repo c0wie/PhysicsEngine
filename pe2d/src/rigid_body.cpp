@@ -5,7 +5,7 @@ namespace pe2d {
 
 RigidBody::RigidBody(BodyType type, Vec2f size, Transform transform,
                      float mass, bool is_static, Vec2f gravity)
-    : CollisionBody(type, size, transform.position, gravity, is_static) {
+    : CollisionBody(type, size, transform.position, is_static), m_Gravity(gravity) {
   SetScale(transform.scale);
   SetAngle(transform.angle);
   if (m_IsStatic) {
@@ -19,7 +19,7 @@ RigidBody::RigidBody(BodyType type, Vec2f size, Transform transform,
 RigidBody::RigidBody(BodyType type, Vec2f size, Transform transform,
                      float mass, bool is_static, Vec2f gravity,
                      Vec2f linear_velocity, float angular_velocity)
-    : CollisionBody(type, size, transform.position, gravity, linear_velocity, is_static), m_Mass(mass),
+    : CollisionBody(type, size, transform.position, linear_velocity, is_static), m_Gravity(gravity),
       m_AngularVelocity(angular_velocity) {
   SetScale(transform.scale);
   SetAngle(transform.angle);
@@ -36,7 +36,7 @@ RigidBody::RigidBody(BodyType type, Vec2f size, Transform transform,
                      Vec2f linear_velocity, float angular_velocity,
                      float static_friction, float dynamic_friction,
                      float restitution)
-    : CollisionBody(type, size, transform.position, gravity, linear_velocity, is_static), m_AngularVelocity(angular_velocity) {
+    : CollisionBody(type, size, transform.position, linear_velocity, is_static), m_Gravity(gravity), m_AngularVelocity(angular_velocity) {
   SetScale(transform.scale);
   SetAngle(transform.angle);
   if (m_IsStatic) {

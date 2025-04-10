@@ -9,6 +9,7 @@
 #include <cassert>
 
 namespace pe2d {
+CollisionPoints TestCollison(const CollisionBody *a, const CollisionBody *b);
 CollisionPoints TestCollison(const RigidBody *a, const RigidBody *b);
 /*
     Returns detailed information about a collision beetwen two circles:

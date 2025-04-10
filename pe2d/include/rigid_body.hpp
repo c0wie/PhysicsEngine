@@ -4,6 +4,7 @@
 #include "algo.hpp"
 #include "angle.hpp"
 #include "collision_body.hpp"
+#include "vector2.hpp"
 // std
 #include <stdexcept>
 #include <string>
@@ -122,6 +123,18 @@ public:
     }
     return (1.0f / m_Mass);
   }
+
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Gets the force acting on rigid body.
+  /// @return The force vector.
+  /////////////////////////////////////////////////////////////////////
+  constexpr Vec2f GetForce() const { return m_Force; }
+  
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Gets the gravity assigned to rigid body.
+  /// @return The gravity vector.
+  /////////////////////////////////////////////////////////////////////
+  constexpr Vec2f GetGravity() const { return m_Gravity; }
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Gets the angular velocity of rigid body.
@@ -275,6 +288,24 @@ public:
   }
 
   /////////////////////////////////////////////////////////////////////
+  /// @brief Sets force acting on rigid body.
+  /// @param force - new force acting on rigid body
+  /////////////////////////////////////////////////////////////////////
+  constexpr void SetForce(Vec2f force) { m_Force = force; }
+
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Adds force acting on rigid body.
+  /// @param force - force added to act on rigid body 
+  /////////////////////////////////////////////////////////////////////
+  constexpr void AddForce(Vec2f force) { m_Force += force; }
+  
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Sets gravity assigned to rigid body.
+  /// @param gravity - new gravity assigned to rigid body
+  /////////////////////////////////////////////////////////////////////
+  constexpr void SetGravity(Vec2f gravity) { m_Gravity = gravity; }
+
+  /////////////////////////////////////////////////////////////////////
   /// @brief Sets angular velocity of rigid body.
   /// @param angular_velocity - new angular velocity of rigid body
   /////////////////////////////////////////////////////////////////////
@@ -335,6 +366,8 @@ public:
     m_Restitution = restitution;
   }
 private:
+  Vec2f m_Gravity{0.0f, 0.0f};
+  Vec2f m_Force{0.0f, 0.0f};
   float m_Mass{0.0f};
   float m_AngularVelocity{0.0f};
   float m_RotationalInertia{0.0f};

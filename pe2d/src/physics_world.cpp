@@ -1,17 +1,21 @@
 // header
 #include "physics_world.hpp"
+
+// local
 #include "angle.hpp"
 #include "collider.hpp"
 #include "collision_points.hpp"
 #include "rigid_body.hpp"
 #include "vector2.hpp"
+
+// std
 #include <cstddef>
 #include <stdexcept>
 #include <string>
 
 namespace pe2d {
 void PhysicsWorld::Step(float delta_time) {
-  if (delta_time < 0.0) {
+  if (delta_time <= 0.0f) {
     throw std::invalid_argument("[PhysicsWorld::Step()] Error: delta_time must "
                                 "be positive (received: " +
                                 std::to_string(delta_time) + ")");

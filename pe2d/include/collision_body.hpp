@@ -15,12 +15,12 @@ namespace pe2d {
   class CollisionBody {
   public:
     CollisionBody() = default;
-    CollisionBody(BodyType type, Vec2f size, Vec2f position, Vec2f gravity, Vec2f velocity, bool is_static) :
-      m_Type(type), m_Transform(position), m_Gravity(gravity), m_LinearVelocity(velocity), m_IsStatic(is_static) {
+    CollisionBody(BodyType type, Vec2f size, Vec2f position, Vec2f velocity, bool is_static) :
+      m_Type(type), m_Transform(position), m_LinearVelocity(velocity), m_IsStatic(is_static) {
       SetSize(size);
     }
-    CollisionBody(BodyType type, Vec2f size, Vec2f position, Vec2f gravity, bool is_static) :
-      m_Type(type), m_Transform(position), m_Gravity(gravity), m_IsStatic(is_static) {
+    CollisionBody(BodyType type, Vec2f size, Vec2f position, bool is_static) :
+      m_Type(type), m_Transform(position), m_IsStatic(is_static) {
       SetSize(size);
     }
   public:
@@ -83,18 +83,6 @@ namespace pe2d {
   constexpr Vec2f GetLinearVelocity() const { return m_LinearVelocity; }
 
   /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the force acting on rigid body.
-  /// @return The force vector.
-  /////////////////////////////////////////////////////////////////////
-  constexpr Vec2f GetForce() const { return m_Force; }
-  
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the gravity assigned to rigid body.
-  /// @return The gravity vector.
-  /////////////////////////////////////////////////////////////////////
-  constexpr Vec2f GetGravity() const { return m_Gravity; }
-
-  /////////////////////////////////////////////////////////////////////
   /// @brief Checks if the body is static.
   /// @return True if the body is static, false if dynamic.
   /////////////////////////////////////////////////////////////////////
@@ -155,32 +143,11 @@ namespace pe2d {
   constexpr void AddLinearVelocity(Vec2f linear_velocity) {
     m_LinearVelocity += linear_velocity;
   }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Sets force acting on rigid body.
-  /// @param force - new force acting on rigid body
-  /////////////////////////////////////////////////////////////////////
-  constexpr void SetForce(Vec2f force) { m_Force = force; }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Adds force acting on rigid body.
-  /// @param force - force added to act on rigid body 
-  /////////////////////////////////////////////////////////////////////
-  constexpr void AddForce(Vec2f force) { m_Force += force; }
-  
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Sets gravity assigned to rigid body.
-  /// @param gravity - new gravity assigned to rigid body
-  /////////////////////////////////////////////////////////////////////
-  constexpr void SetGravity(Vec2f gravity) { m_Gravity = gravity; }
-
   protected:
     bool m_IsStatic{false};
     Vec2f m_Size{0.0f, 0.0f};
     BodyType m_Type{0};
     Vec2f m_LinearVelocity{0.0f, 0.0f};
-    Vec2f m_Force{0.0f, 0.0f};
-    Vec2f m_Gravity{0.0f, 0.0f};
     Transform m_Transform;
   };
 }

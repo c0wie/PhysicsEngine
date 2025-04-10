@@ -14,8 +14,6 @@ namespace {
     EXPECT_EQ(a.GetSize(), Vec2f(0.0f, 0.0f));
     EXPECT_EQ(a.GetType(), 0);
     EXPECT_EQ(a.GetLinearVelocity(), Vec2f(0.0f, 0.0f));
-    EXPECT_EQ(a.GetForce(), Vec2f(0.0f, 0.0f));
-    EXPECT_EQ(a.GetGravity(), Vec2f(0.0f, 0.0f));
     EXPECT_EQ(a.GetPosition(), Vec2f(0.0f, 0.0f));
   }
 
@@ -23,15 +21,12 @@ namespace {
     const float is_static = false;
     const BodyType body_type = BodyType::Box;
     const Vec2f size(10.0f, 10.0f);
-    const Vec2f gravity(0.0f, 9.81f);
     const Vec2f position(100.0f, 100.0f);
-    CollisionBody a(body_type, size, position, gravity, is_static);
+    CollisionBody a(body_type, size, position, is_static);
     EXPECT_EQ(a.IsStatic(), is_static);
     EXPECT_EQ(a.GetSize(), size);
     EXPECT_EQ(a.GetType(), body_type);
     EXPECT_EQ(a.GetLinearVelocity(), Vec2f(0.0f, 0.0f));
-    EXPECT_EQ(a.GetForce(), Vec2f(0.0f, 0.0f));
-    EXPECT_EQ(a.GetGravity(), gravity);
     EXPECT_EQ(a.GetPosition(), position);
   }
 
@@ -39,16 +34,13 @@ namespace {
     const float is_static = false;
     const BodyType body_type = BodyType::Box;
     const Vec2f size(10.0f, 10.0f);
-    const Vec2f gravity(0.0f, 9.81f);
     const Vec2f position(100.0f, 100.0f);
     const Vec2f velocity(100.0f, 0.0f);
-    CollisionBody a(body_type, size, position, gravity, velocity, is_static);
+    CollisionBody a(body_type, size, position, velocity, is_static);
     EXPECT_EQ(a.IsStatic(), is_static);
     EXPECT_EQ(a.GetSize(), size);
     EXPECT_EQ(a.GetType(), body_type);
     EXPECT_EQ(a.GetLinearVelocity(), velocity);
-    EXPECT_EQ(a.GetForce(), Vec2f(0.0f, 0.0f));
-    EXPECT_EQ(a.GetGravity(), gravity);
     EXPECT_EQ(a.GetPosition(), position);
   }
 
@@ -91,14 +83,14 @@ namespace {
 
   TEST(CollisionBodyTest, Move) {
     const Vec2f position(10.0f, 20.0f);
-    CollisionBody a(BodyType::Circle, {10.0f, 10.0f}, position, Vec2f(), false);
+    CollisionBody a(BodyType::Circle, {10.0f, 10.0f}, position, false);
     const Vec2f possition_offset(5.0f, -5.0f);
     a.Move(possition_offset);
     EXPECT_EQ(position + possition_offset, a.GetPosition());
   }
 
   TEST(CollisionBodyTest, SetLinearVelocity) {
-    CollisionBody a(BodyType::Circle, {10.0f, 10.0f}, Vec2f(), Vec2f(), false);
+    CollisionBody a(BodyType::Circle, {10.0f, 10.0f}, Vec2f(), false);
     const Vec2f velocity(100.0f, 0.0f);
     a.SetLinearVelocity(velocity);
     EXPECT_EQ(velocity, a.GetLinearVelocity());
@@ -106,32 +98,9 @@ namespace {
 
   TEST(CollisionBodyTest, AddLinearVelocity) {
     const Vec2f velocity(100.0f, 0.0f);
-    CollisionBody a(BodyType::Circle, {10.0f, 10.0f}, Vec2f(), Vec2f(), velocity, false);
+    CollisionBody a(BodyType::Circle, {10.0f, 10.0f}, Vec2f(), velocity, false);
     a.AddLinearVelocity(velocity);
     EXPECT_EQ(velocity + velocity, a.GetLinearVelocity());
-  }
-
-  TEST(CollisionBodyTest, SetForce) {
-    CollisionBody a(BodyType::Circle, {10.0f, 10.0f}, Vec2f(), Vec2f(), false);
-    const Vec2f force(100.0f, 0.0f);
-    a.SetForce(force);
-    EXPECT_EQ(force, a.GetForce());
-  }
-
-  TEST(CollisionBodyTest, AddForce) {
-    CollisionBody a(BodyType::Circle, {10.0f, 10.0f}, Vec2f(), Vec2f(), false);
-    const Vec2f force(100.0f, 0.0f);
-    a.SetForce(force);
-    const Vec2f force_offset(69.0f, 0.0f);;
-    a.AddForce(force_offset);
-    EXPECT_EQ(force + force_offset, a.GetForce());
-  }
-
-  TEST(CollisionBodyTest, SetGravity) {
-    CollisionBody a(BodyType::Circle, {10.0f, 10.0f}, Vec2f(), Vec2f(), false);
-    const Vec2f gravity(0.0f, 98.1f);
-    a.SetGravity(gravity);
-    EXPECT_EQ(gravity, a.GetGravity());
   }
 
   TEST(CollisionBodyTest, GetBoundingBox_Box) {

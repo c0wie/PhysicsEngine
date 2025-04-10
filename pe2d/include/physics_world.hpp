@@ -87,7 +87,7 @@ private:
 private:
   Grid m_Grid;
   std::function<void(std::vector<Collision> &collisions)>
-      m_Solver{PositionSolver};
+      m_Solver{ImpulseSolver};
   unsigned int m_Substeps{1U};
   bool m_IsGridOn{false};
   std::unordered_map<size_t, RigidBody *> m_Objects;
