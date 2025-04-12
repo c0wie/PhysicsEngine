@@ -84,6 +84,9 @@ public:
             float dynamic_friction, float restitution);
 
 public:
+  bool IsDynamic() const {
+    return true;
+  }
   /////////////////////////////////////////////////////////////////////
   /// @brief Gets the scale of the rigid body.
   /// @return The scale vector(x - scale in x axis, y - scale in y axis).
@@ -135,6 +138,12 @@ public:
   /// @return The gravity vector.
   /////////////////////////////////////////////////////////////////////
   constexpr Vec2f GetGravity() const { return m_Gravity; }
+
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Gets the linear velocity of rigid body.
+  /// @return The linear velocity vector.
+  /////////////////////////////////////////////////////////////////////
+  constexpr Vec2f GetLinearVelocity() const { return m_LinearVelocity; }
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Gets the angular velocity of rigid body.
@@ -305,6 +314,23 @@ public:
   /////////////////////////////////////////////////////////////////////
   constexpr void SetGravity(Vec2f gravity) { m_Gravity = gravity; }
 
+
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Sets linear velocity of rigid body.
+  /// @param linear_velocity- new linear velocity of rigid body
+  /////////////////////////////////////////////////////////////////////
+  constexpr void SetLinearVelocity(Vec2f linear_velocity) {
+    m_LinearVelocity = linear_velocity;
+  }
+
+  /////////////////////////////////////////////////////////////////////
+  /// @brief Adds linear velocity to currnet rigid body linear velocity.
+  /// @param linear_veloctiy - linear velocity added to rigid body 
+  /////////////////////////////////////////////////////////////////////
+  constexpr void AddLinearVelocity(Vec2f linear_velocity) {
+    m_LinearVelocity += linear_velocity;
+  }
+
   /////////////////////////////////////////////////////////////////////
   /// @brief Sets angular velocity of rigid body.
   /// @param angular_velocity - new angular velocity of rigid body
@@ -366,6 +392,7 @@ public:
     m_Restitution = restitution;
   }
 private:
+  Vec2f m_LinearVelocity{0.0f, 0.0f};
   Vec2f m_Gravity{0.0f, 0.0f};
   Vec2f m_Force{0.0f, 0.0f};
   float m_Mass{0.0f};

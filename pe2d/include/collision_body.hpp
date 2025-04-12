@@ -15,15 +15,16 @@ namespace pe2d {
   class CollisionBody {
   public:
     CollisionBody() = default;
-    CollisionBody(BodyType type, Vec2f size, Vec2f position, Vec2f velocity, bool is_static) :
-      m_Type(type), m_Transform(position), m_LinearVelocity(velocity), m_IsStatic(is_static) {
-      SetSize(size);
-    }
     CollisionBody(BodyType type, Vec2f size, Vec2f position, bool is_static) :
       m_Type(type), m_Transform(position), m_IsStatic(is_static) {
       SetSize(size);
     }
   public:
+
+  bool IsDynamic() const {
+    return false;
+  }
+
   /////////////////////////////////////////////////////////////////////
   /// @brief Gets the body type of the rigid body.
   /// @return The body type.
@@ -77,12 +78,6 @@ namespace pe2d {
   constexpr Vec2f GetPosition() const { return m_Transform.position; }
   
   /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the linear velocity of rigid body.
-  /// @return The linear velocity vector.
-  /////////////////////////////////////////////////////////////////////
-  constexpr Vec2f GetLinearVelocity() const { return m_LinearVelocity; }
-
-  /////////////////////////////////////////////////////////////////////
   /// @brief Checks if the body is static.
   /// @return True if the body is static, false if dynamic.
   /////////////////////////////////////////////////////////////////////
@@ -128,26 +123,10 @@ namespace pe2d {
   /////////////////////////////////////////////////////////////////////
   constexpr void Move(Vec2f offset) { m_Transform.Move(offset); }
 
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Sets linear velocity of rigid body.
-  /// @param linear_velocity- new linear velocity of rigid body
-  /////////////////////////////////////////////////////////////////////
-  constexpr void SetLinearVelocity(Vec2f linear_velocity) {
-    m_LinearVelocity = linear_velocity;
-  }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Adds linear velocity to currnet rigid body linear velocity.
-  /// @param linear_veloctiy - linear velocity added to rigid body 
-  /////////////////////////////////////////////////////////////////////
-  constexpr void AddLinearVelocity(Vec2f linear_velocity) {
-    m_LinearVelocity += linear_velocity;
-  }
   protected:
     bool m_IsStatic{false};
     Vec2f m_Size{0.0f, 0.0f};
     BodyType m_Type{0};
-    Vec2f m_LinearVelocity{0.0f, 0.0f};
     Transform m_Transform;
   };
 }
