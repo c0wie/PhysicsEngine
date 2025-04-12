@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace pe2d {
 Grid::Grid(Vec2f top_left_corner, int rows, int columns, float cell_size)
@@ -32,12 +33,12 @@ Grid::Grid(Vec2f top_left_corner, int rows, int columns, float cell_size)
   }
 }
 
-void Grid::Update(const std::unordered_map<size_t, CollisionBody *> &objects) {
+void Grid::Update(const std::vector<CollisionBody *> &objects) {
   m_Grid.clear();
-  m_Grid.resize(m_Rows);
+  m_Grid.resize(m_Rows * m_Columns);
   const Vec2f bot_right_corner(m_TopLeftCorner.x + m_Columns * m_CellSize, m_TopLeftCorner.y + m_Rows * m_CellSize);
   for (const auto &object : objects) {
-    const std::array<Vec2f, 4> bounding_box = object.second->GetBoundingBox();
+    const std::array<Vec2f, 4> bounding_box = object->GetBoundingBox();
     bool inside_grid = false;
     
     for (std::size_t i = 0; i < bounding_box.size(); i++) {
@@ -68,80 +69,30 @@ void Grid::Update(const std::unordered_map<size_t, CollisionBody *> &objects) {
     body_coord_maxY = std::clamp(body_coord_maxY, 0, (int)m_Rows - 1);
 
     for (int y = body_coord_minY; y <= body_coord_maxY; y++) {
-      auto &row = m_Grid[y];
-      if (row.empty()) {
-        row.resize(m_Columns);
-      }
       for (int x = body_coord_minX; x <= body_coord_maxX; x++) {
-        row[x].push_back(object.first);
+        m_Grid[y * m_Columns + x].push_back(object);
       }
     }
   }
 }
 
-void Grid::Update(const std::unordered_map<size_t, RigidBody *> &objects) {
-  m_Grid.clear();
-  m_Grid.resize(m_Rows);
-  const Vec2f bot_right_corner(m_TopLeftCorner.x + m_Columns * m_CellSize, m_TopLeftCorner.y + m_Rows * m_CellSize);
-  for (const auto &object : objects) {
-    const std::array<Vec2f, 4> bounding_box = object.second->GetBoundingBox();
-    bool inside_grid = false;
-    
-    for (std::size_t i = 0; i < bounding_box.size(); i++) {
-      if(algo::PointInsideRect(m_TopLeftCorner,
-        bot_right_corner, bounding_box[i])) {
-        inside_grid = true;
-        break;
-      }
-    }
-    if (!inside_grid) {
-      continue;
-    }
-    Vector2 object_min = bounding_box[1];
-    Vector2 object_max = bounding_box[3];
+std::list<std::pair<CollisionBody *, CollisionBody *>> Grid::GetCollisionPairs() const {
+  std::unordered_multimap<CollisionBody *, CollisionBody *> checked_pairs;
+  std::list<std::pair<CollisionBody *, CollisionBody *>> pairs;
 
-    // calculate object's coordinates in grid
-    int body_coord_minX = static_cast<int>(
-        std::floor((object_min.x - m_TopLeftCorner.x) / m_CellSize));
-    body_coord_minX = std::clamp(body_coord_minX, 0, (int)m_Columns - 1);
-    int body_coord_maxX = static_cast<int>(
-        std::floor((object_max.x - m_TopLeftCorner.x) / m_CellSize));
-    body_coord_maxX = std::clamp(body_coord_maxX, 0, (int)m_Columns - 1);
-    int body_coord_minY = static_cast<int>(
-        std::floor((object_min.y - m_TopLeftCorner.y) / m_CellSize));
-    body_coord_minY = std::clamp(body_coord_minY, 0, (int)m_Rows - 1);
-    int body_coord_maxY = static_cast<int>(
-        std::floor((object_max.y - m_TopLeftCorner.y)) / m_CellSize);
-    body_coord_maxY = std::clamp(body_coord_maxY, 0, (int)m_Rows - 1);
-
-    for (int y = body_coord_minY; y <= body_coord_maxY; y++) {
-      auto &row = m_Grid[y];
-      if (row.empty()) {
-        row.resize(m_Columns);
-      }
-      for (int x = body_coord_minX; x <= body_coord_maxX; x++) {
-        row[x].push_back(object.first);
-      }
-    }
-  }
-}
-
-std::list<std::pair<size_t, size_t>> Grid::GetCollisionPairs() const {
-  std::unordered_multimap<size_t, size_t> checked_pairs;
-  std::list<std::pair<size_t, size_t>> pairs;
-
-  for (const auto &row : m_Grid) {
-    for (const auto &cell : row) {
-      for (const auto &elementA : cell) {
-        for (const auto &elementB : cell) {
-          if (elementA == elementB) {
+  for(unsigned y = 0; y < m_Rows; y++) {
+    for(unsigned x = 0; x < m_Columns; x++) {
+      const std::vector<CollisionBody *> cell = m_Grid[y * m_Columns + x];
+      for (const auto &objA : cell) {
+        for (const auto &objB : cell) {
+          if(objA == objB) {
             break;
           }
-          std::pair<size_t, size_t> pair;
-          if (elementA < elementB) {
-            pair = std::make_pair(elementA, elementB);
+          std::pair<CollisionBody *, CollisionBody *> pair;
+          if (objA < objB) {
+            pair = std::make_pair(objA, objB);
           } else {
-            pair = std::make_pair(elementB, elementA);
+            pair = std::make_pair(objB, objA);
           }
           if (!HasBeenChecked(checked_pairs, pair)) {
             pairs.push_back(pair);
@@ -155,8 +106,8 @@ std::list<std::pair<size_t, size_t>> Grid::GetCollisionPairs() const {
 }
 
 bool Grid::HasBeenChecked(
-    std::unordered_multimap<size_t, size_t> &checked_pairs,
-    std::pair<size_t, size_t> pair) const {
+    std::unordered_multimap<CollisionBody *, CollisionBody *> &checked_pairs,
+    std::pair<CollisionBody *, CollisionBody *> pair) const {
   auto [first, second] = checked_pairs.equal_range(pair.first);
   for (auto &i = first; i != second; ++i) {
     if (i->second == pair.second) {
