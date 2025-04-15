@@ -3,7 +3,6 @@
 
 //local
 #include "collision_body.hpp"
-#include "rigid_body.hpp"
 #include "vector2.hpp"
 #include "algo.hpp"
 

@@ -2,9 +2,19 @@
 #include "collision_world.hpp"
 #include "collider.hpp"
 #include "collision_body.hpp"
+#include "collision_points.hpp"
 #include <algorithm>
 
 namespace pe2d {
+
+CollisionWorld::CollisionWorld(int substeps) : m_Substeps(substeps) {
+  if (m_Substeps <= 0 || m_Substeps > 64) {
+    std::invalid_argument("[CollisionWorld::CollisionWorld()] Error: substeps "
+                          "must be between (0 - 64] (received: " +
+                          std::to_string(substeps) + ")");
+  }
+}
+
 void CollisionWorld::AddCollisionObject(CollisionBody *object) {
   m_Objects.push_back(object);
 }
@@ -37,6 +47,7 @@ void CollisionWorld::ResolveCollisions(float delta_time) {
 
 void CollisionWorld::AddGrid(Vec2f top_left_corner, int rows, int columns, float cell_size) {
   m_Grid = Grid(top_left_corner, rows, columns, cell_size);
+  m_IsGridOn = true;
 }
 
 void CollisionWorld::RemoveGrid() {

@@ -14,13 +14,7 @@ namespace pe2d {
 class CollisionWorld {
 public:
   CollisionWorld() = default;
-  explicit CollisionWorld(int substeps) : m_Substeps(substeps) {
-    if (m_Substeps <= 0 || m_Substeps > 64) {
-      std::invalid_argument("[CollisionWorld::CollisionWorld()] Error: substeps "
-                            "must be between (0 - 64] (received: " +
-                            std::to_string(substeps) + ")");
-    }
-  }
+  explicit CollisionWorld(int substeps);
   CollisionWorld(const CollisionWorld &other) = delete;
   CollisionWorld &operator=(const CollisionWorld &other) = delete;
   CollisionWorld(CollisionWorld &&other) = default;
@@ -43,10 +37,10 @@ public:
   bool Empty() const { return m_Objects.empty(); }
   void Clear() { m_Objects.clear(); }
 
-private:
+protected:
   void FindCollisions(CollisionBody *a, CollisionBody *b,
                       std::vector<Collision> &collisions);
-private:
+protected:
   bool m_IsGridOn{false};
   unsigned int m_Substeps{1U};
   Grid m_Grid;

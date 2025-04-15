@@ -9,6 +9,6 @@ add_library(pe2d STATIC)
 target_sources(pe2d PRIVATE 
   src/algo.cpp src/collider.cpp
   src/physics_world.cpp src/grid.cpp
-  src/rigid_body.cpp src/solver.cpp src/algo.cpp)
+  src/rigid_body.cpp src/solver.cpp src/algo.cpp src/collision_world.cpp)
 
 target_include_directories(pe2d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
