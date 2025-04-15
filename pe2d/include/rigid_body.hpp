@@ -84,9 +84,6 @@ public:
             float dynamic_friction, float restitution);
 
 public:
-  bool IsDynamic() const {
-    return true;
-  }
   /////////////////////////////////////////////////////////////////////
   /// @brief Gets the scale of the rigid body.
   /// @return The scale vector(x - scale in x axis, y - scale in y axis).
@@ -99,13 +96,6 @@ public:
   /// @see Angle
   /////////////////////////////////////////////////////////////////////
   constexpr Angle GetAngle() const { return m_Transform.angle; }
-
-  /////////////////////////////////////////////////////////////////////
-  /// @brief Gets the transform of the rigid body.
-  /// @return The transform object.
-  /// @see Transform
-  /////////////////////////////////////////////////////////////////////
-  constexpr Transform GetTransform() const { return m_Transform; }
 
   /////////////////////////////////////////////////////////////////////
   /// @brief Gets the mass of the rigid body
