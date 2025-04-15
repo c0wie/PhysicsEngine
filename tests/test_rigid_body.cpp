@@ -304,6 +304,20 @@ TEST(RigidBodyTest, SetScale_Circle_InvalidScale) {
   EXPECT_THROW(a.SetScale(new_scale), std::invalid_argument);
 }
 
+TEST(RigidBodyTest, SetLinearVelocity) {
+  RigidBody a(BodyType::Circle, {10, 10}, {}, 10, false, {});
+  const Vec2f velocity(100.0f, 0.0f);
+  a.SetLinearVelocity(velocity);
+  EXPECT_EQ(velocity, a.GetLinearVelocity());
+}
+
+TEST(RigidBodyTest, AddLinearVelocity) {
+  const Vec2f velocity(100.0f, 0.0f);
+  RigidBody a(BodyType::Circle, {10, 10}, {}, 10, false, {});
+  a.AddLinearVelocity(velocity);
+  EXPECT_EQ(velocity, a.GetLinearVelocity());
+}
+
 TEST(RigidBodyTest, SetForce) {
     RigidBody a(BodyType::Circle, {10.0f, 10.0f}, {}, 10.0f, false, {});
     const Vec2f force(100.0f, 0.0f);
