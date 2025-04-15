@@ -73,6 +73,6 @@ private:
   unsigned int m_Rows{0};
   unsigned int m_Columns{0};
   float m_CellSize{0.0f};
-  std::vector<std::vector<CollisionBody *>> m_Grid;
+  std::vector<std::vector<std::vector<CollisionBody *>>> m_Grid;
 };
 } // namespace pe2d
