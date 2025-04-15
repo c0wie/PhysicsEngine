@@ -45,5 +45,4 @@ private:
   float m_LastSpawnTime;
   std::vector<Entity> m_Entities;
   pe2d::PhysicsWorld m_PhysicsWorld;
-  std::vector<pe2d::Collision> m_Collisions;
 };

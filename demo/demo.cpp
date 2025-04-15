@@ -22,7 +22,7 @@ int main() {
   }
 
   SceneSettings scene_settings;
-  GameWorld game_world(64);
+  GameWorld game_world(8);
 
   float delta_time = 0.0f;
   bool draw_bounding_boxes = false;
@@ -51,42 +51,6 @@ int main() {
         if (ImGui::Button("Grid: OFF")) {
           scene_settings.IsGridOn = true;
           game_world.AddGrid({-100, -100}, 100, 100, 100);
-        }
-      }
-      if (scene_settings.DrawImpulses) {
-        if (ImGui::Button("Draw Impulses: ON")) {
-          scene_settings.DrawImpulses = false;
-        }
-      } else {
-        if (ImGui::Button("Draw Impulses: OFF")) {
-          scene_settings.DrawImpulses = true;
-        }
-      }
-      if (scene_settings.DrawNormalLines) {
-        if (ImGui::Button("Draw Collision Normals: ON")) {
-          scene_settings.DrawNormalLines = false;
-        }
-      } else {
-        if (ImGui::Button("Draw Collision Normals: OFF")) {
-          scene_settings.DrawNormalLines = true;
-        }
-      }
-      if (scene_settings.DrawTangentLines) {
-        if (ImGui::Button("Draw Collision Tangent: ON")) {
-          scene_settings.DrawTangentLines = false;
-        }
-      } else {
-        if (ImGui::Button("Draw Collision Tangent: OFF")) {
-          scene_settings.DrawTangentLines = true;
-        }
-      }
-      if (scene_settings.DrawContactPoints) {
-        if (ImGui::Button("Draw Contact Points: ON")) {
-          scene_settings.DrawContactPoints = false;
-        }
-      } else {
-        if (ImGui::Button("Draw Contact Points: OFF")) {
-          scene_settings.DrawContactPoints = true;
         }
       }
       if(scene_settings.Solver == SolverType::POSITION_SOLVER) {

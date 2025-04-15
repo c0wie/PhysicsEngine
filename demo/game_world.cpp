@@ -14,8 +14,6 @@
 // lib
 // sfml
 #include <SFML/Graphics.hpp>
-
-// std
 #include <SFML/Graphics/Color.hpp>
 
 pe2d::RigidBody GetBox(sf::Vector2i pos) {
@@ -109,197 +107,6 @@ void DrawRigidBody(const pe2d::RigidBody body, const sf::Color &color,
   }
 }
 
-void DrawNormal(pe2d::Collision &collision, sf::RenderWindow &window) {
-  const pe2d::CollisionPoints points = collision.GetCollisionPoints();
-  const sf::Color color = sf::Color::Cyan;
-  const sf::Vector2f starting_point(points.contact_point1.x,
-                                    points.contact_point1.y);
-  const sf::Vector2f ending_point(starting_point.x + points.normal.x * 20.0f,
-                                  starting_point.y + points.normal.y * 20.0f);
-  sf::Vertex normal_line[] = {sf::Vertex(starting_point, color),
-                              sf::Vertex(ending_point, color)};
-  window.draw(normal_line, 2, sf::PrimitiveType::Lines);
-}
-
-void DrawTangent(pe2d::Collision &collision, sf::RenderWindow &window) {
-  const pe2d::CollisionPoints points = collision.GetCollisionPoints();
-  const pe2d::Vector2 rA_perp = pe2d::math::Perp(points.contact_point1);
-  const pe2d::Vector2 rB_perp = pe2d::math::Perp(points.contact_point1);
-  const sf::Color color = sf::Color::Green;
-
-  const pe2d::Vector2 relative_velocity =
-      (collision.GetObjectA().GetLinearVelocity() +
-       (rA_perp * collision.GetObjectA().GetAngularVelocity())) -
-      (collision.GetObjectB().GetLinearVelocity() +
-       (rB_perp * collision.GetObjectB().GetAngularVelocity()));
-
-  const pe2d::Vector2 tangent = pe2d::math::Normalize(
-      relative_velocity -
-      pe2d::math::Dot(relative_velocity, points.normal) * points.normal);
-  const auto draw_tanget = [&window](pe2d::Vec2f point, pe2d::Vec2f tangent,
-                                     sf::Color color) {
-    sf::CircleShape contactPoint(2.0f);
-    contactPoint.setFillColor(color);
-    contactPoint.setPosition(sf::Vector2f(point.x - 2.0f, point.y - 2.0f));
-    window.draw(contactPoint);
-
-    sf::Vertex tangent_line[] = {
-        sf::Vertex(sf::Vector2f(point.x, point.y), color),
-        sf::Vertex(
-            sf::Vector2f(point.x + tangent.x * 20, point.y + tangent.y * 20),
-            color)};
-    window.draw(tangent_line, 2, sf::PrimitiveType::Lines);
-  };
-  draw_tanget(points.contact_point1, tangent, sf::Color::Green);
-  draw_tanget(points.contact_point2, tangent, sf::Color::White);
-}
-
-void DrawImpulses(pe2d::Collision &collision, sf::RenderWindow &window) {
-  pe2d::RigidBody &rigid_bodyA = collision.GetObjectA();
-  pe2d::RigidBody &rigid_bodyB = collision.GetObjectB();
-
-  const pe2d::CollisionPoints &points = collision.GetCollisionPoints();
-  const float inv_massA = rigid_bodyA.GetInvMass();
-  const float inv_massB = rigid_bodyB.GetInvMass();
-  const float inv_inertiaA = rigid_bodyA.GetInvRotationalInertia();
-  const float inv_inertiaB = rigid_bodyB.GetInvRotationalInertia();
-  const pe2d::Vector2 normal = points.normal;
-  const unsigned int contact_count = points.contact_count;
-  const float restitution_coefficient =
-      (rigid_bodyA.GetRestitution() + rigid_bodyB.GetRestitution()) * 0.5;
-  const std::array<pe2d::Vec2f, 2> contact_list = points.GetContactPoints();
-
-  // list of vectors pointing from object A's center of mass to the contact
-  // points
-  std::array<pe2d::Vec2f, 2> rA_list;
-  // list of vectors pointing from object A's center of mass to the contact
-  // points
-  std::array<pe2d::Vec2f, 2> rB_list;
-  std::array<float, 2> impulse_scalars;
-  // collision impulses along normal
-  std::array<pe2d::Vec2f, 2> impulses;
-  // friction impulses along normal
-  std::array<pe2d::Vec2f, 2> friction_impulses;
-
-  // calculate collision impulses
-  for (std::size_t i = 0; i < contact_count; i++) {
-    rA_list[i] = contact_list[i] - rigid_bodyA.GetPosition();
-    rB_list[i] = contact_list[i] - rigid_bodyB.GetPosition();
-
-    const pe2d::Vector2 rA_perp = pe2d::math::Perp(rA_list[i]);
-    const pe2d::Vector2 rB_perp = pe2d::math::Perp(rB_list[i]);
-
-    const pe2d::Vector2 relative_velocity =
-        (rigid_bodyA.GetLinearVelocity() +
-         (rA_perp * rigid_bodyA.GetAngularVelocity())) -
-        (rigid_bodyB.GetLinearVelocity() +
-         (rB_perp * rigid_bodyB.GetAngularVelocity()));
-
-    const float rA_perp_normal = pe2d::math::Dot(rA_perp, normal);
-    const float rB_perp_normal = pe2d::math::Dot(rB_perp, normal);
-
-    const float denominator =
-        inv_massA + inv_massB +
-        (rA_perp_normal * rA_perp_normal) * inv_inertiaA +
-        (rB_perp_normal * rB_perp_normal) * inv_inertiaB;
-
-    float impulse_scalar = -(1.0 + restitution_coefficient) *
-                            pe2d::math::Dot(relative_velocity, normal);
-    impulse_scalar /= denominator;
-    impulse_scalar /= (float)contact_count;
-    impulse_scalars[i] = impulse_scalar;
-
-    impulses[i] = impulse_scalar * normal;
-  }
-
-  const float static_friction_coefficient =
-      (rigid_bodyA.GetStaticFriction() + rigid_bodyB.GetStaticFriction()) * 0.5;
-
-  const float dynamic_friction_coefficient =
-      (rigid_bodyA.GetDynamicFriction() + rigid_bodyB.GetDynamicFriction()) *
-      0.5;
-
-  // calculate friction impulses
-  for (std::size_t i = 0; i < contact_count; i++) {
-    rA_list[i] = contact_list[i] - rigid_bodyA.GetPosition();
-    rB_list[i] = contact_list[i] - rigid_bodyB.GetPosition();
-
-    const pe2d::Vector2 rA_perp = pe2d::math::Perp(rA_list[i]);
-    const pe2d::Vector2 rB_perp = pe2d::math::Perp(rB_list[i]);
-
-    const pe2d::Vector2 relative_velocity =
-        (rigid_bodyA.GetLinearVelocity() +
-         (rA_perp * rigid_bodyA.GetAngularVelocity())) -
-        (rigid_bodyB.GetLinearVelocity() +
-         (rB_perp * rigid_bodyB.GetAngularVelocity()));
-
-    pe2d::Vector2 tangent =
-        relative_velocity - pe2d::math::Dot(relative_velocity, normal) * normal;
-    if (pe2d::math::NearlyEquel(tangent, pe2d::Vec2f(), 0.00000025)) {
-      return;
-    } else {
-      tangent = pe2d::math::Normalize(tangent);
-    }
-
-    const float rA_perp_tangent = pe2d::math::Dot(rA_perp, tangent);
-    const float rB_perp_tangent = pe2d::math::Dot(rB_perp, tangent);
-
-    const float denominator =
-        inv_massA + inv_massB +
-        (rA_perp_tangent * rA_perp_tangent) * inv_inertiaA +
-        (rB_perp_tangent * rB_perp_tangent) * inv_inertiaB;
-
-    float friction_impulse_scalar =
-        pe2d::math::Dot(relative_velocity, tangent) /* -1.0*/;
-    friction_impulse_scalar /= denominator;
-    friction_impulse_scalar /= (float)contact_count;
-
-    const float impulse_scalar = impulse_scalars[i];
-    if (std::abs(friction_impulse_scalar) <=
-        impulse_scalar * static_friction_coefficient) {
-      friction_impulses[i] = friction_impulse_scalar * tangent;
-    } else {
-      friction_impulses[i] =
-          impulse_scalar * tangent * dynamic_friction_coefficient;
-    }
-  }
-
-  auto draw_impulse = [&window](pe2d::Vec2f point, pe2d::Vec2f impulse,
-                                sf::Color color) {
-    sf::Vertex impulse_line[] = {
-        sf::Vertex(sf::Vector2f(point.x, point.y), color),
-        sf::Vertex(sf::Vector2f(point.x + impulse.x, point.y + impulse.y),
-                   color)};
-    window.draw(impulse_line, 2, sf::PrimitiveType::Lines);
-  };
-  if (contact_count == 1) {
-    draw_impulse(points.contact_point1, impulses[0], sf::Color::Yellow);
-    draw_impulse(points.contact_point1, impulses[1], sf::Color::Yellow);
-    draw_impulse(points.contact_point1, friction_impulses[0],
-                 sf::Color::Magenta);
-    draw_impulse(points.contact_point1, friction_impulses[1],
-                 sf::Color::Magenta);
-  } else {
-    draw_impulse(points.contact_point1, impulses[0], sf::Color::Yellow);
-    draw_impulse(points.contact_point2, impulses[1], sf::Color::Yellow);
-    draw_impulse(points.contact_point1, friction_impulses[0],
-                 sf::Color::Magenta);
-    draw_impulse(points.contact_point2, friction_impulses[1],
-                 sf::Color::Magenta);
-  }
-}
-
-void DrawContactPoints(pe2d::Collision &collision, sf::RenderWindow &window) {
-  const pe2d::CollisionPoints &points = collision.GetCollisionPoints();
-  for (int i = 0; i < points.contact_count; i++) {
-    const pe2d::Vec2f contact_point = points.GetContactPoints()[i];
-    sf::CircleShape cp1(2.0);
-    cp1.setFillColor(sf::Color::Yellow);
-    cp1.setPosition(sf::Vector2f(contact_point.x - 2.0, contact_point.y - 2.0));
-    window.draw(cp1);
-  }
-}
-
 GameWorld::GameWorld(unsigned int substeps) : m_PhysicsWorld(substeps) {
   m_PhysicsWorld.AddGrid({0, 0}, 100, 100, 100);
   SetUp();
@@ -309,28 +116,19 @@ GameWorld::GameWorld(unsigned int substeps) : m_PhysicsWorld(substeps) {
 void GameWorld::AddEntity(const Entity &entity) {
   m_Entities.reserve(100);
   m_Entities.push_back(entity);
-  m_PhysicsWorld.AddObject(&m_Entities.back().core, m_Entities.size() - 1);
+  m_PhysicsWorld.AddRigidBody(&m_Entities.back().core);
 }
 
 void GameWorld::SetUp() {
   AddEntity(Entity(sf::Color::Blue, pe2d::RigidBody(Box, {950.0f, 100.0f},
   {pe2d::Vec2f(500.0f, 800.0f)}, 10.0f, true, {}, {}, 0.0f, 0.8f, 1.0f, 0.0f)));
 
-  AddEntity(Entity(sf::Color::Blue, pe2d::RigidBody(Box, {300.0f, 50.0f},
-    {pe2d::Vec2f(700.0f, 650.0f), pe2d::Angle::FromDegrees(90.0f)}, 10.0f, true, {}, {}, 0.0f, 0.8f, 1.0f, 0.0f)));
-
-  AddEntity(Entity(sf::Color::Blue, pe2d::RigidBody(Box, {300.0f, 50.0f},
-    {pe2d::Vec2f(825.0f, 500.0f), pe2d::Angle::FromDegrees(90.0f)}, 10.0f, true, {}, {}, 0.0f, 0.8f, 1.0f, 0.0f)));
-
-  AddEntity(Entity(sf::Color::Blue, pe2d::RigidBody(Box, {250.0f, 50.0f},
-    {pe2d::Vec2f(825.0f, 500.0f)}, 10.0f, true, {}, {}, 0.0f, 0.8f, 1.0f, 0.0f)));
-  
   AddEntity(Entity(sf::Color::Blue, pe2d::RigidBody(Box, {350.0f, 50.0f},
     {pe2d::Vec2f(250.0f, 450.0f), pe2d::Angle::FromDegrees(45.0f)}, 10.0f, true, {}, {}, 0.0f, 0.8f, 1.0f, 0.0f)));
 }
 
 void GameWorld::Clear() {
-  m_PhysicsWorld.ClearObjects();
+  m_PhysicsWorld.Clear();
   m_Entities.clear();
   SetUp();
 }
@@ -346,37 +144,11 @@ void GameWorld::Update(sf::Vector2i position, float delta_time) {
     AddEntity(Entity(sf::Color::White, GetCircle(position)));
     m_LastSpawnTime = 0.0f;
   }
-  m_Collisions.clear();
   m_PhysicsWorld.Step(delta_time);
-  std::list<std::pair<size_t, size_t>> pairs =
-      m_PhysicsWorld.m_Grid.GetCollisionPairs();
-  for (auto it = pairs.begin(); it != pairs.end(); it++) {
-    m_PhysicsWorld.FindCollisions(it->first, it->second, m_Collisions);
-  } 
 }
 
 void GameWorld::Draw(sf::RenderWindow &window, const SceneSettings &scene_settings) {
   for (const auto &entity : m_Entities) {
     DrawRigidBody(entity.core, entity.color, window);
-  }
-  if(scene_settings.DrawImpulses) {
-    for(auto &collision : m_Collisions ) {
-      DrawImpulses(collision, window);
-    }
-  } 
-  if(scene_settings.DrawNormalLines) {
-    for(auto &collision : m_Collisions ) {
-      DrawNormal(collision, window);
-    }
-  }
-  if(scene_settings.DrawTangentLines) {
-    for(auto &collision : m_Collisions ) {
-      DrawTangent(collision, window);
-    }
-  }
-  if (scene_settings.DrawContactPoints) {
-    for (auto &collison : m_Collisions) {
-      DrawContactPoints(collison, window);
-    }
   }
 }
